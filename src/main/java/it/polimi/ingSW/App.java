@@ -10,7 +10,7 @@ public class App
     {
         System.out.println( "Hello World!" );
         System.out.println("Testing github synchronization");
-        System.out.println("Linea aggiunta da Giuseppe Diceglie");
+        System.out.println("Linea aggiunta da Giuseppe Diceglie!");
 
     }
 }
