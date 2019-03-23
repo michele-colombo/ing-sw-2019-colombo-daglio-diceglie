@@ -1,1 +1,3 @@
-# ing-sw-2019-colombo-daglio-diceglie
+Gabriele Daglio
+10537168
+gabriele.daglio@mail.polimi.it
