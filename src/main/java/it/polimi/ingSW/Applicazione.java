@@ -4,7 +4,7 @@ package it.polimi.ingSW;
  * Hello world!
  *
  */
-public class App 
+public class Applicazione
 {
     public static void main( String[] args )
     {
@@ -15,6 +15,4 @@ public class App
     }
 
 
-
-    //test
 }
