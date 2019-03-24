@@ -8,10 +8,11 @@ Colombo Michele
 10521451
 michele11.colombo@mail.polimi.it
 
-Gabriele Daglio
+Daglio Gabriele
+866337
 10537168
 gabriele.daglio@mail.polimi.it
 
-Giuseppe Diceglie
+Diceglie Giuseppe
 10538525
 giuseppe.diceglie@mail.polimi.it
