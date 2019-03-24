@@ -1,4 +1,10 @@
+n gruppo: 35
+scaglione: Margara
+
+componenti del gruppo:
+
 Colombo Michele
+866292
 10521451
 michele11.colombo@mail.polimi.it
 
