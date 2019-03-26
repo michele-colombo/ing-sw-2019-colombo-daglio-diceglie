@@ -12,7 +12,7 @@ public class Applicazione
         System.out.println("Testing github synchronization");
         System.out.println("Linea aggiunta da Giuseppe Diceglie!");
         System.out.println("another github test");
-
+        System.out.println("Modifico ancora il file per divertimento");
     }
 
 
