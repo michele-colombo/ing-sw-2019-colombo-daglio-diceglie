@@ -3,4 +3,6 @@
 !README.md
 !.pom.xml
 !resources/
-!src/
+!main/
+!test/
+!Deliverables/
