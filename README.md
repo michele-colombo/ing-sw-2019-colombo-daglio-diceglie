@@ -1,19 +1,25 @@
-n gruppo: 35
-scaglione: Margara
+# Prova Finale Ingegneria del Software 2019
+## Gruppo AM35
 
-componenti del gruppo:
+- ###   10521451    Colombo Michele ([@michele-colombo](https://github.com/michele-colombo))<br>michele11.colombo@mail.polimi.it
+- ###   10537168    Daglio Gabriele ([@GDaglio](https://github.com/GDaglio))<br>gabriele.daglio@mail.polimi.it
+- ###   10538525    Diceglie Giuseppe ([@DiceglieGiuseppe](https://github.com/DiceglieGiuseppe))<br>giuseppe.diceglie@mail.polimi.it
 
-Colombo Michele
-866292
-10521451
-michele11.colombo@mail.polimi.it
+| Functionality | State |
+|:-----------------------|:------------------------------------:|
+| Basic rules | [![RED](https://placehold.it/15/f03c15/f03c15)](#) |
+| Complete rules | [![RED](https://placehold.it/15/f03c15/f03c15)](#) |
+| Socket | [![RED](https://placehold.it/15/f03c15/f03c15)](#) |
+| RMI | [![RED](https://placehold.it/15/f03c15/f03c15)](#) |
+| GUI | [![RED](https://placehold.it/15/f03c15/f03c15)](#) |
+| CLI | [![RED](https://placehold.it/15/f03c15/f03c15)](#) |
+| Multiple games | [![RED](https://placehold.it/15/f03c15/f03c15)](#) |
+| Persistence | [![RED](https://placehold.it/15/f03c15/f03c15)](#) |
+| Domination or Towers modes | [![RED](https://placehold.it/15/f03c15/f03c15)](#) |
+| Terminator | [![RED](https://placehold.it/15/f03c15/f03c15)](#) |
 
-Daglio Gabriele
-866337
-10537168
-gabriele.daglio@mail.polimi.it
-
-Diceglie Giuseppe
-869454
-10538525
-giuseppe.diceglie@mail.polimi.it
+<!--
+[![RED](https://placehold.it/15/f03c15/f03c15)](#)
+[![YELLOW](https://placehold.it/15/ffdd00/ffdd00)](#)
+[![GREEN](https://placehold.it/15/44bb44/44bb44)](#)
+-->
