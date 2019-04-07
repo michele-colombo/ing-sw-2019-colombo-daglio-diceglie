@@ -3,6 +3,7 @@ package it.polimi.ingsw;
 import java.util.ArrayList;
 import java.util.List;
 
+import static it.polimi.ingsw.PlayerColor.*;
 import static it.polimi.ingsw.TypeState.*;
 
 
@@ -50,6 +51,10 @@ public class Player {
         selectablePowerUps = new ArrayList<>();
         selectableSquares = new ArrayList<>();
         selectableWeapons = new ArrayList<>();
+    }
+
+    public Player(){        //TEST constructor
+        this("Nome di prova", GREY);
     }
 
     public String getName() {
@@ -156,6 +161,16 @@ public class Player {
         this.selectablePowerUps = selectablePowerUps;
     }
 
+    public void resetSelectables(){
+        selectableWeapons.clear();
+        selectableSquares.clear();
+        selectableModes.clear();
+        selectablePowerUps.clear();
+        selectablePlayers.clear();
+        selectableColors.clear();
+        selectableActions.clear();
+    }
+
 
     public List<Weapon> getWeapons() {
         return weapons;
@@ -209,6 +224,14 @@ public class Player {
 
     public Cash getCredit() {
         return credit;
+    }
+
+    public void setPending(Cash pending) {
+        this.pending = pending;
+    }
+
+    public void setCredit(Cash credit) {
+        this.credit = credit;
     }
 
     public boolean canAfford(Cash c){       //tells you if the total cash of a player (ammos + powerUps) are more than a certain sum
