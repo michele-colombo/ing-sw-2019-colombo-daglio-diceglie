@@ -1,8 +1,8 @@
 package it.polimi.ingsw;
 
 public enum Direction {
-    NORD,
-    EST,
-    SUD,
-    OVEST;
+    NORTH,
+    EAST,
+    SOUTH,
+    WEST;
 }

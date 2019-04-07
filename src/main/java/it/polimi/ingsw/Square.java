@@ -1,45 +1,45 @@
 package it.polimi.ingsw;
 
 public abstract class Square {
-    private int x;
-    private int y;
-    private Border nord;
-    private Border est;
-    private Border sud;
-    private Border ovest;
-    private Room room;
-    private Color color;
-    private boolean isAmmo;
-    private boolean isEmpty;
+    protected int x;
+    protected int y;
+    protected Border north;
+    protected Border east;
+    protected Border south;
+    protected Border west;
+    protected Room room;
+    protected Color color;
+    protected boolean isAmmo;
+    protected boolean isEmpty;
 
     public Square(){;}
 
-    public abstract boolean isAmmo();
+    public boolean isAmmo(){
+        return isAmmo;
+    }
 
     abstract void collect(Player p);
 
-    public int getX() {
-        return x;
-    }
+    public int getX() { return x; }
 
     public int getY() {
         return y;
     }
 
-    public Border getNord() {
-        return nord;
+    public Border getNorth() {
+        return north;
     }
 
-    public Border getEst() {
-        return est;
+    public Border getEast() {
+        return east;
     }
 
-    public Border getSud() {
-        return sud;
+    public Border getSouth() {
+        return south;
     }
 
-    public Border getOvest() {
-        return ovest;
+    public Border getWest() {
+        return west;
     }
 
     public Room getRoom() {
@@ -52,5 +52,29 @@ public abstract class Square {
 
     public boolean isEmpty(){
         return isEmpty;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Square)) return false;
+        Square square = (Square) o;
+        return getX() == square.getX() &&
+                getY() == square.getY();
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
+    }
+
+    public Square(int x, int y, Border north, Border east, Border south, Border west, Color color){
+        this.x = x;
+        this.y = y;
+        this.north = north;
+        this.east = east;
+        this.south = south;
+        this.west = west;
+        this.color = color;
+        this.room = null;
     }
 }
