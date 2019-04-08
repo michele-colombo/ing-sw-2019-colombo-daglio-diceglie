@@ -10,9 +10,6 @@ public abstract class Square {
     protected Room room;
     protected Color color;
     protected boolean isAmmo;
-    protected boolean isEmpty;
-
-    public Square(){;}
 
     public boolean isAmmo(){
         return isAmmo;
@@ -50,8 +47,7 @@ public abstract class Square {
         return color;
     }
 
-    public boolean isEmpty(){
-        return isEmpty;
+    public boolean isEmpty(){ return true;
     }
 
     @Override

@@ -6,8 +6,8 @@ public class AmmoSquare extends Square{
         ;
     }
 
-    public AmmoSquare(int x, int y, Border nord, Border est, Border sud, Border ovest, Color color){
-        super();
+    public AmmoSquare(int x, int y, Border north, Border east, Border south, Border west, Color color){
+        super(x, y, north, east, south, west, color);
         isAmmo = true;
     }
 }
