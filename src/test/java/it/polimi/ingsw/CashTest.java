@@ -141,10 +141,10 @@ public class CashTest {
         Cash c2 = new Cash(2, 3,4);
         Cash c3 = new Cash(1,1,2);
         Cash c4 = new Cash(0,0,0);
-        assertEquals(c1.getTotal(), 6);
-        assertEquals(c2.getTotal(), 9);
-        assertEquals(c3.getTotal(), 4);
-        assertEquals(c4.getTotal(), 0);
+        assertEquals(6, c1.getTotal());
+        assertEquals(9, c2.getTotal());
+        assertEquals(4, c3.getTotal());
+        assertEquals(0, c4.getTotal());
     }
 
     @Test

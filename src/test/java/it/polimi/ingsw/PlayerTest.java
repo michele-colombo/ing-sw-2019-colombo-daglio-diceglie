@@ -63,8 +63,8 @@ public class PlayerTest {
         assertEquals(p1.getDamageTrack().getMarkMap(), temp);
         test.clear();
         assertEquals(p1.getDamageTrack().getDamageList(), test);
-        assertEquals(p1.getDamageTrack().getAdrenaline(), 3);
-        assertEquals(p1.getDamageTrack().getBiggerScore(), 2);
+        assertEquals(3, p1.getDamageTrack().getAdrenaline());
+        assertEquals(2, p1.getDamageTrack().getBiggerScore());
 
 
     }
