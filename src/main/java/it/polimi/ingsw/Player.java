@@ -17,6 +17,7 @@ public class Player {
     private List<Weapon> weapons;
     private List<PowerUp> powerUps;
     private Square square;
+    private DamageTrack damageTrack;
 
     private Cash wallet;
     private Cash pending;
@@ -39,6 +40,7 @@ public class Player {
         weapons = new ArrayList<>();
         powerUps = new ArrayList<>();
         state = IDLE;
+        damageTrack = new NormalDamageTrack();
 
         wallet = new Cash();
         pending = new Cash();
@@ -241,5 +243,10 @@ public class Player {
         }
         temp = temp.sum(wallet);
         return temp.greaterEqual(c);
+    }
+
+    public void switchToFrenzy(){
+        damageTrack = new FrenzyDamageTrack(damageTrack);
+        damageTrack.resetAfterDeath();
     }
 }
