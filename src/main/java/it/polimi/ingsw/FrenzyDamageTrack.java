@@ -11,7 +11,7 @@ public class FrenzyDamageTrack extends DamageTrack {
         setFirstBlood(0);
     }
 
-    public FrenzyDamageTrack(NormalDamageTrack oldTrack){
+    public FrenzyDamageTrack(DamageTrack oldTrack){     //michele: NormalDamageTrack replaced with DamageTrack
         this();
         this.setMarkList( oldTrack.getMarkList());
 
