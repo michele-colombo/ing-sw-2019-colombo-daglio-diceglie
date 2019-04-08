@@ -8,18 +8,21 @@ import java.util.Map;
 import static java.lang.Math.max;
 
 public abstract class DamageTrack {
-    private ArrayList<Player> damageList;
-    private HashMap<Player, Integer> markList;
+    private List<Player> damageList;
+    private Map<Player, Integer> markList;
     private int skullsNumber;
 
     private int biggerScore;
     private int firstBlood;
-    private int maxReceivers;
 
     public DamageTrack(){
         damageList= new ArrayList<>();
         markList= new HashMap<>();
         skullsNumber= 0;
+    }
+
+    public void setMarkList(Map<Player, Integer> markList) {
+        this.markList = markList;
     }
 
     public void setBiggerScore(int biggerScore) {
@@ -28,10 +31,6 @@ public abstract class DamageTrack {
 
     public void setFirstBlood(int firstBlood) {
         this.firstBlood = firstBlood;
-    }
-
-    public void setMaxReceivers(int maxReceivers) {
-        this.maxReceivers = maxReceivers;
     }
 
     public List<Player> getDamageList() {
@@ -59,9 +58,6 @@ public abstract class DamageTrack {
         return firstBlood;
     }
 
-    public int getMaxReceivers() {
-        return maxReceivers;
-    }
 
     public void resetDamages(){
         this.damageList.clear();
@@ -93,9 +89,9 @@ public abstract class DamageTrack {
     public void addDamage(Player p, int damage){
         int toAdd;
 
-        if(getMarkList().containsKey(p)){       //why the getter is used instead of the private attribute markList?
+        if(markList.containsKey(p)){       //why the getter is used instead of the private attribute markList?
             toAdd= damage +  this.getMarkList().get(p);
-            this.getMarkList().remove(p);
+            this.markList.remove(p);
         }
         else{
             toAdd = damage;
@@ -108,10 +104,17 @@ public abstract class DamageTrack {
         }
     }
 
-    public Player whoKilledYou(){
+    public Map<Player, Integer> howDoTheyKilledYou(){
 
-        if(damageList.size() >= 11){
-            return damageList.get( damageList.size() - 1);
+        Map result= new HashMap<Player, Integer>();
+
+        if(damageList.size() == 11){
+            result.put(damageList.get( damageList.size() - 1), 1);
+            return result;
+        }
+        if(damageList.size() == 12){
+            result.put(damageList.get( damageList.size() - 1), 2);
+            return result;
         }
 
         return null;
@@ -165,12 +168,10 @@ public abstract class DamageTrack {
             currentScore= nextScore(currentScore);
         }
 
-        int scoreReceivers = getMaxReceivers() - this.getSkullsNumber();
-
         Player firstBlooder= this.getDamageList().get(0);
 
         int i=0;
-        while(i< scoreReceivers && damagers.size()>0){
+        while(damagers.size()>0){
             Player mostPowerful= this.getMostPowerfulDamagerIn(damagers);
             result.put(mostPowerful, currentScore);
             currentScore= nextScore(currentScore);
@@ -183,6 +184,10 @@ public abstract class DamageTrack {
     }
 
     public abstract int getAdrenaline();
+
+    public abstract void increaseSkull();
+
+    public abstract void resetAfterDeath();
 
 /*
     public void givePoints(){

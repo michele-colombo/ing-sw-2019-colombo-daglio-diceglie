@@ -2,7 +2,6 @@ package it.polimi.ingsw;
 
 import org.junit.Test;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -81,7 +80,7 @@ public class DamageTrackTest {
         assertEquals(d.whoDamagedYou(), wdy );
         assertEquals(d.getDamageList(), damage);
         assertEquals(d.getMarkList(), mark);
-        assertEquals(d.whoKilledYou(), willy);
+        assertEquals(d.howDoTheyKilledYou(), willy);
         assertEquals(d.getMostPowerfulDamagerIn(wdy), willy);
 
 
@@ -112,6 +111,8 @@ public class DamageTrackTest {
 
         assertTrue(d.getMarkList().isEmpty());
         assertEquals(d.getAdrenaline(), 2);
+
+        ((NormalDamageTrack) d).increaseSkull();
 
 
     }

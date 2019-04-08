@@ -11,7 +11,6 @@ public class NormalDamageTrack extends DamageTrack {
         super();
         setBiggerScore(8);
         setFirstBlood(1);
-        setMaxReceivers(6);
     }
 
 
@@ -27,10 +26,14 @@ public class NormalDamageTrack extends DamageTrack {
     }
 
     public void increaseSkull(){
-        if(getSkullsNumber() < 6){
             this.setSkullsNumber(this.getSkullsNumber() + 1);
-        }
     }
+
+    public void resetAfterDeath(){
+        resetDamages();
+        increaseSkull();
+    }
+
 
 
 

@@ -50,7 +50,7 @@ public class NormalDamageTrackTest {
         assertEquals(d.whoDamagedYou(), wdy );
         assertEquals(d.getDamageList(), damage);
         assertEquals(d.getMarkList(), mark);
-        assertEquals(d.whoKilledYou(), willy);
+        assertEquals(d.howDoTheyKilledYou(), willy);
         assertEquals(d.getMostPowerfulDamagerIn(wdy), willy);
 
         assertEquals(sco, d.score());

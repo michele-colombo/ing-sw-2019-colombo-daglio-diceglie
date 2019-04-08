@@ -1,6 +1,6 @@
 package it.polimi.ingsw;
 
-public class Weapon {
+public class Weapon implements Card{
     private boolean isLoaded;
 
     public boolean isLoaded() {
