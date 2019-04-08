@@ -22,6 +22,14 @@ public class KillShotTrack {
         order = 1;
     }
 
+    public Map<Player, Integer> getKillingCounter() {
+        return killingCounter;
+    }
+
+    public Map<Player, Integer> getKillingOrder() {
+        return killingOrder;
+    }
+
     public int getSkulls() {
         return skulls;
     }
