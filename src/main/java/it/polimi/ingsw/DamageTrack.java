@@ -93,7 +93,7 @@ public abstract class DamageTrack {
     public void addDamage(Player p, int damage){
         int toAdd;
 
-        if(getMarkList().containsKey(p)){
+        if(getMarkList().containsKey(p)){       //why the getter is used instead of the private attribute markList?
             toAdd= damage +  this.getMarkList().get(p);
             this.getMarkList().remove(p);
         }
@@ -123,7 +123,7 @@ public abstract class DamageTrack {
         for(i=0; i< damageList.size(); i++){
             Player key = damageList.get(i);
             if(result.containsKey(key)){
-                int old= result.get(key);
+                int old = result.get(key);
                 result.replace(key, old + 1);
             }
             else{
