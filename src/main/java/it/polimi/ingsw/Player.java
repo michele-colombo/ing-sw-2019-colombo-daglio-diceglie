@@ -212,6 +212,10 @@ public class Player {
         return powerUps;
     }
 
+    public void addPowerUp(PowerUp po){
+        powerUps.add(po);
+    }
+
     public boolean discardPowerUp(PowerUp po){
         return powerUps.remove(po);
     }
@@ -248,5 +252,9 @@ public class Player {
     public void switchToFrenzy(){
         damageTrack = new FrenzyDamageTrack(damageTrack);
         damageTrack.resetAfterDeath();
+    }
+
+    public DamageTrack getDamageTrack() {
+        return damageTrack;
     }
 }
