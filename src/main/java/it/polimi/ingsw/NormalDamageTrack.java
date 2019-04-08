@@ -25,7 +25,7 @@ public class NormalDamageTrack extends DamageTrack {
         return 0;
     }
 
-    public void increaseSkull(){
+    private void increaseSkull(){
             this.setSkullsNumber(this.getSkullsNumber() + 1);
     }
 

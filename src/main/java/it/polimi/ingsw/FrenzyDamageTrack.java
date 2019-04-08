@@ -11,7 +11,7 @@ public class FrenzyDamageTrack extends DamageTrack {
         setFirstBlood(0);
     }
 
-    public FrenzyDamageTrack(DamageTrack oldTrack){     //michele: NormalDamageTrack replaced with DamageTrack
+    public FrenzyDamageTrack(DamageTrack oldTrack){
         this();
         this.setMarkList( oldTrack.getMarkList());
 
@@ -19,11 +19,6 @@ public class FrenzyDamageTrack extends DamageTrack {
 
     public int getAdrenaline(){
         return 3;
-    }
-
-
-    public void increaseSkull(){
-        this.setSkullsNumber( this.getSkullsNumber());
     }
 
     public void resetAfterDeath(){

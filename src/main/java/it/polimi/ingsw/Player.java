@@ -16,7 +16,7 @@ public class Player {
     private boolean isFirstPlayer;
     private List<Weapon> weapons;
     private List<PowerUp> powerUps;
-    private Square square;
+    private Square squarePosition;
     private DamageTrack damageTrack;
 
     private Cash wallet;
@@ -99,12 +99,12 @@ public class Player {
         isFirstPlayer = firstPlayer;
     }
 
-    public Square getSquare() {
-        return square;
+    public Square getSquarePosition() {
+        return squarePosition;
     }
 
-    public void setSquare(Square square) {
-        this.square = square;
+    public void setSquarePosition(Square squarePosition) {
+        this.squarePosition = squarePosition;
     }
 
     public List<Weapon> getSelectableWeapons() {
@@ -236,13 +236,13 @@ public class Player {
         this.credit = credit;
     }
 
-    public boolean canAfford(Cash c){       //tells you if the total cash of a player (ammos + powerUps) are more than a certain sum
+    public boolean canAfford(Cash amount){       //tells you if the total cash of a player (ammos + powerUps) are more than a certain sum
         Cash temp = new Cash();
         for (PowerUp po : powerUps){
             temp = temp.sum(new Cash(po.getColor(), 1));
         }
         temp = temp.sum(wallet);
-        return temp.greaterEqual(c);
+        return temp.greaterEqual(amount);
     }
 
     public void switchToFrenzy(){

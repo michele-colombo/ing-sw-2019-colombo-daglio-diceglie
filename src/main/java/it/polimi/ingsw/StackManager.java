@@ -44,7 +44,7 @@ public class StackManager {
         return powerUpActiveStack.pop();
     }
 
-    public void trashPowerUp(PowerUp pu){
+    public void discardPowerUp(PowerUp pu){
         powerUpWasteStack.push(pu);
     }
 

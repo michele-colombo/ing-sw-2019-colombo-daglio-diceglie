@@ -185,8 +185,6 @@ public abstract class DamageTrack {
 
     public abstract int getAdrenaline();
 
-    public abstract void increaseSkull();
-
     public abstract void resetAfterDeath();
 
 /*
