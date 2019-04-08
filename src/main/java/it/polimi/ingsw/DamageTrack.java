@@ -145,8 +145,6 @@ public abstract class DamageTrack {
                 }
             }
         }
-
-
         return result;
 
     }
