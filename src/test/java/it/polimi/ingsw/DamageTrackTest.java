@@ -2,7 +2,6 @@ package it.polimi.ingsw;
 
 import org.junit.Test;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +11,7 @@ import static org.junit.Assert.*;
 
 public class DamageTrackTest {
 
-
+@Test
     public void controllaLaDamage() {
         Player blinga= new Player();
         Player appoggio= new Player();
@@ -43,16 +42,16 @@ public class DamageTrackTest {
         damage.add(appoggio);
         damage.add(appoggio);
 
-        assertTrue(mark.equals(d.getMarkList()));
+        assertTrue(mark.equals(d.getMarkMap()));
 
         assertTrue(damage.equals(d.getDamageList()));
 
     }
-
+@Test
     public void controlloCoseStrane(){
         DamageTrack d = new NormalDamageTrack();
 
-        assertFalse(d.getMarkList()==null);
+        assertFalse(d.getMarkMap()==null);
         Player willy= new Player();
         Player ghidotti= new Player();
         Player piero= new Player();
@@ -80,8 +79,10 @@ public class DamageTrackTest {
 
         assertEquals(d.whoDamagedYou(), wdy );
         assertEquals(d.getDamageList(), damage);
-        assertEquals(d.getMarkList(), mark);
-        assertEquals(d.whoKilledYou(), willy);
+        assertEquals(d.getMarkMap(), mark);
+        Map<Player, Integer> temp = new HashMap<Player, Integer>();
+        temp.put(willy, 2);
+        assertEquals(d.howDoTheyKilledYou(), temp);
         assertEquals(d.getMostPowerfulDamagerIn(wdy), willy);
 
 
@@ -110,8 +111,10 @@ public class DamageTrackTest {
         assertEquals(d.score().get(b), (Integer) 6);
         assertEquals(d.score().get(c), (Integer) 4);
 
-        assertTrue(d.getMarkList().isEmpty());
+        assertTrue(d.getMarkMap().isEmpty());
         assertEquals(d.getAdrenaline(), 2);
+
+        ((NormalDamageTrack) d).increaseSkull();
 
 
     }

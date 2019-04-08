@@ -8,38 +8,31 @@ import java.util.Map;
 import static java.lang.Math.max;
 
 public abstract class DamageTrack {
-    private ArrayList<Player> damageList;
-    private HashMap<Player, Integer> markList;
+    private List<Player> damageList;
+    private Map<Player, Integer> markMap;
     private int skullsNumber;
 
-    private int biggerScore;
-    private int firstBlood;
-    private int maxReceivers;
+    private final int biggerScore;
+    private final int firstBlood;
 
-    public DamageTrack(){
+    public DamageTrack(int biggerScore, int firstBlood){
         damageList= new ArrayList<>();
-        markList= new HashMap<>();
-        skullsNumber= 0;
-    }
-
-    public void setBiggerScore(int biggerScore) {
+        markMap = new HashMap<>();
+        skullsNumber = 0;
         this.biggerScore = biggerScore;
-    }
-
-    public void setFirstBlood(int firstBlood) {
         this.firstBlood = firstBlood;
     }
 
-    public void setMaxReceivers(int maxReceivers) {
-        this.maxReceivers = maxReceivers;
+    public void setMarkMap(Map<Player, Integer> markMap) {
+        this.markMap = markMap;
     }
 
     public List<Player> getDamageList() {
         return damageList;
     }
 
-    public Map<Player, Integer> getMarkList() {
-        return markList;
+    public Map<Player, Integer> getMarkMap() {
+        return markMap;
     }
 
     public int getSkullsNumber() {
@@ -59,9 +52,6 @@ public abstract class DamageTrack {
         return firstBlood;
     }
 
-    public int getMaxReceivers() {
-        return maxReceivers;
-    }
 
     public void resetDamages(){
         this.damageList.clear();
@@ -70,14 +60,14 @@ public abstract class DamageTrack {
     public void addMark(Player p, int markToAdd){
         Integer targets;
 
-        if( markList.containsKey(p) ){
-            targets = markList.get(p);
+        if( markMap.containsKey(p) ){
+            targets = markMap.get(p);
             targets = targets + markToAdd;
             if( targets > 3){
                 targets = 3;
             }
 
-            markList.replace(p, targets);
+            markMap.replace(p, targets);
         }
         else{
             if(markToAdd > 3){
@@ -86,16 +76,16 @@ public abstract class DamageTrack {
             else{
                 targets = markToAdd;
             }
-            markList.put(p, targets);
+            markMap.put(p, targets);
         }
     }
 
     public void addDamage(Player p, int damage){
         int toAdd;
 
-        if(getMarkList().containsKey(p)){       //why the getter is used instead of the private attribute markList?
-            toAdd= damage +  this.getMarkList().get(p);
-            this.getMarkList().remove(p);
+        if(markMap.containsKey(p)){       //why the getter is used instead of the private attribute markMap?
+            toAdd= damage +  this.getMarkMap().get(p);
+            this.markMap.remove(p);
         }
         else{
             toAdd = damage;
@@ -108,13 +98,20 @@ public abstract class DamageTrack {
         }
     }
 
-    public Player whoKilledYou(){
+    public Map<Player, Integer> howDoTheyKilledYou(){
 
-        if(damageList.size() >= 11){
-            return damageList.get( damageList.size() - 1);
+        Map result= new HashMap<Player, Integer>();
+
+        if(damageList.size() == 11){
+            result.put(damageList.get( damageList.size() - 1), 1);
+
+        }
+        if(damageList.size() == 12){
+            result.put(damageList.get( damageList.size() - 1), 2);
+
         }
 
-        return null;
+        return result;
     }
 
     public Map<Player, Integer> whoDamagedYou(){
@@ -138,12 +135,17 @@ public abstract class DamageTrack {
         Integer massimo= 0;
 
         Player result= null;
-        for(Player p : damagers.keySet()){
-            if(damagers.get(p) >= massimo && (result == null || this.getDamageList().indexOf(p)< this.getDamageList().indexOf(result))){
+        for(Player p : damagers.keySet()) {
+            if (damagers.get(p) > massimo) {
                 result = p;
-                massimo= damagers.get(p);
+                massimo = damagers.get(p);
+            } else if (damagers.get(p) == massimo) {
+                if (result == null || this.getDamageList().indexOf(p) < this.getDamageList().indexOf(result)) {
+                    result = p;
+                }
             }
         }
+
 
         return result;
 
@@ -157,6 +159,10 @@ public abstract class DamageTrack {
     }
 
     public Map<Player, Integer> score(){
+        if(getDamageList().isEmpty()){
+            return new HashMap<Player, Integer>();
+        }
+
         Map<Player, Integer> damagers = this.whoDamagedYou();
         Map<Player, Integer> result = new HashMap<>();
         int currentScore= getBiggerScore();
@@ -165,12 +171,10 @@ public abstract class DamageTrack {
             currentScore= nextScore(currentScore);
         }
 
-        int scoreReceivers = getMaxReceivers() - this.getSkullsNumber();
-
         Player firstBlooder= this.getDamageList().get(0);
 
         int i=0;
-        while(i< scoreReceivers && damagers.size()>0){
+        while(damagers.size()>0){
             Player mostPowerful= this.getMostPowerfulDamagerIn(damagers);
             result.put(mostPowerful, currentScore);
             currentScore= nextScore(currentScore);
@@ -183,6 +187,8 @@ public abstract class DamageTrack {
     }
 
     public abstract int getAdrenaline();
+
+    public abstract void resetAfterDeath();
 
 /*
     public void givePoints(){

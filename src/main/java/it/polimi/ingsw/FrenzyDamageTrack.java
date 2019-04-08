@@ -1,19 +1,25 @@
 package it.polimi.ingsw;
 
-import java.util.HashMap;
-
 public class FrenzyDamageTrack extends DamageTrack {
-
+    static final int biggerScore = 2;
+    static final int firstBlood = 0;
 
     public FrenzyDamageTrack(){
-        super();
-        setBiggerScore(2);
-        setMaxReceivers(4);
-        setFirstBlood(0);
+        super(biggerScore, firstBlood);
+    }
+
+    public FrenzyDamageTrack(DamageTrack oldTrack){
+        this();
+        this.setMarkMap( oldTrack.getMarkMap());
+
     }
 
     public int getAdrenaline(){
         return 3;
+    }
+
+    public void resetAfterDeath(){
+        resetDamages();
     }
 
 

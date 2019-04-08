@@ -4,14 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class NormalDamageTrack extends DamageTrack {
-
-
+    static final int biggerScore = 8;
+    static final int firstBlood = 1;
 
     public NormalDamageTrack(){
-        super();
-        setBiggerScore(8);
-        setFirstBlood(1);
-        setMaxReceivers(6);
+        super(biggerScore, firstBlood);
     }
 
 
@@ -27,10 +24,14 @@ public class NormalDamageTrack extends DamageTrack {
     }
 
     public void increaseSkull(){
-        if(getSkullsNumber() < 6){
             this.setSkullsNumber(this.getSkullsNumber() + 1);
-        }
     }
+
+    public void resetAfterDeath(){
+        resetDamages();
+        increaseSkull();
+    }
+
 
 
 
