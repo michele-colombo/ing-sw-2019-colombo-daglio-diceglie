@@ -6,15 +6,14 @@ import java.util.List;
 
 import static it.polimi.ingsw.Border.DOOR;
 import static it.polimi.ingsw.Border.WALL;
-import static it.polimi.ingsw.Color.RED;
 import static it.polimi.ingsw.Direction.*;
 
 public class Layout {
-    //private LayoutConfiguration configuration;
+
     private List<Square> squares;
     private int[][] existingSquare;
 
-    public List<Square> getVisibleSquare(Square startingSquare){
+    public List<Square> getVisibleSquares(Square startingSquare){
         List<Square> visible = new ArrayList<>(startingSquare.getRoom().getSquaresInRoom());
 
         if(startingSquare.getNorth() == DOOR){
@@ -46,13 +45,37 @@ public class Layout {
         else if(d == WEST){
                 squares.addAll(getWesternSquares(startingSquare));
         }
+        squares.add(startingSquare);
         return squares;
+    }
+
+    public List<Square> getSquaresInDirection(Square startingSquare, Square pointingSquare){
+        if(startingSquare.equals(pointingSquare)){
+            return getCardinalSquares(startingSquare);
+        }
+        if(startingSquare.getX() == pointingSquare.getX()){
+            if(startingSquare.getY() > pointingSquare.getY()){
+                return getSouthernSquares(startingSquare);
+            }
+            else{
+                return getNorthernSquares(startingSquare);
+            }
+        }
+        else if(startingSquare.getY() == pointingSquare.getY()){
+            if(startingSquare.getX() > pointingSquare.getX()){
+                return getEasternSquares(startingSquare);
+            }
+            else{
+                return getWesternSquares(startingSquare);
+            }
+        }
+        return new ArrayList<>();
     }
 
     public List<Square> getSquaresInDistanceRange(Square startingSquare, int min, int max){
         List<Square> inRange = new ArrayList<>();
         for(Square sq : squares){
-            if(getDistance(startingSquare, sq) >= min && getDistance(startingSquare, sq) <= max && getVisibleSquare(startingSquare).contains(sq)){
+            if((getDistance(startingSquare, sq) >= min) && (getDistance(startingSquare, sq) <= max) && getVisibleSquares(startingSquare).contains(sq)){
                 inRange.add(sq);
             }
         }
@@ -67,6 +90,16 @@ public class Layout {
             }
         }
         return squareLine;
+    }
+
+    public List<Square> getCardinalSquares(Square startingSquare){
+        List<Square> cardinalSquares = new ArrayList<>();
+        cardinalSquares.addAll(getNorthernSquares(startingSquare));
+        cardinalSquares.addAll(getEasternSquares(startingSquare));
+        cardinalSquares.addAll(getSouthernSquares(startingSquare));
+        cardinalSquares.addAll(getWesternSquares(startingSquare));
+        cardinalSquares.add(startingSquare);
+        return cardinalSquares;
     }
 
     public List<Square> getVerticalSquareLine(int x){
@@ -103,10 +136,14 @@ public class Layout {
         else{
             int distance = 1; //starting distance
             List<Square> queue = getNeighbours(s1);
+            List<Square> queuetmp = new ArrayList<>();
             while(!queue.contains(s2)){
                 for(Square sq : queue){
-                    queue.addAll(getNeighbours(sq));
+                    if(sq != null){
+                        queuetmp.addAll(getNeighbours(sq));
+                    }
                 }
+                queue.addAll(queuetmp);
                 distance++;
             }
             return distance;
@@ -145,7 +182,7 @@ public class Layout {
     }
 
     public boolean addSquare(Square s){
-        if(!existSquare(s.getX(), s.getY())){
+        if(!existSquare(s.getX(), s.getY()) && squares.size() < 16){
             squares.add(s);
             existingSquare[s.getX()][s.getY()] = 1;
             return true;
@@ -155,7 +192,7 @@ public class Layout {
 
     private List<Square> getNorthernSquares(Square startingSquare){
         List<Square> squares = new ArrayList<>();
-        int i = startingSquare.getY();
+        int i = startingSquare.getY() + 1;
         while(i < 4){
             if(existSquare(startingSquare.getX(), i)){
                 squares.add(getSquare(startingSquare.getX(), i));
@@ -167,7 +204,7 @@ public class Layout {
 
     private List<Square> getEasternSquares(Square startingSquare){
         List<Square> squares = new ArrayList<>();
-        int i = startingSquare.getX();
+        int i = startingSquare.getX() + 1;
         while(i < 4){
             if(existSquare(i, startingSquare.getY())){
                 squares.add(getSquare(i, startingSquare.getY()));
@@ -179,7 +216,7 @@ public class Layout {
 
     private List<Square> getSouthernSquares(Square startingSquare){
         List<Square> squares = new ArrayList<>();
-        int i = startingSquare.getY();
+        int i = startingSquare.getY() - 1;
         while(i > -1){
             if(existSquare(startingSquare.getX(), i)){
                 squares.add(getSquare(startingSquare.getX(), i));
@@ -191,7 +228,7 @@ public class Layout {
 
     private List<Square> getWesternSquares(Square startingSquare){
         List<Square> squares = new ArrayList<>();
-        int i = startingSquare.getX();
+        int i = startingSquare.getX() - 1;
         while(i > -1){
             if(existSquare(i, startingSquare.getY())){
                 squares.add(getSquare(i, startingSquare.getY()));
@@ -209,7 +246,7 @@ public class Layout {
     }
 
     public Layout(){
-        squares = new ArrayList<>(16);
+        squares = new ArrayList<>();
         existingSquare = new int[4][4];
         for(int row = 0; row < 4; row++){
             for(int column = 0; column < 4; column++){
