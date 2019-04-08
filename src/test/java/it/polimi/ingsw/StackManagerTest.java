@@ -3,6 +3,9 @@ package it.polimi.ingsw;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Stack;
 
 import static org.junit.Assert.*;
 
@@ -35,4 +38,75 @@ public class StackManagerTest {
 
     }
 
+    @Test
+    public void iDontTrustCollections(){
+    Stack<Weapon> s= new Stack<Weapon>();
+    s.add(new Weapon());
+    s.add(new Weapon());
+    s.add(new Weapon());
+    s.add(new Weapon());
+
+    Stack<Weapon> copy= new Stack<Weapon>();
+    copy.addAll(s);
+    assertEquals(s, copy);
+
+        Collections.shuffle(copy);
+        assertFalse(s.equals(copy));
+        assertTrue(s.containsAll(copy));
+
+
+    }
+
+    @Test
+    public void testRiciclo(){
+        List<AmmoTile> l= new ArrayList<AmmoTile>();
+        l.add(new AmmoTile());
+        l.add(new AmmoTile());
+        l.add(new AmmoTile());
+        l.add(new AmmoTile());
+
+        StackManager s= new StackManager();
+
+        s.initAmmoTilesStack(l);
+
+        for(int i=0; i<10; i++) {
+            s.trashAmmoTile(s.drawAmmoTile());
+        }
+
+
+        assertTrue(l.containsAll(s.getAmmoTilesActiveStack()));
+        assertTrue(l.containsAll(s.getAmmoTilesWasteStack()));
+
+        List<AmmoTile> somma= new ArrayList<AmmoTile>();
+        somma.addAll(s.getAmmoTilesActiveStack());
+        somma.addAll(s.getAmmoTilesWasteStack());
+
+        assertTrue(l.containsAll(somma));
+        assertTrue(somma.containsAll(l));
+
+
+
+
+    }
+
+    @Test
+    public void testRicicloImpossibileWeapon(){
+    StackManager s= new StackManager();
+
+    List<Weapon> w= new ArrayList<>();
+    w.add(new Weapon());
+    w.add(new Weapon());
+    w.add(new Weapon());
+    w.add(new Weapon());
+    w.add(new Weapon());
+
+    s.initWeaponStack(w);
+
+    for(int i=0; i<5; i++){
+        assertTrue(w.contains(s.drawWeapon()));
+    }
+    assertNull(s.drawWeapon());
+    assertTrue(s.getWeaponActiveStack().isEmpty());
+
+    }
 }

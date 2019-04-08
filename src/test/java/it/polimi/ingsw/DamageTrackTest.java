@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
 
 public class DamageTrackTest {
 
-
+@Test
     public void controllaLaDamage() {
         Player blinga= new Player();
         Player appoggio= new Player();

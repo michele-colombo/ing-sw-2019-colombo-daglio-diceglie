@@ -104,14 +104,14 @@ public abstract class DamageTrack {
 
         if(damageList.size() == 11){
             result.put(damageList.get( damageList.size() - 1), 1);
-            return result;
+
         }
         if(damageList.size() == 12){
             result.put(damageList.get( damageList.size() - 1), 2);
-            return result;
+
         }
 
-        return null;
+        return result;
     }
 
     public Map<Player, Integer> whoDamagedYou(){
@@ -135,12 +135,17 @@ public abstract class DamageTrack {
         Integer massimo= 0;
 
         Player result= null;
-        for(Player p : damagers.keySet()){
-            if(damagers.get(p) >= massimo && (result == null || this.getDamageList().indexOf(p)< this.getDamageList().indexOf(result))){
+        for(Player p : damagers.keySet()) {
+            if (damagers.get(p) > massimo) {
                 result = p;
-                massimo= damagers.get(p);
+                massimo = damagers.get(p);
+            } else if (damagers.get(p) == massimo) {
+                if (result == null || this.getDamageList().indexOf(p) < this.getDamageList().indexOf(result)) {
+                    result = p;
+                }
             }
         }
+
 
         return result;
 
@@ -154,6 +159,10 @@ public abstract class DamageTrack {
     }
 
     public Map<Player, Integer> score(){
+        if(getDamageList().isEmpty()){
+            return new HashMap<Player, Integer>();
+        }
+
         Map<Player, Integer> damagers = this.whoDamagedYou();
         Map<Player, Integer> result = new HashMap<>();
         int currentScore= getBiggerScore();
