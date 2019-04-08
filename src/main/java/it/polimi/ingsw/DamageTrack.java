@@ -9,36 +9,30 @@ import static java.lang.Math.max;
 
 public abstract class DamageTrack {
     private List<Player> damageList;
-    private Map<Player, Integer> markList;
+    private Map<Player, Integer> markMap;
     private int skullsNumber;
 
-    private int biggerScore;
-    private int firstBlood;
+    private final int biggerScore;
+    private final int firstBlood;
 
-    public DamageTrack(){
+    public DamageTrack(int biggerScore, int firstBlood){
         damageList= new ArrayList<>();
-        markList= new HashMap<>();
-        skullsNumber= 0;
-    }
-
-    public void setMarkList(Map<Player, Integer> markList) {
-        this.markList = markList;
-    }
-
-    public void setBiggerScore(int biggerScore) {
+        markMap = new HashMap<>();
+        skullsNumber = 0;
         this.biggerScore = biggerScore;
+        this.firstBlood = firstBlood;
     }
 
-    public void setFirstBlood(int firstBlood) {
-        this.firstBlood = firstBlood;
+    public void setMarkMap(Map<Player, Integer> markMap) {
+        this.markMap = markMap;
     }
 
     public List<Player> getDamageList() {
         return damageList;
     }
 
-    public Map<Player, Integer> getMarkList() {
-        return markList;
+    public Map<Player, Integer> getMarkMap() {
+        return markMap;
     }
 
     public int getSkullsNumber() {
@@ -66,14 +60,14 @@ public abstract class DamageTrack {
     public void addMark(Player p, int markToAdd){
         Integer targets;
 
-        if( markList.containsKey(p) ){
-            targets = markList.get(p);
+        if( markMap.containsKey(p) ){
+            targets = markMap.get(p);
             targets = targets + markToAdd;
             if( targets > 3){
                 targets = 3;
             }
 
-            markList.replace(p, targets);
+            markMap.replace(p, targets);
         }
         else{
             if(markToAdd > 3){
@@ -82,16 +76,16 @@ public abstract class DamageTrack {
             else{
                 targets = markToAdd;
             }
-            markList.put(p, targets);
+            markMap.put(p, targets);
         }
     }
 
     public void addDamage(Player p, int damage){
         int toAdd;
 
-        if(markList.containsKey(p)){       //why the getter is used instead of the private attribute markList?
-            toAdd= damage +  this.getMarkList().get(p);
-            this.markList.remove(p);
+        if(markMap.containsKey(p)){       //why the getter is used instead of the private attribute markMap?
+            toAdd= damage +  this.getMarkMap().get(p);
+            this.markMap.remove(p);
         }
         else{
             toAdd = damage;

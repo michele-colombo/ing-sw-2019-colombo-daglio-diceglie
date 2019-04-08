@@ -49,7 +49,7 @@ public class NormalDamageTrackTest {
 
         assertEquals(d.whoDamagedYou(), wdy );
         assertEquals(d.getDamageList(), damage);
-        assertEquals(d.getMarkList(), mark);
+        assertEquals(d.getMarkMap(), mark);
         assertEquals(d.howDoTheyKilledYou(), willy);
         assertEquals(d.getMostPowerfulDamagerIn(wdy), willy);
 
@@ -83,14 +83,14 @@ public class NormalDamageTrackTest {
         score2.put(willy, 2);
 
         assertEquals(score2, d.score());
-        assertEquals(mark2, d.getMarkList());
+        assertEquals(mark2, d.getMarkMap());
         assertEquals(dmgl, d.getDamageList());
         assertEquals(wdy2, d.whoDamagedYou());
         assertEquals(d.getSkullsNumber(), 2);
 
         d.resetDamages();
 
-        assertEquals(mark2, d.getMarkList());
+        assertEquals(mark2, d.getMarkMap());
         assertEquals(d.getSkullsNumber(), 2);
         assertTrue(d.getDamageList().isEmpty());
 
@@ -107,7 +107,7 @@ public class NormalDamageTrackTest {
         d.addDamage(b, 7);
         d.addDamage(a, 5);
 
-        assertTrue(d.getMarkList().isEmpty());
+        assertTrue(d.getMarkMap().isEmpty());
         assertEquals(d.score().get(a), (Integer) 4);
         assertEquals(d.score().get(b), (Integer) 7);
 

@@ -13,7 +13,7 @@ public class FrenzyDamageTrackTest {
 
         FrenzyDamageTrack d = new FrenzyDamageTrack();
         assertEquals(d.getSkullsNumber(), 0);
-        assertFalse(d.getMarkList()== null);
+        assertFalse(d.getMarkMap()== null);
         assertFalse(d.getDamageList()== null);
 
     }
