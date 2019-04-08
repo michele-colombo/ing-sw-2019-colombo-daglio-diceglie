@@ -84,9 +84,112 @@ public class NormalDamageTrackTest {
         assertTrue(d.whoDamagedYou().isEmpty());
         assertNull(d.getMostPowerfulDamagerIn(d.whoDamagedYou()));
         assertTrue(d.howDoTheyKilledYou().isEmpty());
+        d.resetAfterDeath();
+    assertTrue(d.getMarkMap().isEmpty());
+    assertTrue(d.getDamageList().isEmpty());
+    assertTrue(d.getSkullsNumber()==1);
+
+
 
 
     }
+
+    @Test
+    public void testNazionale(){
+        Player aldo= new Player();
+        Player giovanni= new Player();
+        Player giacomo= new Player();
+        Player ingconti= new Player();
+
+        DamageTrack d= new NormalDamageTrack();
+
+        d.addDamage(aldo, 3);
+        d.addDamage(giovanni, 3);
+        d.addDamage(giacomo, 3);
+        d.addDamage(ingconti, 3);
+
+        Map<Player, Integer> score= new HashMap<>();
+        score.put(aldo, 9);
+        score.put(giovanni, 6);
+        score.put(giacomo, 4);
+        score.put(ingconti, 2);
+
+        assertEquals(d.score(), score);
+
+        d.resetAfterDeath();
+
+        //secondo giro
+
+        d.addDamage(aldo, 3);
+        d.addDamage(giovanni, 3);
+        d.addDamage(giacomo, 3);
+        d.addDamage(ingconti, 3);
+
+        score.clear();
+        score.put(aldo, 7);
+        score.put(giovanni, 4);
+        score.put(giacomo, 2);
+        score.put(ingconti, 1);
+
+        assertEquals(d.score(), score);
+
+        d.resetAfterDeath();
+
+        //terzo giro
+
+        d.addDamage(aldo, 3);
+        d.addDamage(giovanni, 3);
+        d.addDamage(giacomo, 3);
+        d.addDamage(ingconti, 3);
+
+        score.clear();
+        score.put(aldo, 5);
+        score.put(giovanni, 2);
+        score.put(giacomo, 1);
+        score.put(ingconti, 1);
+
+        assertEquals(d.score(), score);
+
+        d.resetAfterDeath();
+
+        //quarto giro
+
+        d.addDamage(aldo, 3);
+        d.addDamage(giovanni, 3);
+        d.addDamage(giacomo, 3);
+        d.addDamage(ingconti, 3);
+
+        score.clear();
+        score.put(aldo, 3);
+        score.put(giovanni, 1);
+        score.put(giacomo, 1);
+        score.put(ingconti, 1);
+
+        assertEquals(d.score(), score);
+
+        d.resetAfterDeath();
+
+        //ultimo giro
+
+        d.addDamage(aldo, 3);
+        d.addDamage(giovanni, 3);
+        d.addDamage(giacomo, 3);
+        d.addDamage(ingconti, 3);
+
+        score.clear();
+        score.put(aldo, 2);
+        score.put(giovanni, 1);
+        score.put(giacomo, 1);
+        score.put(ingconti, 1);
+
+        assertEquals(d.score(), score);
+
+
+
+
+    }
+
+
 
 
 
