@@ -47,7 +47,7 @@ public class DamageTrackTest {
         assertTrue(damage.equals(d.getDamageList()));
 
     }
-
+@Test
     public void controlloCoseStrane(){
         DamageTrack d = new NormalDamageTrack();
 
@@ -80,7 +80,9 @@ public class DamageTrackTest {
         assertEquals(d.whoDamagedYou(), wdy );
         assertEquals(d.getDamageList(), damage);
         assertEquals(d.getMarkList(), mark);
-        assertEquals(d.howDoTheyKilledYou(), willy);
+        Map<Player, Integer> temp = new HashMap<Player, Integer>();
+        temp.put(willy, 2);
+        assertEquals(d.howDoTheyKilledYou(), temp);
         assertEquals(d.getMostPowerfulDamagerIn(wdy), willy);
 
 
