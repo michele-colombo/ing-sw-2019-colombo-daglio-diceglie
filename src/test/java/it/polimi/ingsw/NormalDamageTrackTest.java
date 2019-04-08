@@ -12,106 +12,184 @@ import static org.junit.Assert.*;
 public class NormalDamageTrackTest {
 
     @Test
-    public void controllaScore() {
-        DamageTrack d = new NormalDamageTrack();
-
-        d.setSkullsNumber(1);
-
+    public void casoNormale(){
+        DamageTrack d= new NormalDamageTrack();
         Player willy= new Player();
-        Player ghidotti= new Player();
-        Player piero= new Player();
+        Player gigi= new Player();
+        Player pippo= new Player();
+        Player anna= new Player();
 
-        d.addDamage(willy, 3);
-        d.addDamage(ghidotti, 4);
-        d.addMark(piero, 1);
-        d.addDamage(piero, 1);
-        d.addDamage(willy, 4);
+        d.addDamage(willy, 2);
+        d.addMark(gigi, 2);
+        d.addDamage(pippo, 3);
+        d.addDamage(anna, 4);
+        d.addDamage(willy, 2);
 
-        ArrayList<Player> damage = new ArrayList<>();
+        Map<Player, Integer> score= new HashMap<>();
+        score.put(willy, 9);
+        score.put(pippo, 4);
+        score.put(anna, 6);
 
-        for(int i=0; i<3; i++) damage.add(willy);
-        for(int i=0; i<4; i++) damage.add(ghidotti);
-        for(int i=0; i<2; i++) damage.add(piero);
-        for(int i=0; i<3; i++) damage.add(willy);
-
-        Map<Player, Integer> mark= new HashMap<>();
+        assertEquals(d.score(), score);
 
         Map<Player, Integer> wdy= new HashMap<>();
 
-        wdy.put(willy, 6);
-        wdy.put(ghidotti, 4);
-        wdy.put(piero, 2);
+        wdy.put(willy, 4);
+        wdy.put(anna, 4);
+        wdy.put(pippo, 3);
 
-        Map<Player, Integer> sco = new HashMap<>();
-        sco.put(willy, 7);
-        sco.put(ghidotti, 4);
-        sco.put(piero, 2);
-
-        assertEquals(d.whoDamagedYou(), wdy );
-        assertEquals(d.getDamageList(), damage);
-        assertEquals(d.getMarkMap(), mark);
-        assertEquals(d.howDoTheyKilledYou(), willy);
+        assertEquals(d.whoDamagedYou(), wdy);
         assertEquals(d.getMostPowerfulDamagerIn(wdy), willy);
+        wdy.remove(willy);
+        assertEquals(d.getMostPowerfulDamagerIn(wdy), anna);
 
-        assertEquals(sco, d.score());
+        d.resetAfterDeath();
 
-        d.resetDamages();
+        assertTrue(d.getMarkMap().get(gigi)==2);
 
-        d.setSkullsNumber(d.getSkullsNumber() + 1);
+        d.addDamage(gigi, 11);
 
-        d.addMark(willy, 2);
-        d.addDamage(piero, 5);
-        d.addDamage(willy, 1);
-        d.addMark(ghidotti, 2);
-        d.addDamage(piero, 3);
+        assertTrue(d.score().get(gigi)==7);
+        d.resetAfterDeath();
+        assertNull(d.getMostPowerfulDamagerIn(d.whoDamagedYou()));
 
-        Map<Player, Integer> wdy2 = new HashMap<>();
-        Map<Player, Integer> score2 = new HashMap<>();
-        List<Player> dmgl = new ArrayList<>();
-        Map<Player, Integer> mark2 = new HashMap<>();
+        ((NormalDamageTrack) d).increaseSkull();
+        ((NormalDamageTrack) d).increaseSkull();
 
-        wdy2.put(willy, 3);
-        wdy2.put(piero, 8);
+        d.addDamage(willy, 2);
+        d.addDamage(gigi, 3);
+        d.addDamage(anna, 3);
+        d.addDamage(pippo, 3);
 
-        for(int i=0; i<5; i++) dmgl.add(piero);
-        for(int i=0; i<3; i++) dmgl.add(willy);
-        for(int i=0; i<3; i++) dmgl.add(piero);
+        score.clear();
+        score.put(willy, 2);
+        score.put(gigi, 1);
+        score.put(anna, 1);
+        score.put(pippo, 1);
 
-        mark2.put(ghidotti, 2);
+        assertEquals(d.score(), score);
 
-        score2.put(piero, 5);
-        score2.put(willy, 2);
-
-        assertEquals(score2, d.score());
-        assertEquals(mark2, d.getMarkMap());
-        assertEquals(dmgl, d.getDamageList());
-        assertEquals(wdy2, d.whoDamagedYou());
-        assertEquals(d.getSkullsNumber(), 2);
-
-        d.resetDamages();
-
-        assertEquals(mark2, d.getMarkMap());
-        assertEquals(d.getSkullsNumber(), 2);
-        assertTrue(d.getDamageList().isEmpty());
+        Map<Player, Integer> uccisore = new HashMap<>();
+        uccisore.put(pippo, 1);
+        assertTrue(d.howDoTheyKilledYou().equals(uccisore));
 
     }
-    @Test
-    public void vadoOltreConMarchi(){
+
+@Test
+    public void casoLimiteTuttoVuoto(){
         NormalDamageTrack d= new NormalDamageTrack();
 
-        Player a= new Player();
-        Player b= new Player();
-        d.increaseSkull();
+        assertTrue(d.getAdrenaline()== 0);
+        assertTrue(d.score().isEmpty());
+        assertTrue(d.whoDamagedYou().isEmpty());
+        assertNull(d.getMostPowerfulDamagerIn(d.whoDamagedYou()));
+        assertTrue(d.howDoTheyKilledYou().isEmpty());
+        d.resetAfterDeath();
+    assertTrue(d.getMarkMap().isEmpty());
+    assertTrue(d.getDamageList().isEmpty());
+    assertTrue(d.getSkullsNumber()==1);
 
-        d.addMark(a, 3);
-        d.addDamage(b, 7);
-        d.addDamage(a, 5);
 
-        assertTrue(d.getMarkMap().isEmpty());
-        assertEquals(d.score().get(a), (Integer) 4);
-        assertEquals(d.score().get(b), (Integer) 7);
+
 
     }
+
+    @Test
+    public void testNazionale(){
+        Player aldo= new Player();
+        Player giovanni= new Player();
+        Player giacomo= new Player();
+        Player ingconti= new Player();
+
+        DamageTrack d= new NormalDamageTrack();
+
+        d.addDamage(aldo, 3);
+        d.addDamage(giovanni, 3);
+        d.addDamage(giacomo, 3);
+        d.addDamage(ingconti, 3);
+
+        Map<Player, Integer> score= new HashMap<>();
+        score.put(aldo, 9);
+        score.put(giovanni, 6);
+        score.put(giacomo, 4);
+        score.put(ingconti, 2);
+
+        assertEquals(d.score(), score);
+
+        d.resetAfterDeath();
+
+        //secondo giro
+
+        d.addDamage(aldo, 3);
+        d.addDamage(giovanni, 3);
+        d.addDamage(giacomo, 3);
+        d.addDamage(ingconti, 3);
+
+        score.clear();
+        score.put(aldo, 7);
+        score.put(giovanni, 4);
+        score.put(giacomo, 2);
+        score.put(ingconti, 1);
+
+        assertEquals(d.score(), score);
+
+        d.resetAfterDeath();
+
+        //terzo giro
+
+        d.addDamage(aldo, 3);
+        d.addDamage(giovanni, 3);
+        d.addDamage(giacomo, 3);
+        d.addDamage(ingconti, 3);
+
+        score.clear();
+        score.put(aldo, 5);
+        score.put(giovanni, 2);
+        score.put(giacomo, 1);
+        score.put(ingconti, 1);
+
+        assertEquals(d.score(), score);
+
+        d.resetAfterDeath();
+
+        //quarto giro
+
+        d.addDamage(aldo, 3);
+        d.addDamage(giovanni, 3);
+        d.addDamage(giacomo, 3);
+        d.addDamage(ingconti, 3);
+
+        score.clear();
+        score.put(aldo, 3);
+        score.put(giovanni, 1);
+        score.put(giacomo, 1);
+        score.put(ingconti, 1);
+
+        assertEquals(d.score(), score);
+
+        d.resetAfterDeath();
+
+        //ultimo giro
+
+        d.addDamage(aldo, 3);
+        d.addDamage(giovanni, 3);
+        d.addDamage(giacomo, 3);
+        d.addDamage(ingconti, 3);
+
+        score.clear();
+        score.put(aldo, 2);
+        score.put(giovanni, 1);
+        score.put(giacomo, 1);
+        score.put(ingconti, 1);
+
+        assertEquals(d.score(), score);
+
+
+
+
+    }
+
+
 
 
 

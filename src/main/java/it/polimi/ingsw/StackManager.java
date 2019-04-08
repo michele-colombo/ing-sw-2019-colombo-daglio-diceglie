@@ -11,6 +11,26 @@ public class StackManager {
     private Stack<AmmoTile> ammoTilesActiveStack;
     private Stack<AmmoTile> ammoTilesWasteStack;
 
+    public Stack<Weapon> getWeaponActiveStack() {
+        return weaponActiveStack;
+    }
+
+    public Stack<PowerUp> getPowerUpActiveStack() {
+        return powerUpActiveStack;
+    }
+
+    public Stack<PowerUp> getPowerUpWasteStack() {
+        return powerUpWasteStack;
+    }
+
+    public Stack<AmmoTile> getAmmoTilesActiveStack() {
+        return ammoTilesActiveStack;
+    }
+
+    public Stack<AmmoTile> getAmmoTilesWasteStack() {
+        return ammoTilesWasteStack;
+    }
+
     public StackManager(){
         weaponActiveStack= new Stack<>();
         powerUpActiveStack= new Stack<>();
@@ -28,7 +48,7 @@ public class StackManager {
 
     public AmmoTile drawAmmoTile(){
         if(ammoTilesActiveStack.isEmpty()){
-            ammoTilesActiveStack = ammoTilesWasteStack;
+            ammoTilesActiveStack.addAll(ammoTilesWasteStack);
             Collections.shuffle(ammoTilesActiveStack);
             ammoTilesWasteStack.clear();
         }
@@ -37,7 +57,7 @@ public class StackManager {
 
     public PowerUp drawPowerUp(){
         if(powerUpActiveStack.isEmpty()){
-            powerUpActiveStack = powerUpWasteStack;
+            powerUpActiveStack.addAll(powerUpWasteStack);
             Collections.shuffle(powerUpActiveStack);
             powerUpWasteStack.clear();
         }
