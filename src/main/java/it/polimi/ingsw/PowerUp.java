@@ -1,6 +1,6 @@
 package it.polimi.ingsw;
 
-public class PowerUp implements Card{
+public class PowerUp{
     private Color color;
 
     public Color getColor() {
