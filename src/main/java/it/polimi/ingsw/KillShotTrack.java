@@ -8,26 +8,24 @@ import java.util.Map;
 public class KillShotTrack {
     private int skulls;
     private Map<Player, Integer> killingCounter;
-    private Map<Player, Integer> killingOrder;
-    private int order;
+    private List<Player> killingOrder;
     private List<Map<Player, Integer>> track;
     private final int biggerScore;
 
     public KillShotTrack(int skulls){
         this.skulls = skulls;
         killingCounter = new HashMap<>();
-        killingOrder = new HashMap<>();
+        killingOrder = new ArrayList<>();
         track = new ArrayList<>();
         biggerScore = 8;
-        order = 1;
     }
 
-    public Map<Player, Integer> getKillingCounter() {
-        return killingCounter;
+    public int getKillingOrder(Player p){
+        return killingOrder.indexOf(p);
     }
 
-    public Map<Player, Integer> getKillingOrder() {
-        return killingOrder;
+    public int getKillingOf(Player p){
+        return killingCounter.getOrDefault(p, 0);
     }
 
     public int getSkulls() {
@@ -45,9 +43,8 @@ public class KillShotTrack {
             }
             killingCounter.put(p, temp + killed.get(p));
 
-            if (!killingOrder.containsKey(p)){
-                killingOrder.put(p, order);
-                order++;
+            if (!killingOrder.contains(p)){
+                killingOrder.add(p);
             }
         }
         removeSkull();
@@ -74,7 +71,7 @@ public class KillShotTrack {
                 max = killers.get(p);
                 result = p;
             } else if (killers.get(p) == max){
-                if (result == null || killingOrder.get(p)<killingOrder.get(result)){
+                if (result == null || (getKillingOrder(p) > -1 && getKillingOrder(p)<getKillingOrder(result))){
                     result = p;
                 }
             }
