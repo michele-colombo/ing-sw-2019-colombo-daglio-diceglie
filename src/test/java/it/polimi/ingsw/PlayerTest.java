@@ -65,7 +65,12 @@ public class PlayerTest {
         assertEquals(p1.getDamageTrack().getDamageList(), test);
         assertEquals(3, p1.getDamageTrack().getAdrenaline());
         assertEquals(2, p1.getDamageTrack().getBiggerScore());
-
-
     }
+
+    @Test
+    public void addPoints(){
+        Player p = new Player();
+        p.addPoints(-3);
+    }
+
 }

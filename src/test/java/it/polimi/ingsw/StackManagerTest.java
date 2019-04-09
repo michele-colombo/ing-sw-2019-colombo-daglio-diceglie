@@ -60,10 +60,10 @@ public class StackManagerTest {
     @Test
     public void testRiciclo(){
         List<AmmoTile> l= new ArrayList<AmmoTile>();
-        l.add(new AmmoTile());
-        l.add(new AmmoTile());
-        l.add(new AmmoTile());
-        l.add(new AmmoTile());
+        l.add(new AmmoTile(new Cash(1,1,1), false));
+        l.add(new AmmoTile(new Cash(1,1,1), false));
+        l.add(new AmmoTile(new Cash(1,1,1), false));
+        l.add(new AmmoTile(new Cash(1,1,1), false));
 
         StackManager s= new StackManager();
 

@@ -13,7 +13,7 @@ public class AmmoTile{
         return ammos;
     }
 
-    public boolean HasPowerUp() {
+    public boolean hasPowerUp() {
         return hasPowerUp;
     }
 }

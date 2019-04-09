@@ -15,7 +15,11 @@ public abstract class Square {
         return isAmmo;
     }
 
-    abstract void collect(Player p);
+    public abstract void collect(Player p, StackManager s);
+
+    public abstract void refill(StackManager s);
+
+    public abstract boolean isEmpty();
 
     public int getX() { return x; }
 
@@ -46,8 +50,6 @@ public abstract class Square {
     public Color getColor() {
         return color;
     }
-
-    public abstract boolean isEmpty();
 
     @Override
     public boolean equals(Object o) {

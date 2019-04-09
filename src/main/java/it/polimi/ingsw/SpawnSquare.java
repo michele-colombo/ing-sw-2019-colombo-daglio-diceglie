@@ -5,8 +5,15 @@ import java.util.List;
 
 public class SpawnSquare extends Square{
     private List<Weapon> weapons;
-    public void collect(Player p){
-        ;
+
+    public SpawnSquare(int x, int y, Border north, Border east, Border south, Border west, Color color){
+        super(x, y, north, east, south, west, color);
+        isAmmo = false;
+    }
+
+    @Override
+    public void collect(Player p, StackManager s){
+        p.setSelectableWeapons(weapons);
     }
 
     public void addWeapon(Weapon w){
@@ -21,15 +28,18 @@ public class SpawnSquare extends Square{
         List<Weapon> w = new ArrayList<>(weapons);
     }
 
-    public boolean isEmpty(){
-        if(weapons.size() == 0){
-            return true;
-        }
-        return false;
+    @Override
+    public boolean isEmpty(){       //tells if there isn't anything collectable
+        return weapons.isEmpty();
     }
 
-    public SpawnSquare(int x, int y, Border north, Border east, Border south, Border west, Color color){
-        super(x, y, north, east, south, west, color);
-        isAmmo = false;
+    @Override
+    public void refill (StackManager s){
+        if (weapons.size() < 3){
+            Weapon tempWeapon = s.drawWeapon();
+            if (tempWeapon != null){
+                weapons.add(tempWeapon);
+            }
+        }
     }
 }

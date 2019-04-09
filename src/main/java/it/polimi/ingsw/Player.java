@@ -1,37 +1,120 @@
 package it.polimi.ingsw;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static it.polimi.ingsw.PlayerColor.*;
 import static it.polimi.ingsw.TypeState.*;
 
-
+/**
+ * A class representing a Player of the game.
+ * Each player remains in the game for its whole duration,
+ * regardless the actual status of the physical player.
+ * This contains the state of Player and his lists of selectable items.
+ */
 public class Player {
+    /**
+     * Nickname of the player, guaranteed unique from the constructor caller
+     */
     private final String name;
+    /**
+     * Color of player-related stuffs: blood drops, marker, board, etc.
+     */
     private final PlayerColor color;
+    /**
+     * Non-negative integer containing points of the player
+     */
     private int points;
+    /**
+     * State of the player: what he's doing.
+     * It's used by the controller to choose the proper method to invoke
+     */
     private TypeState state;
+    /**
+     * Next state of player, used after a payment.
+     */
     private TypeState nextState;
+    /**
+     * This keeps track of the first player. Useful in final frenzy.
+     */
     private boolean isFirstPlayer;
+    /**
+     * Weapons owned by a player. Can be empty.
+     * Contains maximum 3 weapons, or temporary 4 (before discarding).
+     */
     private List<Weapon> weapons;
+    /**
+     * PowerUps owned by a player. can be empty.
+     * Contains maxim 3 powerUps, or temporary 4 (before respawining).
+     */
     private List<PowerUp> powerUps;
+    /**
+     * The position of the player on the map.
+     */
     private Square squarePosition;
+    /**
+     * An obect keeping track of damages, marks and adrenaline of the player.
+     * Contains methods to score points after death.
+     */
     private DamageTrack damageTrack;
 
+    /**
+     * Active ammos owned by the player.
+     * Each color is maximum 3.
+     */
     private Cash wallet;
+    /**
+     * Represents the temporary debit of a player.
+     * Used for payment handling.
+     */
     private Cash pending;
+    /**
+     * Represents the credit of a player during payment operation.
+     */
     private Cash credit;
 
+    /**
+     * List of the weapons selectable by the player in a specific moment.
+     * Used for shooting, grabbing and discarding.
+     */
     private List<Weapon> selectableWeapons;
+    /**
+     * List of the square selectable by the player in a specific moment.
+     * Used for moving, grabbing and shooting particular weapons.
+     */
     private List<Square> selectableSquares;
+    /**
+     * List of the players selectable by the player in a specific moment.
+     * Used for shooting.
+     */
     private List<Player> selectablePlayers;
+    /**
+     * List of the modes selectable by the player in a specific moment.
+     * Used to choose the effects to apply in a specific shoot
+     */
     private List<Mode> selectableModes;
+    /**
+     * List of the action selectable by the player in a specific moment.
+     */
     private List<Action> selectableActions;
+    /**
+     * List of the ammos selectable by the player in a specific moment.
+     * Used only for paying an ammo of any color (targeting scope)
+     */
     private List<Color> selectableColors;
+    /**
+     * List of the powerUps selectable by the player in a specific moment.
+     * Used for respawining, using powerUps and paying.
+     */
     private List<PowerUp> selectablePowerUps;
     //selectableCommands (ok, back, goAhead)
 
+    /**
+     * Sets name and color. Instantiate attributes and sets default values.
+     * @param name Uniqueness checked by constructor caller
+     * @param color Uniqueness checked by the caller
+     */
     public Player(String name, PlayerColor color) {
         this.name = name;
         this.color = color;
@@ -55,6 +138,9 @@ public class Player {
         selectableWeapons = new ArrayList<>();
     }
 
+    /**
+     * Test oriented constructor. Uses default name and color.
+     */
     public Player(){        //TEST constructor
         this("Nome di prova", GREY);
     }
@@ -71,7 +157,12 @@ public class Player {
         return points;
     }
 
+    /**
+     * Add points of player of a certain increment
+     * @param increment Non-negative integer
+     */
     public void addPoints(int increment) {
+        if (increment < 0) throw new InvalidParameterException("increment must be non-negative");
         points += increment;
     }
 
@@ -112,7 +203,8 @@ public class Player {
     }
 
     public void setSelectableWeapons(List<Weapon> selectableWeapons) {
-        this.selectableWeapons = selectableWeapons;
+        this.selectableWeapons = new ArrayList<>();
+        this.selectableWeapons.addAll(selectableWeapons);
     }
 
     public List<Square> getSelectableSquares() {
@@ -120,7 +212,8 @@ public class Player {
     }
 
     public void setSelectableSquares(List<Square> selectableSquares) {
-        this.selectableSquares = selectableSquares;
+        this.selectableSquares = new ArrayList<>();
+        this.selectableSquares.addAll(selectableSquares);
     }
 
     public List<Player> getSelectablePlayers() {
