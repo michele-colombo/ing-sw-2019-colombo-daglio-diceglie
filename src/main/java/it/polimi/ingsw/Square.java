@@ -47,8 +47,7 @@ public abstract class Square {
         return color;
     }
 
-    public boolean isEmpty(){ return true;
-    }
+    public abstract boolean isEmpty();
 
     @Override
     public boolean equals(Object o) {
