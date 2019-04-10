@@ -1,8 +1,14 @@
 package it.polimi.ingsw;
 
 
-import java.util.ArrayList;
-import java.util.List;
+import com.google.gson.Gson;
+
+import javax.security.auth.login.Configuration;
+import java.io.*;
+import java.lang.reflect.Array;
+import java.nio.file.Files;
+import java.util.*;
+import java.util.logging.Logger;
 
 import static it.polimi.ingsw.Border.DOOR;
 import static it.polimi.ingsw.Border.WALL;
@@ -12,6 +18,8 @@ public class Layout {
 
     private List<Square> squares;
     private int[][] existingSquare;
+
+    private String jsonFileFolder;
 
     public List<Square> getVisibleSquares(Square startingSquare){
         List<Square> visible = new ArrayList<>(startingSquare.getRoom().getSquaresInRoom());
@@ -148,6 +156,9 @@ public class Layout {
             }
             return distance;
         }
+
+
+
     }
 
     public Square getSquare(int x, int y){
@@ -254,4 +265,86 @@ public class Layout {
             }
         }
     }
-}
+
+    public Layout(String jsonFileFolder){
+        squares = new ArrayList<>();
+        existingSquare = new int[4][4];
+        for(int row = 0; row < 4; row++){
+            for(int column = 0; column < 4; column++){
+                existingSquare[row][column] = 0;
+            }
+        }
+        this.jsonFileFolder= new String(jsonFileFolder);
+    }
+
+
+    //made by Giuseppe, it's a Prototype
+    public boolean initLayout(int config){
+
+        /* le configurazioni del tabellone rifereite al manuale di gioco sono:
+        -config0 == piccola "ottima per 4 o 5 giocatori"
+        -config1 == quella grande che e' disegnata su entrambe le pagine
+        -config2 == piccola "ottima per qualsiasi numero di giocatori
+        -config3 == picoola "ottima per 3 o 4 giocatori"
+        */
+
+        Gson gson= new Gson();
+
+        List<Square> ammoSquares= new ArrayList<>();
+        List<Square> spawnSquares= new ArrayList<>();
+
+
+        String configFilePath;
+
+        if(config < 0 || config>3){
+            return false;
+        }
+
+
+        File file= new File(getClass().getClassLoader().getResource("layoutConfig/layoutConfig" + config + ".json").getFile());
+
+
+
+
+        try (Scanner sc = new Scanner(file)){
+            Square[] tempAmmo;
+            Square[] tempSpawn;
+
+
+
+            tempAmmo = gson.fromJson(sc.nextLine(), AmmoSquare[].class);
+            ammoSquares.addAll(Arrays.asList(tempAmmo));
+
+            tempSpawn = gson.fromJson(sc.nextLine(), SpawnSquare[].class);
+            spawnSquares.addAll(Arrays.asList(tempSpawn));
+
+            sc.close();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+
+        }
+
+
+
+        this.squares.clear();
+        for(int i=0; i< this.existingSquare.length; i++){
+            for(int j=0; j< this.existingSquare[0].length; j++){
+                 this.existingSquare[i][j]= 0;
+            }
+        }
+
+
+        for(Square s : ammoSquares){
+            addSquare(s);
+        }
+        for(Square s : spawnSquares){
+            addSquare(s);
+        }
+
+        return true;
+
+
+        }
+    }
+

@@ -2,7 +2,11 @@ package it.polimi.ingsw;
 
 import org.junit.Test;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import static it.polimi.ingsw.Border.*;
 import static it.polimi.ingsw.Color.*;
@@ -205,5 +209,87 @@ public class LayoutTest {
         assertEquals(true, layout.existSquare(0, 0));
         layout.addSquare(new SpawnSquare(2, 2, DOOR, DOOR, WALL, WALL, RED));
         assertEquals(true, layout.existSquare(2,2));
+    }
+
+    @Test
+    public void initTest(){
+        Layout layout= new Layout("/media/data/Media/Documents/Universita/AnnoIII/ProvaFinaleINGSW/Backups/");
+        layout.initLayout(0);
+
+        assertTrue( layout.getSquare(0,0).getColor() == Color.valueOf("WHITE"));
+        assertTrue( layout.getDistance(layout.getSquare(0,0), layout.getSquare(1,2)) == 3);
+
+
+        List<Square> vicini= new ArrayList<Square>();
+        vicini.add(layout.getSquare(1,2));
+        vicini.add(layout.getSquare(0,1));
+
+        assertEquals(layout.getNeighbours(layout.getSquare(0,2)), vicini );
+
+        layout.initLayout(1);
+
+        vicini.clear();
+        vicini.add(layout.getSquare(1, 2));
+        vicini.add(layout.getSquare(2, 1));
+        vicini.add(layout.getSquare(1, 0));
+
+        assertEquals(layout.getNeighbours(layout.getSquare(1,1)), vicini);
+
+
+        assertTrue(layout.getSquare(3,1).getColor() == YELLOW);
+
+
+
+
+
+    }
+
+    @Test
+    public void testConfig2e3(){
+        Layout layout= new Layout("/media/data/Media/Documents/Universita/AnnoIII/ProvaFinaleINGSW/Backups/");
+
+        layout.initLayout(2);
+
+        layout.getSquare(0,3);
+        layout.getSquare(3,0);
+
+        assertTrue(layout.getDistance(layout.getSquare(0,2), layout.getSquare(3,0)) == 5);
+
+        assertTrue( layout.getSpawnPoint(BLUE).getX() == 2);
+        assertTrue(layout.getSpawnPoint(BLUE).getY()== 2);
+
+        assertTrue(layout.getHorizontalSquareLine(0).size()== 3);
+
+        layout.initLayout(3);
+
+        assertTrue( layout.getSpawnPoint(RED).getX() == 0);
+        assertTrue( layout.getSpawnPoint(RED).getY() == 1);
+
+
+        assertTrue(layout.getDistance(layout.getSquare(1,2), layout.getSquare(2,1)) == 2);
+
+        List<Square> temporanea= new ArrayList<>();
+
+        temporanea.add(layout.getSquare(1,2));
+        temporanea.add(layout.getSquare(1,1));
+        temporanea.add(layout.getSquare(1,0));
+        temporanea.add(layout.getSquare(2,0));
+        temporanea.add(layout.getSquare(3,0));
+
+        assertTrue(layout.getCardinalSquares(layout.getSquare(1,0)).containsAll(temporanea));
+        assertTrue(temporanea.containsAll(layout.getCardinalSquares(layout.getSquare(1,0))));
+
+
+    }
+
+    @Test
+    public void provareGetClassResources(){
+
+
+        Layout layout= new Layout();
+        layout.initLayout(3);
+
+        assertTrue( layout.getSquare(0,1).getColor().toString() == "RED");
+
     }
 }

@@ -47,7 +47,7 @@ public class FrenzyDamageTrackTest {
 
         DamageTrack old= new NormalDamageTrack();
         DamageTrack d= new FrenzyDamageTrack(old);
-        
+
         Map<Player, Integer> score= new HashMap<>();
 
         for(int i=0; i<4; i++) {
