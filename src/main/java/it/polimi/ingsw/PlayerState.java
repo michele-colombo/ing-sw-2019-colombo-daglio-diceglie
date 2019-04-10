@@ -1,6 +1,6 @@
 package it.polimi.ingsw;
 
-public enum TypeState {
+public enum PlayerState {
     IDLE,
     CHOOSE_ACTION,
     MOVE_THERE,
