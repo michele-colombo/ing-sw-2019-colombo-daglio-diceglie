@@ -9,6 +9,7 @@ import java.util.Map;
 
 import static it.polimi.ingsw.Color.*;
 import static it.polimi.ingsw.PlayerColor.*;
+import static it.polimi.ingsw.PlayerColor.GREEN;
 import static org.junit.Assert.*;
 
 public class PlayerTest {
@@ -16,9 +17,9 @@ public class PlayerTest {
     @Test
     public void canAfford() {
         Player p = new Player("SignorTest", PlayerColor.GREY);
-        PowerUp po1 = new PowerUp(Color.BLUE);
-        PowerUp po2 = new PowerUp(Color.YELLOW);
-        PowerUp po3 = new PowerUp(Color.BLUE);
+        PowerUp po1 = new PowerUp(Color.BLUE, PowerUpType.TARGETING_SCOPE);
+        PowerUp po2 = new PowerUp(Color.YELLOW, PowerUpType.TAGBACK_GRANADE);
+        PowerUp po3 = new PowerUp(Color.BLUE, PowerUpType.TARGETING_SCOPE);
         p.addPowerUp(po1);
         p.addPowerUp(po2);
         p.addPowerUp(po3);
@@ -40,10 +41,10 @@ public class PlayerTest {
 
     @Test
     public void switchToFrenzy() {
-        Player p1 = new Player("Aleksej", GREY);
-        Player p2 = new Player("Sasha", VIOLET);
+        Player p1 = new Player("Aleksej", PlayerColor.GREY);
+        Player p2 = new Player("Sasha", PlayerColor.VIOLET);
         Player p3 = new Player("Aglaja", PlayerColor.YELLOW);
-        Player p4 = new Player("Dmitrij", GREEN);
+        Player p4 = new Player("Dmitrij", PlayerColor.GREEN);
         p1.getDamageTrack().addMark(p2, 2);
         p1.getDamageTrack().addMark(p3, 3);
         p1.getDamageTrack().addDamage(p4, 5);
@@ -70,7 +71,7 @@ public class PlayerTest {
     @Test
     public void addPoints(){
         Player p = new Player();
-        p.addPoints(-3);
+        //p.addPoints(-3);
     }
 
 }
