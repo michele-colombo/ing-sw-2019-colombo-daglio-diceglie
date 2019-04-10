@@ -29,7 +29,6 @@ public class NormalDamageTrackTest {
         score.put(willy, 9);
         score.put(pippo, 4);
         score.put(anna, 6);
-
         assertEquals(d.score(), score);
 
         Map<Player, Integer> wdy= new HashMap<>();

@@ -1,5 +1,7 @@
 package it.polimi.ingsw;
 
+import java.util.List;
+
 public class Weapon{
     private String name;
     private String description;
@@ -14,5 +16,9 @@ public class Weapon{
 
     public void Reload(boolean loaded) {
         isLoaded = true;
+    }
+
+    public List<Mode> getSelectableModes(List<Mode> alreadySelected){
+        return null;
     }
 }
