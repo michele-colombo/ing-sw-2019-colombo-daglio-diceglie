@@ -34,45 +34,9 @@ public class SquareTest {
         listaAmmo.add(sq);
         listaAmmo.add(sq2);
 
-
-
-
-        JsonObject obj= new JsonObject();
-        JsonParser parser= new JsonParser();
-        JsonArray array= new JsonArray();
-
-        JsonElement e= new JsonObject();
-
-/*
-
-        try {
-            BufferedWriter w = new BufferedWriter(new FileWriter("/home/giuseppe/square.txt"));
-            w.write(g.toJson(listaAmmo));
-            w.close();
-        } catch (IOException inscrittura) {
-        }
-
-        */
-
-        try{
-            BufferedReader r = new BufferedReader(new FileReader("/home/giuseppe/square.txt"));
-            Square[] temp= new AmmoSquare[40];
-            temp= g.fromJson(r.readLine(), AmmoSquare[].class);
-            listaRitornata= Arrays.asList(temp);
-        } catch (IOException inlettura) {
-        }
-
-        assertEquals(listaAmmo, listaRitornata);
-
-
-
-
-
-
-
-
-
-
+        assertEquals(g.fromJson(g.toJson(sq), AmmoSquare.class), sq);
+        assertEquals(g.fromJson(g.toJson(sq2), AmmoSquare.class), sq2);
+        assertEquals(g.fromJson(g.toJson(spawn), SpawnSquare.class), spawn);
 
 
 

@@ -38,24 +38,6 @@ public class StackManagerTest {
 
     }
 
-    @Test
-    public void iDontTrustCollections(){
-    Stack<Weapon> s= new Stack<Weapon>();
-    s.add(new Weapon());
-    s.add(new Weapon());
-    s.add(new Weapon());
-    s.add(new Weapon());
-
-    Stack<Weapon> copy= new Stack<Weapon>();
-    copy.addAll(s);
-    assertEquals(s, copy);
-
-        Collections.shuffle(copy);
-        assertFalse(s.equals(copy));
-        assertTrue(s.containsAll(copy));
-
-
-    }
 
     @Test
     public void testRiciclo(){

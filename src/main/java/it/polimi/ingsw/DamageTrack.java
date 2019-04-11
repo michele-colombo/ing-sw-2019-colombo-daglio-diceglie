@@ -8,14 +8,38 @@ import java.util.Map;
 import static java.lang.Math.max;
 
 public abstract class DamageTrack {
+    /**
+     * Ordered list of damages.
+     */
     private List<Player> damageList;
+
+    /**
+     * the mark count of the player
+     */
     private Map<Player, Integer> markMap;
+
+    /**
+     * the number of skulls on the damage track
+     */
     private int skullsNumber;
 
+    /**
+     * the bigger score a damage-giver could ever acquire damaging a player with this damage track
+     */
     private final int biggerScore;
+
+    /**
+     * points given to the first damage-giver
+     */
     private final int firstBlood;
 
-    public DamageTrack(int biggerScore, int firstBlood){
+    /**
+     * sets biggerScore and firstBlood. Instantiate damageList and markMap and initialize skullNumber
+     * @param biggerScore depends on the damage list type
+     * @param firstBlood depends on the damage list type
+     */
+
+    protected DamageTrack(int biggerScore, int firstBlood){
         damageList= new ArrayList<>();
         markMap = new HashMap<>();
         skullsNumber = 0;
@@ -23,40 +47,49 @@ public abstract class DamageTrack {
         this.firstBlood = firstBlood;
     }
 
-    public void setMarkMap(Map<Player, Integer> markMap) {
+
+    protected void setMarkMap(Map<Player, Integer> markMap) {
         this.markMap = markMap;
     }
 
-    public List<Player> getDamageList() {
+    protected List<Player> getDamageList() {
         return damageList;
     }
 
-    public Map<Player, Integer> getMarkMap() {
+    protected Map<Player, Integer> getMarkMap() {
         return markMap;
     }
 
-    public int getSkullsNumber() {
+    protected int getSkullsNumber() {
         return skullsNumber;
     }
 
-    public void setSkullsNumber(int skullsNumber) {
+    protected void setSkullsNumber(int skullsNumber) {
         this.skullsNumber = skullsNumber;
     }
 
-    public int getBiggerScore() {
+    protected int getBiggerScore() {
         return biggerScore;
     }
 
 
-    public int getFirstBlood() {
+    protected int getFirstBlood() {
         return firstBlood;
     }
 
 
+    /**
+     * reset the damagelist to empty
+     */
     public void resetDamages(){
         this.damageList.clear();
     }
 
+    /**
+     * add marks to the damage track
+     * @param p player who gives his marks
+     * @param markToAdd number of marks given
+     */
     public void addMark(Player p, int markToAdd){
         Integer targets;
 
@@ -80,6 +113,11 @@ public abstract class DamageTrack {
         }
     }
 
+    /**
+     * add damages to the damage track
+     * @param p player who gives the damages
+     * @param damage number of damages to add
+     */
     public void addDamage(Player p, int damage){
         int toAdd;
 
@@ -98,6 +136,10 @@ public abstract class DamageTrack {
         }
     }
 
+    /**
+     * return the killer and the damages he gave for killing the player (1 or 2)
+     * @return the killer and the damages of the killing
+     */
     public Map<Player, Integer> howDoTheyKilledYou(){
 
         Map result= new HashMap<Player, Integer>();
@@ -114,6 +156,10 @@ public abstract class DamageTrack {
         return result;
     }
 
+    /**
+     *
+     * @return the damagers and the number of damagers for each
+     */
     public Map<Player, Integer> whoDamagedYou(){
         Map<Player, Integer> result = new HashMap<>();
         int i = 0;
@@ -130,6 +176,11 @@ public abstract class DamageTrack {
         return result;
     }
 
+    /**
+     *
+     * @param damagers the list where to find the most powerful
+     * @return the most powerful damager
+     */
     public Player getMostPowerfulDamagerIn(Map<Player, Integer> damagers){
 
         Integer massimo= 0;
@@ -149,6 +200,7 @@ public abstract class DamageTrack {
 
     }
 
+
     private int nextScore(int currentScore){
         if(currentScore == 2 || currentScore == 1){
             return 1;
@@ -156,6 +208,10 @@ public abstract class DamageTrack {
         return currentScore - 2;
     }
 
+    /**
+     *
+     * @return a map <Damager, score> that describes how many points to give for each player
+     */
     public Map<Player, Integer> score(){
         if(getDamageList().isEmpty()){
             return new HashMap<Player, Integer>();
@@ -184,8 +240,17 @@ public abstract class DamageTrack {
         return result;
     }
 
+    /**
+     *
+     * @return 0-> no adrenaline; 1-> low adrenaline; 2->high adrenaline
+     */
     public abstract int getAdrenaline();
 
+
+    /**
+     * reset the damage track after a player death (same marks, same skulls, no damages)
+
+     */
     public abstract void resetAfterDeath();
 
 /*
