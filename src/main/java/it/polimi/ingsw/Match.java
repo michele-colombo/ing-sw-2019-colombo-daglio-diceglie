@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static it.polimi.ingsw.PowerUpType.*;
+
 public class Match {
     private Layout layout;
     private StackManager stackManager;
@@ -16,7 +18,40 @@ public class Match {
     private boolean onlyReload;
     private boolean turnCompleatable;
     private Action currentAction;
-    private Player currPlayer;
+    private Player currentPlayer;
+
+    public Match(int skulls){
+        layout = new Layout();
+        //layout.initLayout(1);   //TODO ask for layout configuration
+        stackManager = new StackManager();
+        players = new ArrayList<>();
+        killShotTrack = new KillShotTrack(skulls);
+        currentAction = null;
+    }
+
+    public Match(){
+        this(8);
+    }
+
+    public StackManager getStackManager() {
+        return stackManager;
+    }
+
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+    public KillShotTrack getKillShotTrack() {
+        return killShotTrack;
+    }
+
+    public Player getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public void setCurrentPlayer(Player currentPlayer) {
+        this.currentPlayer = currentPlayer;
+    }
 
     public List<Player> getPlayersOn(List<Square> squares){
         List<Player> squaresOccupied = new ArrayList<>();
@@ -109,7 +144,7 @@ public class Match {
             }
         }
         if(deadPlayers.size() > 2){
-            currPlayer.addPoints(1);
+            currentPlayer.addPoints(1);
         }
         if(frenzyOn){
             switchToFrenzyAll(deadPlayers);
@@ -118,8 +153,91 @@ public class Match {
         return deadPlayers;
     }
 
-    public List<Action> createSelectablesAction(){
-        return new ArrayList<>();
+    public List<Action> createSelectablesAction(Player p){  //todo rename in createSelectableActions
+        //could be loaded from a json file in the future?
+        List<Action> result = new ArrayList<>();
+        Action temp;
+        if (numberOfActions - actionsCompleted > 0){
+            if (!frenzyOn){
+                switch(p.getDamageTrack().getAdrenaline()){
+                    case 0:
+                        result.add(new Action(true, false, new Move(3)));
+                        result.add(new Action(true, false, new Grab(1)));
+                        temp = new Action (true, false, new Shoot());
+                        if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UsePowerUp(TARGETING_SCOPE));
+                        result.add(temp);
+                        break;
+                    case 1:
+                        result.add(new Action(true, false, new Move(3)));
+                        result.add(new Action(true, false, new Grab(2)));
+                        temp = new Action(true, false, new Shoot());
+                        if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UsePowerUp(TARGETING_SCOPE));
+                        result.add(temp);
+                        break;
+                    case 2:
+                        result.add(new Action(true, false, new Move(3)));
+                        result.add(new Action(true, false, new Grab(2)));
+                        temp = new Action(true, false, new Move(1));
+                        temp.add(new Shoot());
+                        if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UsePowerUp(TARGETING_SCOPE));
+                        result.add(temp);
+                        break;
+                }
+            } else {
+                if (p.isBeforeFirst()){
+                    temp = new Action(true, false, new Move(1));
+                    temp.add(new Reload());
+                    temp.add(new Shoot());
+                    if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UsePowerUp(TARGETING_SCOPE));
+                    result.add(temp);
+                    result.add(new Action(true, false, new Move(4)));
+                    result.add(new Action(true, false, new Grab(2)));
+                } else {
+                    temp = new Action(true, false, new Move(2));
+                    temp.add(new Reload());
+                    temp.add(new Shoot());
+                    if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UsePowerUp(TARGETING_SCOPE));
+                    result.add(temp);
+                    result.add(new Action (true, false, new Grab(3)));
+                }
+            }
+        } else {
+            if (p.getUnloadedWeapons().size() > 0){
+                result.add(new Action(false, true, new Reload()));
+            }
+        }
+        if (!onlyReload && p.howManyPowerUps(YOUR_TURN_POWERUP) > 0){
+            result.add(new Action(false, false, new UsePowerUp(YOUR_TURN_POWERUP)));
+        }
+        return result;
+    }
+
+    public List<Action> initSelectableActions(Player p){
+        if (frenzyOn){
+            if (p.isBeforeFirst()){
+                numberOfActions = 2;
+            } else {
+                numberOfActions = 1;
+            }
+        } else {
+            numberOfActions = 2;
+        }
+        actionsCompleted = 0;
+        onlyReload = false;
+        return createSelectablesAction(p);
+    }
+
+    public void updateTurnStatus(Action a){
+        if (a.isIncrementActionCounter()) actionsCompleted++;
+        if (a.isActivateOnlyReloads()) onlyReload = true;
+    }
+
+    public Action getCurrentAction() {
+        return currentAction;
+    }
+
+    public void setCurrentAction(Action currentAction) {
+        this.currentAction = currentAction;
     }
 
     public Layout getLayout(){

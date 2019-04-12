@@ -10,5 +10,6 @@ public enum PlayerState {
     PAYING,
     PAYING_ANY,
     CHOOSE_MODE,
-    SHOOT_TARGET;
+    SHOOT_TARGET,
+    SPAWN;
 }

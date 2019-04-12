@@ -112,6 +112,16 @@ public class Player {
     //selectableCommands (ok, back, goAhead)
 
     /**
+     * It is false until the player is spawned for the first time
+     */
+    private boolean isBorn;
+
+    /**
+     * When final frenzy starts, it is set according to the position towards the first player
+     */
+    private boolean isBeforeFirst;
+
+    /**
      * Sets name and color. Instantiate attributes and sets default values.
      * @param name Uniqueness checked by constructor caller
      * @param color Uniqueness checked by the caller
@@ -125,6 +135,7 @@ public class Player {
         powerUps = new ArrayList<>();
         state = IDLE;
         damageTrack = new NormalDamageTrack();
+        isBorn = false;
 
         wallet = new Cash();
         pending = new Cash();
@@ -316,7 +327,7 @@ public class Player {
     }
 
     /**
-     * Return the list of weapons owned by a player in a specific moment.
+     * Returns the list of weapons owned by a player in a specific moment.
      * They are maximum 3 or temporary 4 (before discarding)
      * @return the reference to the actual list (can be modified)
      */
@@ -369,7 +380,7 @@ public class Player {
     }
 
     /**
-     * Remove a weapon from the player, if it is present
+     * Removes a weapon from the player, if it is present
      * @param w weapon to remove
      * @return false if weapon was absent
      */
@@ -383,7 +394,7 @@ public class Player {
     }
 
     /**
-     * gets the powerup currently holded by the player
+     * Gets the powerup currently holded by the player
      * @return reference to the actual list of PowerUp
      */
     public List<PowerUp> getPowerUps() {
@@ -403,7 +414,7 @@ public class Player {
     }
 
     /**
-     * remove a powerup from the player, if it is present
+     * Removes a powerup from the player, if it is present
      * @param po powerup to remove
      * @return false if the powerup was absent
      */
@@ -417,7 +428,7 @@ public class Player {
     }
 
     /**
-     * gets ammos owned by the player
+     * Gets ammos owned by the player
      * @return the reference to the actual object (can be modified)
      */
     public Cash getWallet() {
@@ -425,7 +436,7 @@ public class Player {
     }
 
     /**
-     * gets the debit of the player in a specific moment
+     * Gets the debit of the player in a specific moment
      * @return the reference to the actual object (can be modified)
      */
     public Cash getPending() {
@@ -449,7 +460,7 @@ public class Player {
     }
 
     /**
-     * Verify if the player can afford a certain payment, considering his current ammos and powerups
+     * Verifies if the player can afford a certain payment, considering his current ammos and powerups
      * @param amount payment amount
      * @return true if the player could afford that payment
      */
@@ -477,6 +488,39 @@ public class Player {
      */
     public DamageTrack getDamageTrack() {
         return damageTrack;
+    }
+
+    public boolean isBorn() {
+        return isBorn;
+    }
+
+    public void setBorn(boolean born) {
+        isBorn = born;
+    }
+
+    public boolean isBeforeFirst() {
+        return isBeforeFirst;
+    }
+
+    /**
+     * It is set when switching to final frenzy
+     * @param beforeFirst
+     */
+    public void setBeforeFirst(boolean beforeFirst) {
+        isBeforeFirst = beforeFirst;
+    }
+
+    /**
+     * Returns the number of power ups of a specified type owned by the player
+     * @param type
+     * @return
+     */
+    public int howManyPowerUps(PowerUpType type){
+        int result = 0;
+        for (PowerUp po : powerUps){
+            if (po.getType() == type) result++;
+        }
+        return result;
     }
 
     public boolean isAlive(){
