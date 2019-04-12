@@ -465,7 +465,7 @@ public class Player {
     /**
      * Substitutes player's damageTrack with a FrenzyDamageTrack.
      * It does not resetAfterDeath the damageTrack.
-     * Ca be called on the player even if he has already a FrenzyDamageTrack.
+     * Can be called on the player even if he has already a FrenzyDamageTrack.
      */
     public void switchToFrenzy(){
         damageTrack = new FrenzyDamageTrack(damageTrack);
@@ -477,5 +477,12 @@ public class Player {
      */
     public DamageTrack getDamageTrack() {
         return damageTrack;
+    }
+
+    public boolean isAlive(){
+        if(getDamageTrack().getDamageList().size() < 11){
+            return true;
+        }
+        return false;
     }
 }

@@ -16,6 +16,7 @@ public class Match {
     private boolean onlyReload;
     private boolean turnCompleatable;
     private Action currentAction;
+    private Player currPlayer;
 
     public List<Player> getPlayersOn(List<Square> squares){
         List<Player> squaresOccupied = new ArrayList<>();
@@ -62,7 +63,7 @@ public class Match {
         }
     }
 
-    public List<Player> getMaxPoints(){
+    private List<Player> getMaxPoints(){
         List<Player> maxPoints = null;
         Map<Player, Integer> finalPoints = getFinalPoints();
         int max = -1;
@@ -100,11 +101,71 @@ public class Match {
         p.setSquarePosition(layout.getSpawnPoint(c));
     }
 
-    public void endTurnChech(){
-        ;
+    public List<Player> endTurnCheck(){
+        List<Player> deadPlayers = getDeadPlayers();
+        if(deadPlayers.size() > 0){
+            for(Player p : deadPlayers){
+                scoreDamageTrack(p.getDamageTrack().score());
+            }
+        }
+        if(deadPlayers.size() > 2){
+            currPlayer.addPoints(1);
+        }
+        if(frenzyOn){
+            switchToFrenzyAll(deadPlayers);
+        }
+        resetAfterDeathAll(deadPlayers);
+        return deadPlayers;
     }
 
     public List<Action> createSelectablesAction(){
         return new ArrayList<>();
     }
+
+    public Layout getLayout(){
+        return layout;
+    }
+
+    public boolean getFrenzy(){
+        return frenzyOn;
+    }
+
+    private void switchToFrenzyAll(List<Player> deadPlayers){
+        for(Player p : deadPlayers){
+            p.switchToFrenzy();
+        }
+    }
+
+    private void resetAfterDeathAll(List<Player> deadPlayers){
+        for(Player p : deadPlayers){
+            p.getDamageTrack().resetAfterDeath();
+        }
+    }
+
+    private List<Player> getDeadPlayers(){
+        List<Player> deadPlayers = new ArrayList<>();
+        for(Player p : players){
+            if(!p.isAlive()){
+                deadPlayers.add(p);
+            }
+        }
+        return deadPlayers;
+    }
+
+    private void scoreDamageTrack(Map<Player, Integer> points){
+        for(Player p : players){
+            if(points.containsKey(p)){
+                p.addPoints(points.get(p));
+            }
+        }
+    }
+
+    public Match(int config, int skulls){
+        layout = new Layout();
+        layout.initLayout(config);
+        players = new ArrayList<>();
+        killShotTrack = new KillShotTrack(skulls);
+    }
+
+
 }
