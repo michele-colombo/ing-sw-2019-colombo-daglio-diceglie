@@ -10,8 +10,7 @@ import java.nio.file.Files;
 import java.util.*;
 import java.util.logging.Logger;
 
-import static it.polimi.ingsw.Border.DOOR;
-import static it.polimi.ingsw.Border.WALL;
+import static it.polimi.ingsw.Border.*;
 import static it.polimi.ingsw.Direction.*;
 
 public class Layout {
@@ -278,15 +277,17 @@ public class Layout {
     }
 
 
-    //made by Giuseppe, it's a Prototype
+    /**
+     * le configurazioni del tabellone rifereite al manuale di gioco sono:
+     * -0 == piccola "ottima per 4 o 5 giocatori"
+     * -1 == quella grande che e' disegnata su entrambe le pagine
+     * -1 == piccola "ottima per qualsiasi numero di giocatori
+     * -1 == picoola "ottima per 3 o 4 giocatori"
+     *
+     * @param config configuration code
+     * @return true if the configuration exists, false otherwise
+     */
     public boolean initLayout(int config){
-
-        /* le configurazioni del tabellone rifereite al manuale di gioco sono:
-        -config0 == piccola "ottima per 4 o 5 giocatori"
-        -config1 == quella grande che e' disegnata su entrambe le pagine
-        -config2 == piccola "ottima per qualsiasi numero di giocatori
-        -config3 == picoola "ottima per 3 o 4 giocatori"
-        */
 
         Gson gson= new Gson();
 
@@ -342,9 +343,61 @@ public class Layout {
             addSquare(s);
         }
 
+        instantiateRooms();
+
+
+
+
+
         return true;
 
 
+    }
+
+    private void instantiateRooms(){
+        List<Square> squaresWithNoRoomYet= new ArrayList<>();
+
+        squaresWithNoRoomYet.addAll(squares);
+
+        while (!squaresWithNoRoomYet.isEmpty()){
+            Square current= squaresWithNoRoomYet.get(0);
+            Room roomToInstantiate= new Room();
+
+            List<Square> found = new ArrayList<Square>();
+            boolean finished= false;
+
+            while(!finished){
+                found.add(current);
+
+                if(current.getNorth()== OPEN && !found.contains(this.getSquare(current.getX(), current.getY() + 1))){
+                    current= this.getSquare(current.getX(), current.getY() + 1);
+                }
+                else if(current.getEast()== OPEN && !found.contains(this.getSquare(current.getX()+1, current.getY()))){
+                    current= this.getSquare(current.getX()+1, current.getY());
+                }
+                else if(current.getSouth()== OPEN && !found.contains(this.getSquare(current.getX(), current.getY() - 1))){
+                    current= this.getSquare(current.getX(), current.getY() - 1);
+                }
+                else if(current.getWest()== OPEN && !found.contains(this.getSquare(current.getX()-1, current.getY()))){
+                    current= this.getSquare(current.getX()-1, current.getY());
+                }
+                else{
+                    finished= true;
+                }
+
+            }
+
+            for(Square s : found){
+                s.setRoom(roomToInstantiate);
+                roomToInstantiate.addSquare(s);
+            }
+
+            squaresWithNoRoomYet.removeAll(found);
         }
+
+    }
+
+
+
     }
 

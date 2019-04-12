@@ -292,4 +292,49 @@ public class LayoutTest {
         assertTrue( layout.getSquare(0,1).getColor().toString() == "RED");
 
     }
+
+    @Test
+    public void whatHappenToRoom(){
+        Layout l= new Layout();
+        l.initLayout(3);
+
+
+
+        assertTrue(l.getSquare(3,1).getRoom() == l.getSquare(3,0).getRoom());
+
+        assertTrue(l.getSquare(0,2).getRoom() == l.getSquare(1,2).getRoom());
+        assertTrue(l.getSquare(0,2).getRoom() == l.getSquare(2,2).getRoom());
+
+        assertTrue(l.getSquare(0,1).getRoom() == l.getSquare(1,1).getRoom());
+        assertTrue(l.getSquare(0,1).getRoom() == l.getSquare(2,1).getRoom());
+
+
+        assertTrue(l.getSquare(1,0).getRoom() == l.getSquare(2,0).getRoom());
+
+        assertFalse(l.getSquare(3,1).getRoom() == l.getSquare(1,2).getRoom() );
+
+        assertFalse(l.getSquare(0,2).getRoom() == l.getSquare(1,1).getRoom());
+
+        assertFalse(l.getSquare(0,1).getRoom() == l.getSquare(2,0).getRoom());
+
+
+
+
+
+    }
+
+    @Test
+    public void testVisibility(){
+        Layout l= new Layout();
+        l.initLayout(2);
+
+        assertTrue( l.getVisibleSquares(l.getSquare(1,1)).contains(l.getSquare(1,0)));
+        assertTrue( l.getVisibleSquares(l.getSquare(1,1)).contains(l.getSquare(0,1)));
+        assertTrue(l.getVisibleSquares(l.getSquare(1,1)).contains(l.getSquare(1,1)));
+
+        assertTrue( l.getVisibleSquares(l.getSquare(1,1)).size() == 3);
+
+        assertTrue(l.getVisibleSquares(l.getSquare(3,2)).contains(l.getSquare(3,2)));
+        assertTrue(l.getVisibleSquares(l.getSquare(3,2)).size() == 8);
+    }
 }
