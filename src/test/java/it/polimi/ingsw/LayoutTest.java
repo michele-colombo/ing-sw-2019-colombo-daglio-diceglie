@@ -125,7 +125,7 @@ public class LayoutTest {
         assertEquals(1, layout.getNeighbours(startingSquare).size());
         assertEquals(2, layout.getNeighbours(startingSquare2).size());
 
-        Square aloneSquare = new SpawnSquare(3,3, WALL, WALL, WALL, WALL, RED);
+        Square aloneSquare = new SpawnSquare(2,2, WALL, WALL, WALL, WALL, RED);
         layout.addSquare(aloneSquare);
         assertEquals(0, layout.getNeighbours(aloneSquare).size());
     }
@@ -171,7 +171,7 @@ public class LayoutTest {
         layout.addSquare(new SpawnSquare(1,1, WALL, WALL, WALL, WALL, RED));
         assertEquals(null, layout.getSpawnPoint(BLUE));
 
-        Square blueSpawn = new SpawnSquare(2, 2, WALL, WALL, WALL, WALL, BLUE);
+        SpawnSquare blueSpawn = new SpawnSquare(2, 2, WALL, WALL, WALL, WALL, BLUE);
         layout.addSquare(blueSpawn);
         assertEquals(blueSpawn, layout.getSpawnPoint(BLUE));
     }
@@ -185,7 +185,7 @@ public class LayoutTest {
         Layout layout = new Layout();
         boolean addOk = layout.addSquare(new SpawnSquare(0, 0, DOOR, DOOR, WALL, WALL, RED));
         boolean addNotOk = layout.addSquare(new SpawnSquare(0, 0, DOOR, OPEN, WALL, WALL, RED));
-        boolean addOk2 = layout.addSquare(new SpawnSquare(3, 1, DOOR, DOOR, DOOR, DOOR, RED));
+        boolean addOk2 = layout.addSquare(new SpawnSquare(2, 1, DOOR, DOOR, DOOR, DOOR, RED));
 
         assertEquals(true, addOk);
         assertEquals(false, addNotOk);
@@ -193,7 +193,7 @@ public class LayoutTest {
 
         layout = new Layout();
         for(int row = 0; row < 4; row++){
-            for(int column = 0; column < 4; column++){
+            for(int column = 0; column < 3; column++){
                 layout.addSquare(new SpawnSquare(row, column, DOOR, DOOR, WALL, WALL, RED));
             }
         }
@@ -251,7 +251,7 @@ public class LayoutTest {
         layout.initLayout(2);
 
         layout.getSquare(0,3);
-        layout.getSquare(3,0);
+        //layout.getSquare(3,0);
 
         assertTrue(layout.getDistance(layout.getSquare(0,2), layout.getSquare(3,0)) == 5);
 
