@@ -6,6 +6,7 @@ public class Mode {
     private Mode mustComeBefore;
     private String title;
     private String description;
+    private Cash cost;
 
     private List<Effect> effects;
 
@@ -17,12 +18,21 @@ public class Mode {
         this.title= title;
         this.description= description;
         mustComeBefore= null;
+        this.cost = new Cash(0,0,0);
     }
 
     public Mode(Mode mustComeBefore, String title, String description) {
         this.mustComeBefore = mustComeBefore;
         this.title = title;
         this.description = description;
+        this.cost = new Cash(0,0,0);
+    }
+
+    public Mode(Mode mustComeBefore, String title, String description, Cash cost) {
+        this.mustComeBefore = mustComeBefore;
+        this.title = title;
+        this.description = description;
+        this.cost = cost;
     }
 
     public void setPrecedent(Mode mustComeBefore){
@@ -35,5 +45,9 @@ public class Mode {
 
     public String getDescription(){
         return description;
+    }
+
+    public Cash getCost() {
+        return cost;
     }
 }

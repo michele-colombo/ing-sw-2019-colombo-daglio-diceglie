@@ -20,17 +20,23 @@ public class Match {
     private Action currentAction;
     private Player currentPlayer;
 
-    public Match(int skulls){
+
+    public Match(int layoutConfig, int skulls){
         layout = new Layout();
-        //layout.initLayout(1);   //TODO ask for layout configuration
-        stackManager = new StackManager();
+        layout.initLayout(layoutConfig);
         players = new ArrayList<>();
         killShotTrack = new KillShotTrack(skulls);
+        stackManager = new StackManager();
         currentAction = null;
+        currentPlayer = null;
+    }
+
+    public Match(int skulls){
+        this(2, skulls);
     }
 
     public Match(){
-        this(8);
+        this(2, 8);
     }
 
     public StackManager getStackManager() {
@@ -276,13 +282,6 @@ public class Match {
                 p.addPoints(points.get(p));
             }
         }
-    }
-
-    public Match(int config, int skulls){
-        layout = new Layout();
-        layout.initLayout(config);
-        players = new ArrayList<>();
-        killShotTrack = new KillShotTrack(skulls);
     }
 
 

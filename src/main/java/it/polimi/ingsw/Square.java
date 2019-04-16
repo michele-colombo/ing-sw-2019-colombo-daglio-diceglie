@@ -15,7 +15,7 @@ public abstract class Square {
         return isAmmo;
     }
 
-    public abstract void collect(Player p, StackManager s);
+    public abstract boolean collect(Player p, Match m);
 
     public abstract void refill(StackManager s);
 

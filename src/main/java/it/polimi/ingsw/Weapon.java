@@ -45,11 +45,19 @@ public class Weapon{
         return isLoaded;
     }
 
-    public void Reload(boolean loaded) {
+    public void reload(boolean loaded) {
         isLoaded = true;
     }
 
     public List<Mode> getSelectableModes(List<Mode> alreadySelected){
         return null;
+    }
+
+    public Cash getDiscountedCost() {
+        return discountedCost;
+    }
+
+    public Cash getCost() {
+        return cost;
     }
 }

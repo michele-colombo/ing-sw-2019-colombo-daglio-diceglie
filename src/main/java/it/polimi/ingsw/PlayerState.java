@@ -6,9 +6,11 @@ public enum PlayerState {
     MOVE_THERE,
     GRAB_THERE,
     GRAB_WEAPON,
+    DISCARD_WEAPON,
     RELOAD,
     PAYING,
     PAYING_ANY,
+    SHOOT_WEAPON,
     CHOOSE_MODE,
     SHOOT_TARGET,
     SPAWN;

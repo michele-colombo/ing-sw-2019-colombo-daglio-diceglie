@@ -6,9 +6,12 @@ import java.util.List;
 public class Action {
     private List<MicroAction> microActions;
 
+    private SpawnSquare currSpawnSquare;
     private Weapon currWeapon;
+    private Mode currMode;
     private List<Mode> selectedModes;
     private List<Effect> currEffects;
+    private List<Player> damaged;
     private boolean incrementActionCounter;
     private boolean activateOnlyReloads;
 
@@ -24,6 +27,14 @@ public class Action {
     public Action (boolean incrementActionCounter, boolean activateOnlyReloads, MicroAction microAction) {
         this(incrementActionCounter, activateOnlyReloads);
         add(microAction);
+    }
+
+    public Mode getCurrMode() {
+        return currMode;
+    }
+
+    public void setCurrMode(Mode currMode) {
+        this.currMode = currMode;
     }
 
     public List<MicroAction> getMicroActions() {
@@ -54,5 +65,25 @@ public class Action {
 
     public boolean isActivateOnlyReloads() {
         return activateOnlyReloads;
+    }
+
+    public SpawnSquare getCurrSpawnSquare() {
+        return currSpawnSquare;
+    }
+
+    public void setCurrSpawnSquare(SpawnSquare currSpawnSquare) {
+        this.currSpawnSquare = currSpawnSquare;
+    }
+
+    public void setCurrWeapon(Weapon currWeapon) {
+        this.currWeapon = currWeapon;
+    }
+
+    public void setSelectedModes(List<Mode> selectedModes) {
+        this.selectedModes = selectedModes;
+    }
+
+    public void setCurrEffects(List<Effect> currEffects) {
+        this.currEffects = currEffects;
     }
 }

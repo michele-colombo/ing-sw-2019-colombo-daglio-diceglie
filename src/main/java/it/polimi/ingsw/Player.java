@@ -109,7 +109,10 @@ public class Player {
      * Used for respawining, using powerUps and paying.
      */
     private List<PowerUp> selectablePowerUps;
-    //selectableCommands (ok, back, goAhead)
+    /**
+     * List of the commands selectable by the player in a specific moment.
+     */
+    private List<Command> selectableCommands;
 
     /**
      * It is false until the player is spawned for the first time
@@ -253,7 +256,7 @@ public class Player {
      */
     public void setSelectablePlayers(List<Player> selectablePlayers) {
         this.selectablePlayers = new ArrayList<>();
-        this.selectablePlayers = selectablePlayers;
+        this.selectablePlayers.addAll(selectablePlayers);
     }
 
     public List<Mode> getSelectableModes() {
@@ -267,7 +270,7 @@ public class Player {
      */
     public void setSelectableModes(List<Mode> selectableModes) {
         this.selectableModes = new ArrayList<>();
-        this.selectableModes = selectableModes;
+        this.selectableModes.addAll(selectableModes);
     }
 
     public List<Action> getSelectableActions() {
@@ -281,7 +284,7 @@ public class Player {
      */
     public void setSelectableActions(List<Action> selectableActions) {
         this.selectableActions = new ArrayList<>();
-        this.selectableActions = selectableActions;
+        this.selectableActions.addAll(selectableActions);
     }
 
     public List<Color> getSelectableColors() {
@@ -295,7 +298,7 @@ public class Player {
      */
     public void setSelectableColors(List<Color> selectableColors) {
         this.selectableColors = new ArrayList<>();
-        this.selectableColors = selectableColors;
+        this.selectableColors.addAll(selectableColors);
     }
 
     public List<PowerUp> getSelectablePowerUps() {
@@ -309,7 +312,17 @@ public class Player {
      */
     public void setSelectablePowerUps(List<PowerUp> selectablePowerUps) {
         this.selectablePowerUps = new ArrayList<>();
-        this.selectablePowerUps = selectablePowerUps;
+        this.selectablePowerUps.addAll(selectablePowerUps);
+    }
+
+
+    public List<Command> getSelectableCommands() {
+        return selectableCommands;
+    }
+
+    public void setSelectableCommands(List<Command> selectableCommands) {
+        this.selectableCommands = new ArrayList<>();
+        this.selectableCommands.addAll(selectableCommands);
     }
 
     /**
@@ -324,6 +337,7 @@ public class Player {
         selectablePlayers.clear();
         selectableColors.clear();
         selectableActions.clear();
+        selectableCommands.clear();
     }
 
     /**
@@ -338,13 +352,13 @@ public class Player {
     /**
      * Adds a weapon to the player.
      * @param w the weapon to be added
-     * @throws MustDiscardWeaponException if the player has 4 weapons after adding (weapon added anyway)
+     * //throws MustDiscardWeaponException if the player has 4 weapons after adding (weapon added anyway)
      */
-    public void addWeapon (Weapon w) throws MustDiscardWeaponException {
+    public void addWeapon (Weapon w) {
         if (w != null && weapons.indexOf(w) == -1){
             weapons.add(w);
             if (weapons.size() > 3) {
-                throw new MustDiscardWeaponException();
+                //throw new MustDiscardWeaponException();
             }
         } else {
             assert(false): "trying to add null or already present weapon";
@@ -470,6 +484,7 @@ public class Player {
             temp = temp.sum(new Cash(po.getColor(), 1));
         }
         temp = temp.sum(wallet);
+        temp = temp.sum(credit);
         return temp.greaterEqual(amount);
     }
 

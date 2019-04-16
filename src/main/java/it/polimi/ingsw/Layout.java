@@ -397,6 +397,12 @@ public class Layout {
 
     }
 
+    public void refillAll(StackManager sm){
+        for (Square s : squares){
+            s.refill(sm);
+        }
+    }
+
 
 
     }

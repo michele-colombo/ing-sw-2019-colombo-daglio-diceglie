@@ -6,17 +6,19 @@ public class AmmoSquare extends Square{
     public AmmoSquare(int x, int y, Border north, Border east, Border south, Border west, Color color){
         super(x, y, north, east, south, west, color);
         isAmmo = true;
+        ammo = null;
     }
 
     @Override
-    public void collect(Player p, StackManager s){
+    public boolean collect(Player p, Match m){
         p.getWallet().deposit(ammo.getAmmos());
         if (ammo.hasPowerUp()){
             if (p.getPowerUps().size() < 3){
-                p.addPowerUp(s.drawPowerUp());
+                p.addPowerUp(m.getStackManager().drawPowerUp());
             }
         }
         ammo = null;
+        return true;
     }
 
     @Override

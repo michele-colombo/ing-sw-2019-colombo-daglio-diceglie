@@ -9,11 +9,16 @@ public class SpawnSquare extends Square{
     public SpawnSquare(int x, int y, Border north, Border east, Border south, Border west, Color color){
         super(x, y, north, east, south, west, color);
         isAmmo = false;
+        weapons = new ArrayList<>();
     }
 
     @Override
-    public void collect(Player p, StackManager s){
-        p.setSelectableWeapons(weapons);
+    public boolean collect(Player p, Match m){
+        m.getCurrentAction().setCurrSpawnSquare(this);
+        p.setState(PlayerState.GRAB_WEAPON);
+        p.resetSelectables();
+        p.setSelectableWeapons(weapons);    //TODO: what if there are no weapons?
+        return false;
     }
 
     public void addWeapon(Weapon w){
@@ -24,8 +29,8 @@ public class SpawnSquare extends Square{
         weapons.remove(w);
     }
 
-    public void getWeapons(){
-        List<Weapon> w = new ArrayList<>(weapons);
+    public List<Weapon> getWeapons(){
+        return weapons;
     }
 
     @Override
@@ -35,7 +40,7 @@ public class SpawnSquare extends Square{
 
     @Override
     public void refill (StackManager s){
-        if (weapons.size() < 3){
+        while (weapons.size() < 3){
             Weapon tempWeapon = s.drawWeapon();
             if (tempWeapon != null){
                 weapons.add(tempWeapon);

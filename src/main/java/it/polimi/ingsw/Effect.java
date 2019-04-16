@@ -4,11 +4,11 @@ public class Effect {
     private EffectApplier effectApplier;
     private EffectStarter effectStarter;
 
-    public void start(Player p){
-        effectStarter.start(p);
+    public void start(Player p, Match m){
+        effectStarter.start(p, m);
     }
 
-    public Effect applyOn(Player source, Player targetP, Square targetS){
-        return effectApplier.applyOn(source, targetP, targetS);
+    public Effect applyOn(Player source, Player targetP, Square targetS, Match m){
+        return effectApplier.applyOn(source, targetP, targetS, m);
     }
 }
