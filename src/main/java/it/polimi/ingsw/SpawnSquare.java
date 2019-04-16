@@ -12,6 +12,27 @@ public class SpawnSquare extends Square{
         weapons = new ArrayList<>();
     }
 
+    public SpawnSquare(){
+        super();
+        weapons = new ArrayList<>();
+    }
+
+    @Override
+    public String getFullDescription(){
+        StringBuilder result= new StringBuilder();
+        result.append("Spawn");
+        result.append(super.getFullDescription());
+        if (!isEmpty()){
+            result.append("Weapons available: \n");
+            for(Weapon w : weapons){
+                result.append("- "+w.getName()+"\n");
+            }
+        } else {
+            result.append("no weapons available here\n");
+        }
+        return result.toString();
+    }
+
     @Override
     public boolean collect(Player p, Match m){
         m.getCurrentAction().setCurrSpawnSquare(this);

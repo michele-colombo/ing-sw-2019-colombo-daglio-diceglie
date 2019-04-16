@@ -9,6 +9,23 @@ public class AmmoSquare extends Square{
         ammo = null;
     }
 
+    public AmmoSquare(){
+        super();
+    }
+
+    @Override
+    public String getFullDescription(){
+        StringBuilder result= new StringBuilder();
+        result.append("Ammo");
+        result.append(super.getFullDescription());
+        if (!isEmpty()) {
+            result.append("Ammos available: "+ammo.toString()+"\n");
+        } else {
+            result.append("is empty\n");
+        }
+        return result.toString();
+    }
+
     @Override
     public boolean collect(Player p, Match m){
         p.getWallet().deposit(ammo.getAmmos());

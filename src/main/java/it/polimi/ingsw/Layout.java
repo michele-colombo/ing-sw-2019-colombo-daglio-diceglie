@@ -20,6 +20,10 @@ public class Layout {
 
     private String jsonFileFolder;
 
+    public List<Square> getSquares() {
+        return squares;
+    }
+
     public List<Square> getVisibleSquares(Square startingSquare){
         List<Square> visible = new ArrayList<>(startingSquare.getRoom().getSquaresInRoom());
 

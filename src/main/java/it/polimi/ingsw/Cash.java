@@ -30,6 +30,11 @@ public class Cash {
         }
     }
 
+    @Override
+    public String toString(){
+        return "b: "+blue+" | r: "+red+" | y: "+yellow+" ";
+    }
+
     public int getBlue() {
         return blue;
     }

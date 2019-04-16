@@ -74,4 +74,18 @@ public abstract class Square {
         this.color = color;
         this.room = null;
     }
+
+    public Square(){
+
+    }
+
+    public String getFullDescription(){
+        StringBuilder result= new StringBuilder();
+        result.append("Square "+color.toString()+" in "+x+","+y+"\n");
+        result.append("north: "+north.toString());
+        result.append(" | east: "+east.toString());
+        result.append(" | south: "+south.toString());
+        result.append(" | west: "+west.toString()+"\n");
+        return result.toString();
+    }
 }

@@ -9,6 +9,14 @@ public class AmmoTile{
         this.hasPowerUp = hasPowerUp;
     }
 
+    @Override
+    public String toString(){
+        StringBuilder result= new StringBuilder();
+        result.append(ammos.toString());
+        if (hasPowerUp()) result.append("| with a powerUp");
+        return result.toString();
+    }
+
     public Cash getAmmos() {
         return ammos;
     }

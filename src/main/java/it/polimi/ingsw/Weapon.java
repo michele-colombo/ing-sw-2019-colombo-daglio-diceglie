@@ -26,6 +26,14 @@ public class Weapon{
         myModes= new ArrayList<Mode>();
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
     public String getDescription(){
         StringBuilder result= new StringBuilder();
         result.append(name.toUpperCase() + "\n");

@@ -151,6 +151,7 @@ public class Player {
         selectablePowerUps = new ArrayList<>();
         selectableSquares = new ArrayList<>();
         selectableWeapons = new ArrayList<>();
+        selectableCommands = new ArrayList<>();
     }
 
     /**
