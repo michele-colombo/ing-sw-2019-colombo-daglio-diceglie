@@ -15,4 +15,9 @@ public class UsePowerUp implements MicroAction {
     public void act(Match match, Player p) {
 
     }
+
+    @Override
+    public String toString(){
+        return "P";
+    }
 }

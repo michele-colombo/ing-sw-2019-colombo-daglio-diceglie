@@ -19,5 +19,10 @@ public class PowerUp{
         return type;
     }
 
+    @Override
+    public String toString(){
+        return "PowerUp: "+type+" | "+color+" ";
+    }
+
 
 }

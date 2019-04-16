@@ -2,6 +2,10 @@ package it.polimi.ingsw;
 
 import org.ietf.jgss.GSSManager;
 import org.junit.Test;
+import org.omg.CORBA.PolicyError;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -95,8 +99,12 @@ public class GameModelTest {
         assertEquals(p1, currP);
     }
 
+    public void printSel(Player p){
+        System.out.println(p.selectablesToString());
+    }
+
     @Test
-    public void weaponPayment(){
+    public void grabFromAmmoSquares(){
         Player p1 = new Player("primo giocatore", PlayerColor.YELLOW);
         Player p2 = new Player("secondo giocatore", PlayerColor.BLUE);
         Player p3 = new Player("terzo giocatore", PlayerColor.GREEN);
@@ -107,7 +115,83 @@ public class GameModelTest {
         gm.addPlayer(p3);
 
         gm.initMatch();
+        Match match = gm.getMatch();
 
+        List<Weapon> tempWeapons = new ArrayList<>();
+        tempWeapons.add(new Weapon("distruttore", new Cash(2,0,0), Color.BLUE));
+        tempWeapons.add(new Weapon("mitragliatrice", new Cash(1, 1, 0), Color.BLUE));
+        tempWeapons.add(new Weapon("torpedine", new Cash(1,1,0), Color.BLUE));
+        tempWeapons.add(new Weapon("cannone Vortex", new Cash(1,1,0), Color.RED));
+        tempWeapons.add(new Weapon("vulcanizzatore", new Cash(1,1,0), Color.RED));
+        tempWeapons.add(new Weapon("razzo termico", new Cash(0,2,1), Color.RED));
+        tempWeapons.add(new Weapon("lanciafiamme", new Cash(0,1,0), Color.RED));
+        tempWeapons.add(new Weapon("fucile laser", new Cash(1,0,2), Color.YELLOW));
+        tempWeapons.add(new Weapon("spada fotonica", new Cash(0,1,1), Color.YELLOW));
+        tempWeapons.add(new Weapon("fucile a pompa", new Cash(0,0,2), Color.YELLOW));
+        tempWeapons.add(new Weapon("cyberguanto", new Cash(1,0,1), Color.YELLOW));
+        tempWeapons.add(new Weapon("onda d'urto", new Cash(0,0,1), Color.YELLOW));
+        match.getStackManager().initWeaponStack(tempWeapons);
+
+        List<PowerUp> tempPowerups = new ArrayList<>();
+        for (Color color : Color.getAmmoColors()){
+            tempPowerups.add(new PowerUp(color, PowerUpType.TAGBACK_GRANADE));
+            tempPowerups.add(new PowerUp(color, PowerUpType.TARGETING_SCOPE));
+            tempPowerups.add(new PowerUp(color, PowerUpType.YOUR_TURN_POWERUP));
+            tempPowerups.add(new PowerUp(color, PowerUpType.YOUR_TURN_POWERUP));
+            tempPowerups.add(new PowerUp(color, PowerUpType.TAGBACK_GRANADE));
+            tempPowerups.add(new PowerUp(color, PowerUpType.TARGETING_SCOPE));
+            tempPowerups.add(new PowerUp(color, PowerUpType.YOUR_TURN_POWERUP));
+            tempPowerups.add(new PowerUp(color, PowerUpType.YOUR_TURN_POWERUP));
+        }
+        match.getStackManager().initPowerUpStack(tempPowerups);
+
+        List<AmmoTile> tempAmmoTiles = new ArrayList<>();
+        for (int i=0; i<4; i++){
+            tempAmmoTiles.add(new AmmoTile(new Cash(2, 1, 0), false));
+            tempAmmoTiles.add(new AmmoTile(new Cash(0, 1, 2), false));
+            tempAmmoTiles.add(new AmmoTile(new Cash(0, 2, 1), false));
+            tempAmmoTiles.add(new AmmoTile(new Cash(1, 0, 2), false));
+            tempAmmoTiles.add(new AmmoTile(new Cash(2, 0, 1), false));
+            tempAmmoTiles.add(new AmmoTile(new Cash(1, 1, 1), false));
+            tempAmmoTiles.add(new AmmoTile(new Cash(1, 1, 0), true));
+            tempAmmoTiles.add(new AmmoTile(new Cash(1, 0, 1), true));
+            tempAmmoTiles.add(new AmmoTile(new Cash(0, 1, 1), true));
+        }
+        match.getStackManager().initAmmoTilesStack(tempAmmoTiles);
+
+        gm.startMatch();
+
+        Player tempPlayer = match.getPlayers().get(0);
+        assertEquals(PlayerState.SPAWN, tempPlayer.getState());
+        assertEquals(null, match.getCurrentPlayer());
+        System.out.println(tempPlayer.selectablesToString());
+        assertEquals(2, tempPlayer.getSelectablePowerUps().size());    //can select two powerups
+        PowerUp selectedPowerUp = tempPlayer.getSelectablePowerUps().get(0);
+        PowerUp notSelectedPowerUp = tempPlayer.getSelectablePowerUps().get(1);
+
+        gm.spawn(tempPlayer, selectedPowerUp); //he select the first (in order to discard and respawn onto)
+
+        assertEquals(match.getCurrentPlayer(), tempPlayer); //he becomes the current player
+        assertEquals(selectedPowerUp.getColor(), match.getCurrentPlayer().getSquarePosition().getColor());  //he is now on the spawnSquare of the discarded powerUp
+        assertFalse(match.getCurrentPlayer().getPowerUps().contains(selectedPowerUp));  //the selected powerUp is discarded
+        assertTrue(match.getCurrentPlayer().getPowerUps().contains(notSelectedPowerUp));    //the notSelected powerUp belongs to the player now
+        assertEquals(PlayerState.CHOOSE_ACTION, match.getCurrentPlayer().getState());       //he can now choose the action to take
+        System.out.println(match.getCurrentPlayer().getSquarePosition().getFullDescription());
+        System.out.println(match.getCurrentPlayer().getPowerUps());
+        System.out.println(tempPlayer.selectablesToString());
+
+        gm.performAction(tempPlayer, tempPlayer.getSelectableActions().get(1));     //he wants to grab
+        assertEquals(PlayerState.GRAB_THERE, match.getCurrentPlayer().getState());  //he is in GRAB_THERE state
+        System.out.println(match.getCurrentPlayer().selectablesToString());
+
+        gm.grabThere(tempPlayer, tempPlayer.getSelectableSquares().get(0));         //he grabs in the first
+        printSel(tempPlayer);
+        gm.performAction(tempPlayer, tempPlayer.getSelectableActions().get(1));     //he wants to grab
+        printSel(tempPlayer);
+        gm.grabThere(tempPlayer, tempPlayer.getSelectableSquares().get(0));
+        printSel(tempPlayer);
+        System.out.println(tempPlayer.getPowerUps());
+        System.out.println(tempPlayer.getWallet());
     }
 
 

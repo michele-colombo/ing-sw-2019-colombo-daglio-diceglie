@@ -326,6 +326,11 @@ public class Player {
         this.selectableCommands.addAll(selectableCommands);
     }
 
+    public void setSelectableCommands(Command co){
+        this.selectableCommands = new ArrayList<>();
+        this.selectableCommands.add(co);
+    }
+
     /**
      * Clears all the selectable lists of the player.
      * Since list were cloned, the lists that were passed as parameters are untouched.
@@ -544,5 +549,47 @@ public class Player {
             return true;
         }
         return false;
+    }
+
+    public boolean hasSelectables(){
+        return !(selectableColors.isEmpty() &&
+                selectableActions.isEmpty() &&
+                selectableModes.isEmpty() &&
+                selectableCommands.isEmpty() &&
+                selectablePlayers.isEmpty() &&
+                selectableSquares.isEmpty() &&
+                selectablePowerUps.isEmpty() &&
+                selectableWeapons.isEmpty());
+    }
+
+    public String selectablesToString(){
+        StringBuilder result = new StringBuilder();
+        result.append("[ ");
+        for (Square s : selectableSquares){
+            result.append(s.getShortDescription()+", ");
+        }
+        for (Weapon w : selectableWeapons){
+            result.append(w.getName()+", ");
+        }
+        for (PowerUp po : selectablePowerUps){
+            result.append(po.toString()+", ");
+        }
+        for (Player p : selectablePlayers){
+            result.append(p.getName()+", ");
+        }
+        for (Command c : selectableCommands){
+            result.append(c.toString()+", ");
+        }
+        for (Mode m : selectableModes){
+            result.append(m.getDescription()+", ");
+        }
+        for (Action a : selectableActions){
+            result.append(a.toString()+", ");
+        }
+        for (Color co : selectableColors){
+            result.append(co.toString()+", ");
+        }
+        result.append("] ");
+        return result.toString();
     }
 }

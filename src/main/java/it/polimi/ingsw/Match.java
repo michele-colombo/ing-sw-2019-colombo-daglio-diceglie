@@ -208,6 +208,7 @@ public class Match {
                 }
             }
         } else {
+            turnCompleatable = true;
             if (p.getUnloadedWeapons().size() > 0){
                 result.add(new Action(false, true, new Reload()));
             }
@@ -228,6 +229,7 @@ public class Match {
         } else {
             numberOfActions = 2;
         }
+        turnCompleatable = false;
         actionsCompleted = 0;
         onlyReload = false;
         return createSelectablesAction(p);
@@ -284,5 +286,7 @@ public class Match {
         }
     }
 
-
+    public boolean isTurnCompleatable() {
+        return turnCompleatable;
+    }
 }

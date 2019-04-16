@@ -29,6 +29,15 @@ public class Action {
         add(microAction);
     }
 
+    @Override
+    public String toString(){
+        String s = "";
+        for (MicroAction ma : microActions){
+            s = s + ma;
+        }
+        return s;
+    }
+
     public Mode getCurrMode() {
         return currMode;
     }

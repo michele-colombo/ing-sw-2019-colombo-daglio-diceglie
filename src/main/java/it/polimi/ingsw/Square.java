@@ -88,4 +88,8 @@ public abstract class Square {
         result.append(" | west: "+west.toString()+"\n");
         return result.toString();
     }
+
+    public String getShortDescription(){
+        return "Square ("+x+","+y+") ";
+    }
 }

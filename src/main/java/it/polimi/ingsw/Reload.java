@@ -7,6 +7,13 @@ public class Reload implements MicroAction {
 
     @Override
     public void act(Match match, Player p) {
+        p.setState(PlayerState.RELOAD);
+        p.resetSelectables();
+        p.setSelectableWeapons(p.getUnloadedWeapons());
+    }
 
+    @Override
+    public String toString(){
+        return "R";
     }
 }

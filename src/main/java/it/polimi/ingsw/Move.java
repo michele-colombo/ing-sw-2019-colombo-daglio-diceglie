@@ -9,6 +9,17 @@ public class Move implements MicroAction {
 
     @Override
     public void act(Match match, Player p) {
+        p.setState(PlayerState.MOVE_THERE);
+        p.resetSelectables();
+        p.setSelectableSquares(match.getLayout().getSquaresInDistanceRange(p.getSquarePosition(), 0, movements));
+    }
 
+    @Override
+    public String toString(){
+        String s = "";
+        for (int i=0; i<movements; i++){
+            s = s + ">";
+        }
+        return s;
     }
 }

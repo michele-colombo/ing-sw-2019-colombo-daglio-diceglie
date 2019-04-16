@@ -187,13 +187,24 @@ public class Layout {
     public List<Square> getNotEmptySquares(){
         List<Square> s = new ArrayList<>();
         for(Square sq : squares){
+            if(!sq.isEmpty()){
+                s.add(sq);
+            }
+        }
+        return s;
+    }
+
+    public List<Square> getEmptySquares(){
+        List<Square> s = new ArrayList<>();
+        for(Square sq : squares){
             if(sq.isEmpty()){
                 s.add(sq);
             }
         }
         return s;
-
     }
+
+
 
     public boolean addSquare(Square s){
         if(!existSquare(s.getX(), s.getY()) && squares.size() < 16){
