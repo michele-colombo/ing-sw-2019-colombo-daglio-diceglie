@@ -21,7 +21,7 @@ public class PowerUp{
 
     @Override
     public String toString(){
-        return "PowerUp: "+type+" | "+color+" ";
+        return type+" | "+color+" ";
     }
 
 

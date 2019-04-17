@@ -140,6 +140,9 @@ public class GameModel {
             p.setNextState(GRAB_WEAPON);
             p.setState(PAYING);
             p.resetSelectables();
+            if ((p.getPending().subtract(p.getCredit())).lessEqual(p.getWallet())){
+                p.setSelectableCommands(Command.OK);
+            }
             p.setSelectablePowerUps(p.getPowerUps());
         }
     }
@@ -211,9 +214,7 @@ public class GameModel {
         match.getStackManager().discardPowerUp(po);
         p.resetSelectables();
         if ((p.getPending().subtract(p.getCredit())).lessEqual(p.getWallet())){
-            List<Command> temp = new ArrayList<>();
-            temp.add(Command.OK);
-            p.setSelectableCommands(temp);
+            p.setSelectableCommands(Command.OK);
         }
         p.setSelectablePowerUps(p.getPowerUps());    //todo: check if pending sum has been reached
         p.setState(PAYING);

@@ -565,32 +565,63 @@ public class Player {
 
     public String selectablesToString(){
         StringBuilder result = new StringBuilder();
-        result.append("[ ");
-        for (Square s : selectableSquares){
-            result.append(s.getShortDescription()+", ");
+        if (!selectableSquares.isEmpty()) {
+            result.append("sq:\n");
+            for (Square s : selectableSquares) {
+                result.append("\t"+selectableSquares.indexOf(s)+")"+s.getShortDescription());
+            }
+            result.append("\n");
         }
-        for (Weapon w : selectableWeapons){
-            result.append(w.getName()+", ");
+        if (!selectableWeapons.isEmpty()) {
+            result.append("wp:\n");
+            for (Weapon w : selectableWeapons) {
+                result.append("\t"+selectableWeapons.indexOf(w)+")"+w.getName());
+            }
+            result.append("\n");
         }
-        for (PowerUp po : selectablePowerUps){
-            result.append(po.toString()+", ");
+        if (!selectablePowerUps.isEmpty()) {
+            result.append("pow:\n");
+            for (PowerUp po : selectablePowerUps) {
+                result.append("\t"+selectablePowerUps.indexOf(po)+")"+po.toString());
+            }
+            result.append("\n");
         }
-        for (Player p : selectablePlayers){
-            result.append(p.getName()+", ");
+        if (!selectablePlayers.isEmpty()) {
+            result.append("wp:\n");
+            for (Player p : selectablePlayers) {
+                result.append("\t"+selectablePlayers.indexOf(p)+")"+p.getName());
+            }
+            result.append("\n");
         }
-        for (Command c : selectableCommands){
-            result.append(c.toString()+", ");
+        if (!selectableCommands.isEmpty()) {
+            result.append("cmd:\n");
+            for (Command co : selectableCommands) {
+                result.append("\t"+selectableCommands.indexOf(co)+")"+co.toString());
+            }
+            result.append("\n");
         }
-        for (Mode m : selectableModes){
-            result.append(m.getDescription()+", ");
+        if (!selectableModes.isEmpty()) {
+            result.append("mod:\n");
+            for (Mode m : selectableModes) {
+                result.append("\t"+selectableModes.indexOf(m)+")"+m.getTitle());
+            }
+            result.append("\n");
         }
-        for (Action a : selectableActions){
-            result.append(a.toString()+", ");
+        if (!selectableActions.isEmpty()) {
+            result.append("act:\n");
+            for (Action a : selectableActions) {
+                result.append("\t"+selectableActions.indexOf(a)+")"+a.toString());
+            }
+            result.append("\n");
         }
-        for (Color co : selectableColors){
-            result.append(co.toString()+", ");
+        if (!selectableColors.isEmpty()) {
+            result.append("col:\n");
+            for (Color c : selectableColors) {
+                result.append("\t"+selectableColors.indexOf(c)+")"+c.toString());
+            }
+            result.append("\n");
         }
-        result.append("] ");
+        result.append("\n\n");
         return result.toString();
     }
 

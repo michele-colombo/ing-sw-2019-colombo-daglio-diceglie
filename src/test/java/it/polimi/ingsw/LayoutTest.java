@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Scanner;
 
 import static it.polimi.ingsw.Border.*;
@@ -77,6 +78,26 @@ public class LayoutTest {
         layout.addSquare(s3);
         assertEquals(1, layout.getSquaresInDistanceRange(startingSquare, 2, 4).size());
         assertEquals(1, layout.getSquaresInDistanceRange(startingSquare, 1, 1).size());
+    }
+
+    @Test
+    public void getSquaresInDistanceOnLayout2(){
+        Layout layout = new Layout();
+        layout.initLayout(2);
+
+        Square centre = layout.getSquare(2,1);
+        List<Square> expected = new ArrayList<>();
+        expected.add(layout.getSquare(2,1));
+        expected.add(layout.getSquare(1,2));
+        expected.add(layout.getSquare(2,2));
+        expected.add(layout.getSquare(3,2));
+        expected.add(layout.getSquare(3,1));
+        expected.add(layout.getSquare(1,0));
+        expected.add(layout.getSquare(2,0));
+        expected.add(layout.getSquare(3,0));
+
+        //assertTrue(expected.containsAll(layout.getSquaresInDistanceRange(centre, 0,2)));
+        //assertTrue(layout.getSquaresInDistanceRange(centre, 0,2).containsAll(expected));
     }
 
     @Test
