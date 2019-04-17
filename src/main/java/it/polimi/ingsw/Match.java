@@ -159,6 +159,13 @@ public class Match {
         return deadPlayers;
     }
 
+    /**
+     * Creates a list of possible action a player can take, according to his adrenaline and turn status
+     * Must be called after the first action has been taken.
+     * Also sets turnCompletable true if the player can choose to end his turn
+     * @param p The player sho is in CHOOSE_ACTION state
+     * @return
+     */
     public List<Action> createSelectablesAction(Player p){  //todo rename in createSelectableActions
         //could be loaded from a json file in the future?
         List<Action> result = new ArrayList<>();
@@ -219,6 +226,12 @@ public class Match {
         return result;
     }
 
+    /**
+     * Creates the list of action a player can take. Must be called at the beginning of his turn.
+     * It also initializes support variables to keep track of the turn status.
+     * @param p A player in the beginning of his turn, while is in CHOOSE_ACTION state.
+     * @return
+     */
     public List<Action> initSelectableActions(Player p){
         if (frenzyOn){
             if (p.isBeforeFirst()){
@@ -235,23 +248,45 @@ public class Match {
         return createSelectablesAction(p);
     }
 
+    /**
+     * Updates the turn status (number of remaining actions, the player can only reload)
+     * @param a The action chosen by the player, the status is updated according to it
+     */
     public void updateTurnStatus(Action a){
         if (a.isIncrementActionCounter()) actionsCompleted++;
         if (a.isActivateOnlyReloads()) onlyReload = true;
     }
 
+    /**
+     * Gets the action currently in progress.
+     * currentAction also stores support variables related to it
+     * (the weapon and the modes currently selected, the effects to take, etc)
+     * @return
+     */
     public Action getCurrentAction() {
         return currentAction;
     }
 
+    /**
+     * Sets the action to be processed
+     * @param currentAction The action just chosen by the player
+     */
     public void setCurrentAction(Action currentAction) {
         this.currentAction = currentAction;
     }
 
+    /**
+     * Gets the match layout
+     * @return A reference to the actual layout
+     */
     public Layout getLayout(){
         return layout;
     }
 
+    /**
+     * Checks if final frenzy is currently active
+     * @return
+     */
     public boolean getFrenzy(){
         return frenzyOn;
     }
@@ -286,6 +321,10 @@ public class Match {
         }
     }
 
+    /**
+     * checks if the player can complete his turn in the current moment
+     * @return
+     */
     public boolean isTurnCompleatable() {
         return turnCompleatable;
     }
