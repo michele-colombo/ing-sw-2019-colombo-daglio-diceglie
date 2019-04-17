@@ -146,7 +146,7 @@ public class GameModel {
 
     public void discardWeapon(Player p, Weapon w){
         match.getCurrentAction().getCurrSpawnSquare().addWeapon(w);
-        p.discardWeapon(w);
+        p.removeWeapon(w);
         //unload
         nextMicroAction();
     }
@@ -168,7 +168,12 @@ public class GameModel {
         if (p.getCredit().isEqual(p.getPending())){
             p.getPending().setZero();
             p.getCredit().setZero();
+            match.getCurrentAction().getSelectedModes().add(m);
             match.getCurrentAction().getCurrEffects().addAll(m.getEffects());
+            p.setState(CHOOSE_MODE);
+            p.resetSelectables();
+            p.setSelectableModes(match.getCurrentAction().getCurrWeapon().getSelectableModes(match.getCurrentAction().getSelectedModes()));
+            p.setSelectableCommands(Command.OK);
         } else {
             p.setNextState(CHOOSE_MODE);
             match.getCurrentAction().setCurrMode(m);
@@ -237,7 +242,7 @@ public class GameModel {
         if (p.getCredit().isEqual(p.getPending())){
             p.getPending().setZero();
             p.getCredit().setZero();
-            w.reload(true);
+            p.reload(w);
             nextMicroAction();
         } else {
             p.setNextState(RELOAD);

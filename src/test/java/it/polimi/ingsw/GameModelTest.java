@@ -161,38 +161,55 @@ public class GameModelTest {
 
         gm.startMatch();
 
-        Player tempPlayer = match.getPlayers().get(0);
-        assertEquals(PlayerState.SPAWN, tempPlayer.getState());
-        assertEquals(null, match.getCurrentPlayer());
-        System.out.println(tempPlayer.selectablesToString());
-        assertEquals(2, tempPlayer.getSelectablePowerUps().size());    //can select two powerups
-        PowerUp selectedPowerUp = tempPlayer.getSelectablePowerUps().get(0);
-        PowerUp notSelectedPowerUp = tempPlayer.getSelectablePowerUps().get(1);
+            Player tempPlayer = match.getPlayers().get(0);
+            assertEquals(PlayerState.SPAWN, tempPlayer.getState());
+            assertEquals(null, match.getCurrentPlayer());
+            System.out.println(tempPlayer.selectablesToString());
+            assertEquals(2, tempPlayer.getSelectablePowerUps().size());    //can select two powerups
+            PowerUp selectedPowerUp = tempPlayer.getSelectablePowerUps().get(0);
+            PowerUp notSelectedPowerUp = tempPlayer.getSelectablePowerUps().get(1);
 
         gm.spawn(tempPlayer, selectedPowerUp); //he select the first (in order to discard and respawn onto)
 
-        assertEquals(match.getCurrentPlayer(), tempPlayer); //he becomes the current player
-        assertEquals(selectedPowerUp.getColor(), match.getCurrentPlayer().getSquarePosition().getColor());  //he is now on the spawnSquare of the discarded powerUp
-        assertFalse(match.getCurrentPlayer().getPowerUps().contains(selectedPowerUp));  //the selected powerUp is discarded
-        assertTrue(match.getCurrentPlayer().getPowerUps().contains(notSelectedPowerUp));    //the notSelected powerUp belongs to the player now
-        assertEquals(PlayerState.CHOOSE_ACTION, match.getCurrentPlayer().getState());       //he can now choose the action to take
-        System.out.println(match.getCurrentPlayer().getSquarePosition().getFullDescription());
-        System.out.println(match.getCurrentPlayer().getPowerUps());
-        System.out.println(tempPlayer.selectablesToString());
+            assertEquals(match.getCurrentPlayer(), tempPlayer); //he becomes the current player
+            assertEquals(selectedPowerUp.getColor(), match.getCurrentPlayer().getSquarePosition().getColor());  //he is now on the spawnSquare of the discarded powerUp
+            assertFalse(match.getCurrentPlayer().getPowerUps().contains(selectedPowerUp));  //the selected powerUp is discarded
+            assertTrue(match.getCurrentPlayer().getPowerUps().contains(notSelectedPowerUp));    //the notSelected powerUp belongs to the player now
+            assertEquals(PlayerState.CHOOSE_ACTION, match.getCurrentPlayer().getState());       //he can now choose the action to take
+            System.out.println(match.getCurrentPlayer().getSquarePosition().getFullDescription());
+            System.out.println(match.getCurrentPlayer().getPowerUps());
+            printSel(tempPlayer);
 
         gm.performAction(tempPlayer, tempPlayer.getSelectableActions().get(1));     //he wants to grab
-        assertEquals(PlayerState.GRAB_THERE, match.getCurrentPlayer().getState());  //he is in GRAB_THERE state
-        System.out.println(match.getCurrentPlayer().selectablesToString());
 
-        gm.grabThere(tempPlayer, tempPlayer.getSelectableSquares().get(0));         //he grabs in the first
-        printSel(tempPlayer);
-        gm.performAction(tempPlayer, tempPlayer.getSelectableActions().get(1));     //he wants to grab
-        printSel(tempPlayer);
+            assertEquals(PlayerState.GRAB_THERE, match.getCurrentPlayer().getState());  //he is in GRAB_THERE state
+            System.out.println(match.getCurrentPlayer().selectablesToString());
+            Square firstSquareSelected = tempPlayer.getSelectableSquares().get(0);  //he wants to grab in the first square (ammoSquare)
+            Cash tempCash = ((AmmoSquare)firstSquareSelected).getAmmo().getAmmos();
+            assertTrue(new Cash(0,0,0).isEqual(tempPlayer.getWallet()));
+
+        gm.grabThere(tempPlayer, firstSquareSelected);         //he grabs in the first square (ammoSquare)
+
+            assertEquals(PlayerState.CHOOSE_ACTION, tempPlayer.getState());
+            assertTrue(tempCash.isEqual(tempPlayer.getWallet()));
+            assertEquals(firstSquareSelected, tempPlayer.getSquarePosition());
+            System.out.println(tempPlayer.getPowerUps());
+            System.out.println(tempPlayer.getWallet());
+            Cash previousCash = tempPlayer.getWallet();
+            printSel(tempPlayer);
+
+        gm.performAction(tempPlayer, tempPlayer.getSelectableActions().get(1));     //he wants to grab (second action)
+
+            assertEquals(PlayerState.GRAB_THERE, tempPlayer.getState());
+            printSel(tempPlayer);
+            assertFalse(tempPlayer.getSelectableSquares().contains(firstSquareSelected));
+            assertEquals(2, match.getActionsCompleted());
+
         gm.grabThere(tempPlayer, tempPlayer.getSelectableSquares().get(0));
-        printSel(tempPlayer);
-        System.out.println(tempPlayer.getPowerUps());
-        System.out.println(tempPlayer.getWallet());
-    }
 
+            System.out.println(tempPlayer.getPowerUps());
+            System.out.println(tempPlayer.getWallet());
+            printSel(tempPlayer);
+    }
 
 }

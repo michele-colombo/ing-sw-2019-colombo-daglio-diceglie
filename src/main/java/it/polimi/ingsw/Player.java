@@ -3,7 +3,9 @@ package it.polimi.ingsw;
 import it.polimi.ingsw.exceptions.MustDiscardWeaponException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static it.polimi.ingsw.PlayerColor.*;
 import static it.polimi.ingsw.PlayerState.*;
@@ -41,10 +43,11 @@ public class Player {
      */
     private boolean isFirstPlayer;
     /**
-     * Weapons owned by a player. Can be empty.
+     * Weapons owned by a player, with their load status. Can be empty.
      * Contains maximum 3 weapons, or temporary 4 (before discarding).
      */
-    private List<Weapon> weapons;
+    //private List<Weapon> weapons;
+    private Map<Weapon, Boolean> weapons;
     /**
      * PowerUps owned by a player. can be empty.
      * Contains maxim 3 powerUps, or temporary 4 (before respawining).
@@ -134,7 +137,7 @@ public class Player {
         this.color = color;
         points = 0;
         isFirstPlayer = false;
-        weapons = new ArrayList<>();
+        weapons = new HashMap<>();
         powerUps = new ArrayList<>();
         state = IDLE;
         damageTrack = new NormalDamageTrack();
@@ -347,12 +350,14 @@ public class Player {
     }
 
     /**
-     * Returns the list of weapons owned by a player in a specific moment.
+     * Returns a list of weapons owned by a player in a specific moment.
      * They are maximum 3 or temporary 4 (before discarding)
-     * @return the reference to the actual list (can be modified)
+     * @return a clone of the list (modifies do not affect weapons of the player)
      */
     public List<Weapon> getWeapons() {
-        return weapons;
+        List<Weapon> result = new ArrayList<>();
+        result.addAll(weapons.keySet());
+        return result;
     }
 
     /**
@@ -361,9 +366,9 @@ public class Player {
      * //throws MustDiscardWeaponException if the player has 4 weapons after adding (weapon added anyway)
      */
     public void addWeapon (Weapon w) {
-        if (w != null && weapons.indexOf(w) == -1){
-            weapons.add(w);
-            if (weapons.size() > 3) {
+        if (w != null && getWeapons().indexOf(w) == -1){
+            weapons.put(w, true);
+            if (getWeapons().size() > 3) {
                 //throw new MustDiscardWeaponException();
             }
         } else {
@@ -372,13 +377,23 @@ public class Player {
     }
 
     /**
+     * Remove a weapon from the player
+     * @param w the weapon to remove
+     */
+    public void removeWeapon(Weapon w){
+        if (w!=null && getWeapons().indexOf(w) != -1){
+            weapons.remove(w);
+        }
+    }
+
+    /**
      * Gets the weapons currently loaded
-     * @return temporary generated list of loaded weapons
+     * @return clone list of loaded weapons
      */
     public List<Weapon> getLoadedWeapons(){
         List<Weapon> result = new ArrayList<>();
-        for (Weapon w : weapons){
-            if (w.isLoaded()) {
+        for (Weapon w : getWeapons()){
+            if (weapons.get(w) == true) {
                 result.add(w);
             }
         }
@@ -387,12 +402,12 @@ public class Player {
 
     /**
      * Gets the weapons currently unloaded
-     * @return temporary generated list of unloaded weapons
+     * @return clone list of unloaded weapons
      */
     public List<Weapon> getUnloadedWeapons(){
         List<Weapon> result = new ArrayList<>();
-        for (Weapon w : weapons){
-            if (!w.isLoaded()) {
+        for (Weapon w : getWeapons()){
+            if (weapons.get(w) == false) {
                 result.add(w);
             }
         }
@@ -400,21 +415,7 @@ public class Player {
     }
 
     /**
-     * Removes a weapon from the player, if it is present
-     * @param w weapon to remove
-     * @return false if weapon was absent
-     */
-    public boolean discardWeapon(Weapon w){
-        if (w != null){
-            return weapons.remove(w);
-        } else {
-            assert(false): "trying to remove null weapon";
-            return false;
-        }
-    }
-
-    /**
-     * Gets the powerup currently holded by the player
+     * Gets the powerup currently hold by the player
      * @return reference to the actual list of PowerUp
      */
     public List<PowerUp> getPowerUps() {
@@ -591,5 +592,16 @@ public class Player {
         }
         result.append("] ");
         return result.toString();
+    }
+
+    public boolean isLoaded(Weapon w){
+        if (getWeapons().contains(w)){
+            return weapons.get(w);
+        }
+        else return false;
+    }
+
+    public void reload(Weapon w){
+        weapons.replace(w, true);
     }
 }

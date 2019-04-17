@@ -49,4 +49,8 @@ public class AmmoSquare extends Square{
             ammo = s.drawAmmoTile();
         }
     }
+
+    public AmmoTile getAmmo() {
+        return ammo;
+    }
 }

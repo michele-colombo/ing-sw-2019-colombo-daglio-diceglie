@@ -328,4 +328,20 @@ public class Match {
     public boolean isTurnCompleatable() {
         return turnCompleatable;
     }
+
+    public boolean isFrenzyOn() {
+        return frenzyOn;
+    }
+
+    public int getNumberOfActions() {
+        return numberOfActions;
+    }
+
+    public int getActionsCompleted() {
+        return actionsCompleted;
+    }
+
+    public boolean isOnlyReload() {
+        return onlyReload;
+    }
 }

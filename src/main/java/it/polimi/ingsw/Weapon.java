@@ -5,7 +5,6 @@ import java.util.List;
 
 public class Weapon{
     private String name;
-    private boolean isLoaded;
     private Cash cost;
     private Cash discountedCost;
     private Color color;
@@ -19,10 +18,7 @@ public class Weapon{
         this.name = name;
         this.cost = cost;
         this.color = color;
-
-        isLoaded= true;
         discountedCost= cost.subtract(new Cash(color, 1));
-
         myModes= new ArrayList<Mode>();
     }
 
@@ -47,14 +43,6 @@ public class Weapon{
 
     public void addMode(Mode modeToAdd){
         myModes.add(modeToAdd);
-    }
-
-    public boolean isLoaded() {
-        return isLoaded;
-    }
-
-    public void reload(boolean loaded) {
-        isLoaded = true;
     }
 
     public List<Mode> getSelectableModes(List<Mode> alreadySelected){
