@@ -4,31 +4,84 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Action {
+    /**
+     * List of microActions composing the current action
+     */
     private List<MicroAction> microActions;
-
+    /**
+     * Support variable to store a SpawnSquare, if one is selected in the current action.
+     * used for grabbing a weapon.
+     */
     private SpawnSquare currSpawnSquare;
+    /**
+     * Support variable to store a Weapon, if one is selected in the current action.
+     * Used for paying a weapon and shoot
+     */
     private Weapon currWeapon;
+    /**
+     * Support variable to store a Mode, if one is selected in the current action.
+     * Used for payment.
+     */
     private Mode currMode;
+    /**
+     * Stores the modes selected in the current action.
+     * Used for create the list of selectable modes, according to their precedence
+     */
     private List<Mode> selectedModes;
+    /**
+     * Support variable to store the effects currently in process.
+     * It is updated by adding a mode or using a power up
+     */
     private List<Effect> currEffects;
+    /**
+     * Support variable to keep track of the player damaged (not just marked) in the current shoot action
+     */
     private List<Player> damaged;
+    /**
+     * If true, the action counter has to be incremented.
+     * True for actual turn actions (move, grab, shoot)
+     */
     private boolean incrementActionCounter;
+    /**
+     * If true, the player can only reloads weapon.
+     * Since the reload has to be the last action of the turn, once reloaded one weapon
+     * is only possible to reload weapons.
+     */
     private boolean activateOnlyReloads;
 
 
+    /**
+     * Constructs an action specifying the effects on the turn status
+     * @param incrementActionCounter true if action has to increment the action counter (move, grab, shoot)
+     * @param activateOnlyReloads true for reload action
+     */
     public Action (boolean incrementActionCounter, boolean activateOnlyReloads) {
         microActions = new ArrayList<>();
         selectedModes = new ArrayList<>();
         currEffects = new ArrayList<>();
+        damaged = new ArrayList<>();
         this.incrementActionCounter = incrementActionCounter;
         this.activateOnlyReloads = activateOnlyReloads;
+        currSpawnSquare = null;
+        currWeapon = null;
+        currMode = null;
     }
 
+    /**
+     * Constructs an action specifying the effects on the turn status and adding the first microAction
+     * @param incrementActionCounter true if action has to increment the action counter (move, grab, shoot)
+     * @param activateOnlyReloads true for reload action
+     * @param microAction the first microAction of the action
+     */
     public Action (boolean incrementActionCounter, boolean activateOnlyReloads, MicroAction microAction) {
         this(incrementActionCounter, activateOnlyReloads);
         add(microAction);
     }
 
+    /**
+     * Builds a string according to the microActions present (with the multiplicity for movements)
+     * @return
+     */
     @Override
     public String toString(){
         String s = "";
@@ -46,6 +99,10 @@ public class Action {
         this.currMode = currMode;
     }
 
+    /**
+     * Returns the list of microAction
+     * @return the reference to the actual list (can be modified)
+     */
     public List<MicroAction> getMicroActions() {
         return microActions;
     }
@@ -54,14 +111,26 @@ public class Action {
         return currWeapon;
     }
 
+    /**
+     * Returns the list of modes selected in the current action
+     * @return the reference to the actual list (can be modified)
+     */
     public List<Mode> getSelectedModes() {
         return selectedModes;
     }
 
+    /**
+     * Returns the list of effects currently present in the action
+     * @return the reference to the actual list (can be modified)
+     */
     public List<Effect> getCurrEffects() {
         return currEffects;
     }
 
+    /**
+     * Adds a microAction to the list. It is used to build the action.
+     * @param microAction
+     */
     public void add (MicroAction microAction) {
         if (microAction != null) {
             microActions.add(microAction);
@@ -89,10 +158,10 @@ public class Action {
     }
 
     public void setSelectedModes(List<Mode> selectedModes) {
-        this.selectedModes = selectedModes;
+        this.selectedModes = selectedModes; //should set a shallow copy instead?
     }
 
     public void setCurrEffects(List<Effect> currEffects) {
-        this.currEffects = currEffects;
+        this.currEffects = currEffects; //should set a shallow copy instead?
     }
 }
