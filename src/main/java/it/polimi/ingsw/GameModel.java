@@ -1,7 +1,5 @@
 package it.polimi.ingsw;
 
-import org.omg.PortableInterceptor.DISCARDING;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -273,7 +271,7 @@ public class GameModel {
             p.setState(CHOOSE_ACTION);
             p.resetSelectables();
             p.setSelectableActions(selectableActions);
-            if (match.isTurnCompleatable()){
+            if (match.isTurnCompletable()){
                 p.setSelectableCommands(Command.OK);
             }
             //createMatchBackup();

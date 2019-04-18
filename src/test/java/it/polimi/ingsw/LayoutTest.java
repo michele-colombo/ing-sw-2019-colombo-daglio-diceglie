@@ -76,7 +76,7 @@ public class LayoutTest {
         layout.addSquare(s1);
         layout.addSquare(s2);
         layout.addSquare(s3);
-        assertEquals(1, layout.getSquaresInDistanceRange(startingSquare, 2, 4).size());
+        assertEquals(2, layout.getSquaresInDistanceRange(startingSquare, 2, 4).size());
         assertEquals(1, layout.getSquaresInDistanceRange(startingSquare, 1, 1).size());
     }
 
@@ -96,8 +96,8 @@ public class LayoutTest {
         expected.add(layout.getSquare(2,0));
         expected.add(layout.getSquare(3,0));
 
-        //assertTrue(expected.containsAll(layout.getSquaresInDistanceRange(centre, 0,2)));
-        //assertTrue(layout.getSquaresInDistanceRange(centre, 0,2).containsAll(expected));
+        assertTrue(expected.containsAll(layout.getSquaresInDistanceRange(centre, 0,2)));
+        assertTrue(layout.getSquaresInDistanceRange(centre, 0,2).containsAll(expected));
     }
 
     @Test

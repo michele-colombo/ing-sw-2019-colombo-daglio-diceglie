@@ -114,7 +114,7 @@ public class Layout {
     }
 
     /**
-     * Returns all the visible squares whose distance, from startingSquare, is between min (included) and max (included)
+     * Returns all the squares whose distance, from startingSquare, is between min (included) and max (included)
      * @param startingSquare The square from which calculates the distance
      * @param min Lowest distance
      * @param max Highest distance
@@ -123,7 +123,7 @@ public class Layout {
     public List<Square> getSquaresInDistanceRange(Square startingSquare, int min, int max){
         List<Square> inRange = new ArrayList<>();
         for(Square sq : squares){
-            if((getDistance(startingSquare, sq) >= min) && (getDistance(startingSquare, sq) <= max) && getVisibleSquares(startingSquare).contains(sq)){
+            if((getDistance(startingSquare, sq) >= min) && (getDistance(startingSquare, sq) <= max)){
                 inRange.add(sq);
             }
         }
