@@ -7,9 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static it.polimi.ingsw.Color.*;
-import static it.polimi.ingsw.PlayerColor.*;
-import static it.polimi.ingsw.PlayerColor.GREEN;
 import static org.junit.Assert.*;
 
 public class PlayerTest {
@@ -29,7 +26,7 @@ public class PlayerTest {
         assertFalse(p.canAfford(new Cash(6, 1, 2)));
         assertFalse(p.canAfford(new Cash(5, 2, 2)));
         assertFalse(p.canAfford(new Cash(5, 1, 3)));
-        p.discardPowerUp(po1);
+        p.removePowerUp(po1);
         assertFalse(p.canAfford(new Cash(5, 1, 2)));
         assertTrue(p.canAfford(new Cash(4,1,2)));
         assertTrue(p.canAfford(new Cash(2, 1, 2)));

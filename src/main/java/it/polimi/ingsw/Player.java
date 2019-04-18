@@ -439,7 +439,7 @@ public class Player {
      * @param po powerup to remove
      * @return false if the powerup was absent
      */
-    public boolean discardPowerUp(PowerUp po){
+    public boolean removePowerUp(PowerUp po){
         if (po != null){
             return powerUps.remove(po);
         } else {
@@ -576,6 +576,7 @@ public class Player {
             result.append("wp:\n");
             for (Weapon w : selectableWeapons) {
                 result.append("\t"+selectableWeapons.indexOf(w)+")"+w.getName());
+                if (state == GRAB_WEAPON) result.append(" ("+w.getDiscountedCost()+")");
             }
             result.append("\n");
         }
@@ -634,5 +635,15 @@ public class Player {
 
     public void reload(Weapon w){
         weapons.replace(w, true);
+    }
+
+    public List<PowerUp> getPowerUpsOfColors(Cash colors){
+        List<PowerUp> result = new ArrayList<>();
+        for (PowerUp po : powerUps){
+            if(colors.containsColor(po.getColor())){
+                result.add(po);
+            }
+        }
+        return result;
     }
 }
