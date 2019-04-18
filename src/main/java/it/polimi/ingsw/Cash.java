@@ -1,5 +1,7 @@
 package it.polimi.ingsw;
 
+import sun.awt.AWTIcon32_security_icon_yellow16_png;
+
 public class Cash {
     private int blue;
     private int red;
@@ -32,7 +34,7 @@ public class Cash {
 
     @Override
     public String toString(){
-        return "b: "+blue+" | r: "+red+" | y: "+yellow+" ";
+        return "b:"+blue+"|r:"+red+"|y:"+yellow;
     }
 
     public int getBlue() {
@@ -107,5 +109,22 @@ public class Cash {
 
     public void setZero(){
         set(0, 0, 0);
+    }
+
+    public boolean containsColor(Color c){
+        switch (c){
+            case RED:
+                if (red > 0) return true;
+                break;
+            case BLUE:
+                if (blue > 0 ) return true;
+                break;
+            case YELLOW:
+                if (yellow > 0) return true;
+                break;
+            default:
+                return false;
+        }
+        return false;
     }
 }

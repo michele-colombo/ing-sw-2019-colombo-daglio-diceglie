@@ -90,7 +90,13 @@ public class PlayingTest {
 
                     switch (tokens[0]){
                         case "sq":
-                            Square sq = p.getSelectableSquares().get(Integer.parseInt(tokens[1].trim()));
+                            Square sq;
+                            try {
+                                sq = p.getSelectableSquares().get(Integer.parseInt(tokens[1].trim()));
+                            } catch (IndexOutOfBoundsException e){
+                                System.out.println("wrong square selection");
+                                break;
+                            }
                             switch (p.getState()){
                                 case GRAB_THERE:
                                     gm.grabThere(p, sq);
@@ -107,7 +113,13 @@ public class PlayingTest {
                             }
                             break;
                         case "pow":
-                            PowerUp po = p.getSelectablePowerUps().get(Integer.parseInt(tokens[1].trim()));
+                            PowerUp po;
+                            try {
+                                po = p.getSelectablePowerUps().get(Integer.parseInt(tokens[1].trim()));
+                            } catch (IndexOutOfBoundsException e){
+                                System.out.println("wrong powerup selection");
+                                break;
+                            }
                             switch (p.getState()){
                                 case SPAWN:
                                     gm.spawn(p, po);
@@ -121,7 +133,13 @@ public class PlayingTest {
                             }
                             break;
                         case "act":
-                            Action act = p.getSelectableActions().get(Integer.parseInt(tokens[1].trim()));
+                            Action act;
+                            try {
+                                act = p.getSelectableActions().get(Integer.parseInt(tokens[1].trim()));
+                            } catch (IndexOutOfBoundsException e){
+                                System.out.println("wrong action selection");
+                                break;
+                            }
                             switch (p.getState()){
                                 case CHOOSE_ACTION:
                                     gm.performAction(p, act);
@@ -132,7 +150,13 @@ public class PlayingTest {
                             }
                             break;
                         case "wp":
-                            Weapon wp = p.getSelectableWeapons().get(Integer.parseInt(tokens[1].trim()));
+                            Weapon wp;
+                            try {
+                                wp = p.getSelectableWeapons().get(Integer.parseInt(tokens[1].trim()));
+                            } catch (IndexOutOfBoundsException e){
+                                System.out.println("wrong weapon selection");
+                                break;
+                            }
                             switch (p.getState()){
                                 case GRAB_WEAPON:
                                     gm.grabWeapon(p, wp);
@@ -153,7 +177,13 @@ public class PlayingTest {
                             }
                             break;
                         case "mod":
-                            Mode mod = p.getSelectableModes().get(Integer.parseInt(tokens[1].trim()));
+                            Mode mod;
+                            try {
+                                mod = p.getSelectableModes().get(Integer.parseInt(tokens[1].trim()));
+                            } catch (IndexOutOfBoundsException e){
+                                System.out.println("wrong square selection");
+                                break;
+                            }
                             switch (p.getState()){
                                 case CHOOSE_MODE:
                                     gm.addMode(p, mod);
@@ -165,10 +195,19 @@ public class PlayingTest {
                             break;
                         case "cmd":
                             //todo: complete with all possible commands
-                            Command cmd = p.getSelectableCommands().get(Integer.parseInt(tokens[1].trim()));
+                            Command cmd;
+                            try {
+                                cmd = p.getSelectableCommands().get(Integer.parseInt(tokens[1].trim()));
+                            } catch (IndexOutOfBoundsException e){
+                                System.out.println("wrong square selection");
+                                break;
+                            }
                             switch (p.getState()){
                                 case PAYING:
                                     if (cmd == Command.OK) gm.completePayment(p);
+                                    break;
+                                case CHOOSE_ACTION:
+                                    if (cmd == Command.OK) gm.endTurn();
                                     break;
                                 default:
                                     System.out.println("selected a command in the wrong state");
@@ -176,7 +215,13 @@ public class PlayingTest {
                             }
                             break;
                         case "pl":
-                            Player pl = p.getSelectablePlayers().get(Integer.parseInt(tokens[1].trim()));
+                            Player pl;
+                            try {
+                                pl = p.getSelectablePlayers().get(Integer.parseInt(tokens[1].trim()));
+                            } catch (IndexOutOfBoundsException e){
+                                System.out.println("wrong square selection");
+                                break;
+                            };
                             switch (p.getState()){
                                 case SHOOT_TARGET:
                                     //todo

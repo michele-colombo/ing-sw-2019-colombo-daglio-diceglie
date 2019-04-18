@@ -60,7 +60,7 @@ public class GameModel {
     }
 
     public void spawn(Player p, PowerUp po){
-        p.discardPowerUp(po);
+        p.removePowerUp(po);
         match.spawn(p, po.getColor());
         p.setBorn(true);    //could be moved inside Player.spawn()
         p.setState(IDLE);
@@ -136,12 +136,7 @@ public class GameModel {
             }
         } else {
             p.setNextState(GRAB_WEAPON);
-            p.setState(PAYING);
-            p.resetSelectables();
-            if ((p.getPending().subtract(p.getCredit())).lessEqual(p.getWallet())){
-                p.setSelectableCommands(Command.OK);
-            }
-            p.setSelectablePowerUps(p.getPowerUps());
+            setupForPaying(p);
         }
     }
 
@@ -178,9 +173,7 @@ public class GameModel {
         } else {
             p.setNextState(CHOOSE_MODE);
             match.getCurrentAction().setCurrMode(m);
-            p.setState(PAYING);
-            p.resetSelectables();
-            p.setSelectablePowerUps(p.getPowerUps());
+            setupForPaying(p);
         }
     }
 
@@ -206,16 +199,26 @@ public class GameModel {
         }
     }
 
+    private void setupForPaying(Player p){
+        p.setState(PAYING);
+        p.resetSelectables();
+        if ((p.getPending().subtract(p.getCredit())).lessEqual(p.getWallet())){     //the player can complete the payment at the moment
+            if (p.getPowerUpsOfColors(p.getPending().subtract(p.getCredit())).isEmpty()){
+                completePayment(p);
+            } else {
+                p.setSelectableCommands(Command.OK);
+                p.setSelectablePowerUps(p.getPowerUpsOfColors(p.getPending().subtract(p.getCredit())));
+            }
+        } else {
+            p.setSelectablePowerUps(p.getPowerUpsOfColors(p.getPending().subtract(p.getCredit())));
+        }
+    }
+
     public void payWith(Player p, PowerUp po){
         p.setCredit(p.getCredit().sum(new Cash(po.getColor(), 1)));
-        p.discardPowerUp(po);
+        p.removePowerUp(po);
         match.getStackManager().discardPowerUp(po);
-        p.resetSelectables();
-        if ((p.getPending().subtract(p.getCredit())).lessEqual(p.getWallet())){
-            p.setSelectableCommands(Command.OK);
-        }
-        p.setSelectablePowerUps(p.getPowerUps());    //todo: check if pending sum has been reached
-        p.setState(PAYING);
+        setupForPaying(p);
     }
 
     public void completePayment(Player p){
@@ -246,9 +249,7 @@ public class GameModel {
         } else {
             p.setNextState(RELOAD);
             match.getCurrentAction().setCurrWeapon(w);
-            p.setState(PAYING);
-            p.resetSelectables();
-            p.setSelectablePowerUps(p.getPowerUps());
+            setupForPaying(p);
         }
     }
 
@@ -266,15 +267,28 @@ public class GameModel {
         Player p = match.getCurrentPlayer();
         List<Action> selectableActions = match.createSelectablesAction(match.getCurrentPlayer());
         if (selectableActions.isEmpty()){
-            //todo endTurn();
+            endTurn();
         } else {
             p.setState(CHOOSE_ACTION);
             p.resetSelectables();
             p.setSelectableActions(selectableActions);
-            if (match.isTurnCompletable()){
+            if (match.isTurnCompleatable()){
                 p.setSelectableCommands(Command.OK);
             }
             //createMatchBackup();
+        }
+    }
+
+    public void endTurn(){
+        match.getCurrentPlayer().setState(IDLE);
+        match.getCurrentPlayer().resetSelectables();
+        List<Player> deadPlayers = match.endTurnCheck();
+        if (deadPlayers.isEmpty()){
+            beginNextTurn();
+        } else {
+            for (Player p : deadPlayers) {
+                prepareForSpawning(p, false);
+            }
         }
     }
 
