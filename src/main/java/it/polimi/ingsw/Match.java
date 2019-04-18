@@ -8,19 +8,56 @@ import java.util.Map;
 import static it.polimi.ingsw.PowerUpType.*;
 
 public class Match {
+    /**
+     * It's the selected layout of the match
+     */
     private Layout layout;
+    /**
+     * It's the stackManager
+     */
     private StackManager stackManager;
+    /**
+     * It contains the list of the players
+     */
     private List<Player> players;
+    /**
+     * It's the KillShotTrack of the match
+     */
     private KillShotTrack killShotTrack;
+    /**
+     * It's true if frenzy mode is on, otherwise it's false
+     */
     private boolean frenzyOn;
+    /**
+     * It's the number of action that the current player can do
+     */
     private int numberOfActions;
+    /**
+     * It's the number of action completed by the current player
+     */
     private int actionsCompleted;
+    /**
+     * It's true if the current player can only reload his weapons, otherwise it's false
+     */
     private boolean onlyReload;
-    private boolean turnCompleatable;
+    /**
+     * It's true if the turn is completable, otherwise it's false
+     */
+    private boolean turnCompletable;
+    /**
+     * It's the reference to the current action
+     */
     private Action currentAction;
+    /**
+     * It's the reference to the current player
+     */
     private Player currentPlayer;
 
-
+    /**
+     * It creates the match with the selected layout configuration and number of skulls
+     * @param layoutConfig It's the number of the selected layout
+     * @param skulls It's the number of skull of the KillShotTrack
+     */
     public Match(int layoutConfig, int skulls){
         layout = new Layout();
         layout.initLayout(layoutConfig);
@@ -59,6 +96,11 @@ public class Match {
         this.currentPlayer = currentPlayer;
     }
 
+    /**
+     * Returns all the players on squares
+     * @param squares The squares to be analyzed
+     * @return An ArrayList containing found players; it could be empty
+     */
     public List<Player> getPlayersOn(List<Square> squares){
         List<Player> squaresOccupied = new ArrayList<>();
         for(Player p : players){
@@ -77,6 +119,10 @@ public class Match {
         this.frenzyOn = true;
     }
 
+    /**
+     * Return the winner or the winners of the match
+     * @return An ArrayList containing the winning player/players (in case of tie)
+     */
     public List<Player> getWinners(){
         List<Player> almostWinners = getMaxPoints();
         if(almostWinners.size() == 1){
@@ -104,6 +150,10 @@ public class Match {
         }
     }
 
+    /**
+     * Return all the players with highest number of points (considering both player's point and KillShotTrack)
+     * @return An ArrayList containing players
+     */
     private List<Player> getMaxPoints(){
         List<Player> maxPoints = null;
         Map<Player, Integer> finalPoints = getFinalPoints();
@@ -121,6 +171,10 @@ public class Match {
         return maxPoints;
     }
 
+    /**
+     * Returns a map containing each player and his own points
+     * @return An HashMap
+     */
     private Map<Player, Integer> getAllPoints(){
         Map<Player, Integer> points = new HashMap<>();
         for(Player p : players){
@@ -129,6 +183,10 @@ public class Match {
         return points;
     }
 
+    /**
+     * Returns a map containing all the players who has killed anyone and how many points they get from the killShotTrack
+     * @return Ah HashMap
+     */
     private Map<Player, Integer> getFinalPoints(){
         Map<Player, Integer> finalPoints = getAllPoints();
         Map<Player, Integer> killShotTrackPoints = killShotTrack.score();
@@ -138,10 +196,21 @@ public class Match {
         return finalPoints;
     }
 
+    /**
+     * Set the position of a player to the proper SpawnPoint
+     * @param p The player to be spawned
+     * @param c The color of the SpawnPoint
+     */
     public void spawn(Player p, Color c){
         p.setSquarePosition(layout.getSpawnPoint(c));
     }
 
+    /**
+     *  At the end of the turn, check if some players is dead: in this case, their DamageTrack will be scored. Then,
+     *  if there are at least two deaths, the active player will get an additional point. If frenzy mode is true, switches
+     *  to frenzy all the dead players and, in the end, calls resetAfterDeathAll on them
+     * @return An ArrayList containing all the dead players; it could be empty
+     */
     public List<Player> endTurnCheck(){
         List<Player> deadPlayers = getDeadPlayers();
         if(deadPlayers.size() > 0){
@@ -215,7 +284,7 @@ public class Match {
                 }
             }
         } else {
-            turnCompleatable = true;
+            turnCompletable = true;
             if (p.getUnloadedWeapons().size() > 0){
                 result.add(new Action(false, true, new Reload()));
             }
@@ -242,7 +311,7 @@ public class Match {
         } else {
             numberOfActions = 2;
         }
-        turnCompleatable = false;
+        turnCompletable = false;
         actionsCompleted = 0;
         onlyReload = false;
         return createSelectablesAction(p);
@@ -291,18 +360,30 @@ public class Match {
         return frenzyOn;
     }
 
+    /**
+     * Substitutes player's damageTrack with a FrenzyDamageTrack
+     * @param deadPlayers Only dead players can switch to frenzy
+     */
     private void switchToFrenzyAll(List<Player> deadPlayers){
         for(Player p : deadPlayers){
             p.switchToFrenzy();
         }
     }
 
+    /**
+     * Resets all dead players' damage track (same marks, same skulls, no damages)
+     * @param deadPlayers Only dead players can reset own damage track
+     */
     private void resetAfterDeathAll(List<Player> deadPlayers){
         for(Player p : deadPlayers){
             p.getDamageTrack().resetAfterDeath();
         }
     }
 
+    /**
+     * Returns all the dead players
+     * @return An ArrayList containing all the dead players
+     */
     private List<Player> getDeadPlayers(){
         List<Player> deadPlayers = new ArrayList<>();
         for(Player p : players){
@@ -313,6 +394,10 @@ public class Match {
         return deadPlayers;
     }
 
+    /**
+     * At the end of the turn, if a player is dead, each other player gets his own points
+     * @param points A map containing how many points will be added to each other player
+     */
     private void scoreDamageTrack(Map<Player, Integer> points){
         for(Player p : players){
             if(points.containsKey(p)){
@@ -325,8 +410,8 @@ public class Match {
      * checks if the player can complete his turn in the current moment
      * @return
      */
-    public boolean isTurnCompleatable() {
-        return turnCompleatable;
+    public boolean isTurnCompletable() {
+        return turnCompletable;
     }
 
     public boolean isFrenzyOn() {
