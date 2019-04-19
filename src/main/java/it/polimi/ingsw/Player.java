@@ -50,7 +50,7 @@ public class Player {
     private Map<Weapon, Boolean> weapons;
     /**
      * PowerUps owned by a player. can be empty.
-     * Contains maxim 3 powerUps, or temporary 4 (before respawining).
+     * Contains maxim 3 powerUps, or temporary 4 (before respawning).
      */
     private List<PowerUp> powerUps;
     /**
@@ -360,6 +360,10 @@ public class Player {
         return result;
     }
 
+    public Map<Weapon, Boolean> getWeaponAsMap(){
+        return weapons;
+    }
+
     /**
      * Adds a weapon to the player.
      * @param w the weapon to be added
@@ -645,5 +649,17 @@ public class Player {
             }
         }
         return result;
+    }
+
+    public void setPoints(int points){
+        this.points = points;
+    }
+
+    public void setWeapons(Map<Weapon, Boolean> weapons){
+        this.weapons = weapons;
+    }
+
+    public void setPowerUps(List<PowerUp> powerUps){
+        this.powerUps = powerUps;
     }
 }

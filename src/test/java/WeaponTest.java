@@ -1,7 +1,7 @@
 import it.polimi.ingsw.Cash;
 import it.polimi.ingsw.Mode;
 import it.polimi.ingsw.Weapon;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static it.polimi.ingsw.Color.*;
 

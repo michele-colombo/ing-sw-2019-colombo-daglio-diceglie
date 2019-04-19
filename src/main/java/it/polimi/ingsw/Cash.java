@@ -1,6 +1,6 @@
 package it.polimi.ingsw;
 
-import sun.awt.AWTIcon32_security_icon_yellow16_png;
+//import sun.awt.AWTIcon32_security_icon_yellow16_png;
 
 public class Cash {
     private int blue;

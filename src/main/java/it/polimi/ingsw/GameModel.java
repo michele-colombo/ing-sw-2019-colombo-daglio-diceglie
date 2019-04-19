@@ -272,7 +272,7 @@ public class GameModel {
             p.setState(CHOOSE_ACTION);
             p.resetSelectables();
             p.setSelectableActions(selectableActions);
-            if (match.isTurnCompleatable()){
+            if (match.isTurnCompletable()){
                 p.setSelectableCommands(Command.OK);
             }
             //createMatchBackup();

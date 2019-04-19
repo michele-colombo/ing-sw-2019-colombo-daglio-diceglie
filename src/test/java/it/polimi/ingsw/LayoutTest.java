@@ -1,6 +1,7 @@
 package it.polimi.ingsw;
 
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,7 +14,7 @@ import static it.polimi.ingsw.Border.*;
 import static it.polimi.ingsw.Color.*;
 import static it.polimi.ingsw.Direction.EAST;
 import static it.polimi.ingsw.Direction.WEST;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class LayoutTest {
 

@@ -1,9 +1,10 @@
 package it.polimi.ingsw;
 
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 import sun.util.resources.cldr.zh.CalendarData_zh_Hans_SG;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CashTest {
 

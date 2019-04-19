@@ -1,13 +1,13 @@
 package it.polimi.ingsw;
 
 import org.ietf.jgss.GSSManager;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.omg.CORBA.PolicyError;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class GameModelTest {
 

@@ -7,6 +7,9 @@ import java.util.Map;
 
 import static it.polimi.ingsw.PowerUpType.*;
 
+/**
+ * It represents the current match
+ */
 public class Match {
     /**
      * It's the selected layout of the match
@@ -406,6 +409,9 @@ public class Match {
         }
     }
 
+    public void createBackup(){
+        ;
+    }
     /**
      * checks if the player can complete his turn in the current moment
      * @return
@@ -428,5 +434,13 @@ public class Match {
 
     public boolean isOnlyReload() {
         return onlyReload;
+    }
+
+    public void restoreBackup(Player p, Backup backup){
+        backup.restore(p);
+    }
+
+    public void restoreBackupToAll(Backup backup){
+        backup.restoreAll(players);
     }
 }
