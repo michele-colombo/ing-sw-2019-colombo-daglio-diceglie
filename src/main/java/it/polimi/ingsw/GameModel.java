@@ -31,10 +31,24 @@ public class GameModel {
         }
     }
 
-    //TODO check name uniqueness and throw exceptions
-    public boolean addPlayer (Player p){
-        activePlayers.add(p);
-        return true;    //will be changed
+    public boolean initMatch(int skull, int config){
+        if (match == null){
+            match = new Match(skull, config);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    //TODO check name and color uniqueness and throw exceptions
+    public synchronized boolean addPlayer (Player p){
+        if(!nameTaken(p.getName()) && !colorTaken(p.getColor())){
+            activePlayers.add(p);
+            notifyAll();
+            return true;
+        }
+        notifyAll();
+        return false;
     }
 
     //TODO check number of players, etc.
@@ -290,6 +304,28 @@ public class GameModel {
                 prepareForSpawning(p, false);
             }
         }
+    }
+
+    private boolean nameTaken(String name){
+        for(Player p : activePlayers){
+            if(p.getName().equals(name)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean colorTaken(PlayerColor color){
+        for(Player p : activePlayers){
+            if(p.getColor() == color){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public int getNumberOfPlayers(){
+        return activePlayers.size();
     }
 
 

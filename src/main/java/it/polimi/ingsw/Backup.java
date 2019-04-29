@@ -67,8 +67,7 @@ public class Backup {
     private Map<Player, List<PowerUp>> backupPowerUps(List<Player> players){
         Map<Player, List<PowerUp>> backup = new HashMap<>();
         for(Player p : players){
-            List<PowerUp> powerUps = new ArrayList<>(p.getPowerUps());
-            backup.put(p, p.getPowerUps());
+            backup.put(p, new ArrayList<>(p.getPowerUps()));
         }
         return backup;
     }
