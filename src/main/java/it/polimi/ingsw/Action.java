@@ -50,6 +50,13 @@ public class Action {
     private boolean activateOnlyReloads;
 
 
+    //added by Giuseppe Diceglie
+    /**
+     * it's the square chosen by the player. useful for many weapons
+     */
+    private Square chosenSquare;
+
+
     /**
      * Constructs an action specifying the effects on the turn status
      * @param incrementActionCounter true if action has to increment the action counter (move, grab, shoot)
@@ -163,5 +170,26 @@ public class Action {
 
     public void setCurrEffects(List<Effect> currEffects) {
         this.currEffects = currEffects; //should set a shallow copy instead?
+    }
+
+    //added by Giuseppe Diceglie
+
+    public Player getLastDamaged(){
+        if(!damaged.isEmpty()) {
+            return damaged.get(damaged.size() - 1);
+        }
+        return null;
+    }
+
+    public List<Player> getDamaged(){
+        return damaged;
+    }
+
+    public void addDamaged(Player damagedToAdd){
+        damaged.add(damagedToAdd);
+    }
+
+    public Square getChosenSquare() {
+        return chosenSquare;
     }
 }

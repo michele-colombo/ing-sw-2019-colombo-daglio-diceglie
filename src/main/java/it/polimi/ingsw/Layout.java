@@ -411,8 +411,8 @@ public class Layout {
      * le configurazioni del tabellone rifereite al manuale di gioco sono:
      * -0 == piccola "ottima per 4 o 5 giocatori"
      * -1 == quella grande che e' disegnata su entrambe le pagine
-     * -1 == piccola "ottima per qualsiasi numero di giocatori
-     * -1 == picoola "ottima per 3 o 4 giocatori"
+     * -2 == piccola "ottima per qualsiasi numero di giocatori
+     * -3 == picoola "ottima per 3 o 4 giocatori"
      *
      * @param config configuration code
      * @return true if the configuration exists, false otherwise
@@ -531,6 +531,21 @@ public class Layout {
         for (Square s : squares){
             s.refill(sm);
         }
+    }
+
+    //added by Giuseppe Diceglie
+    public List<Square> getFurtherSquares(Square startingSquare, int distMin){
+        List<Square> result= new ArrayList<>();
+        result.addAll( getSquares());
+        if(distMin>0) {
+            result.removeAll(getSquaresInDistanceRange(startingSquare, 0, distMin - 1));
+        }
+
+        return result;
+    }
+
+    public List<Square> getCloserSquares(Square startingSquare, int distMax){
+        return getSquaresInDistanceRange(startingSquare, 0, distMax);
     }
 
 

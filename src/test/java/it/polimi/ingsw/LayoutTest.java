@@ -5,15 +5,11 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Queue;
-import java.util.Scanner;
+import java.util.*;
 
 import static it.polimi.ingsw.Border.*;
 import static it.polimi.ingsw.Color.*;
-import static it.polimi.ingsw.Direction.EAST;
-import static it.polimi.ingsw.Direction.WEST;
+import static it.polimi.ingsw.Direction.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class LayoutTest {
@@ -358,5 +354,52 @@ public class LayoutTest {
 
         assertTrue(l.getVisibleSquares(l.getSquare(3,2)).contains(l.getSquare(3,2)));
         assertTrue(l.getVisibleSquares(l.getSquare(3,2)).size() == 8);
+    }
+
+    @Test
+    public void furthercloser(){
+        Layout l= new Layout();
+        l.initLayout(0);
+
+        List<Square> trovatiAMano= new ArrayList<>();
+        trovatiAMano.add(l.getSquare(2, 0));
+        trovatiAMano.add(l.getSquare(3, 1));
+        trovatiAMano.add(l.getSquare(3, 0));
+
+        assertEquals(l.getCloserSquares(l.getSquare(3, 0), 1), trovatiAMano);
+
+        trovatiAMano.clear();
+
+        trovatiAMano.add(l.getSquare(0, 1));
+        trovatiAMano.add(l.getSquare(3, 1));
+        trovatiAMano.add(l.getSquare(3, 0));
+        trovatiAMano.add(l.getSquare(2, 1));
+        trovatiAMano.add(l.getSquare(3, 2));
+
+        assertTrue(l.getFurtherSquares(l.getSquare(1, 1), 3).containsAll(trovatiAMano));
+        assertTrue(trovatiAMano.containsAll( l.getFurtherSquares(l.getSquare(1, 1), 3)));
+
+    }
+
+    @Test
+    public void visibleSquares(){
+        Layout l= new Layout();
+        l.initLayout(2);
+
+        List<Square> trovatiAMano= new ArrayList<>();
+
+        trovatiAMano.add(l.getSquare(0, 2));
+        trovatiAMano.add(l.getSquare(1, 2));
+        trovatiAMano.add(l.getSquare(2, 2));
+        trovatiAMano.add(l.getSquare(0, 1));
+        trovatiAMano.add(l.getSquare(1, 1));
+
+        assertTrue(trovatiAMano.containsAll(l.getVisibleSquares(l.getSquare(0, 1))));
+        assertTrue(l.getVisibleSquares(l.getSquare(0, 1)).containsAll(trovatiAMano));
+
+
+        for(Square s : l.getVisibleSquares(l.getSquare(0, 1))){
+            System.out.println(s.getX() + " " + s.getY());
+        }
     }
 }
