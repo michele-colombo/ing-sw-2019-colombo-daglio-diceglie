@@ -193,7 +193,7 @@ public class PlayingTest {
                             try {
                                 mod = p.getSelectableModes().get(Integer.parseInt(tokens[1].trim()));
                             } catch (IndexOutOfBoundsException e){
-                                System.out.println("wrong square selection");
+                                System.out.println("wrong mode selection");
                                 break;
                             }
                             switch (p.getState()){
@@ -211,7 +211,7 @@ public class PlayingTest {
                             try {
                                 cmd = p.getSelectableCommands().get(Integer.parseInt(tokens[1].trim()));
                             } catch (IndexOutOfBoundsException e){
-                                System.out.println("wrong square selection");
+                                System.out.println("wrong command selection");
                                 break;
                             }
                             switch (p.getState()){
@@ -234,7 +234,7 @@ public class PlayingTest {
                             try {
                                 pl = p.getSelectablePlayers().get(Integer.parseInt(tokens[1].trim()));
                             } catch (IndexOutOfBoundsException e){
-                                System.out.println("wrong square selection");
+                                System.out.println("wrong player selection");
                                 break;
                             };
                             switch (p.getState()){
