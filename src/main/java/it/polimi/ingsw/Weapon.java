@@ -46,7 +46,16 @@ public class Weapon{
     }
 
     public List<Mode> getSelectableModes(List<Mode> alreadySelected){
-        return null;
+        List<Mode> result= new ArrayList<>();
+        for(Mode modeInWeapon: this.myModes){
+            if(modeInWeapon.getMustComeBefore() == null || alreadySelected.contains(modeInWeapon.getMustComeBefore())){
+                result.add(modeInWeapon);
+            }
+        }
+
+        result.removeAll(alreadySelected);
+
+        return result;
     }
 
     public Cash getDiscountedCost() {

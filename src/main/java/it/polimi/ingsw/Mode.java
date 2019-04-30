@@ -1,5 +1,6 @@
 package it.polimi.ingsw;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Mode {
@@ -8,35 +9,47 @@ public class Mode {
     private String description;
     private Cash cost;
 
+    private boolean isMandatory;
+
     private List<Effect> effects;
 
     public List<Effect> getEffects() {
         return effects;
     }
 
-    public Mode(String title, String description){
+    public Mode(boolean isMandatory, Mode mustComeBefore, String title, String description, Cash cost){
+        this.isMandatory= isMandatory;
+        this.mustComeBefore= mustComeBefore;
         this.title= title;
         this.description= description;
-        mustComeBefore= null;
-        this.cost = new Cash(0,0,0);
+        this.cost= cost;
+
+        effects= new ArrayList<Effect>();
     }
 
-    public Mode(Mode mustComeBefore, String title, String description) {
-        this.mustComeBefore = mustComeBefore;
-        this.title = title;
-        this.description = description;
-        this.cost = new Cash(0,0,0);
-    }
-
-    public Mode(Mode mustComeBefore, String title, String description, Cash cost) {
-        this.mustComeBefore = mustComeBefore;
-        this.title = title;
-        this.description = description;
-        this.cost = cost;
-    }
 
     public void setPrecedent(Mode mustComeBefore){
         this.mustComeBefore= mustComeBefore;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setCost(Cash cost) {
+        this.cost = cost;
+    }
+
+    public void setMandatory(boolean mandatory) {
+        isMandatory = mandatory;
+    }
+
+    public void addEffect(Effect effect){
+        this.effects.add(effect);
     }
 
     public String getTitle(){
@@ -49,5 +62,9 @@ public class Mode {
 
     public Cash getCost() {
         return cost;
+    }
+
+    public Mode getMustComeBefore() {
+        return mustComeBefore;
     }
 }

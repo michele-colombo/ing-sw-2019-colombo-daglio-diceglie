@@ -19,6 +19,7 @@ public class PlayingTest {
         gm.initMatch();
         Match match = gm.getMatch();
 
+/*
         List<Weapon> tempWeapons = new ArrayList<>();
         tempWeapons.add(new Weapon("distruttore", new Cash(2,0,0), Color.BLUE));
         tempWeapons.add(new Weapon("mitragliatrice", new Cash(1, 1, 0), Color.BLUE));
@@ -27,12 +28,15 @@ public class PlayingTest {
         tempWeapons.add(new Weapon("vulcanizzatore", new Cash(1,1,0), Color.RED));
         tempWeapons.add(new Weapon("razzo termico", new Cash(0,2,1), Color.RED));
         tempWeapons.add(new Weapon("lanciafiamme", new Cash(0,1,0), Color.RED));
-        tempWeapons.add(new Weapon("fucile laser", new Cash(1,0,2), Color.YELLOW));
+        tempWeapons.add(new Weapon("tempWeaponsfucile laser", new Cash(1,0,2), Color.YELLOW));
         tempWeapons.add(new Weapon("spada fotonica", new Cash(0,1,1), Color.YELLOW));
         tempWeapons.add(new Weapon("fucile a pompa", new Cash(0,0,2), Color.YELLOW));
         tempWeapons.add(new Weapon("cyberguanto", new Cash(1,0,1), Color.YELLOW));
         tempWeapons.add(new Weapon("onda d'urto", new Cash(0,0,1), Color.YELLOW));
         match.getStackManager().initWeaponStack(tempWeapons);
+*/
+
+        match.getStackManager().initWeaponStack(new WeaponBuilder().getWeapons());
 
         List<PowerUp> tempPowerups = new ArrayList<>();
         for (Color color : Color.getAmmoColors()){
@@ -63,6 +67,11 @@ public class PlayingTest {
 
         gm.startMatch();
 
+        //semplicita' per raccoglere subito
+        for(Player p: match.getPlayers()){
+            p.getWallet().deposit(new Cash(3, 3, 3));
+        }
+
         while (true){
             for (Player p : match.getPlayers()){
                 if (p.hasSelectables()){
@@ -71,6 +80,9 @@ public class PlayingTest {
                     if (p.getSquarePosition()!= null) System.out.println(p.getSquarePosition().getShortDescription());
                     System.out.println("wallet: "+p.getWallet());
                     System.out.println("pending: "+p.getPending());
+
+                    System.out.println("Damages: " + p.getDamageTrack().getDamageList().size() + "Marks:" + p.getDamageTrack().getMarkMap().size());
+
                     System.out.println("credit: "+p.getCredit());
                     System.out.println("powerups:");
                     for (PowerUp po : p.getPowerUps()){
@@ -208,6 +220,9 @@ public class PlayingTest {
                                     break;
                                 case CHOOSE_ACTION:
                                     if (cmd == Command.OK) gm.endTurn();
+                                    break;
+                                case CHOOSE_MODE:
+                                    if (cmd == Command.OK) gm.confirmModes(p);
                                     break;
                                 default:
                                     System.out.println("selected a command in the wrong state");

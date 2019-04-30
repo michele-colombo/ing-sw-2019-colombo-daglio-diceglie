@@ -61,10 +61,15 @@ public class SpawnSquare extends Square{
 
     @Override
     public void refill (StackManager s){
-        while (weapons.size() < 3){
+        boolean emptyStack= false;
+
+        while (weapons.size() < 3 && emptyStack==false){
             Weapon tempWeapon = s.drawWeapon();
             if (tempWeapon != null){
                 weapons.add(tempWeapon);
+            }
+            else {
+                emptyStack= true;
             }
         }
     }
