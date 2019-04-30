@@ -117,7 +117,7 @@ public class PlayingTest {
                                     gm.moveMeThere(p, sq);
                                     break;
                                 case SHOOT_TARGET:
-                                    //todo
+                                    gm.shootTarget(p, null, sq);
                                     break;
                                 default:
                                     System.out.println("selected a square in the wrong state");
@@ -239,7 +239,7 @@ public class PlayingTest {
                             };
                             switch (p.getState()){
                                 case SHOOT_TARGET:
-                                    //todo
+                                    gm.shootTarget(p, pl, null);
                                     break;
                                 default:
                                     System.out.println("selected a player in the wrong state");

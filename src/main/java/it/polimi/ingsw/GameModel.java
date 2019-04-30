@@ -296,6 +296,7 @@ public class GameModel {
     public void endTurn(){
         match.getCurrentPlayer().setState(IDLE);
         match.getCurrentPlayer().resetSelectables();
+        match.getLayout().refillAll(match.getStackManager());
         List<Player> deadPlayers = match.endTurnCheck();
         if (deadPlayers.isEmpty()){
             beginNextTurn();
