@@ -1,6 +1,4 @@
-package it.polimi.ingsw.Server.Message;
-
-import it.polimi.ingsw.Server.ServerView;
+package it.polimi.ingsw.server.message;
 
 import java.io.Serializable;
 

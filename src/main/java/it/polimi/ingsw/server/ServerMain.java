@@ -1,4 +1,4 @@
-package it.polimi.ingsw.Server;
+package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.GameModel;
 
@@ -12,10 +12,12 @@ public class ServerMain {
     //SERVE PER FAR PARTIRE IL SERVER
     private final int port;
     private final GameModel gameModel;
+    private final Controller controller;
 
     public ServerMain(int port){
         this.port = port;
         gameModel = new GameModel();
+        controller = new Controller(gameModel);
         start();
     }
 
@@ -33,7 +35,7 @@ public class ServerMain {
             try{
                 Socket socket = serverSocket.accept();
                 System.out.println("A new client has connected");
-                executor.submit(new SocketServer(socket, gameModel));
+                executor.submit(new SocketServer(socket, controller));
                 //CREARE IL THREAD
             } catch (IOException e){
                 break;

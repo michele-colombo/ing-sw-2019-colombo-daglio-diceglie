@@ -1,6 +1,4 @@
-package it.polimi.ingsw.Server.Message;
-
-import it.polimi.ingsw.Server.ServerView;
+package it.polimi.ingsw.server.message;
 
 public class LoginMessage extends Message {
     private boolean loginSuccessful;

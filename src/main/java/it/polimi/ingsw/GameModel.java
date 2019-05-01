@@ -1,21 +1,28 @@
 package it.polimi.ingsw;
 
-import java.util.ArrayList;
-import java.util.List;
+import it.polimi.ingsw.server.message.LoginMessage;
+import it.polimi.ingsw.server.message.Message;
+import it.polimi.ingsw.server.observer.Observable;
+import it.polimi.ingsw.server.observer.Observer;
+
+import java.util.*;
+
 
 import static it.polimi.ingsw.PlayerState.*;
 
-public class GameModel {
+public class GameModel implements Observable {
     private List<Player> activePlayers;
     private List<Player> spawningPlayers;
     private Match match;
     private Match backupMatch;
+    private List<Observer> observers;
 
     public GameModel(){
         activePlayers = new ArrayList<>();
         spawningPlayers = new ArrayList<>();
         match = null;
         backupMatch = null;
+        observers = new ArrayList<>();
     }
 
     public Match getMatch() {
@@ -41,14 +48,14 @@ public class GameModel {
     }
 
     //TODO check name and color uniqueness and throw exceptions
-    public synchronized boolean addPlayer (Player p){
-        if(!nameTaken(p.getName()) && !colorTaken(p.getColor())){
-            activePlayers.add(p);
-            notifyAll();
-            return true;
+    public LoginMessage addPlayer (Player p){
+        if(nameTaken(p.getName())){
+            return new LoginMessage("Name already taken", false, false);
+        } else if(colorTaken(p.getColor())){
+            return new LoginMessage("Color already taken", false, false);
         }
-        notifyAll();
-        return false;
+        activePlayers.add(p);
+        return new LoginMessage("Login successful", true, false);
     }
 
     //TODO check number of players, etc.
@@ -329,8 +336,15 @@ public class GameModel {
         return activePlayers.size();
     }
 
+    public void attach(Observer observer){
+        observers.add(observer);
+    }
 
+    public void detach(Observer observer){
+        observers.remove(observer);
+    }
 
-
-
+    public void notify(Message message, Observer observer){
+        observer.update(message);
+    }
 }

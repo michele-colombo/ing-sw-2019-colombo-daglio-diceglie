@@ -1,22 +1,22 @@
-package it.polimi.ingsw.Server;
+package it.polimi.ingsw.client;
 
-import it.polimi.ingsw.GameModel;
-import it.polimi.ingsw.Server.Events.EventVisitable;
-import it.polimi.ingsw.Server.Message.Message;
+import it.polimi.ingsw.server.events.EventVisitable;
+import it.polimi.ingsw.server.message.LoginMessage;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-public class SocketServer implements Runnable{
-    private Socket socket;
-    private ServerView serverView;
+public class SocketClient extends Thread{
+    private final Socket socket;
+    private ClientView clientView;
     private ObjectInputStream in;
     private ObjectOutputStream out;
 
-    public SocketServer(Socket socket, GameModel gameModel){
+    public SocketClient(Socket socket){
         this.socket = socket;
+        this.clientView = new ClientView(this);
         try{
             out = new ObjectOutputStream(socket.getOutputStream());
             out.flush();
@@ -25,17 +25,19 @@ public class SocketServer implements Runnable{
             System.out.println("Error while creating streams!");
             e.printStackTrace();
         }
-        Controller controller = new Controller(gameModel);
-        serverView = new ServerView(this, controller);
-        controller.addServerView(serverView);
+        run();
     }
 
     @Override
     public void run(){
         try{
             while(true){
-                Message message = serverView.receiveEvent((EventVisitable) in.readObject());
-                out.writeObject(message);
+                clientView.login();
+                LoginMessage message = (LoginMessage) in.readObject();
+                System.out.println(message.getString());
+                if(message.getLoginSuccessful()){
+                    break;
+                }
                 if(message.getCloseSocket()){
                     in.close();
                     out.close();
@@ -44,11 +46,14 @@ public class SocketServer implements Runnable{
                 }
             }
         } catch(IOException e){
-            System.out.println("Error while receiving/forwarding messages");
-            e.printStackTrace();
+            System.out.println("Error while receiving the login message!");
         } catch(ClassNotFoundException e){
-            System.out.println("Class not found!");
-            e.printStackTrace();
+            System.out.println("Class LoginMessage not found!");
         }
+    }
+
+    public void forward(EventVisitable event) throws IOException{
+        out.writeObject(event);
+        out.flush();
     }
 }
