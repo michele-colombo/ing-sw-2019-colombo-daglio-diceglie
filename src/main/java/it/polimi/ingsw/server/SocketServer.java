@@ -8,7 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-public class SocketServer implements Runnable{
+public class SocketServer extends Thread{
     private Socket socket;
     private ServerView serverView;
     private ObjectInputStream in;

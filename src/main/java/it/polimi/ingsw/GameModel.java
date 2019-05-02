@@ -1,5 +1,8 @@
 package it.polimi.ingsw;
 
+import it.polimi.ingsw.exceptions.ColorAlreadyTakenException;
+import it.polimi.ingsw.exceptions.GameFullException;
+import it.polimi.ingsw.exceptions.NameAlreadyTakenException;
 import it.polimi.ingsw.server.message.LoginMessage;
 import it.polimi.ingsw.server.message.Message;
 import it.polimi.ingsw.server.observer.Observable;
@@ -48,14 +51,20 @@ public class GameModel implements Observable {
     }
 
     //TODO check name and color uniqueness and throw exceptions
-    public LoginMessage addPlayer (Player p){
-        if(nameTaken(p.getName())){
-            return new LoginMessage("Name already taken", false, false);
-        } else if(colorTaken(p.getColor())){
-            return new LoginMessage("Color already taken", false, false);
+    public void addPlayer (Player p) throws NameAlreadyTakenException, ColorAlreadyTakenException, GameFullException {
+        if(activePlayers.size() < 5){
+            if(!nameTaken(p.getName())){
+                if(!colorTaken(p.getColor())){
+                    activePlayers.add(p);
+                } else {
+                    throw new ColorAlreadyTakenException();
+                }
+            } else{
+                throw new NameAlreadyTakenException();
+            }
+        } else {
+            throw new GameFullException();
         }
-        activePlayers.add(p);
-        return new LoginMessage("Login successful", true, false);
     }
 
     //TODO check number of players, etc.

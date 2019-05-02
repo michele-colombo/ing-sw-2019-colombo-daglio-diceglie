@@ -1,6 +1,10 @@
 package it.polimi.ingsw;
 
 
+import it.polimi.ingsw.exceptions.ColorAlreadyTakenException;
+import it.polimi.ingsw.exceptions.GameFullException;
+import it.polimi.ingsw.exceptions.NameAlreadyTakenException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -12,9 +16,17 @@ public class PlayingTest {
         Player p3 = new Player("terzo giocatore", PlayerColor.GREEN);
 
         GameModel gm = new GameModel();
-        gm.addPlayer(p1);
-        gm.addPlayer(p2);
-        gm.addPlayer(p3);
+        try{
+            gm.addPlayer(p1);
+            gm.addPlayer(p2);
+            gm.addPlayer(p3);
+        } catch(NameAlreadyTakenException e){
+
+        } catch (ColorAlreadyTakenException e){
+
+        } catch(GameFullException e){
+            ;
+        }
 
         gm.initMatch();
         Match match = gm.getMatch();

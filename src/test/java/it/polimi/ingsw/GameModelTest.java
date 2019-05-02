@@ -1,6 +1,10 @@
 package it.polimi.ingsw;
 
+import it.polimi.ingsw.exceptions.ColorAlreadyTakenException;
+import it.polimi.ingsw.exceptions.GameFullException;
+import it.polimi.ingsw.exceptions.NameAlreadyTakenException;
 import org.junit.jupiter.api.Test;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,11 +23,19 @@ public class GameModelTest {
 
         GameModel gm = new GameModel();
 
-        gm.addPlayer(p1);
-        gm.addPlayer(p2);
-        gm.addPlayer(p3);
-        gm.addPlayer(p4);
-        gm.addPlayer(p5);
+        try{
+            gm.addPlayer(p1);
+            gm.addPlayer(p2);
+            gm.addPlayer(p3);
+            gm.addPlayer(p4);
+            gm.addPlayer(p5);
+        } catch(NameAlreadyTakenException e){
+
+        } catch(ColorAlreadyTakenException e){
+
+        } catch(GameFullException e){
+
+        }
 
         Player currP = null;
 
@@ -63,10 +75,18 @@ public class GameModelTest {
 
         GameModel gm = new GameModel();
 
-        gm.addPlayer(p1);
-        gm.addPlayer(p2);
-        gm.addPlayer(p3);
-        gm.addPlayer(p4);
+        try{
+            gm.addPlayer(p1);
+            gm.addPlayer(p2);
+            gm.addPlayer(p3);
+            gm.addPlayer(p4);
+        } catch(NameAlreadyTakenException e){
+
+        } catch(ColorAlreadyTakenException e){
+
+        } catch(GameFullException e){
+
+        }
 
         Player currP = null;
 
@@ -108,9 +128,17 @@ public class GameModelTest {
         Player p3 = new Player("terzo giocatore", PlayerColor.GREEN);
 
         GameModel gm = new GameModel();
-        gm.addPlayer(p1);
-        gm.addPlayer(p2);
-        gm.addPlayer(p3);
+        try{
+            gm.addPlayer(p1);
+            gm.addPlayer(p2);
+            gm.addPlayer(p3);
+        } catch(NameAlreadyTakenException e){
+
+        } catch(ColorAlreadyTakenException e){
+
+        } catch(GameFullException e){
+
+        }
 
         gm.initMatch();
         Match match = gm.getMatch();
@@ -208,6 +236,46 @@ public class GameModelTest {
             System.out.println(tempPlayer.getPowerUps());
             System.out.println(tempPlayer.getWallet());
             printSel(tempPlayer);
+    }
+
+    @Test
+    public void exceptionTest(){
+        Player p1 = new Player("first", PlayerColor.YELLOW);
+        Player p2 = new Player("second", PlayerColor.BLUE);
+        Player p3 = new Player("third", PlayerColor.GREEN);
+        Player p4 = new Player("fourth", PlayerColor.GREY);
+
+        GameModel gm = new GameModel();
+
+        try{
+            gm.addPlayer(p1);
+            gm.addPlayer(p2);
+            gm.addPlayer(p3);
+            gm.addPlayer(p4);
+        } catch(NameAlreadyTakenException e){
+
+        } catch(ColorAlreadyTakenException e){
+
+        } catch(GameFullException e){
+
+        }
+
+        assertThrows(NameAlreadyTakenException.class, () -> gm.addPlayer(new Player("first", PlayerColor.VIOLET)));
+        assertThrows(ColorAlreadyTakenException.class, () -> gm.addPlayer(new Player("new", PlayerColor.GREEN)));
+
+        Player p5 = new Player("fifth", PlayerColor.VIOLET);
+        try{
+            gm.addPlayer(p5);
+
+        } catch(NameAlreadyTakenException e){
+
+        } catch(ColorAlreadyTakenException e){
+
+        } catch(GameFullException e){
+
+        }
+
+        assertThrows(GameFullException.class, () -> gm.addPlayer(new Player("last", PlayerColor.GREEN)));
     }
 
 }
