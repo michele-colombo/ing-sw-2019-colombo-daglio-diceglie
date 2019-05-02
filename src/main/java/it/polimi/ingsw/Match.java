@@ -1,5 +1,7 @@
 package it.polimi.ingsw;
 
+import com.sun.org.apache.bcel.internal.generic.NEW;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -292,8 +294,8 @@ public class Match {
                 result.add(new Action(false, true, new Reload()));
             }
         }
-        if (!onlyReload && p.howManyPowerUps(YOUR_TURN_POWERUP) > 0){
-            result.add(new Action(false, false, new UsePowerUp(YOUR_TURN_POWERUP)));
+        if (!onlyReload && p.howManyPowerUps(ACTION_POWERUP) > 0){
+            result.add(new Action(false, false, new UsePowerUp(ACTION_POWERUP)));
         }
         return result;
     }

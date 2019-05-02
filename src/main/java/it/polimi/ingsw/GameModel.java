@@ -3,22 +3,39 @@ package it.polimi.ingsw;
 import it.polimi.ingsw.exceptions.ColorAlreadyTakenException;
 import it.polimi.ingsw.exceptions.GameFullException;
 import it.polimi.ingsw.exceptions.NameAlreadyTakenException;
+import it.polimi.ingsw.exceptions.NextMicroActionException;
 import it.polimi.ingsw.server.message.LoginMessage;
 import it.polimi.ingsw.server.message.Message;
 import it.polimi.ingsw.server.observer.Observable;
 import it.polimi.ingsw.server.observer.Observer;
-
 import java.util.*;
 
 
 import static it.polimi.ingsw.PlayerState.*;
 
 public class GameModel implements Observable {
+    /**
+     * List containing the active players (not disconnected) of the match
+     */
     private List<Player> activePlayers;
+
+    /**
+     * List containing the inactive players (disconnected voluntarily or due to inactivity)
+     */
+    private List<Player> inactivePlayers;
+
+    /**
+     * List containing the players currently spawning (after death or before born)
+     */
     private List<Player> spawningPlayers;
+
+    /**
+     * the current match in progress
+     */
     private Match match;
     private Match backupMatch;
     private List<Observer> observers;
+
 
     public GameModel(){
         activePlayers = new ArrayList<>();
@@ -28,22 +45,36 @@ public class GameModel implements Observable {
         observers = new ArrayList<>();
     }
 
+    /**
+     * Gets the current match in progress
+     * @return the actual reference to match
+     */
     public Match getMatch() {
         return match;
     }
 
-    public boolean initMatch(){
+    /**
+     * Instantiate a new match, if not currently existing, specifying the number of skull and the layout configuration
+     * @param skull number of skull to put on the killshot track
+     * @param config integer corresponding to a layout configuration (1, 2, 3, or 4)
+     * @return false if a match was present already
+     */
+    public boolean initMatch(int skull, int config){
         if (match == null){
-            match = new Match();
+            match = new Match(skull, config);
             return true;
         } else {
             return false;
         }
     }
 
-    public boolean initMatch(int skull, int config){
+    /**
+     *
+     * @return
+     */
+    public boolean initMatch(){
         if (match == null){
-            match = new Match(skull, config);
+            match = new Match();
             return true;
         } else {
             return false;
@@ -139,7 +170,11 @@ public class GameModel implements Observable {
     public void performAction(Player p, Action a){
         match.setCurrentAction(a);
         match.updateTurnStatus(a);
-        match.getCurrentAction().getMicroActions().get(0).act(match, p);    //the microAction sets player state
+        try {
+            match.getCurrentAction().getMicroActions().get(0).act(match, p);    //the microAction sets player state
+        } catch (NextMicroActionException nmae){
+            nextMicroAction();
+        }
     }
 
     public void grabThere (Player p, Square s){
@@ -283,13 +318,53 @@ public class GameModel implements Observable {
         }
     }
 
+    public void usePowerUp (Player p, PowerUp po){
+        p.removePowerUp(po);
+        match.getStackManager().discardPowerUp(po);
+        match.getCurrentAction().setCurrPowerUp(po);
+        switch (po.getType()){
+            case TARGETING_SCOPE:
+                p.setState(PAYING_ANY);
+                p.resetSelectables();
+                p.setSelectablePowerUps(p.getPowerUps());
+                p.setSelectableColors(p.getWallet().getColors());
+                break;
+            case TAGBACK_GRENADE:
+                useCurrentPowerUp(p);
+                break;
+            case ACTION_POWERUP:
+                useCurrentPowerUp(p);
+                break;
+        }
+    }
+
+    public void payAny(Player p, PowerUp po){
+        p.removePowerUp(po);
+        match.getStackManager().discardPowerUp(po);
+        useCurrentPowerUp(p);
+    }
+
+    public void payAny(Player p, Color c){
+        p.getWallet().pay(new Cash(c, 1));
+        useCurrentPowerUp(p);
+    }
+
+    public void useCurrentPowerUp(Player p){
+        match.getCurrentAction().addEffects(match.getCurrentAction().getCurrPowerUp().getEffects());
+        match.getCurrentAction().getCurrEffects().get(0).start(p, match);
+    }
+
     private void nextMicroAction(){
         List<MicroAction> temp = match.getCurrentAction().getMicroActions();
         temp.remove(0);
         if (temp.isEmpty()){
             actionCompleted();
         } else {
-            temp.get(0).act(match, match.getCurrentPlayer());
+            try {
+                temp.get(0).act(match, match.getCurrentPlayer());
+            } catch (NextMicroActionException nmae){
+                nextMicroAction();
+            }
         }
     }
 

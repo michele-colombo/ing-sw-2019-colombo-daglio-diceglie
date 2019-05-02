@@ -14,9 +14,9 @@ public class PlayerTest {
     @Test
     public void canAfford() {
         Player p = new Player("SignorTest", PlayerColor.GREY);
-        PowerUp po1 = new PowerUp(Color.BLUE, PowerUpType.TARGETING_SCOPE);
-        PowerUp po2 = new PowerUp(Color.YELLOW, PowerUpType.TAGBACK_GRANADE);
-        PowerUp po3 = new PowerUp(Color.BLUE, PowerUpType.TARGETING_SCOPE);
+        PowerUp po1 = new PowerUp(Color.BLUE, PowerUpType.TARGETING_SCOPE, "Targeting scope");
+        PowerUp po2 = new PowerUp(Color.YELLOW, PowerUpType.TAGBACK_GRENADE, "Tagback granade");
+        PowerUp po3 = new PowerUp(Color.BLUE, PowerUpType.TARGETING_SCOPE, "Targeting scope");
         p.addPowerUp(po1);
         p.addPowerUp(po2);
         p.addPowerUp(po3);

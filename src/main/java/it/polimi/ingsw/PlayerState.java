@@ -13,5 +13,6 @@ public enum PlayerState {
     SHOOT_WEAPON,
     CHOOSE_MODE,
     SHOOT_TARGET,
-    SPAWN;
+    SPAWN,
+    USE_POWERUP;
 }

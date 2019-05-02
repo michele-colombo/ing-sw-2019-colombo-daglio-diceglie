@@ -46,8 +46,8 @@ class BackupTest {
         backup.restore(p2);
         assertEquals(match.getLayout().getSquare(1,2), p2.getSquarePosition());
 
-        PowerUp po1 = new PowerUp(Color.BLUE, PowerUpType.TARGETING_SCOPE);
-        PowerUp po2 = new PowerUp(Color.YELLOW, PowerUpType.TAGBACK_GRANADE);
+        PowerUp po1 = new PowerUp(Color.BLUE, PowerUpType.TARGETING_SCOPE, "Targeting scope");
+        PowerUp po2 = new PowerUp(Color.YELLOW, PowerUpType.TAGBACK_GRENADE, "Tagback grenade");
         p1.addPowerUp(po1);
         p1.addPowerUp(po2);
         backup = new Backup(toBackup);

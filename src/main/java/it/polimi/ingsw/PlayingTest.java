@@ -52,14 +52,12 @@ public class PlayingTest {
 
         List<PowerUp> tempPowerups = new ArrayList<>();
         for (Color color : Color.getAmmoColors()){
-            tempPowerups.add(new PowerUp(color, PowerUpType.TAGBACK_GRANADE));
-            tempPowerups.add(new PowerUp(color, PowerUpType.TARGETING_SCOPE));
-            tempPowerups.add(new PowerUp(color, PowerUpType.YOUR_TURN_POWERUP));
-            tempPowerups.add(new PowerUp(color, PowerUpType.YOUR_TURN_POWERUP));
-            tempPowerups.add(new PowerUp(color, PowerUpType.TAGBACK_GRANADE));
-            tempPowerups.add(new PowerUp(color, PowerUpType.TARGETING_SCOPE));
-            tempPowerups.add(new PowerUp(color, PowerUpType.YOUR_TURN_POWERUP));
-            tempPowerups.add(new PowerUp(color, PowerUpType.YOUR_TURN_POWERUP));
+            for (int i=0; i<2; i++){
+                tempPowerups.add(new PowerUp(color, PowerUpType.TAGBACK_GRENADE, "Tagback granade"));
+                tempPowerups.add(new PowerUp(color, PowerUpType.TARGETING_SCOPE, "Targeting scope"));
+                tempPowerups.add(new PowerUp(color, PowerUpType.ACTION_POWERUP, "Newton"));
+                tempPowerups.add(new PowerUp(color, PowerUpType.ACTION_POWERUP, "Teleporter"));
+            }
         }
         match.getStackManager().initPowerUpStack(tempPowerups);
 
@@ -150,6 +148,12 @@ public class PlayingTest {
                                     break;
                                 case PAYING:
                                     gm.payWith(p, po);
+                                    break;
+                                case PAYING_ANY:
+                                    gm.payAny(p, po);
+                                    break;
+                                case USE_POWERUP:
+                                    gm.usePowerUp(p, po);
                                     break;
                                 default:
                                     System.out.println("selected a powerup in the wrong state");
@@ -255,6 +259,23 @@ public class PlayingTest {
                                     break;
                                 default:
                                     System.out.println("selected a player in the wrong state");
+                                    break;
+                            }
+                            break;
+                        case "col":
+                            Color col;
+                            try {
+                                col = p.getSelectableColors().get(Integer.parseInt(tokens[1].trim()));
+                            } catch (IndexOutOfBoundsException e){
+                                System.out.println("wrong color selection");
+                                break;
+                            };
+                            switch (p.getState()){
+                                case PAYING_ANY:
+                                    gm.payAny(p, col);
+                                    break;
+                                default:
+                                    System.out.println("selected a color in the wrong state");
                                     break;
                             }
                             break;

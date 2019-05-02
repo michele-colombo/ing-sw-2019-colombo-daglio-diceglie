@@ -49,6 +49,11 @@ public class Action {
      */
     private boolean activateOnlyReloads;
 
+    /**
+     * Support variable to store a PowerUp, if one is selected in the current action.
+     * Used for paying for the targeting scope
+     */
+    private PowerUp currPowerUp;
 
     //added by Giuseppe Diceglie
     /**
@@ -72,6 +77,7 @@ public class Action {
         currSpawnSquare = null;
         currWeapon = null;
         currMode = null;
+        currPowerUp = null;
     }
 
     /**
@@ -164,12 +170,24 @@ public class Action {
         this.currWeapon = currWeapon;
     }
 
+    public void setCurrPowerUp(PowerUp po){
+        this.currPowerUp = po;
+    }
+
+    public PowerUp getCurrPowerUp() {
+        return currPowerUp;
+    }
+
     public void setSelectedModes(List<Mode> selectedModes) {
         this.selectedModes = selectedModes; //should set a shallow copy instead?
     }
 
     public void setCurrEffects(List<Effect> currEffects) {
         this.currEffects = currEffects; //should set a shallow copy instead?
+    }
+
+    public void addEffects(List<Effect> effects){
+        this.currEffects.addAll(effects);
     }
 
     //added by Giuseppe Diceglie

@@ -1,5 +1,7 @@
 package it.polimi.ingsw;
 
+import it.polimi.ingsw.exceptions.NextMicroActionException;
+
 public class Reload implements MicroAction {
     public Reload() {
 

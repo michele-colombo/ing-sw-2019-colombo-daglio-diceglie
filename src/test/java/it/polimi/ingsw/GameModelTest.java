@@ -160,14 +160,12 @@ public class GameModelTest {
 
         List<PowerUp> tempPowerups = new ArrayList<>();
         for (Color color : Color.getAmmoColors()){
-            tempPowerups.add(new PowerUp(color, PowerUpType.TAGBACK_GRANADE));
-            tempPowerups.add(new PowerUp(color, PowerUpType.TARGETING_SCOPE));
-            tempPowerups.add(new PowerUp(color, PowerUpType.YOUR_TURN_POWERUP));
-            tempPowerups.add(new PowerUp(color, PowerUpType.YOUR_TURN_POWERUP));
-            tempPowerups.add(new PowerUp(color, PowerUpType.TAGBACK_GRANADE));
-            tempPowerups.add(new PowerUp(color, PowerUpType.TARGETING_SCOPE));
-            tempPowerups.add(new PowerUp(color, PowerUpType.YOUR_TURN_POWERUP));
-            tempPowerups.add(new PowerUp(color, PowerUpType.YOUR_TURN_POWERUP));
+            for (int i=0; i<2; i++){
+                tempPowerups.add(new PowerUp(color, PowerUpType.TAGBACK_GRENADE, "Tagback granade"));
+                tempPowerups.add(new PowerUp(color, PowerUpType.TARGETING_SCOPE, "Targeting scope"));
+                tempPowerups.add(new PowerUp(color, PowerUpType.ACTION_POWERUP, "Newton"));
+                tempPowerups.add(new PowerUp(color, PowerUpType.ACTION_POWERUP, "Teleporter"));
+            }
         }
         match.getStackManager().initPowerUpStack(tempPowerups);
 

@@ -592,7 +592,7 @@ public class Player {
             result.append("\n");
         }
         if (!selectablePlayers.isEmpty()) {
-            result.append("wp:\n");
+            result.append("pl:\n");
             for (Player p : selectablePlayers) {
                 result.append("\t"+selectablePlayers.indexOf(p)+")"+p.getName());
             }
@@ -645,6 +645,16 @@ public class Player {
         List<PowerUp> result = new ArrayList<>();
         for (PowerUp po : powerUps){
             if(colors.containsColor(po.getColor())){
+                result.add(po);
+            }
+        }
+        return result;
+    }
+
+    public List<PowerUp> getPowerUpsOfType(PowerUpType type){
+        List<PowerUp> result = new ArrayList<>();
+        for (PowerUp po : powerUps){
+            if(po.getType() == type){
                 result.add(po);
             }
         }

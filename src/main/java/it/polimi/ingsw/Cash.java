@@ -2,6 +2,9 @@ package it.polimi.ingsw;
 
 //import sun.awt.AWTIcon32_security_icon_yellow16_png;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Cash {
     private int blue;
     private int red;
@@ -126,5 +129,15 @@ public class Cash {
                 return false;
         }
         return false;
+    }
+
+    public List<Color> getColors() {
+        List<Color> result = new ArrayList<>();
+        for (Color c : Color.getAmmoColors()){
+            if (this.containsColor(c)) {
+                result.add(c);
+            }
+        }
+        return result;
     }
 }
