@@ -15,6 +15,7 @@ public class UsePowerUp implements MicroAction {
 
     @Override
     public void act(Match match, Player p) throws NextMicroActionException {
+        match.getCurrentAction().setWaitingFor(0);
         switch (type){
             case TARGETING_SCOPE:
                 if (p.howManyPowerUps(type)>0 && !match.getCurrentAction().getDamaged().isEmpty()) {
@@ -27,10 +28,9 @@ public class UsePowerUp implements MicroAction {
                 }
                 break;
             case TAGBACK_GRENADE:
-                boolean atLeastOne = false;
                 for (Player player : match.getPlayers()){
                     if (match.getCurrentAction().getDamaged().contains(player) && player.howManyPowerUps(type)>0){
-                        atLeastOne = true;
+                        match.getCurrentAction().incrWaitingFor(1);
                         player.setState(PlayerState.USE_POWERUP);
                         player.resetSelectables();
                         player.setSelectablePowerUps(player.getPowerUpsOfType(type));
@@ -38,7 +38,7 @@ public class UsePowerUp implements MicroAction {
                     }
                 }
                 p.resetSelectables();
-                if (!atLeastOne) {
+                if (match.getCurrentAction().getWaitingFor() <= 0) {
                     throw new NextMicroActionException();
                 }
                 break;

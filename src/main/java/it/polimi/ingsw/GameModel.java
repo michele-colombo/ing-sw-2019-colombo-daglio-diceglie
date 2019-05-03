@@ -330,6 +330,7 @@ public class GameModel implements Observable {
                 p.setSelectableColors(p.getWallet().getColors());
                 break;
             case TAGBACK_GRENADE:
+                match.getCurrentAction().incrWaitingFor(-1);
                 useCurrentPowerUp(p);
                 break;
             case ACTION_POWERUP:
@@ -350,6 +351,8 @@ public class GameModel implements Observable {
     }
 
     public void useCurrentPowerUp(Player p){
+        p.setState(USE_POWERUP);
+        p.resetSelectables();
         match.getCurrentAction().addEffects(match.getCurrentAction().getCurrPowerUp().getEffects());
         match.getCurrentAction().getCurrEffects().get(0).start(p, match);
     }
