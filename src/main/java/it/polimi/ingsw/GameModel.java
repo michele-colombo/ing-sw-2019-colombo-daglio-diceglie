@@ -1,9 +1,6 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.exceptions.ColorAlreadyTakenException;
-import it.polimi.ingsw.exceptions.GameFullException;
-import it.polimi.ingsw.exceptions.NameAlreadyTakenException;
-import it.polimi.ingsw.exceptions.NextMicroActionException;
+import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.server.message.LoginMessage;
 import it.polimi.ingsw.server.message.Message;
 import it.polimi.ingsw.server.observer.Observable;
@@ -331,9 +328,13 @@ public class GameModel implements Observable {
                 break;
             case TAGBACK_GRENADE:
                 match.getCurrentAction().incrWaitingFor(-1);
+                p.setState(IDLE);
+                p.resetSelectables();
                 useCurrentPowerUp(p);
                 break;
             case ACTION_POWERUP:
+                p.setState(USE_POWERUP);
+                p.resetSelectables();
                 useCurrentPowerUp(p);
                 break;
         }
@@ -342,22 +343,59 @@ public class GameModel implements Observable {
     public void payAny(Player p, PowerUp po){
         p.removePowerUp(po);
         match.getStackManager().discardPowerUp(po);
+        p.setState(USE_POWERUP);
+        p.resetSelectables();
         useCurrentPowerUp(p);
     }
 
     public void payAny(Player p, Color c){
         p.getWallet().pay(new Cash(c, 1));
+        p.setState(USE_POWERUP);
+        p.resetSelectables();
         useCurrentPowerUp(p);
     }
 
     public void useCurrentPowerUp(Player p){
-        p.setState(USE_POWERUP);
-        p.resetSelectables();
         match.getCurrentAction().addEffects(match.getCurrentAction().getCurrPowerUp().getEffects());
-        match.getCurrentAction().getCurrEffects().get(0).start(p, match);
+        try {
+            match.getCurrentAction().getCurrEffects().get(0).start(p, match);
+        } catch (Exception e){  //todo: use ApplyEffectImmediatelyException
+            match.getCurrentAction().getCurrEffects().get(0).applyOn(p, match.getCurrentPlayer(), null, match);
+        }
     }
 
-    private void nextMicroAction(){
+    public void choosePowerUpTarget(Player p, Player targetP, Square targetS){
+        List<Effect> effects = match.getCurrentAction().getCurrEffects();
+        Effect temp = effects.get(0).applyOn(p, targetP, targetS, match);
+        if (temp != null){
+            effects.add(1, temp);
+        }
+        effects.remove(0);
+        if (match.getCurrentAction().getWaitingFor() == 0) {
+            if (effects.isEmpty()) {
+                nextMicroAction();
+            } else {
+                p.setState(USE_POWERUP);
+                p.resetSelectables();
+                effects.get(0).start(p, match);
+            }
+        } else {
+            p.setState(USE_POWERUP);
+            p.resetSelectables();
+        }
+    }
+
+    public void dontUsePowerUp(Player p){
+        p.setState(IDLE);
+        p.resetSelectables();
+        match.getCurrentAction().incrWaitingFor(-1);
+        if (match.getCurrentAction().getWaitingFor()<0) match.getCurrentAction().setWaitingFor(0);
+        if (match.getCurrentAction().getWaitingFor() == 0) {
+            nextMicroAction();
+        }
+    }
+
+    public void nextMicroAction(){
         List<MicroAction> temp = match.getCurrentAction().getMicroActions();
         temp.remove(0);
         if (temp.isEmpty()){

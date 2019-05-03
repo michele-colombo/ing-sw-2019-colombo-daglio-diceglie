@@ -37,8 +37,9 @@ public class UsePowerUp implements MicroAction {
                         player.setSelectableCommands(Command.OK);
                     }
                 }
+                p.setState(PlayerState.USE_POWERUP);
                 p.resetSelectables();
-                if (match.getCurrentAction().getWaitingFor() <= 0) {
+                if (match.getCurrentAction().getWaitingFor() == 0) {    //if there isn't any player which can use tagback, go on with the next microAction
                     throw new NextMicroActionException();
                 }
                 break;
@@ -52,6 +53,15 @@ public class UsePowerUp implements MicroAction {
 
     @Override
     public String toString(){
-        return "P";
+        switch (type){
+            case TAGBACK_GRENADE:
+                return "";
+            case TARGETING_SCOPE:
+                return "";
+            case ACTION_POWERUP:
+                return "P";
+            default:
+                return "";
+        }
     }
 }

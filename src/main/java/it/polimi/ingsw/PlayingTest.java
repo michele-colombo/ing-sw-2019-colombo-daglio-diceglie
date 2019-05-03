@@ -129,6 +129,9 @@ public class PlayingTest {
                                 case SHOOT_TARGET:
                                     gm.shootTarget(p, null, sq);
                                     break;
+                                case USE_POWERUP:
+                                    gm.choosePowerUpTarget(p, null, sq);
+                                    break;
                                 default:
                                     System.out.println("selected a square in the wrong state");
                                     break;
@@ -240,6 +243,9 @@ public class PlayingTest {
                                 case CHOOSE_MODE:
                                     if (cmd == Command.OK) gm.confirmModes(p);
                                     break;
+                                case USE_POWERUP:
+                                    if (cmd == Command.OK) gm.dontUsePowerUp(p);
+                                    break;
                                 default:
                                     System.out.println("selected a command in the wrong state");
                                     break;
@@ -256,6 +262,9 @@ public class PlayingTest {
                             switch (p.getState()){
                                 case SHOOT_TARGET:
                                     gm.shootTarget(p, pl, null);
+                                    break;
+                                case USE_POWERUP:
+                                    gm.choosePowerUpTarget(p, pl, null);
                                     break;
                                 default:
                                     System.out.println("selected a player in the wrong state");
