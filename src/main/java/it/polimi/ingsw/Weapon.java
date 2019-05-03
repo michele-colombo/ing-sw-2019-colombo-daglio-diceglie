@@ -6,7 +6,6 @@ import java.util.List;
 public class Weapon{
     private String name;
     private Cash cost;
-    private Cash discountedCost;
     private Color color;
 
     List<Mode> myModes;
@@ -18,7 +17,6 @@ public class Weapon{
         this.name = name;
         this.cost = cost;
         this.color = color;
-        discountedCost= cost.subtract(new Cash(color, 1));
         myModes= new ArrayList<Mode>();
     }
 
@@ -48,7 +46,7 @@ public class Weapon{
     public List<Mode> getSelectableModes(List<Mode> alreadySelected){
         List<Mode> result= new ArrayList<>();
         for(Mode modeInWeapon: this.myModes){
-            if(modeInWeapon.getMustComeBefore() == null || alreadySelected.contains(modeInWeapon.getMustComeBefore())){
+            if( modeInWeapon.getMustComeBefore() == -1 || alreadySelected.contains(myModes.get(modeInWeapon.getMustComeBefore()))){
                 result.add(modeInWeapon);
             }
         }
@@ -59,7 +57,7 @@ public class Weapon{
     }
 
     public Cash getDiscountedCost() {
-        return discountedCost;
+        return cost.subtract(new Cash(color, 1));
     }
 
     public Cash getCost() {

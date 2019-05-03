@@ -224,4 +224,8 @@ public class Action {
     public Square getChosenSquare() {
         return chosenSquare;
     }
+
+    public void setChosenSquare(Square chosenSquare) {
+        this.chosenSquare = chosenSquare;
+    }
 }

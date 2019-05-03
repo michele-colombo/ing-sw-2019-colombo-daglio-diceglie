@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Mode {
-    private Mode mustComeBefore;
+    private int mustComeBefore;
     private String title;
     private String description;
     private Cash cost;
@@ -17,7 +17,7 @@ public class Mode {
         return effects;
     }
 
-    public Mode(boolean isMandatory, Mode mustComeBefore, String title, String description, Cash cost){
+    public Mode(boolean isMandatory, int mustComeBefore, String title, String description, Cash cost){
         this.isMandatory= isMandatory;
         this.mustComeBefore= mustComeBefore;
         this.title= title;
@@ -28,7 +28,7 @@ public class Mode {
     }
 
 
-    public void setPrecedent(Mode mustComeBefore){
+    public void setPrecedent(int mustComeBefore){
         this.mustComeBefore= mustComeBefore;
     }
 
@@ -64,7 +64,7 @@ public class Mode {
         return cost;
     }
 
-    public Mode getMustComeBefore() {
+    public int getMustComeBefore() {
         return mustComeBefore;
     }
 }
