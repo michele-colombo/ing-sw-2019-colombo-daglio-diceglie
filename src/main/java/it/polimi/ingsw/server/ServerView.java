@@ -1,7 +1,7 @@
 package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.server.events.EventVisitable;
-import it.polimi.ingsw.server.message.Message;
+import it.polimi.ingsw.server.message.MessageVisitable;
 import it.polimi.ingsw.server.observer.Observer;
 
 import java.io.IOException;
@@ -19,11 +19,11 @@ public class ServerView implements Observer {
          event.accept(controller, this);
     }
 
-    public void update(Message message){
+    public void update(MessageVisitable messageVisitable){
         try{
-            socketServer.forwardMessage(message);
+            socketServer.forwardMessage(messageVisitable);
             try{
-                if(message.getCloseSocket()){
+                if(messageVisitable.getCloseSocket()){
                     socketServer.stopSocket();
                 }
             } catch(IOException e){
@@ -34,5 +34,9 @@ public class ServerView implements Observer {
             System.out.println("Error while updating view!");
             e.printStackTrace();
         }
+    }
+
+    public void removeGameModelObserver(Observer observer){
+        controller.removeGameModelObserver(observer);
     }
 }

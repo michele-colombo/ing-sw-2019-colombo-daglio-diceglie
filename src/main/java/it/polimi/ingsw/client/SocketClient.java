@@ -13,9 +13,11 @@ public class SocketClient extends Thread{
     private ClientView clientView;
     private ObjectInputStream in;
     private ObjectOutputStream out;
+    private boolean loginOk;
 
     public SocketClient(Socket socket){
         this.socket = socket;
+        this.loginOk = false;
         this.clientView = new ClientView(this);
         try{
             out = new ObjectOutputStream(socket.getOutputStream());
@@ -31,18 +33,18 @@ public class SocketClient extends Thread{
     @Override
     public void run(){
         try{
-            while(true){
-                clientView.login();
-                LoginMessage message = (LoginMessage) in.readObject();
-                System.out.println(message.getString());
-                if(message.getLoginSuccessful()){
-                    break;
+            while(!loginOk){
+                clientView.startLogin();
+                LoginMessage loginMessage = (LoginMessage) in.readObject();
+                loginMessage.accept(clientView);
+                if(loginMessage.getLoginSuccessful()){
+                    loginOk = true;
                 }
-                if(message.getCloseSocket()){
+                if(loginMessage.getCloseSocket()){
                     in.close();
                     out.close();
                     socket.close();
-                    break;
+                    loginOk = true;
                 }
             }
         } catch(IOException e){

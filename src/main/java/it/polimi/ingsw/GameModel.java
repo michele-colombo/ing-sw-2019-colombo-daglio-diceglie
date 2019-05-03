@@ -1,8 +1,10 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.exceptions.*;
-import it.polimi.ingsw.server.message.LoginMessage;
-import it.polimi.ingsw.server.message.Message;
+import it.polimi.ingsw.exceptions.ColorAlreadyTakenException;
+import it.polimi.ingsw.exceptions.GameFullException;
+import it.polimi.ingsw.exceptions.NameAlreadyTakenException;
+import it.polimi.ingsw.exceptions.NextMicroActionException;
+import it.polimi.ingsw.server.message.MessageVisitable;
 import it.polimi.ingsw.server.observer.Observable;
 import it.polimi.ingsw.server.observer.Observer;
 import java.util.*;
@@ -31,15 +33,16 @@ public class GameModel implements Observable {
      */
     private Match match;
     private Match backupMatch;
-    private List<Observer> observers;
+    private Map<Player, Observer> observers;
 
 
     public GameModel(){
         activePlayers = new ArrayList<>();
+        inactivePlayers = new ArrayList<>();
         spawningPlayers = new ArrayList<>();
         match = null;
         backupMatch = null;
-        observers = new ArrayList<>();
+        observers = new HashMap<>();
     }
 
     /**
@@ -80,7 +83,7 @@ public class GameModel implements Observable {
 
     //TODO check name and color uniqueness and throw exceptions
     public void addPlayer (Player p) throws NameAlreadyTakenException, ColorAlreadyTakenException, GameFullException {
-        if(activePlayers.size() < 5){
+        if((activePlayers.size() + inactivePlayers.size()) < 5){
             if(!nameTaken(p.getName())){
                 if(!colorTaken(p.getColor())){
                     activePlayers.add(p);
@@ -440,8 +443,13 @@ public class GameModel implements Observable {
     }
 
     private boolean nameTaken(String name){
-        for(Player p : activePlayers){
-            if(p.getName().equals(name)){
+        for(Player pa : activePlayers){
+            if(pa.getName().equals(name)){
+                return true;
+            }
+        }
+        for(Player pi : inactivePlayers){
+            if(pi.getName().equals(name)){
                 return true;
             }
         }
@@ -449,8 +457,13 @@ public class GameModel implements Observable {
     }
 
     private boolean colorTaken(PlayerColor color){
-        for(Player p : activePlayers){
-            if(p.getColor() == color){
+        for(Player pa : activePlayers){
+            if(pa.getColor() == color){
+                return true;
+            }
+        }
+        for(Player pi : inactivePlayers){
+            if(pi.getColor() == color){
                 return true;
             }
         }
@@ -461,15 +474,29 @@ public class GameModel implements Observable {
         return activePlayers.size();
     }
 
-    public void attach(Observer observer){
-        observers.add(observer);
+    public void attach(Player player, Observer observer){
+        if(observers.containsKey(player)){
+            observers.replace(player, observer);
+            activePlayers.add(player);
+            inactivePlayers.remove(player);
+        } else {
+            observers.put(player, observer);
+        }
     }
 
     public void detach(Observer observer){
-        observers.remove(observer);
+        if(observers.containsValue(observer)){
+            for(Map.Entry<Player, Observer> entry : observers.entrySet()){ //DA SOSTITUIRE CON UN METODO
+                if(observer == entry.getValue()){
+                    observers.remove(observer);
+                    inactivePlayers.add(entry.getKey());
+                    activePlayers.remove(entry.getKey());
+                }
+            }
+        }
     }
 
-    public void notify(Message message, Observer observer){
-        observer.update(message);
+    public void notify(MessageVisitable messageVisitable, Observer observer){
+        observer.update(messageVisitable);
     }
 }

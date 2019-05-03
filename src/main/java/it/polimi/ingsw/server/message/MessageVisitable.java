@@ -1,14 +1,17 @@
 package it.polimi.ingsw.server.message;
 
+import it.polimi.ingsw.client.VisitorClient;
+
 import java.io.Serializable;
 
-public abstract class Message implements Serializable {
+public abstract class MessageVisitable implements Serializable {
     protected String string;
     protected boolean closeSocket;
 
-    //public abstract void accept(ServerView visitor);
+    public abstract void accept(VisitorClient visitorClient);
 
-    public String getString(){
+    @Override
+    public String toString(){
         return string;
     }
 

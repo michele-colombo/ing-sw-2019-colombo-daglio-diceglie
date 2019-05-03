@@ -1,7 +1,7 @@
 package it.polimi.ingsw.server.observer;
 
-import it.polimi.ingsw.server.message.Message;
+import it.polimi.ingsw.server.message.MessageVisitable;
 
 public interface Observer {
-    void update(Message message);
+    void update(MessageVisitable messageVisitable);
 }

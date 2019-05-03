@@ -7,9 +7,9 @@ import it.polimi.ingsw.exceptions.GameFullException;
 import it.polimi.ingsw.exceptions.NameAlreadyTakenException;
 import it.polimi.ingsw.server.events.*;
 import it.polimi.ingsw.server.message.LoginMessage;
-import it.polimi.ingsw.server.message.Message;
+import it.polimi.ingsw.server.observer.Observer;
 
-public class Controller implements Visitor{
+public class Controller implements VisitorServer {
 
     private static GameModel gameModel;
 
@@ -21,7 +21,9 @@ public class Controller implements Visitor{
     public synchronized void visit(LoginEvent loginEvent, ServerView serverView){
         LoginMessage message = new LoginMessage("Login successful!", true, false);
         try{
-            gameModel.addPlayer(new Player(loginEvent.getName(), loginEvent.getColor()));
+            Player newPlayer = new Player(loginEvent.getName(), loginEvent.getColor());
+            gameModel.addPlayer(newPlayer);
+            gameModel.attach(newPlayer, serverView);
         } catch(NameAlreadyTakenException e){
             message = new LoginMessage("Name already taken!", false, false);
         } catch(ColorAlreadyTakenException e){
@@ -31,6 +33,11 @@ public class Controller implements Visitor{
         }
         finally {
             gameModel.notify(message, serverView);
+            System.out.println("Login ok");
         }
+    }
+
+    public void removeGameModelObserver(Observer observer){
+        gameModel.detach(observer);
     }
 }

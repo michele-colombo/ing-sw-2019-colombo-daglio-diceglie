@@ -25,7 +25,7 @@ public class PlayingTest {
         } catch (ColorAlreadyTakenException e){
 
         } catch(GameFullException e){
-            ;
+
         }
 
         gm.initMatch();

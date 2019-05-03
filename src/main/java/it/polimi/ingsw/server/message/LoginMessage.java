@@ -1,6 +1,8 @@
 package it.polimi.ingsw.server.message;
 
-public class LoginMessage extends Message {
+import it.polimi.ingsw.client.VisitorClient;
+
+public class LoginMessage extends MessageVisitable {
     private boolean loginSuccessful;
 
     public LoginMessage(String string, boolean loginSuccessful, boolean closeSocket){
@@ -9,9 +11,9 @@ public class LoginMessage extends Message {
         this.closeSocket = closeSocket;
     }
 
-    //public void accept(ServerView visitor){
-        //visitor.visit(this);
-    //}
+    public void accept(VisitorClient visitorClient){
+        visitorClient.visit(this);
+    }
 
     public boolean getLoginSuccessful(){
         return loginSuccessful;

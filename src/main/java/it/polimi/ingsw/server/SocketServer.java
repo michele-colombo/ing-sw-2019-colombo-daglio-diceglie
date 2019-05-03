@@ -1,7 +1,7 @@
 package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.server.events.EventVisitable;
-import it.polimi.ingsw.server.message.Message;
+import it.polimi.ingsw.server.message.MessageVisitable;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -35,15 +35,16 @@ public class SocketServer extends Thread{
             }
         } catch(IOException e){
             System.out.println("Error while receiving/forwarding messages!");
-            e.printStackTrace();
+            System.out.println("Observer removed!");
+            serverView.removeGameModelObserver(serverView);
         } catch(ClassNotFoundException e){
             System.out.println("Class not found!");
             e.printStackTrace();
         }
     }
 
-    public void forwardMessage(Message message) throws IOException{
-        out.writeObject(message);
+    public void forwardMessage(MessageVisitable messageVisitable) throws IOException{
+        out.writeObject(messageVisitable);
         out.flush();
     }
 
