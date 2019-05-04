@@ -1,5 +1,7 @@
 package it.polimi.ingsw;
 
+import com.google.gson.Gson;
+import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -10,107 +12,104 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class EffectTest {
 
-    @Test
+    private Match inizializza(){
+        Match m = new Match(0, 5);
+        Layout layout= m.getLayout();
+
+        Player anna= new Player("Anna", PlayerColor.BLUE);
+        Player gianni= new Player("Gianni", PlayerColor.GREEN);
+        Player nino= new Player("Nino", PlayerColor.VIOLET);
+        Player luca= new Player("Luca", PlayerColor.GREY);
+        Player gigi= new Player("Gigi", PlayerColor.YELLOW);
+
+        m.addPlayer(anna);
+        m.addPlayer(gianni);
+        m.addPlayer(nino);
+        m.addPlayer(luca);
+        m.addPlayer(gigi);
+
+        anna.setSquarePosition(layout.getSquare(0, 0));
+        gianni.setSquarePosition(layout.getSquare(0, 2));
+        nino.setSquarePosition(layout.getSquare(1, 2));
+        luca.setSquarePosition(layout.getSquare(2, 0));
+        gigi.setSquarePosition(layout.getSquare(3, 2));
+
+
+        m.setCurrentPlayer(anna);
+        m.setCurrentAction(new Action(false, false));
+
+        return m;
+    }
+
+    private String selectableLists(Match m){
+        String result;
+        result= "SELECTABLE PLAYERS\n";
+
+        for(Player selp: m.getCurrentPlayer().getSelectablePlayers()) {
+            result+= selp.getName() + "\n";
+        }
+        result+= "SELECTABLE SQUARES\n";
+        for(Square sq: m.getCurrentPlayer().getSelectableSquares()){
+            result+= sq.getX() + ";" + sq.getY() + "\n";
+        }
+
+        result+= "SELECTABLE COMMANDS";
+        for(Command selc: m.getCurrentPlayer().getSelectableCommands()){
+            result+= selc.toString() + "\n";
+        }
+
+        return result;
+
+
+    }
+
+    private String damaged(Match m){
+        String res= "";
+        for(int i=0; i< m.getCurrentAction().getDamaged().size(); i++){
+            res+= m.getCurrentAction().getDamaged().get(i).getName() + "\n";
+        }
+
+        return res;
+
+    }
+
     public void startTest(){
+        Effect effect= new Effect(0, 1, -1, -1, -1, 1, 1, -1, -1, 0, 2, 2, -1);
+        Match m= inizializza();
 
-        Player paolo= new Player();
-        Player gio= new Player();
-        Player ste= new Player();
+        Player sparatore= m.getCurrentPlayer();
+        effect.start(sparatore, m);
 
-        Match m= new Match();
+        System.out.println(selectableLists(m));
 
-        paolo.setSquarePosition(m.getLayout().getSquare(0, 1));
-        gio.setSquarePosition(m.getLayout().getSquare(0, 2));
-        ste.setSquarePosition(m.getLayout().getSquare(1, 1));
+        Player gianni= m.getCurrentPlayer().getSelectablePlayers().get(0);
+        effect.applyOn(sparatore, gianni, null, m);
 
-        m.addPlayer(paolo);
-        m.addPlayer(gio);
-        m.addPlayer(ste);
+        System.out.println(damaged(m));
 
-        List<Square> posizioni= new ArrayList<>();
-        posizioni.add(m.getLayout().getSquare(0, 1));
+        Effect opt= new Effect(0, 1, -1, -1, 1, 1, 0, -1, -1, 0, 1, 0, -1);
+        opt.start(sparatore, m);
+        System.out.println(selectableLists(m));
 
-        assertTrue(m.getPlayersOn(posizioni).contains(paolo));
+        opt.applyOn(sparatore, null, null, m);
+        System.out.println(damaged(m));
 
-
-        m.setCurrentPlayer(paolo);
-
-        Effect eff= new Effect(0, 1, 0, -1, 4, 1, 1, 2, 0, 0, 0);
-
-        eff.start(paolo, m);
-
-        assertTrue(paolo.getSelectablePlayers().contains(gio));
-        assertTrue(paolo.getSelectablePlayers().contains(ste));
-        assertTrue(paolo.getSelectablePlayers().size() == 2);
-
-        assertTrue(paolo.getSelectableSquares().isEmpty());
-
-        gio.setSquarePosition(m.getLayout().getSquare(3, 0));
-
-        eff.start(paolo, m);
-        assertTrue(paolo.getSelectablePlayers().contains(ste));
-        assertTrue(paolo.getSelectablePlayers().size() == 1);
-    }
-
-    @Test
-    public void quiteAllSituations(){
-        Match m= new Match();
-
-        Player a= new Player("Aldo", PlayerColor.GREEN);
-        Player b= new Player("Biagio", PlayerColor.GREY);
-        Player c= new Player("Carlo", PlayerColor.YELLOW);
-        Player d= new Player("Dario", PlayerColor.VIOLET);
-        Player e= new Player("Elena", PlayerColor.BLUE);
-
-        m.addPlayer(a);
-        m.addPlayer(b);
-        m.addPlayer(c);
-        m.addPlayer(d);
-        m.addPlayer(e);
-
-        a.setSquarePosition(m.getLayout().getSquare(0,1));
-        b.setSquarePosition(m.getLayout().getSquare(1,2));
-        c.setSquarePosition(m.getLayout().getSquare(2,1));
-        d.setSquarePosition(m.getLayout().getSquare(3,0));
-        e.setSquarePosition(m.getLayout().getSquare(3,2));
-
-        //not visible
-        Effect effetto= new Effect(0, 0, -1, -1, 4, 1, 1, 2, 0, 0, 0);
-        for(Player pl: m.getPlayers()){
-            effetto.start(pl, m);
+        System.out.println("Danni");
+        for(Player p: gianni.getDamageTrack().getDamageList()){
+            System.out.println(p.getName());
         }
 
-        List<Player> foundByHand= new ArrayList<>();
-
-        foundByHand.add(c);
-        foundByHand.add(d);
-        foundByHand.add(e);
-
-        assertTrue(a.getSelectablePlayers().containsAll(foundByHand));
-        assertTrue(a.getSelectablePlayers().size()== 3);
-
-        foundByHand.clear();
-        foundByHand.add(a);
-        foundByHand.add(b);
-        foundByHand.add(e);
-
-        assertTrue(d.getSelectablePlayers().containsAll(foundByHand));
-        assertTrue(d.getSelectablePlayers().size() == 3);
-
-        for(Player p: m.getPlayers()){
-            p.resetSelectables();
+        System.out.println("Marchi");
+        for(Player p: gianni.getDamageTrack().getMarkMap().keySet()){
+            System.out.println(p.getName());
+            System.out.println(gianni.getDamageTrack().getMarkMap().get(p));
         }
 
-        Effect direzioneCard= new Effect(0, 2, 0, -1, 4, 1, 1, 2, 0, 2, 0);
 
-        direzioneCard.start(c, m);
-
-        foundByHand.clear();
-        foundByHand.add(a);
-
-        assertTrue(c.getSelectablePlayers().containsAll(foundByHand) && c.getSelectablePlayers().size()== 1);
-        // direzioneCard.applyOn(c, c.getSelectablePlayers().get(0), null, m);
 
 
     }
+
+
+
 }
