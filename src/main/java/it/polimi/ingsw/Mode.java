@@ -24,7 +24,7 @@ public class Mode {
         this.description= description;
         this.cost= cost;
 
-        effects= new ArrayList<Effect>();
+        effects= new ArrayList<>();
     }
 
 

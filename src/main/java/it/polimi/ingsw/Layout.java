@@ -2,13 +2,9 @@ package it.polimi.ingsw;
 
 
 import com.google.gson.Gson;
-
-import javax.security.auth.login.Configuration;
 import java.io.*;
-import java.lang.reflect.Array;
-import java.nio.file.Files;
 import java.util.*;
-import java.util.logging.Logger;
+
 
 import static it.polimi.ingsw.Border.*;
 import static it.polimi.ingsw.Direction.*;
@@ -65,21 +61,21 @@ public class Layout {
      * @return An ArrayList containing the found squares
      */
     public List<Square> getSquaresInDirection(Square startingSquare, Direction d){
-        List<Square> squares = new ArrayList<>() ;
+        List<Square> result = new ArrayList<>() ;
         if(d == NORTH){
-            squares.addAll(getNorthernSquares(startingSquare));
+            result.addAll(getNorthernSquares(startingSquare));
         }
         else if(d == EAST){
-                squares.addAll(getEasternSquares(startingSquare));
+                result.addAll(getEasternSquares(startingSquare));
            }
         else if(d == SOUTH){
-                squares.addAll(getSouthernSquares(startingSquare));
+                result.addAll(getSouthernSquares(startingSquare));
         }
         else if(d == WEST){
-                squares.addAll(getWesternSquares(startingSquare));
+                result.addAll(getWesternSquares(startingSquare));
         }
-        squares.add(startingSquare);
-        return squares;
+        result.add(startingSquare);
+        return result;
     }
 
     /**
@@ -303,15 +299,15 @@ public class Layout {
      * @return An ArrayList containing all the found square; it could be empty
      */
     private List<Square> getNorthernSquares(Square startingSquare){
-        List<Square> squares = new ArrayList<>();
+        List<Square> result = new ArrayList<>();
         int i = startingSquare.getY() + 1;
         while(i < 3){
             if(existSquare(startingSquare.getX(), i)){
-                squares.add(getSquare(startingSquare.getX(), i));
+                result.add(getSquare(startingSquare.getX(), i));
             }
             i++;
         }
-            return squares;
+            return result;
     }
 
     /**
@@ -320,15 +316,15 @@ public class Layout {
      * @return An ArrayList containing all the found squares; it could be empty
      */
     private List<Square> getEasternSquares(Square startingSquare){
-        List<Square> squares = new ArrayList<>();
+        List<Square> result = new ArrayList<>();
         int i = startingSquare.getX() + 1;
         while(i < 4){
             if(existSquare(i, startingSquare.getY())){
-                squares.add(getSquare(i, startingSquare.getY()));
+                result.add(getSquare(i, startingSquare.getY()));
             }
             i++;
         }
-        return squares;
+        return result;
     }
 
     /**
@@ -337,15 +333,15 @@ public class Layout {
      * @return An ArrayList containing all the found squares; it could be empty
      */
     private List<Square> getSouthernSquares(Square startingSquare){
-        List<Square> squares = new ArrayList<>();
+        List<Square> result = new ArrayList<>();
         int i = startingSquare.getY() - 1;
         while(i > -1){
             if(existSquare(startingSquare.getX(), i)){
-                squares.add(getSquare(startingSquare.getX(), i));
+                result.add(getSquare(startingSquare.getX(), i));
             }
             i--;
         }
-        return squares;
+        return result;
     }
 
     /**
@@ -354,15 +350,15 @@ public class Layout {
      * @return An ArrayList containing all the found squares; it could be empty
      */
     private List<Square> getWesternSquares(Square startingSquare){
-        List<Square> squares = new ArrayList<>();
+        List<Square> result = new ArrayList<>();
         int i = startingSquare.getX() - 1;
         while(i > -1){
             if(existSquare(i, startingSquare.getY())){
-                squares.add(getSquare(i, startingSquare.getY()));
+                result.add(getSquare(i, startingSquare.getY()));
             }
             i--;
         }
-        return squares;
+        return result;
     }
 
     /**
@@ -493,7 +489,7 @@ public class Layout {
             Square current= squaresWithNoRoomYet.get(0);
             Room roomToInstantiate= new Room();
 
-            List<Square> found = new ArrayList<Square>();
+            List<Square> found = new ArrayList<>();
             boolean finished= false;
 
             while(!finished){

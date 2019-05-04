@@ -1,9 +1,6 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.exceptions.ColorAlreadyTakenException;
-import it.polimi.ingsw.exceptions.GameFullException;
-import it.polimi.ingsw.exceptions.NameAlreadyTakenException;
-import it.polimi.ingsw.exceptions.NextMicroActionException;
+import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.server.message.MessageVisitable;
 import it.polimi.ingsw.server.observer.Observable;
 import it.polimi.ingsw.server.observer.Observer;
@@ -443,13 +440,9 @@ public class GameModel implements Observable {
     }
 
     private boolean nameTaken(String name){
-        for(Player pa : activePlayers){
-            if(pa.getName().equals(name)){
-                return true;
-            }
-        }
-        for(Player pi : inactivePlayers){
-            if(pi.getName().equals(name)){
+        List<Player> allPlayers = allPlayers();
+        for(Player p : allPlayers){
+            if(p.getName().equals(name)){
                 return true;
             }
         }
@@ -457,13 +450,9 @@ public class GameModel implements Observable {
     }
 
     private boolean colorTaken(PlayerColor color){
-        for(Player pa : activePlayers){
-            if(pa.getColor() == color){
-                return true;
-            }
-        }
-        for(Player pi : inactivePlayers){
-            if(pi.getColor() == color){
+        List<Player> allPlayers = allPlayers();
+        for(Player p : allPlayers){
+            if(p.getColor() == color){
                 return true;
             }
         }
@@ -494,6 +483,40 @@ public class GameModel implements Observable {
                 }
             }
         }
+    }
+
+    public boolean alreadyActive(String name){
+        for(Player p : activePlayers){
+            if(p.getName().equals(name)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public List<Player> allPlayers(){
+        List<Player> allPlayers = new ArrayList<>();
+        allPlayers.addAll(activePlayers);
+        allPlayers.addAll(inactivePlayers);
+        return allPlayers;
+    }
+
+    public void relogin(String name) throws NameNotFoundException, AlreadyLoggedException{
+        if(!nameTaken(name)){
+            throw new NameNotFoundException();
+        } else if(alreadyActive(name)){
+            throw new AlreadyLoggedException();
+        }
+    }
+
+    public Player getPlayerByName(String name){
+        List<Player> allPlayers = allPlayers();
+        for(Player p : allPlayers){
+            if(p.getName().equals(name)){
+                return p;
+            }
+        }
+        return null;
     }
 
     public void notify(MessageVisitable messageVisitable, Observer observer){

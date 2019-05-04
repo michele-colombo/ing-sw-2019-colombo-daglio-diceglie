@@ -1,6 +1,5 @@
 package it.polimi.ingsw;
 
-//import sun.awt.AWTIcon32_security_icon_yellow16_png;
 
 import java.util.ArrayList;
 import java.util.List;

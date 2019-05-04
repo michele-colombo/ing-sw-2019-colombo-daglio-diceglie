@@ -1,11 +1,11 @@
 package it.polimi.ingsw;
 
 public class FrenzyDamageTrack extends DamageTrack {
-    static final int biggerScore = 2;
-    static final int firstBlood = 0;
+    private static final int BIGGERSCORE = 2;
+    private static final int FIRSTBLOOD = 0;
 
     public FrenzyDamageTrack(){
-        super(biggerScore, firstBlood);
+        super(BIGGERSCORE, FIRSTBLOOD);
     }
 
     public FrenzyDamageTrack(DamageTrack oldTrack){

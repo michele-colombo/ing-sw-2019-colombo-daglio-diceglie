@@ -37,17 +37,18 @@ public class ClientView implements VisitorClient{
 
     public void login(){
         System.out.println("Please, insert your name and color");
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         try{
-            String name = reader.readLine();
+            String name = readStringFromUser();
+            String selectedColor = readStringFromUser();
             try{
-                PlayerColor color = PlayerColor.valueOf(reader.readLine().toUpperCase()); //SOSTITUIRE CON UN METODO FORWARD
+                PlayerColor color = PlayerColor.valueOf(selectedColor); //SOSTITUIRE CON UN METODO FORWARD
                 LoginEvent loginEvent = new LoginEvent(name, color);
                 socket.forward(loginEvent);
             } catch(IOException e){
                 System.out.println("Error while forwarding the login event!");
                 e.printStackTrace();
             } catch(IllegalArgumentException e){
+                System.out.println(selectedColor + " isn't a valid color!");
                 login();
             }
         } catch(IOException e){
@@ -61,5 +62,10 @@ public class ClientView implements VisitorClient{
 
     public void visit(LoginMessage loginMessage){
         System.out.println(loginMessage.toString());
+    }
+
+    public String readStringFromUser() throws IOException{
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        return reader.readLine().toUpperCase();
     }
 }

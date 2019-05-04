@@ -28,7 +28,7 @@ public class WeaponTest {
 
     @Test
     public void discounted(){
-        Weapon arma= new Weapon("Gingillo", new Cash(2, 0, 0), BLUE);
+        Weapon arma = new Weapon("Gingillo", new Cash(2, 0, 0), BLUE);
         assertTrue(arma.getDiscountedCost().isEqual(new Cash(1, 0, 0)));
     }
 

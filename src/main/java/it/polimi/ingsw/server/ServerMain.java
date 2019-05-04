@@ -2,15 +2,18 @@ package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.GameModel;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ServerMain {
     //SERVE PER FAR PARTIRE IL SERVER
-    private final int port;
+    private int port;
     private final GameModel gameModel;
     private final Controller controller;
 

@@ -2,16 +2,14 @@ package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.GameModel;
 import it.polimi.ingsw.Player;
-import it.polimi.ingsw.exceptions.ColorAlreadyTakenException;
-import it.polimi.ingsw.exceptions.GameFullException;
-import it.polimi.ingsw.exceptions.NameAlreadyTakenException;
+import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.server.events.*;
 import it.polimi.ingsw.server.message.LoginMessage;
 import it.polimi.ingsw.server.observer.Observer;
 
 public class Controller implements VisitorServer {
 
-    private static GameModel gameModel;
+    private final GameModel gameModel;
 
 
     public Controller(GameModel gameModel){
@@ -34,6 +32,22 @@ public class Controller implements VisitorServer {
         finally {
             gameModel.notify(message, serverView);
             System.out.println("Login ok");
+        }
+    }
+
+    public synchronized void visit(ReloginEvent reloginEvent, ServerView serverView){
+        LoginMessage message = new LoginMessage("Login successful!", true, false);
+        try{
+            gameModel.relogin(reloginEvent.getName());
+            gameModel.attach(gameModel.getPlayerByName(reloginEvent.getName()), serverView);
+        } catch(NameNotFoundException e){
+            message = new LoginMessage("Name not found!", false, false);
+        } catch(AlreadyLoggedException e){
+            message = new LoginMessage("Player already logged", false, true);
+        }
+        finally{
+            gameModel.notify(message, serverView);
+            System.out.println("Relogin ok");
         }
     }
 

@@ -1,6 +1,6 @@
 package it.polimi.ingsw;
 
-import com.sun.org.apache.bcel.internal.generic.NEW;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -218,7 +218,7 @@ public class Match {
      */
     public List<Player> endTurnCheck(){
         List<Player> deadPlayers = getDeadPlayers();
-        if(deadPlayers.size() > 0){
+        if(!deadPlayers.isEmpty()){
             for(Player p : deadPlayers){
                 scoreDamageTrack(p.getDamageTrack().score());
             }
@@ -290,7 +290,7 @@ public class Match {
             }
         } else {
             turnCompletable = true;
-            if (p.getUnloadedWeapons().size() > 0){
+            if (!p.getUnloadedWeapons().isEmpty()){
                 result.add(new Action(false, true, new Reload()));
             }
         }
@@ -358,14 +358,6 @@ public class Match {
     }
 
     /**
-     * Checks if final frenzy is currently active
-     * @return
-     */
-    public boolean getFrenzy(){
-        return frenzyOn;
-    }
-
-    /**
      * Substitutes player's damageTrack with a FrenzyDamageTrack
      * @param deadPlayers Only dead players can switch to frenzy
      */
@@ -422,6 +414,10 @@ public class Match {
         return turnCompletable;
     }
 
+    /**
+     * Checks if final frenzy is currently active
+     * @return frenzyOn
+     */
     public boolean isFrenzyOn() {
         return frenzyOn;
     }

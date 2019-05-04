@@ -34,8 +34,6 @@ public class SocketServer extends Thread{
                 serverView.receiveEvent((EventVisitable) in.readObject());
             }
         } catch(IOException e){
-            System.out.println("Error while receiving/forwarding messages!");
-            System.out.println("Observer removed!");
             serverView.removeGameModelObserver(serverView);
         } catch(ClassNotFoundException e){
             System.out.println("Class not found!");
@@ -48,9 +46,15 @@ public class SocketServer extends Thread{
         out.flush();
     }
 
-    public void stopSocket() throws IOException{
-        out.close();
-        in.close();
-        socket.close();
-    }
+   public Socket getSocket(){
+        return socket;
+   }
+
+   public ObjectInputStream getObjectInputStream(){
+        return in;
+   }
+
+   public ObjectOutputStream getObjectOutputStream(){
+        return out;
+   }
 }

@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.lang.Math.max;
 
 public abstract class DamageTrack {
     /**
@@ -34,7 +33,7 @@ public abstract class DamageTrack {
     private final int firstBlood;
 
     /**
-     * sets biggerScore and firstBlood. Instantiate damageList and markMap and initialize skullNumber
+     * sets BIGGERSCORE and FIRSTBLOOD. Instantiate damageList and markMap and initialize skullNumber
      * @param biggerScore depends on the damage list type
      * @param firstBlood depends on the damage list type
      */
@@ -190,7 +189,7 @@ public abstract class DamageTrack {
             if (damagers.get(p) > massimo) {
                 result = p;
                 massimo = damagers.get(p);
-            } else if (damagers.get(p) == massimo) {
+            } else if (damagers.get(p).equals(massimo)) { //PRIMA C'ERA ==
                 if (result == null || this.getDamageList().indexOf(p) < this.getDamageList().indexOf(result)) {
                     result = p;
                 }
@@ -214,7 +213,7 @@ public abstract class DamageTrack {
      */
     public Map<Player, Integer> score(){
         if(getDamageList().isEmpty()){
-            return new HashMap<Player, Integer>();
+            return new HashMap<>();
         }
 
         Map<Player, Integer> damagers = this.whoDamagedYou();
@@ -227,7 +226,6 @@ public abstract class DamageTrack {
 
         Player firstBlooder= this.getDamageList().get(0);
 
-        int i=0;
         while(damagers.size()>0){
             Player mostPowerful= this.getMostPowerfulDamagerIn(damagers);
             result.put(mostPowerful, currentScore);

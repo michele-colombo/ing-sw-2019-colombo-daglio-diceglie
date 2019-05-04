@@ -23,8 +23,10 @@ public class ServerView implements Observer {
         try{
             socketServer.forwardMessage(messageVisitable);
             try{
-                if(messageVisitable.getCloseSocket()){
-                    socketServer.stopSocket();
+                if(messageVisitable.getCloseSocket()){ //close socket connection
+                    socketServer.getObjectOutputStream().close();
+                    socketServer.getObjectInputStream().close();
+                    socketServer.getSocket().close();
                 }
             } catch(IOException e){
                 System.out.println("Error while closing the socket!");
