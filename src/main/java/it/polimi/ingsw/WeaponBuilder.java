@@ -148,6 +148,99 @@ public class WeaponBuilder {
 
         weapons.add(weaponInConstruction);
 
+
+        //building vortex cannon
+        weaponInConstruction= new Weapon("Vortex cannon", new Cash(1, 1, 0), RED);
+
+        m1= new Mode(true, -1, "basic effect", "Choose a square you can see, but not your " +
+                "square. Call it \"the vortex\". Choose a target on the vortex " +
+                "or 1 move away from it. Move it onto the vortex and give it " +
+                "2 damage.", new Cash());
+        m1.addEffect(new Effect(0,1,1,-1,-1,0,1,-1,-1,-1,0,0,0));
+        m1.addEffect(new Effect(2,-1,0,1,-1,1,1,1,2,0,2,0,-1));
+
+        m2= new Mode(true, -1, "with black hole", "Choose up to 2 other targets on the\n" +
+                "vortex or 1 move away from it. Move them onto the vortex\n" +
+                "and give them each 1 damage.", new Cash(0, 1, 0));
+        m2.addEffect(new Effect(2,-1,0,1,1,1,1,1,2,0,1,0,-1));
+        m2.addEffect(new Effect(2,-1,0,1,1,1,0,1,2,0,1,0,-1));
+
+        weaponInConstruction.addMode(m1);
+        weaponInConstruction.addMode(m2);
+
+        weapons.add(weaponInConstruction);
+
+        //building furnace
+        weaponInConstruction= new Weapon("Furnace", new Cash(1, 1, 0), RED);
+
+        m1= new Mode(true, -1, "basic mode", "Choose a room you can see, but not the room " +
+                "you are in. Deal 1 damage to everyone in that room.", new Cash());
+        m1.addEffect(new Effect(0,1,-1,-1,3,0,1,-1,-1,2,1,0,-1));
+
+        m2= new Mode(true, -1, "in cozy fire mode", "Choose a square exactly one move " +
+                "away. Deal 1 damage and 1 mark to everyone on that " +
+                "square.", new Cash());
+        m2.addEffect(new Effect(0,-1,1,1,-1,0,1,-1,-1,1,1,1,-1));
+
+        weaponInConstruction.addMode(m1);
+        weaponInConstruction.addMode(m2);
+
+        weapons.add(weaponInConstruction);
+
+        //building heatseeker
+
+        weaponInConstruction= new Weapon("Heatseeker", new Cash(0, 2, 1), RED);
+
+        m1= new Mode(true, -1, "effect", "Choose 1 target you cannot see and deal 3 damage\n" +
+                "to it.", new Cash());
+        m1.addEffect(new Effect( 0,0,-1,-1,-1,1,1,-1,-1,0,3,0,-1));
+
+        weaponInConstruction.addMode(m1);
+
+        weapons.add(weaponInConstruction);
+
+        //building hellion
+        weaponInConstruction= new Weapon("Hellion", new Cash(0, 1, 1), RED);
+
+        m1= new Mode(true, -1, "basic mode", "Deal 1 damage to 1 target you can see at least " +
+                "1 move away. Then give 1 mark to that target and everyone " +
+                "else on that square.", new Cash());
+        m1.addEffect(new Effect(0,1,1,-1,-1,1,1,-1,-1,0,1,0,1));
+        m1.addEffect(new Effect(1,-1,0,0,1,-1,1,-1,-1,5,0,1,-1));
+
+        m2= new Mode(true, -1, "in nano-tracer mode", "Deal 1 damage to 1 target you can " +
+                "see at least 1 move away. Then give 2 marks to that target " +
+                "and everyone else on that square.", new Cash(0, 1, 0));
+        m2.addEffect(new Effect(0,1,1,-1,-1,1,1,-1,-1,0,1,0,1));
+        m2.addEffect(new Effect(1,-1,0,0,1,-1,1,-1,-1,5,0,1,-1));
+
+        weaponInConstruction.addMode(m1);
+        weaponInConstruction.addMode(m2);
+
+        weapons.add(weaponInConstruction);
+
+        //building flamethrower
+
+        weaponInConstruction= new Weapon("Flamethrower", new Cash(0, 1, 0), RED);
+
+        m1= new Mode(true, -1, "basic mode", "Choose a square 1 move away and possibly a second square " +
+                "1 more move away in the same direction. On each square, you may " +
+                "choose 1 target and give it 1 damage.", new Cash());
+        m1.addEffect(new Effect(0,-1,1,1,-1,1,1,-1,-1,0,1,0,-1));
+        m1.addEffect(new Effect(0,3,2,2,1,1,0,-1,-1,0,1,0,-1));
+
+        m2= new Mode(true, -1, "in barbecue mode", "Choose 2 squares as above. Deal 2 damage to " +
+                "everyone on the first square and 1 damage to everyone on the second " +
+                "square.", new Cash(0, 0, 2));
+        m2.addEffect(new Effect(0,-1,1,1,-1,0,1,-1,-1,1,2,0,-1));
+        m2.addEffect(new Effect(0,3,2,2,2,0,0,-1,-1,1,1,0,-1));
+
+        weaponInConstruction.addMode(m1);
+        weaponInConstruction.addMode(m2);
+
+        weapons.add(weaponInConstruction);
+
+
     }
 
     public List<Weapon> getWeapons() {

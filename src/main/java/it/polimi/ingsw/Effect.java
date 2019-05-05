@@ -60,6 +60,142 @@ public class Effect {
         this.effectToAdd = effectToAdd;
     }
 
+    public String toString(){
+        StringBuilder sb= new StringBuilder();
+        sb.append(startingPoint + " ; ");
+        sb.append(reciprocalPosition + " ; ");
+        sb.append(distMin + " ; ");
+        sb.append(distMax + " ; ");
+        sb.append(diversity + " ; ");
+        sb.append(what + " ; ");
+        sb.append(optionality + " ; ");
+        sb.append(whoToMove + " ; ");
+        sb.append(whereToMove + " ; ");
+        sb.append(whoToDamage + " ; ");
+        sb.append(damageNumber + " ; ");
+        sb.append(markNumber + " ; ");
+        sb.append(setTempSquare);
+
+        return sb.toString();
+    }
+
+    public String humanString(){
+        StringBuilder sb= new StringBuilder();
+
+        sb.append("startingPoint: ");
+        switch(startingPoint){
+            case 0: sb.append("me"); break;
+            case 1: sb.append("last damaged"); break;
+            case 2: sb.append("temp sqare"); break;
+            default: sb.append("ERROR"); break;
+        }
+
+        sb.append("\nreciprocalPosition: ");
+        switch(reciprocalPosition){
+            case -1: sb.append("Don't care"); break;
+            case 0: sb.append("not visible"); break;
+            case 1: sb.append("visible"); break;
+            case 2: sb.append("cardinal direction"); break;
+            case 3: sb.append("in line with last damaged"); break;
+            default: sb.append("ERROR"); break;
+        }
+
+        sb.append("\ndistMin: ");
+        switch(distMin){
+            case -1: sb.append("Don't care"); break;
+            default: sb.append(distMin); break;
+        }
+
+        sb.append("\ndistMax: ");
+        switch(distMax){
+            case -1: sb.append("Don't care"); break;
+            default: sb.append(distMax); break;
+        }
+
+        sb.append("\ndiversity: ");
+        switch(diversity){
+            case -1: sb.append("Don't care"); break;
+            case 0: sb.append("already damaged player"); break;
+            case 1: sb.append("not damaged yet player"); break;
+            case 2: sb.append("not damaged yet square"); break;
+            case 3: sb.append("not my room"); break;
+            default: sb.append("ERROR"); break;
+        }
+
+        sb.append("\nwhat: ");
+        switch(what){
+            case -1: sb.append("Nothing to select"); break;
+            case 0: sb.append("square"); break;
+            case 1: sb.append("player"); break;
+            default: sb.append("ERROR"); break;
+        }
+
+        sb.append("\noptionality: ");
+        switch(optionality){
+            case 0: sb.append("optional"); break;
+            case 1: sb.append("mandatory"); break;
+            default: sb.append("ERROR"); break;
+        }
+
+        sb.append("\nwhoToMove: ");
+        switch(whoToMove){
+            case -1: sb.append("nobody"); break;
+            case 0: sb.append("me"); break;
+            case 1: sb.append("selected player"); break;
+            case 2: sb.append("last damaged"); break;
+            default: sb.append("ERROR"); break;
+        }
+
+        sb.append("\nwhereToMove: ");
+        switch(whereToMove){
+            case -1: sb.append("nowhere"); break;
+            case 0: sb.append("selected square"); break;
+            case 1: sb.append("selected player's square"); break;
+            case 2: sb.append("temp square"); break;
+            case 3: sb.append("my square"); break;
+            default: sb.append("ERROR"); break;
+        }
+
+        sb.append("\nwhoToDamage: ");
+        switch(whoToDamage){
+            case -1: sb.append("nobody"); break;
+            case 0: sb.append("selected player"); break;
+            case 1: sb.append("all in selected square"); break;
+            case 2: sb.append("all in selected room (selected square's room)"); break;
+            case 3: sb.append("last damaged"); break;
+            case 4: sb.append("all in my square"); break;
+            case 5: sb.append("all in temp square"); break;
+            default: sb.append("ERROR"); break;
+        }
+
+        sb.append("\ndamageNumber: ");
+        switch(damageNumber){
+            case -1: sb.append("Cambiami, mettimi a zero"); break;
+            case 0: sb.append("no damages (0)"); break;
+            default: sb.append(damageNumber); break;
+        }
+
+        sb.append("\nmarkNumber: ");
+        switch(markNumber){
+            case -1: sb.append("Cambiami, mettimi a zero"); break;
+            case 0: sb.append("no marks (0)"); break;
+            default: sb.append(markNumber); break;
+        }
+
+        sb.append("\nsetTempSquare: ");
+        switch(setTempSquare){
+            case -1: sb.append("don't set"); break;
+            case 0: sb.append("selected square"); break;
+            case 1: sb.append("selected player's square"); break;
+            case 2: sb.append("my square"); break;
+            default: sb.append("ERROR"); break;
+        }
+
+        return sb.toString();
+
+
+    }
+
     public void start(Player p, Match m){
 
         m.getCurrentPlayer().resetSelectables();

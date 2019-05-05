@@ -39,6 +39,28 @@ public class Weapon{
         return result.toString();
     }
 
+    public String getDeepDescription(){
+        StringBuilder result= new StringBuilder();
+
+        result.append(name.toUpperCase() + "\n");
+
+        for(Mode m : myModes){
+            result.append(m.getTitle() + ": " + m.getDescription() + "\n");
+            int i=1;
+            for(Effect e: m.getEffects()){
+                result.append("EFF" + i + ":\n");
+                result.append(e.humanString() + "\n");
+                i++;
+            }
+            result.append("\n");
+        }
+
+        return result.toString();
+
+    }
+
+
+
     public void addMode(Mode modeToAdd){
         myModes.add(modeToAdd);
     }
