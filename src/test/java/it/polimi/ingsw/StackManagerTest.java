@@ -120,5 +120,23 @@ public class StackManagerTest {
     StackManager sm= new StackManager();
 
     assertTrue(sm.getOriginalWeaponArsenal().get(0).getName() == "Lock rifle");
+
+    assertEquals(sm.getOriginalWeaponArsenal().size(), 21);
+    assertEquals(sm.getOriginalAmmoTiles().size(), 36);
+    assertEquals(sm.getOriginalPowerUps().size(), 24);
+
+    for(int i=0; i<36; i++){
+        sm.drawAmmoTile();
+    }
+
+    assertEquals(sm.getAmmoTilesActiveStack().size(), 0);
+    assertEquals(sm.getAmmoTilesWasteStack().size(), 36);
+    sm.drawAmmoTile();
+    assertEquals(sm.getAmmoTilesActiveStack().size(), 35);
+
+    for(int i=0; i<73; i++){
+        sm.drawPowerUp();
+    }
+    assertEquals(sm.getPowerUpActiveStack().size(), 23);
     }
 }

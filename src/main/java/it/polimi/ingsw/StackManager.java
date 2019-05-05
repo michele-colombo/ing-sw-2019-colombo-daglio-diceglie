@@ -131,6 +131,7 @@ public class StackManager {
 
         AmmoTile result= ammoTilesActiveStack.get(0);
         ammoTilesActiveStack.remove(result);
+        ammoTilesWasteStack.add(result);
         return result;
 
     }
@@ -143,6 +144,7 @@ public class StackManager {
         }
         PowerUp result= powerUpActiveStack.get(0);
         powerUpActiveStack.remove(result);
+        powerUpWasteStack.add(result);
 
         return result;
     }
