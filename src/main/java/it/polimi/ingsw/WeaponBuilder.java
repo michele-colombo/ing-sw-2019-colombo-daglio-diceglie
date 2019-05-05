@@ -240,6 +240,188 @@ public class WeaponBuilder {
 
         weapons.add(weaponInConstruction);
 
+        //buildin granade launcher
+
+        weaponInConstruction= new Weapon("Granade launcher", new Cash(0, 1, 0), RED);
+
+        m1= new Mode(true, -1, "basic effect", "Deal 1 damage to 1 target you can see. Then you may move " +
+                "the target 1 square.", new Cash());
+        m1.addEffect(new Effect(0,1,-1,-1,-1,1,1,-1,-1,0,1,0,-1));
+        m1.addEffect(new Effect(1,-1,1,1,-1,0,1,2,0,-1,0,0,-1));
+
+        m2= new Mode(false, -1, "with extra grenade", "Deal 1 damage to every player on a square you can " +
+                "see. You can use this before or after the basic effect's move.", new Cash(0, 1, 0));
+        m2.addEffect(new Effect(0,1,-1,-1,-1,0,1,-1,-1,1,1,0,-1));
+
+        weaponInConstruction.addMode(m1);
+        weaponInConstruction.addMode(m2);
+
+        weapons.add(weaponInConstruction);
+
+        //building rocket launcher
+
+        weaponInConstruction= new Weapon("Rocket launcher", new Cash(0, 2, 0), RED);
+
+        m1= new Mode(true, -1, "basic effect", "Deal 2 damage to 1 target you can see that is not on your " +
+                "square. Then you may move the target 1 square.", new Cash());
+        m1.addEffect(new Effect(0,1,1,-1,-1,1,1,-1,-1,0,2,0,1));
+        m1.addEffect(new Effect(1,-1,0,1,-1,0,1,2,0,-1,0,0,-1));
+
+        m2= new Mode(false, -1, "with rocket jump", "Move 1 or 2 squares. This effect can be used either " +
+                "before or after the basic effect.", new Cash(1, 0, 0));
+        m2.addEffect(new Effect(0,-1,1,2,-1,0,1,0,0,-1,0,0,-1));
+
+        m3= new Mode(false, 0, "with fragmenting warhead", "During the basic effect, deal 1 damage to " +
+                "every player on your target's original square – including the target, " +
+                "even if you move it.", new Cash(0, 0, 1));
+        m3.addEffect(new Effect(0, -1, -1, -1, -1, -1, 1, -1, -1, 3, 1, 0, -1));
+        m3.addEffect(new Effect(0, -1, -1, -1, -1, -1, 1, -1, -1, 7, 1, 0, -1));
+
+        weaponInConstruction.addMode(m1);
+        weaponInConstruction.addMode(m2);
+        weaponInConstruction.addMode(m3);
+
+        weapons.add(weaponInConstruction);
+
+        //building railgun
+
+        weaponInConstruction= new Weapon("Railgun", new Cash(1, 0, 2), YELLOW);
+
+        m1= new Mode(true, -1, "basic mode", "Choose a cardinal direction and 1 target in that direction.\n" +
+                "Deal 3 damage to it.", new Cash());
+        m1.addEffect(new Effect(0,2,-1,-1,-1,1,1,-1,-1,0,3,0,-1));
+
+        m2= new Mode(true, -1, "in piercing mode", "Choose a cardinal direction and 1 or 2 targets in that " +
+                "direction. Deal 2 damage to each.", new Cash());
+        m2.addEffect(new Effect(0,2,-1,-1,-1,1,1,-1,-1,0,2,0,-1));
+        m2.addEffect(new Effect(0,3,-1,-1,1,1,0,-1,-1,0,2,0,-1));
+
+        weaponInConstruction.addMode(m1);
+        weaponInConstruction.addMode(m2);
+
+        weapons.add(weaponInConstruction);
+
+        //building cyberblade
+        weaponInConstruction= new Weapon("Cyberblade", new Cash(0, 1, 1), YELLOW);
+
+        m1= new Mode(true, -1, "basic effect", "Deal 2 damage to 1 target on your square.", new Cash());
+        m1.addEffect(new Effect(0,-1,0,0,-1,1,1,-1,-1,0,2,0,-1));
+
+        m2= new Mode(false, -1, "with shadowstep", "Move 1 square before or after the basic effect.", new Cash());
+        m2.addEffect(new Effect(0,-1,1,1,-1,0,1,0,0,-1,0,0,-1));
+
+        m3= new Mode(false, 0, "with slice and dice", "Deal 2 damage to a different target on your square. " +
+                "The shadowstep may be used before or after this effect.", new Cash(0, 0, 1));
+        m3.addEffect(new Effect(0,-1,0,0,1,1,1,-1,-1,0,2,0,-1));
+
+        weaponInConstruction.addMode(m1);
+        weaponInConstruction.addMode(m2);
+        weaponInConstruction.addMode(m3);
+
+        weapons.add(weaponInConstruction);
+
+        //building zx-2
+
+        weaponInConstruction= new Weapon("ZX-2", new Cash(0, 1, 1), YELLOW);
+
+        m1= new Mode(true, -1, "basic mode", "Deal 1 damage and 2 marks to " +
+                "1 target you can see.", new Cash());
+        m1.addEffect(new Effect(0,1,-1,-1,-1,1,1,-1,-1,0,1,2,-1));
+
+        m2= new Mode(true, -1, "in scanner mode", "Choose up to 3 targets you " +
+                "can see and deal 1 mark to each.", new Cash());
+        m2.addEffect(new Effect(0,1,-1,-1,-1,1,1,-1,-1,0,0,1,-1));
+        m2.addEffect(new Effect(0,1,-1,-1,1,1,0,-1,-1,0,0,1,-1));
+        m2.addEffect(new Effect(0,1,-1,-1,1,1,0,-1,-1,0,0,1,-1));
+
+        weaponInConstruction.addMode(m1);
+        weaponInConstruction.addMode(m2);
+
+        weapons.add(weaponInConstruction);
+
+        //building shotgun
+
+        weaponInConstruction= new Weapon("Shotgun", new Cash(0, 0, 2), YELLOW);
+        m1= new Mode(true, -1, "basic mode", "Deal 3 damage to 1 target on " +
+                "your square. If you want, you may then move " +
+                "the target 1 square.", new Cash());
+        m1.addEffect(new Effect(0,-1,0,0,-1,1,1,-1,-1,0,3,0,-1));
+        m1.addEffect(new Effect(1,-1,0,1,-1,0,1,2,0,-1,0,0,-1));
+
+        m2= new Mode(true, -1, "in long barrel mode", "Deal 2 damage to " +
+                "1 target on any square exactly one move " +
+                "away.", new Cash());
+        m2.addEffect(new Effect(0,-1,1,1,-1,1,1,-1,-1,0,2,0,-1));
+
+        weaponInConstruction.addMode(m1);
+        weaponInConstruction.addMode(m2);
+
+        weapons.add(weaponInConstruction);
+
+        //building power glove
+
+        weaponInConstruction= new Weapon("Power glove", new Cash(1, 0, 1), YELLOW);
+
+        m1= new Mode(true, -1, "basic mode", "Choose 1 target on any square " +
+                "exactly 1 move away. Move onto that square " +
+                "and give the target 1 damage and 2 marks.", new Cash());
+        m1.addEffect(new Effect(0,-1,1,1,-1,1,1,0,1,0,1,2,-1));
+
+        m2= new Mode(true, -1, "in rocket fist mode", "Choose a square " +
+                "exactly 1 move away. Move onto that square. " +
+                "You may deal 2 damage to 1 target there. " +
+                "If you want, you may move 1 more square in " +
+                "that same direction (but only if it is a legal " +
+                "move). You may deal 2 damage to 1 target " +
+                "there, as well.", new Cash(1, 0, 0));
+        m2.addEffect(new Effect(0,-1,1,1,-1,1,1,0,1,0,2,0,2));
+        m2.addEffect(new Effect(2,3,2,2,1,1,0,0,1,0,2,0,-1));
+
+        weaponInConstruction.addMode(m1);
+        weaponInConstruction.addMode(m2);
+
+        weapons.add(weaponInConstruction);
+
+        //building shockwave
+        weaponInConstruction= new Weapon("Shockwave", new Cash(0, 0, 1), YELLOW);
+
+        m1= new Mode(true, -1, "basic mode", "Choose up to 3 targets on " +
+                "different squares, each exactly 1 move away. " +
+                "Deal 1 damage to each target.", new Cash());
+        m1.addEffect(new Effect(0,-1,1,1,-1,1,1,-1,-1,0,1,0,-1));
+        m1.addEffect(new Effect(0,-1,1,1,2,1,0,-1,-1,0,1,0,-1));
+        m1.addEffect(new Effect(0,-1,1,1,2,1,0,-1,-1,0,1,0,-1));
+
+        m2= new Mode(true, -1, "in tsunami mode", "Deal 1 damage to all " +
+                "targets that are exactly 1 move away.", new Cash(0, 0, 1));
+        m2.addEffect(new Effect(0, -1, -1, -1, -1, -1, 1, -1, -1, 6, 1, 0, -1));
+
+        weaponInConstruction.addMode(m1);
+        weaponInConstruction.addMode(m2);
+
+        weapons.add(weaponInConstruction);
+
+        //building sledgehammer
+
+        weaponInConstruction= new Weapon("Sledgehammer", new Cash(0, 0, 1), YELLOW);
+
+        m1= new Mode(true, -1, "basic mode", "Deal 2 damage to 1 target on " +
+                "your square.", new Cash());
+        m1.addEffect(new Effect(0,-1,0,0,-1,1,1,-1,-1,0,2,0,-1));
+
+        m2= new Mode(true, -1, "in pulverize mode", "Deal 3 damage to 1 target " +
+                "on your square, then move that target 0, 1, " +
+                "or 2 squares in one direction.", new Cash(0, 1, 0));
+        m2.addEffect(new Effect(0,-1,0,0,-1,1,1,-1,-1,0,2,0,-1));
+        m2.addEffect(new Effect(1,-1,0,2,-1,0,1,2,0,-1,0,0,-1));
+
+        weaponInConstruction.addMode(m1);
+        weaponInConstruction.addMode(m2);
+
+        weapons.add(weaponInConstruction);
+
+
+//FINITOOO!!
 
     }
 

@@ -114,4 +114,11 @@ public class StackManagerTest {
     assertEquals(lista.size(), 3);
 
     }
+
+    @Test
+    public void buildingStacks(){
+    StackManager sm= new StackManager();
+
+    assertTrue(sm.getOriginalWeaponArsenal().get(0).getName() == "Lock rifle");
+    }
 }

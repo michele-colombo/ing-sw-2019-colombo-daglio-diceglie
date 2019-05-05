@@ -8,7 +8,7 @@ public class Weapon{
     private Cash cost;
     private Color color;
 
-    List<Mode> myModes;
+    private List<Mode> myModes;
 
     public Weapon() {
     }
@@ -18,6 +18,10 @@ public class Weapon{
         this.cost = cost;
         this.color = color;
         myModes= new ArrayList<Mode>();
+    }
+
+    public List<Mode> getMyModes() {
+        return myModes;
     }
 
     public String getName() {
@@ -42,10 +46,9 @@ public class Weapon{
     public String getDeepDescription(){
         StringBuilder result= new StringBuilder();
 
-        result.append(name.toUpperCase() + "\n");
-
+        result.append(name.toUpperCase()).append("---").append(getCost().toString()).append("\n");
         for(Mode m : myModes){
-            result.append(m.getTitle() + ": " + m.getDescription() + "\n");
+            result.append(m.getTitle()).append(": ").append(m.getDescription()).append("-------").append(m.getCost().toString()).append("\n");
             int i=1;
             for(Effect e: m.getEffects()){
                 result.append("EFF" + i + ":\n");
@@ -67,7 +70,26 @@ public class Weapon{
 
     public List<Mode> getSelectableModes(List<Mode> alreadySelected){
         List<Mode> result= new ArrayList<>();
-        for(Mode modeInWeapon: this.myModes){
+        List<Mode> eligibles= new ArrayList<>();
+        eligibles.addAll(this.myModes);
+
+        boolean alreadMandatorySelected= false;
+
+        for(Mode mod: alreadySelected){
+            if(mod.isMandatory == true){
+                alreadMandatorySelected= true;
+            }
+        }
+
+        if(alreadMandatorySelected){
+            for(Mode mod: this.myModes){
+                if(mod.isMandatory){
+                    eligibles.remove(mod);
+                }
+            }
+        }
+
+        for(Mode modeInWeapon: eligibles){
             if( modeInWeapon.getMustComeBefore() == -1 || alreadySelected.contains(myModes.get(modeInWeapon.getMustComeBefore()))){
                 result.add(modeInWeapon);
             }

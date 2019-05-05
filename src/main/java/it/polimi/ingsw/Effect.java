@@ -165,6 +165,8 @@ public class Effect {
             case 3: sb.append("last damaged"); break;
             case 4: sb.append("all in my square"); break;
             case 5: sb.append("all in temp square"); break;
+            case 6: sb.append("all near me"); break;
+            case 7: sb.append("all in temp square except last damaged"); break;
             default: sb.append("ERROR"); break;
         }
 
@@ -349,6 +351,23 @@ public class Effect {
 
         List<Player> playersToShoot= new ArrayList<>();
 
+        switch (setTempSquare){
+            //DON'T SET
+            case -1: break;
+            //SELECTED SQUARE
+            case 0: m.getCurrentAction().setChosenSquare(targetS); break;
+            //SELECTED PLAYER'S SQUARE
+            case 1:
+                if(targetP != null) {
+                    m.getCurrentAction().setChosenSquare(targetP.getSquarePosition());
+                }
+                break;
+            //MY SQUARE
+            case 2: m.getCurrentAction().setChosenSquare(source.getSquarePosition()); break;
+
+            default: System.out.println("NUMERO SBAGLIATO SETTEMPSQUARE");
+        }
+
         switch (whoToMove){
             //NOBODY
             case -1: break;
@@ -431,6 +450,17 @@ public class Effect {
                     playersToShoot.addAll(m.getPlayersOn(new ArrayList<Square>(Arrays.asList(m.getCurrentAction().getChosenSquare()))));
                 }
                 break;
+            //ALL NEAR ME
+            case 6:
+                playersToShoot.addAll(m.getPlayersOn(m.getLayout().getSquaresInDistanceRange(source.getSquarePosition(), 1, 1)));
+                break;
+            //ALL IN TEMP SQUARE EXCEPT LAST DAMAGED
+            case 7:
+                if(m.getCurrentAction().getChosenSquare() != null){
+                    playersToShoot.addAll(m.getPlayersOn(new ArrayList<Square>(Arrays.asList(m.getCurrentAction().getChosenSquare()))));
+                }
+                playersToShoot.remove(m.getCurrentAction().getLastDamaged());
+                break;
 
             default: System.out.println("NUMERO SBAGLIATO WHOTODAMAGE");
 
@@ -447,24 +477,6 @@ public class Effect {
             for(Player toShoot: playersToShoot){
                 toShoot.getDamageTrack().addMark(source, markNumber);
             }
-        }
-
-
-        switch (setTempSquare){
-            //DON'T SET
-            case -1: break;
-            //SELECTED SQUARE
-            case 0: m.getCurrentAction().setChosenSquare(targetS); break;
-            //SELECTED PLAYER'S SQUARE
-            case 1:
-                if(targetP != null) {
-                    m.getCurrentAction().setChosenSquare(targetP.getSquarePosition());
-                }
-                break;
-            //MY SQUARE
-            case 2: m.getCurrentAction().setChosenSquare(source.getSquarePosition()); break;
-
-            default: System.out.println("NUMERO SBAGLIATO SETTEMPSQUARE");
         }
 
         return effectToAdd;

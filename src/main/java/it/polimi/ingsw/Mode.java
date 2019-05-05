@@ -9,7 +9,7 @@ public class Mode {
     private String description;
     private Cash cost;
 
-    private boolean isMandatory;
+    public boolean isMandatory;
 
     private List<Effect> effects;
 
@@ -26,6 +26,8 @@ public class Mode {
 
         effects= new ArrayList<>();
     }
+
+
 
 
     public void setPrecedent(int mustComeBefore){
