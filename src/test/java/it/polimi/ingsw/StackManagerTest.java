@@ -92,4 +92,26 @@ public class StackManagerTest {
     assertTrue(s.getWeaponActiveStack().isEmpty());
 
     }
+
+
+    @Test
+    public void proveConArrayList(){
+    List<Color> lista= new ArrayList<>();
+    Color uno= Color.RED;
+    Color due= Color.BLUE;
+    Color tre= Color.YELLOW;
+    Color quattro= Color.GREEN;
+
+    lista.add(uno);
+    lista.add(due);
+    lista.add(tre);
+    lista.add(quattro);
+
+    assertEquals(lista.get(0), uno);
+    assertEquals(lista.size(), 4);
+    lista.remove(uno);
+    assertEquals(lista.get(0), due);
+    assertEquals(lista.size(), 3);
+
+    }
 }

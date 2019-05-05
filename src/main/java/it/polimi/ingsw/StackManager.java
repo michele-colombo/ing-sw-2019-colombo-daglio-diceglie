@@ -1,47 +1,101 @@
 package it.polimi.ingsw;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
 public class StackManager {
-    private Stack<Weapon> weaponActiveStack;
-    private Stack<PowerUp> powerUpActiveStack;
-    private Stack<PowerUp> powerUpWasteStack;
-    private Stack<AmmoTile> ammoTilesActiveStack;
-    private Stack<AmmoTile> ammoTilesWasteStack;
 
-    public Stack<Weapon> getWeaponActiveStack() {
+    // STIAMO USANDO LE ARRAYLIST. LA "TESTA" DEL MAZZO E' L'INDICE ZERO
+    private List<Weapon> weaponActiveStack;
+    private List<PowerUp> powerUpActiveStack;
+    private List<PowerUp> powerUpWasteStack;
+    private List<AmmoTile> ammoTilesActiveStack;
+    private List<AmmoTile> ammoTilesWasteStack;
+
+    private List<Weapon> originalWeaponArsenal;
+    private List<PowerUp> originalPowerUps;
+    private List<AmmoTile> originalAmmoTiles;
+
+    private List<Weapon> loadOriginalWeaponArsenal(){
+        List<Weapon> result= new ArrayList<>();
+        result.addAll(new WeaponBuilder().getWeapons());
+
+        return result;
+    }
+
+    private List<PowerUp> loadOriginalPowerups(){
+        List<PowerUp> result= new ArrayList<>();
+
+        return result;
+    }
+
+    private List<AmmoTile> loadOriginalAmmoTiles(){
+        List<AmmoTile> result= new ArrayList<>();
+
+        return result;
+    }
+
+    public List<Weapon> getWeaponActiveStack() {
         return weaponActiveStack;
     }
 
-    public Stack<PowerUp> getPowerUpActiveStack() {
+    public List<PowerUp> getPowerUpActiveStack() {
         return powerUpActiveStack;
     }
 
-    public Stack<PowerUp> getPowerUpWasteStack() {
+    public List<PowerUp> getPowerUpWasteStack() {
         return powerUpWasteStack;
     }
 
-    public Stack<AmmoTile> getAmmoTilesActiveStack() {
+    public List<AmmoTile> getAmmoTilesActiveStack() {
         return ammoTilesActiveStack;
     }
 
-    public Stack<AmmoTile> getAmmoTilesWasteStack() {
+    public List<AmmoTile> getAmmoTilesWasteStack() {
         return ammoTilesWasteStack;
     }
 
+    public List<Weapon> getOriginalWeaponArsenal() {
+        return originalWeaponArsenal;
+    }
+
+    public List<PowerUp> getOriginalPowerUps() {
+        return originalPowerUps;
+    }
+
+    public List<AmmoTile> getOriginalAmmoTiles() {
+        return originalAmmoTiles;
+    }
+
     public StackManager(){
-        weaponActiveStack= new Stack<>();
-        powerUpActiveStack= new Stack<>();
-        powerUpWasteStack= new Stack<>();
-        ammoTilesActiveStack= new Stack<>();
-        ammoTilesWasteStack= new Stack<>();
+        originalWeaponArsenal= loadOriginalWeaponArsenal();
+        originalPowerUps= loadOriginalPowerups();
+        originalAmmoTiles= loadOriginalAmmoTiles();
+
+        weaponActiveStack= new ArrayList<>();
+        weaponActiveStack.addAll(originalWeaponArsenal);
+        Collections.shuffle(weaponActiveStack);
+
+        powerUpActiveStack= new ArrayList<>();
+        powerUpActiveStack.addAll(originalPowerUps);
+        Collections.shuffle(powerUpActiveStack);
+
+        ammoTilesActiveStack= new ArrayList<>();
+        ammoTilesActiveStack.addAll(originalAmmoTiles);
+        Collections.shuffle(ammoTilesActiveStack);
+
+        powerUpWasteStack= new ArrayList<>();
+        ammoTilesWasteStack= new ArrayList<>();
     }
 
     public Weapon drawWeapon(){
         if(! weaponActiveStack.isEmpty()){
-            return (Weapon)weaponActiveStack.pop();
+            Weapon result=  weaponActiveStack.get(0);
+            weaponActiveStack.remove(result);
+
+            return result;
         }
         return null;
     }
@@ -52,7 +106,11 @@ public class StackManager {
             Collections.shuffle(ammoTilesActiveStack);
             ammoTilesWasteStack.clear();
         }
-        return ammoTilesActiveStack.pop();
+
+        AmmoTile result= ammoTilesActiveStack.get(0);
+        ammoTilesActiveStack.remove(result);
+        return result;
+
     }
 
     public PowerUp drawPowerUp(){
@@ -61,35 +119,38 @@ public class StackManager {
             Collections.shuffle(powerUpActiveStack);
             powerUpWasteStack.clear();
         }
-        return powerUpActiveStack.pop();
+        PowerUp result= powerUpActiveStack.get(0);
+        powerUpActiveStack.remove(result);
+
+        return result;
     }
 
     public void discardPowerUp(PowerUp pu){
-        powerUpWasteStack.push(pu);
+        powerUpWasteStack.add(pu);
     }
 
     public void trashAmmoTile(AmmoTile ammo){
-        ammoTilesWasteStack.push(ammo);
+        ammoTilesWasteStack.add(ammo);
     }
 
     public void initWeaponStack(List<Weapon> list){
-        for(Weapon w : list){
-            weaponActiveStack.push(w);
-        }
+
+        weaponActiveStack.clear();
+        weaponActiveStack.addAll(list);
         Collections.shuffle(weaponActiveStack);
     }
 
     public void initAmmoTilesStack(List<AmmoTile> list){
-        for(AmmoTile at : list){
-            ammoTilesActiveStack.push(at);
-        }
+
+        ammoTilesActiveStack.clear();
+        ammoTilesActiveStack.addAll(list);
         Collections.shuffle(ammoTilesActiveStack);
     }
 
     public void initPowerUpStack(List<PowerUp> list){
-        for(PowerUp pu : list){
-            powerUpActiveStack.push(pu);
-        }
+
+        powerUpActiveStack.clear();
+        powerUpActiveStack.addAll(list);
         Collections.shuffle(powerUpActiveStack);
     }
 
