@@ -434,11 +434,32 @@ public class Match {
         return onlyReload;
     }
 
-    public void restoreBackup(Player p, Backup backup){
-        backup.restore(p);
+    public Player getPlayerFromName(String name){
+        for(Player p : players){
+            if (p.getName().equals(name)){
+                return p;
+            }
+        }
+        return null;
     }
 
-    public void restoreBackupToAll(Backup backup){
-        backup.restoreAll(players);
+    public void setFrenzyOn(boolean frenzyOn) {
+        this.frenzyOn = frenzyOn;
+    }
+
+    public void setNumberOfActions(int numberOfActions) {
+        this.numberOfActions = numberOfActions;
+    }
+
+    public void setActionsCompleted(int actionsCompleted) {
+        this.actionsCompleted = actionsCompleted;
+    }
+
+    public void setOnlyReload(boolean onlyReload) {
+        this.onlyReload = onlyReload;
+    }
+
+    public void setTurnCompletable(boolean turnCompletable) {
+        this.turnCompletable = turnCompletable;
     }
 }

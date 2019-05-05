@@ -14,13 +14,18 @@ public class FrenzyDamageTrack extends DamageTrack {
 
     }
 
+    @Override
     public int getAdrenaline(){
         return 3;
     }
 
+    @Override
     public void resetAfterDeath(){
         resetDamages();
     }
 
-
+    @Override
+    public boolean isFrenzy() {
+        return true;
+    }
 }

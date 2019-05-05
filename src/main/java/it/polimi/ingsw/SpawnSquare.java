@@ -54,6 +54,10 @@ public class SpawnSquare extends Square{
         return weapons;
     }
 
+    public void clearWeapons(){
+        weapons.clear();
+    }
+
     @Override
     public boolean isEmpty(){       //tells if there isn't anything collectable
         return weapons.isEmpty();

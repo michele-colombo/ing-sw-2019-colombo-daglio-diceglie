@@ -1,86 +1,63 @@
 package it.polimi.ingsw;
 
 
+import com.google.gson.Gson;
 import it.polimi.ingsw.exceptions.ColorAlreadyTakenException;
 import it.polimi.ingsw.exceptions.GameFullException;
 import it.polimi.ingsw.exceptions.NameAlreadyTakenException;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class PlayingTest {
     public static void main(String[] args){
-        Player p1 = new Player("primo giocatore", PlayerColor.YELLOW);
-        Player p2 = new Player("secondo giocatore", PlayerColor.BLUE);
-        Player p3 = new Player("terzo giocatore", PlayerColor.GREEN);
 
         GameModel gm = new GameModel();
-        try{
-            gm.addPlayer(p1);
-            gm.addPlayer(p2);
-            gm.addPlayer(p3);
-        } catch(NameAlreadyTakenException e){
 
-        } catch (ColorAlreadyTakenException e){
 
-        } catch(GameFullException e){
+        System.out.println("Do you want to start a new game or resume one from file?");
+        System.out.println("type new or resume");
+        String choice = new Scanner(System.in).nextLine();
+        if(choice.toLowerCase().equals("new")){
 
-        }
+            Player p1 = new Player("primo giocatore", PlayerColor.YELLOW);
+            Player p2 = new Player("secondo giocatore", PlayerColor.BLUE);
+            Player p3 = new Player("terzo giocatore", PlayerColor.GREEN);
+            try{
+                gm.addPlayer(p1);
+                gm.addPlayer(p2);
+                gm.addPlayer(p3);
+            } catch(NameAlreadyTakenException e){
 
-        gm.initMatch();
-        Match match = gm.getMatch();
+            } catch (ColorAlreadyTakenException e){
 
-/*
-        List<Weapon> tempWeapons = new ArrayList<>();
-        tempWeapons.add(new Weapon("distruttore", new Cash(2,0,0), Color.BLUE));
-        tempWeapons.add(new Weapon("mitragliatrice", new Cash(1, 1, 0), Color.BLUE));
-        tempWeapons.add(new Weapon("torpedine", new Cash(1,1,0), Color.BLUE));
-        tempWeapons.add(new Weapon("cannone Vortex", new Cash(1,1,0), Color.RED));
-        tempWeapons.add(new Weapon("vulcanizzatore", new Cash(1,1,0), Color.RED));
-        tempWeapons.add(new Weapon("razzo termico", new Cash(0,2,1), Color.RED));
-        tempWeapons.add(new Weapon("lanciafiamme", new Cash(0,1,0), Color.RED));
-        tempWeapons.add(new Weapon("tempWeaponsfucile laser", new Cash(1,0,2), Color.YELLOW));
-        tempWeapons.add(new Weapon("spada fotonica", new Cash(0,1,1), Color.YELLOW));
-        tempWeapons.add(new Weapon("fucile a pompa", new Cash(0,0,2), Color.YELLOW));
-        tempWeapons.add(new Weapon("cyberguanto", new Cash(1,0,1), Color.YELLOW));
-        tempWeapons.add(new Weapon("onda d'urto", new Cash(0,0,1), Color.YELLOW));
-        match.getStackManager().initWeaponStack(tempWeapons);
-*/
+            } catch(GameFullException e){
 
-        match.getStackManager().initWeaponStack(new WeaponBuilder().getWeapons());
-
-        List<PowerUp> tempPowerups = new ArrayList<>();
-        for (Color color : Color.getAmmoColors()){
-            for (int i=0; i<2; i++){
-                tempPowerups.add(new PowerUp(color, PowerUpType.TAGBACK_GRENADE, "Tagback granade"));
-                tempPowerups.add(new PowerUp(color, PowerUpType.TARGETING_SCOPE, "Targeting scope"));
-                tempPowerups.add(new PowerUp(color, PowerUpType.ACTION_POWERUP, "Newton"));
-                tempPowerups.add(new PowerUp(color, PowerUpType.ACTION_POWERUP, "Teleporter"));
             }
+            gm.initMatch();
+            gm.startMatch();
+        } else if(choice.toLowerCase().equals("resume")) {
+            System.out.println("Insert name of file:");
+            String name = new Scanner(System.in).nextLine();
+            Backup backup = Backup.initFromFile(name);
+            gm.initMatch();
+            backup.resumeMatch(gm.getMatch());
+            for (Player p : gm.getMatch().getPlayers()){
+                try {
+                    gm.addPlayer(p);
+                } catch (NameAlreadyTakenException e){
+                } catch (ColorAlreadyTakenException e){
+                } catch (GameFullException e){}
+            }
+            gm.actionCompleted();
         }
-        match.getStackManager().initPowerUpStack(tempPowerups);
 
-        List<AmmoTile> tempAmmoTiles = new ArrayList<>();
-        for (int i=0; i<4; i++){
-            tempAmmoTiles.add(new AmmoTile(new Cash(2, 1, 0), false));
-            tempAmmoTiles.add(new AmmoTile(new Cash(0, 1, 2), false));
-            tempAmmoTiles.add(new AmmoTile(new Cash(0, 2, 1), false));
-            tempAmmoTiles.add(new AmmoTile(new Cash(1, 0, 2), false));
-            tempAmmoTiles.add(new AmmoTile(new Cash(2, 0, 1), false));
-            tempAmmoTiles.add(new AmmoTile(new Cash(1, 1, 1), false));
-            tempAmmoTiles.add(new AmmoTile(new Cash(1, 1, 0), true));
-            tempAmmoTiles.add(new AmmoTile(new Cash(1, 0, 1), true));
-            tempAmmoTiles.add(new AmmoTile(new Cash(0, 1, 1), true));
-        }
-        match.getStackManager().initAmmoTilesStack(tempAmmoTiles);
-
-        gm.startMatch();
-
-        //semplicita' per raccoglere subito
-        for(Player p: match.getPlayers()){
-            p.getWallet().deposit(new Cash(3, 3, 3));
-        }
+        Match match = gm.getMatch();
 
         while (true){
             for (Player p : match.getPlayers()){
@@ -200,7 +177,7 @@ public class PlayingTest {
                                     gm.shootWeapon(p, wp);
                                     break;
                                 case RELOAD:
-                                    gm.realoadWeapon(p, wp);
+                                    gm.reloadWeapon(p, wp);
                                     break;
                                 default:
                                     System.out.println("selected a weapon in the wrong state");
@@ -288,6 +265,9 @@ public class PlayingTest {
                                     break;
                             }
                             break;
+                        case "save":
+                            Backup b1 = new Backup(match);
+                            b1.saveOnFile("Test");
                         default:
                             System.out.println("input not valid\n");
                     }

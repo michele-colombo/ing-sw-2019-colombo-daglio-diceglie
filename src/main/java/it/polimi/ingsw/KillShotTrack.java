@@ -147,4 +147,32 @@ public class KillShotTrack {
         }
         return false;
     }
+
+    public Map<Player, Integer> getKillingCounter() {
+        return killingCounter;
+    }
+
+    public List<Player> getKillingOrder() {
+        return killingOrder;
+    }
+
+    public List<Map<Player, Integer>> getTrack() {
+        return track;
+    }
+
+    public void setSkulls(int skulls) {
+        this.skulls = skulls;
+    }
+
+    public void setKillingCounter(Map<Player, Integer> killingCounter) {
+        this.killingCounter = killingCounter;
+    }
+
+    public void setKillingOrder(List<Player> killingOrder) {
+        this.killingOrder = killingOrder;
+    }
+
+    public void setTrack(List<Map<Player, Integer>> track) {
+        this.track = track;
+    }
 }

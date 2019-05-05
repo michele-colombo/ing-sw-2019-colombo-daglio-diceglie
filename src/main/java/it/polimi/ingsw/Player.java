@@ -71,6 +71,7 @@ public class Player {
     /**
      * Represents the temporary debit of a player.
      * Used for payment handling.
+        private boolean isFrenzy;
      */
     private Cash pending;
     /**
@@ -671,5 +672,11 @@ public class Player {
 
     public void setPowerUps(List<PowerUp> powerUps){
         this.powerUps = powerUps;
+    }
+
+    public void setDamageTrack(DamageTrack newDamegeTrack){
+        if (damageTrack != null){
+            damageTrack = newDamegeTrack;
+        }
     }
 }

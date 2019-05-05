@@ -26,6 +26,11 @@ public class Layout {
      */
     private String jsonFileFolder;
 
+    /**
+     * an integer representing the chosen layoutConfiguration (used for saving)
+     */
+    private int layoutConfiguration;
+
     public List<Square> getSquares() {
         return squares;
     }
@@ -251,6 +256,16 @@ public class Layout {
         return spawn;
     }
 
+    public List<AmmoSquare> getAmmoSquares(){
+        List<AmmoSquare> result = new ArrayList<>();
+        for (Square s : squares){
+            if (s.isAmmo()){
+                result.add((AmmoSquare)s);
+            }
+        }
+        return result;
+    }
+
     /**
      * Returns all the squares that aren't empty (i.e. with ammo or weapons)
      * @return An ArrayList with all the found squares; it could be empty
@@ -420,12 +435,13 @@ public class Layout {
         List<Square> ammoSquares= new ArrayList<>();
         List<Square> spawnSquares= new ArrayList<>();
 
-
         String configFilePath;
 
         if(config < 0 || config>3){
             return false;
         }
+
+        layoutConfiguration = config;
 
 
         File file= new File(getClass().getClassLoader().getResource("layoutConfig/layoutConfig" + config + ".json").getFile());
@@ -544,7 +560,17 @@ public class Layout {
         return getSquaresInDistanceRange(startingSquare, 0, distMax);
     }
 
-
-
+    public int getLayoutConfiguration() {
+        return layoutConfiguration;
     }
+
+    public Square getSquareFromString(String square){
+        for (Square s : squares){
+            if (s.toString().equals(square)){
+                return s;
+            }
+        }
+        return null;
+    }
+}
 

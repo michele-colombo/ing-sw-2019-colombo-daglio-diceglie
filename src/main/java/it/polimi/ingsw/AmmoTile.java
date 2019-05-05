@@ -13,7 +13,7 @@ public class AmmoTile{
     public String toString(){
         StringBuilder result= new StringBuilder();
         result.append(ammos.toString());
-        if (hasPowerUp()) result.append("| with a powerUp");
+        if (hasPowerUp()) result.append("| with powerUp");
         return result.toString();
     }
 

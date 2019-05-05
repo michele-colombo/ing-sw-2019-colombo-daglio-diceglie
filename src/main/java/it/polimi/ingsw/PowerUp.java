@@ -25,7 +25,7 @@ public class PowerUp{
 
     @Override
     public String toString(){
-        return name+" | "+color+" ";
+        return name+"-"+color;
     }
 
     public String getName() {

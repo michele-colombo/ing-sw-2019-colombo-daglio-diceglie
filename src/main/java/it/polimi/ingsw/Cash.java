@@ -109,6 +109,12 @@ public class Cash {
         yellow = y;
     }
 
+    public void set(Cash c){
+        blue = c.getBlue();
+        red = c.getRed();
+        yellow = c.getYellow();
+    }
+
     public void setZero(){
         set(0, 0, 0);
     }

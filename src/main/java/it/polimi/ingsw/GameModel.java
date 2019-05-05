@@ -290,7 +290,7 @@ public class GameModel implements Observable {
         }
         switch (p.getNextState()){
             case RELOAD:
-                realoadWeapon(p, match.getCurrentAction().getCurrWeapon());
+                reloadWeapon(p, match.getCurrentAction().getCurrWeapon());
                 break;
             case GRAB_WEAPON:
                 grabWeapon(p, match.getCurrentAction().getCurrWeapon());
@@ -301,7 +301,7 @@ public class GameModel implements Observable {
         }
     }
 
-    public void realoadWeapon (Player p, Weapon w){
+    public void reloadWeapon(Player p, Weapon w){
         p.setPending(w.getCost());
         if (p.getCredit().isEqual(p.getPending())){
             p.getPending().setZero();
@@ -409,7 +409,7 @@ public class GameModel implements Observable {
         }
     }
 
-    private void actionCompleted(){
+    public void actionCompleted(){
         Player p = match.getCurrentPlayer();
         List<Action> selectableActions = match.createSelectablesAction(match.getCurrentPlayer());
         if (selectableActions.isEmpty()){

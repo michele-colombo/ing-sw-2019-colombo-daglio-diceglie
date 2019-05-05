@@ -92,4 +92,9 @@ public abstract class Square {
     public String getShortDescription(){
         return "Square ("+x+","+y+") ";
     }
+
+    @Override
+    public String toString() {
+        return "("+x+"-"+y+")";
+    }
 }

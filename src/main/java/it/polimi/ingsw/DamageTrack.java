@@ -157,7 +157,7 @@ public abstract class DamageTrack {
 
     /**
      *
-     * @return the damagers and the number of damagers for each
+     * @return the damagers and the number of damages for each
      */
     public Map<Player, Integer> whoDamagedYou(){
         Map<Player, Integer> result = new HashMap<>();
@@ -238,6 +238,10 @@ public abstract class DamageTrack {
         return result;
     }
 
+    public void setDamageList(List<Player> damageList) {
+        this.damageList = damageList;
+    }
+
     /**
      *
      * @return 0-> no adrenaline; 1-> low adrenaline; 2->high adrenaline
@@ -259,6 +263,8 @@ public abstract class DamageTrack {
     }
 
 */
+
+    public abstract boolean isFrenzy();
 
 
 }

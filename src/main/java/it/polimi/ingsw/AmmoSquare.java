@@ -34,6 +34,7 @@ public class AmmoSquare extends Square{
                 p.addPowerUp(m.getStackManager().drawPowerUp());
             }
         }
+        m.getStackManager().trashAmmoTile(ammo);
         ammo = null;
         return true;
     }
@@ -52,5 +53,9 @@ public class AmmoSquare extends Square{
 
     public AmmoTile getAmmo() {
         return ammo;
+    }
+
+    public void setAmmo(AmmoTile ammo){
+        this.ammo = ammo;
     }
 }

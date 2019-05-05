@@ -12,7 +12,7 @@ public class NormalDamageTrack extends DamageTrack {
     }
 
 
-
+    @Override
     public int getAdrenaline(){
         if(this.getDamageList().size() >= 6){
             return 2;
@@ -27,12 +27,14 @@ public class NormalDamageTrack extends DamageTrack {
             this.setSkullsNumber(this.getSkullsNumber() + 1);
     }
 
+    @Override
     public void resetAfterDeath(){
         resetDamages();
         increaseSkull();
     }
 
-
-
-
+    @Override
+    public boolean isFrenzy() {
+        return false;
+    }
 }
