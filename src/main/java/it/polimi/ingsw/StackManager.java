@@ -1,9 +1,10 @@
 package it.polimi.ingsw;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Stack;
+import com.google.gson.Gson;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
 public class StackManager {
 
@@ -27,13 +28,33 @@ public class StackManager {
 
     private List<PowerUp> loadOriginalPowerups(){
         List<PowerUp> result= new ArrayList<>();
+        for (Color color : Color.getAmmoColors()){
+            for (int i=0; i<2; i++){
+                result.add(new PowerUp(color, PowerUpType.TAGBACK_GRENADE, "Tagback granade"));
+                result.add(new PowerUp(color, PowerUpType.TARGETING_SCOPE, "Targeting scope"));
+                result.add(new PowerUp(color, PowerUpType.ACTION_POWERUP, "Newton"));
+                result.add(new PowerUp(color, PowerUpType.ACTION_POWERUP, "Teleporter"));
+            }
+        }
 
         return result;
     }
 
     private List<AmmoTile> loadOriginalAmmoTiles(){
-        List<AmmoTile> result= new ArrayList<>();
+        Gson gson = new Gson();
+        List<AmmoTile> result = new ArrayList<>();
+        File file= new File(getClass().getClassLoader().getResource("ammoTiles.json").getFile());
+        try (Scanner sc = new Scanner(file)){
+            AmmoTile[] tempAmmo;
+            tempAmmo = gson.fromJson(sc.nextLine(), AmmoTile[].class);
+            result.addAll(Arrays.asList(tempAmmo));
 
+            sc.close();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+
+        }
         return result;
     }
 
@@ -57,6 +78,7 @@ public class StackManager {
         return ammoTilesWasteStack;
     }
 
+    //Should we return a clone of the original lists?
     public List<Weapon> getOriginalWeaponArsenal() {
         return originalWeaponArsenal;
     }
@@ -137,24 +159,62 @@ public class StackManager {
 
         weaponActiveStack.clear();
         weaponActiveStack.addAll(list);
-        Collections.shuffle(weaponActiveStack);
+        //Collections.shuffle(weaponActiveStack);
     }
 
     public void initAmmoTilesStack(List<AmmoTile> list){
 
         ammoTilesActiveStack.clear();
         ammoTilesActiveStack.addAll(list);
-        Collections.shuffle(ammoTilesActiveStack);
+        //Collections.shuffle(ammoTilesActiveStack);
+    }
+
+    public void initAmmoTilesWasteStack(List<AmmoTile> list){
+
+        ammoTilesActiveStack.clear();
+        ammoTilesActiveStack.addAll(list);
+        //Collections.shuffle(ammoTilesActiveStack);
     }
 
     public void initPowerUpStack(List<PowerUp> list){
 
         powerUpActiveStack.clear();
         powerUpActiveStack.addAll(list);
-        Collections.shuffle(powerUpActiveStack);
+        //Collections.shuffle(powerUpActiveStack);
     }
 
+    public void initPowerUpWasteStack(List<PowerUp> list){
 
-
-
+        powerUpActiveStack.clear();
+        powerUpActiveStack.addAll(list);
+        //Collections.shuffle(powerUpActiveStack);
     }
+
+    public PowerUp getPowerUpFromString(String string){
+        for (PowerUp po : originalPowerUps){
+            if (po.toString().equals(string)){
+                return po;
+            }
+        }
+        return null;
+    }
+
+    public AmmoTile getAmmoTileFromString(String string){
+        for (AmmoTile at : originalAmmoTiles){
+            if (at.toString().equals(string)){
+                return at;
+            }
+        }
+        return null;
+    }
+
+    public Weapon getWeaponFromName(String name){
+        for (Weapon w : originalWeaponArsenal){
+            if (w.getName().equals(name)){
+                return w;
+            }
+        }
+        return null;
+    }
+
+}
