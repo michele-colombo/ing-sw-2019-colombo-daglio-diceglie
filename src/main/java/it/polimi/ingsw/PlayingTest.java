@@ -42,7 +42,7 @@ public class PlayingTest {
             gm.initMatch();
             gm.startMatch();
         } else if(choice.toLowerCase().equals("resume")) {
-            System.out.println("Insert name of file:");
+            System.out.println("Insert name of file (without .json):");
             String name = new Scanner(System.in).nextLine();
             Backup backup = Backup.initFromFile(name);
             gm.initMatch();
@@ -267,7 +267,10 @@ public class PlayingTest {
                             break;
                         case "save":
                             Backup b1 = new Backup(match);
-                            b1.saveOnFile("Test");
+                            System.out.println("Insert file name (without .json):");
+                            String name = new Scanner(System.in).nextLine();
+                            b1.saveOnFile(name);
+                            break;
                         default:
                             System.out.println("input not valid\n");
                     }

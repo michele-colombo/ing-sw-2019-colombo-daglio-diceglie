@@ -268,6 +268,7 @@ public class Backup {
 
             ammosTilesInSquares = new HashMap<>();
             for (AmmoSquare as : layout.getAmmoSquares()){
+                //todo: after grab ammo is null
                 ammosTilesInSquares.put(as.toString(), as.getAmmo().toString());
             }
         }
@@ -331,7 +332,7 @@ public class Backup {
     private StackManagerBackup stackManagerBackup;
     private LayoutBackup layoutBackup;
     private MatchBackup matchBackup;
-    private static final String filePath = "/home/michele/testFiles/";
+    private static final String filePath = "./src/main/resources/backups/";
 
     public Backup(Match match){
         playerBackups = new ArrayList<>();
@@ -366,6 +367,7 @@ public class Backup {
     public boolean saveOnFile(String name) {
         Gson gson = new Gson();
         File file = new File(filePath+name+".json");
+        //File file= new File(getClass().getClassLoader().getResource("backup" + name + ".json").getFile());
         FileWriter fw;
         try {
             fw = new FileWriter(file);
@@ -392,15 +394,17 @@ public class Backup {
             match.getLayout().initLayout(layoutBackup.layoutConfiguration);
         }
         layoutBackup.restore(match.getLayout(), match);
-        for (PlayerBackup pb : playerBackups){
+        //match player reset required?
+        for (PlayerBackup pb : playerBackups) {
             Player tempPlayer = match.getPlayerFromName(pb.name);
-            if (tempPlayer != null){
-                pb.restore(tempPlayer, match);
-            } else {
+            if (tempPlayer == null) {
                 Player newPlayer = new Player(pb.name, pb.color);
                 match.addPlayer(newPlayer);
-                pb.restore(newPlayer, match);
             }
+        }
+        for (PlayerBackup pb : playerBackups) {
+            Player tempPlayer = match.getPlayerFromName(pb.name);
+            pb.restore(tempPlayer, match);
         }
         killShotTrackBackup.restore(match.getKillShotTrack(), match);
         matchBackup.restore(match);
