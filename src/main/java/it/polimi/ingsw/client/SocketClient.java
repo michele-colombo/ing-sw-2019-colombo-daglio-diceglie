@@ -11,28 +11,26 @@ import java.net.Socket;
 public class SocketClient extends Thread{
     private final Socket socket;
     private ClientView clientView;
-    private ObjectInputStream in;
     private ObjectOutputStream out;
-    private boolean loginOk;
 
     public SocketClient(Socket socket){
         this.socket = socket;
-        this.loginOk = false;
         this.clientView = new ClientView(this);
         try{
             out = new ObjectOutputStream(socket.getOutputStream());
             out.flush();
-            in = new ObjectInputStream(socket.getInputStream());
         } catch(IOException e){
-            System.out.println("Error while creating streams!");
+            System.out.println("Error while creating stream!");
             e.printStackTrace();
         }
-        run();
+        start();
     }
 
     @Override
     public void run(){
         try{
+            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+            boolean loginOk = false;
             while(!loginOk){
                 clientView.startLogin();
                 LoginMessage loginMessage = (LoginMessage) in.readObject();
