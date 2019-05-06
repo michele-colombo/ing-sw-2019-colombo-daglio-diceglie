@@ -2,6 +2,7 @@ package it.polimi.ingsw;
 
 import com.google.gson.Gson;
 import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
+import it.polimi.ingsw.exceptions.ApplyEffectImmediatelyException;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -78,7 +79,9 @@ public class EffectTest {
         Match m= inizializza();
 
         Player sparatore= m.getCurrentPlayer();
-        effect.start(sparatore, m);
+        try {
+            effect.start(sparatore, m);
+        } catch (ApplyEffectImmediatelyException e){}
 
         System.out.println(selectableLists(m));
 
@@ -88,7 +91,9 @@ public class EffectTest {
         System.out.println(damaged(m));
 
         Effect opt= new Effect(0, 1, -1, -1, 1, 1, 0, -1, -1, 0, 1, 0, -1);
-        opt.start(sparatore, m);
+        try {
+            opt.start(sparatore, m);
+        } catch (ApplyEffectImmediatelyException e){}
         System.out.println(selectableLists(m));
 
         opt.applyOn(sparatore, null, null, m);

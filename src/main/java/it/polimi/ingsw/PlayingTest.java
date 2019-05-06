@@ -12,6 +12,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class PlayingTest {
@@ -68,7 +69,11 @@ public class PlayingTest {
                     System.out.println("wallet: "+p.getWallet());
                     System.out.println("pending: "+p.getPending());
 
-                    System.out.println("Damages: " + p.getDamageTrack().getDamageList().size() + "Marks:" + p.getDamageTrack().getMarkMap().size());
+                    System.out.println("Damages: " + p.getDamageTrack().getDamageList().size());
+                    System.out.println("Marks: ");
+                    for (Map.Entry<Player, Integer> entry : p.getDamageTrack().getMarkMap().entrySet()){
+                        System.out.println("\t"+entry.getKey().getName()+": "+entry.getValue());
+                    }
 
                     System.out.println("credit: "+p.getCredit());
                     System.out.println("powerups:");
@@ -223,6 +228,8 @@ public class PlayingTest {
                                 case USE_POWERUP:
                                     if (cmd == Command.OK) gm.dontUsePowerUp(p);
                                     break;
+                                case SHOOT_TARGET:
+                                    if (cmd == Command.OK) gm.shootTarget(p, null, null);
                                 default:
                                     System.out.println("selected a command in the wrong state");
                                     break;
@@ -270,6 +277,23 @@ public class PlayingTest {
                             System.out.println("Insert file name (without .json):");
                             String name = new Scanner(System.in).nextLine();
                             b1.saveOnFile(name);
+                            break;
+                        case "situa":
+                            for (Player tempPlayer : match.getPlayers()){
+                                System.out.println(tempPlayer.getName()+" in "+tempPlayer.getSquarePosition());
+                                System.out.print("\tweapons:");
+                                for (Weapon w : tempPlayer.getWeapons()){
+                                    if (tempPlayer.isLoaded(w)) System.out.print("\t- "+w.getName()+"(LOADED)");
+                                    else System.out.print("\t- "+w.getName()+"(UNLOADED)");
+                                }
+                                System.out.println();
+                                System.out.print("\tDamages: " + tempPlayer.getDamageTrack().getDamageList().size()+"\n");
+                                System.out.print("\tMarks: ");
+                                for (Map.Entry<Player, Integer> entry : tempPlayer.getDamageTrack().getMarkMap().entrySet()){
+                                    System.out.print("\t- "+entry.getKey().getName()+": "+entry.getValue());
+                                }
+                                System.out.println();
+                            }
                             break;
                         default:
                             System.out.println("input not valid\n");

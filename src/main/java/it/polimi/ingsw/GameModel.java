@@ -242,7 +242,11 @@ public class GameModel implements Observable {
     public void confirmModes(Player p){
         p.setState(SHOOT_TARGET);
         p.resetSelectables();
-        match.getCurrentAction().getCurrEffects().get(0).start(p, match);
+        try {
+            match.getCurrentAction().getCurrEffects().get(0).start(p, match);
+        } catch (ApplyEffectImmediatelyException e){
+            shootTarget(p, null, null); //todo: check
+        }
     }
 
     public void shootTarget(Player p, Player targetP, Square targetS){
@@ -257,7 +261,11 @@ public class GameModel implements Observable {
         } else {
             p.setState(SHOOT_TARGET);
             p.resetSelectables();
-            effects.get(0).start(p, match);
+            try {
+                effects.get(0).start(p, match);
+            } catch (ApplyEffectImmediatelyException e){
+                shootTarget(p, null, null); //todo: check
+            }
         }
     }
 
@@ -377,7 +385,11 @@ public class GameModel implements Observable {
             } else {
                 p.setState(USE_POWERUP);
                 p.resetSelectables();
-                effects.get(0).start(p, match);
+                try {
+                    effects.get(0).start(p, match);
+                } catch (ApplyEffectImmediatelyException e){
+                    shootTarget(p, null, null);
+                }
             }
         } else {
             p.setState(USE_POWERUP);

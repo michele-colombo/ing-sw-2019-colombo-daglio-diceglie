@@ -198,7 +198,7 @@ public class Effect {
 
     }
 
-    public void start(Player p, Match m){
+    public void start(Player p, Match m) throws ApplyEffectImmediatelyException {
 
         m.getCurrentPlayer().resetSelectables();
 
@@ -311,8 +311,7 @@ public class Effect {
         switch (what){
             //NOTHING TO SELECT
             case -1: // throw exception
-                // throw new ApplyEffectImmediatelyException();
-                break;
+                throw new ApplyEffectImmediatelyException();
             //SQUARE
             case 0:
                 if(selectableSquares.isEmpty()){
