@@ -29,7 +29,7 @@ public class GameModel implements Observable {
      * the current match in progress
      */
     private Match match;
-    private Match backupMatch;
+    private Backup currBackup;
     private Map<Player, Observer> observers;
 
 
@@ -38,7 +38,7 @@ public class GameModel implements Observable {
         inactivePlayers = new ArrayList<>();
         spawningPlayers = new ArrayList<>();
         match = null;
-        backupMatch = null;
+        currBackup = null;
         observers = new HashMap<>();
     }
 
@@ -139,6 +139,7 @@ public class GameModel implements Observable {
             nextP.setState(CHOOSE_ACTION);
             nextP.resetSelectables();
             nextP.setSelectableActions(match.initSelectableActions(nextP));
+            saveSnapshot(match);
         }
     }
 
@@ -242,6 +243,7 @@ public class GameModel implements Observable {
     public void confirmModes(Player p){
         p.setState(SHOOT_TARGET);
         p.resetSelectables();
+        p.setLoad(match.getCurrentAction().getCurrWeapon(), false);
         try {
             match.getCurrentAction().getCurrEffects().get(0).start(p, match);
         } catch (ApplyEffectImmediatelyException e){
@@ -314,7 +316,7 @@ public class GameModel implements Observable {
         if (p.getCredit().isEqual(p.getPending())){
             p.getPending().setZero();
             p.getCredit().setZero();
-            p.reload(w);
+            p.setLoad(w, true);
             nextMicroAction();
         } else {
             p.setNextState(RELOAD);
@@ -433,8 +435,17 @@ public class GameModel implements Observable {
             if (match.isTurnCompletable()){
                 p.setSelectableCommands(Command.OK);
             }
-            //createMatchBackup();
+            saveSnapshot(match);
         }
+    }
+
+    private void saveSnapshot(Match match){
+        currBackup = new Backup(match);
+    }
+
+    public void restore(){
+        currBackup.restore(match);
+        actionCompleted();
     }
 
     public void endTurn(){

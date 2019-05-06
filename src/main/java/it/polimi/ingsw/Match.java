@@ -42,7 +42,7 @@ public class Match {
      */
     private int actionsCompleted;
     /**
-     * It's true if the current player can only reload his weapons, otherwise it's false
+     * It's true if the current player can only setLoad his weapons, otherwise it's false
      */
     private boolean onlyReload;
     /**
@@ -323,7 +323,7 @@ public class Match {
     }
 
     /**
-     * Updates the turn status (number of remaining actions, the player can only reload)
+     * Updates the turn status (number of remaining actions, the player can only setLoad)
      * @param a The action chosen by the player, the status is updated according to it
      */
     public void updateTurnStatus(Action a){

@@ -638,8 +638,8 @@ public class Player {
         else return false;
     }
 
-    public void reload(Weapon w){
-        weapons.replace(w, true);
+    public void setLoad(Weapon w, boolean load){
+        weapons.replace(w, load);
     }
 
     public List<PowerUp> getPowerUpsOfColors(Cash colors){

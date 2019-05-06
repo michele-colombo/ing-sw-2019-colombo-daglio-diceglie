@@ -44,8 +44,8 @@ public class Action {
     private boolean incrementActionCounter;
     /**
      * If true, the player can only reloads weapon.
-     * Since the reload has to be the last action of the turn, once reloaded one weapon
-     * is only possible to reload weapons.
+     * Since the setLoad has to be the last action of the turn, once reloaded one weapon
+     * is only possible to setLoad weapons.
      */
     private boolean activateOnlyReloads;
 
@@ -67,7 +67,7 @@ public class Action {
     /**
      * Constructs an action specifying the effects on the turn status
      * @param incrementActionCounter true if action has to increment the action counter (move, grab, shoot)
-     * @param activateOnlyReloads true for reload action
+     * @param activateOnlyReloads true for setLoad action
      */
     public Action (boolean incrementActionCounter, boolean activateOnlyReloads) {
         microActions = new ArrayList<>();
@@ -85,7 +85,7 @@ public class Action {
     /**
      * Constructs an action specifying the effects on the turn status and adding the first microAction
      * @param incrementActionCounter true if action has to increment the action counter (move, grab, shoot)
-     * @param activateOnlyReloads true for reload action
+     * @param activateOnlyReloads true for setLoad action
      * @param microAction the first microAction of the action
      */
     public Action (boolean incrementActionCounter, boolean activateOnlyReloads, MicroAction microAction) {

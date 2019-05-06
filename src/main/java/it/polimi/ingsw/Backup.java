@@ -43,7 +43,7 @@ public class Backup {
             state = p.getState();
             nextState = p.getNextState();
             isFirstPlayer = p.isFirstPlayer();
-            squarePosition = p.getSquarePosition().toString();
+            if (isBorn) squarePosition = p.getSquarePosition().toString();
             skullsNumber = p.getDamageTrack().getSkullsNumber();
             isFrenzy = p.getDamageTrack().isFrenzy();
 
@@ -268,8 +268,11 @@ public class Backup {
 
             ammosTilesInSquares = new HashMap<>();
             for (AmmoSquare as : layout.getAmmoSquares()){
-                //todo: after grab ammo is null
-                ammosTilesInSquares.put(as.toString(), as.getAmmo().toString());
+                if (as.getAmmo()!=null){
+                    ammosTilesInSquares.put(as.toString(), as.getAmmo().toString());
+                } else {
+                    ammosTilesInSquares.put(as.toString(), "");
+                }
             }
         }
 

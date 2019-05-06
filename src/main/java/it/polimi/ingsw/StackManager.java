@@ -202,6 +202,8 @@ public class StackManager {
     }
 
     public AmmoTile getAmmoTileFromString(String string){
+        if (string == null ) return null;
+        if (string.equals("")) return null;
         for (AmmoTile at : originalAmmoTiles){
             if (at.toString().equals(string)){
                 return at;

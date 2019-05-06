@@ -215,24 +215,29 @@ public class PlayingTest {
                                 System.out.println("wrong command selection");
                                 break;
                             }
-                            switch (p.getState()){
-                                case PAYING:
-                                    if (cmd == Command.OK) gm.completePayment(p);
-                                    break;
-                                case CHOOSE_ACTION:
-                                    if (cmd == Command.OK) gm.endTurn();
-                                    break;
-                                case CHOOSE_MODE:
-                                    if (cmd == Command.OK) gm.confirmModes(p);
-                                    break;
-                                case USE_POWERUP:
-                                    if (cmd == Command.OK) gm.dontUsePowerUp(p);
-                                    break;
-                                case SHOOT_TARGET:
-                                    if (cmd == Command.OK) gm.shootTarget(p, null, null);
-                                default:
-                                    System.out.println("selected a command in the wrong state");
-                                    break;
+                            if (cmd == Command.OK){
+                                switch (p.getState()){
+                                    case PAYING:
+                                        gm.completePayment(p);
+                                        break;
+                                    case CHOOSE_ACTION:
+                                        gm.endTurn();
+                                        break;
+                                    case CHOOSE_MODE:
+                                        gm.confirmModes(p);
+                                        break;
+                                    case USE_POWERUP:
+                                        gm.dontUsePowerUp(p);
+                                        break;
+                                    case SHOOT_TARGET:
+                                        gm.shootTarget(p, null, null);
+                                        break;
+                                    default:
+                                        System.out.println("selected OK in the wrong state");
+                                        break;
+                                }
+                            } else if (cmd == Command.BACK){
+                                gm.restore();
                             }
                             break;
                         case "pl":
@@ -277,6 +282,13 @@ public class PlayingTest {
                             System.out.println("Insert file name (without .json):");
                             String name = new Scanner(System.in).nextLine();
                             b1.saveOnFile(name);
+                            break;
+                        case "back":
+                            System.out.println("Insert file to restore (only for test)");
+                            String name1 = new Scanner((System.in)).nextLine();
+                            Backup backup = Backup.initFromFile(name1);
+                            backup.restore(gm.getMatch());
+                            gm.actionCompleted();
                             break;
                         case "situa":
                             for (Player tempPlayer : match.getPlayers()){
