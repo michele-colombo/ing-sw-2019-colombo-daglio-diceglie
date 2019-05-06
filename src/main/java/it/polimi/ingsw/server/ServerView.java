@@ -24,8 +24,6 @@ public class ServerView implements Observer {
             socketServer.forwardMessage(messageVisitable);
             try{
                 if(messageVisitable.getCloseSocket()){ //close socket connection
-                    socketServer.getObjectOutputStream().close();
-                    socketServer.getObjectInputStream().close();
                     socketServer.getSocket().close();
                 }
             } catch(IOException e){

@@ -22,6 +22,7 @@ public class ClientMain {
     }
 
     public static void main(String[] args) throws IOException {
+        System.out.println("Please, insert ip and port of the server");
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         Scanner intReader = new Scanner(System.in);
 

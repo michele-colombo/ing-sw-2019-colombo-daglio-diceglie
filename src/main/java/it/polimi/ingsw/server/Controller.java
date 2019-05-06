@@ -31,7 +31,6 @@ public class Controller implements VisitorServer {
         }
         finally {
             gameModel.notify(message, serverView);
-            System.out.println("Login ok");
         }
     }
 
@@ -47,7 +46,6 @@ public class Controller implements VisitorServer {
         }
         finally{
             gameModel.notify(message, serverView);
-            System.out.println("Relogin ok");
         }
     }
 

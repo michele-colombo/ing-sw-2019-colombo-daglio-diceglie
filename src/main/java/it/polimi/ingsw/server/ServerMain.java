@@ -48,6 +48,8 @@ public class ServerMain {
     }
 
     public static void main(String[] args){
-        ServerMain server = new ServerMain(12000);
+        System.out.println("Insert port number");
+        Scanner in = new Scanner(System.in);
+        new ServerMain(in.nextInt());
     }
 }

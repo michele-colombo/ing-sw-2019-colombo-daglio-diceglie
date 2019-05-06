@@ -11,7 +11,6 @@ import java.net.Socket;
 public class SocketServer extends Thread{
     private Socket socket;
     private ServerView serverView;
-    private ObjectInputStream in;
     private ObjectOutputStream out;
 
     public SocketServer(Socket socket, Controller controller){
@@ -19,9 +18,8 @@ public class SocketServer extends Thread{
         try{
             out = new ObjectOutputStream(socket.getOutputStream());
             out.flush();
-            in = new ObjectInputStream(socket.getInputStream());
         } catch(IOException e){
-            System.out.println("Error while creating streams!");
+            System.out.println("Error while creating output stream!");
             e.printStackTrace();
         }
         serverView = new ServerView(this, controller);
@@ -30,6 +28,7 @@ public class SocketServer extends Thread{
     @Override
     public void run(){
         try{
+            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
             while(true){
                 serverView.receiveEvent((EventVisitable) in.readObject());
             }
@@ -42,6 +41,7 @@ public class SocketServer extends Thread{
     }
 
     public void forwardMessage(MessageVisitable messageVisitable) throws IOException{
+        //ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
         out.writeObject(messageVisitable);
         out.flush();
     }
@@ -50,11 +50,4 @@ public class SocketServer extends Thread{
         return socket;
    }
 
-   public ObjectInputStream getObjectInputStream(){
-        return in;
-   }
-
-   public ObjectOutputStream getObjectOutputStream(){
-        return out;
-   }
 }

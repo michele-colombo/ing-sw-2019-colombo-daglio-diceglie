@@ -2,6 +2,7 @@ package it.polimi.ingsw.client;
 
 import it.polimi.ingsw.PlayerColor;
 import it.polimi.ingsw.server.events.LoginEvent;
+import it.polimi.ingsw.server.events.ReloginEvent;
 import it.polimi.ingsw.server.message.LoginMessage;
 
 import java.io.BufferedReader;
@@ -17,11 +18,10 @@ public class ClientView implements VisitorClient{
 
     public void startLogin(){
         boolean stopLogin = false;
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         try{
             while(!stopLogin){
                 System.out.println("Do you want to log or re-log?");
-                String input = reader.readLine().toUpperCase();
+                String input = readStringFromUser().toUpperCase();
                 if(input.equals("LOG")){
                     stopLogin = true;
                     login();
@@ -57,7 +57,18 @@ public class ClientView implements VisitorClient{
     }
 
     public void reLogin(){
-        ;
+        System.out.println("Please, insert your name");
+        try{
+            String name = readStringFromUser();
+            try{
+                ReloginEvent reloginEvent = new ReloginEvent(name);
+                socket.forward(reloginEvent);
+            } catch(IOException e){
+                System.out.println("Error while forwarding the relogin event!");
+            }
+        } catch(IOException e){
+            System.out.println("Error while reading from user!");
+        }
     }
 
     public void visit(LoginMessage loginMessage){
