@@ -407,7 +407,7 @@ public class Backup {
         for (PlayerBackup pb : playerBackups) {
             Player tempPlayer = match.getPlayerFromName(pb.name);
             if (tempPlayer == null) {
-                Player newPlayer = new Player(pb.name, pb.color);
+                Player newPlayer = new Player(pb.name);
                 match.addPlayer(newPlayer);
             }
         }

@@ -138,6 +138,7 @@ public class GameModel implements Observable {
 
     public void spawn(Player p, PowerUp po){
         p.removePowerUp(po);
+        match.getStackManager().discardPowerUp(po);
         match.spawn(p, po.getColor());
         p.setBorn(true);    //could be moved inside Player.spawn()
         p.setState(IDLE);
@@ -461,6 +462,7 @@ public class GameModel implements Observable {
 
     private void saveSnapshot(Match match){
         currBackup = new Backup(match);
+        currBackup.saveOnFile(backupName);
     }
 
     public void restore(){
