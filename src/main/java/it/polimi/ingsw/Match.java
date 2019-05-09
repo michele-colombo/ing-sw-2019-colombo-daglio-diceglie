@@ -73,8 +73,8 @@ public class Match {
         currentPlayer = null;
     }
 
-    public Match(int skulls){
-        this(2, skulls);
+    public Match(int layoutConfig){
+        this(layoutConfig, 8);
     }
 
     public Match(){

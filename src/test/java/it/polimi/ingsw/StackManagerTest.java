@@ -126,17 +126,22 @@ public class StackManagerTest {
     assertEquals(sm.getOriginalPowerUps().size(), 24);
 
     for(int i=0; i<36; i++){
-        sm.drawAmmoTile();
+        AmmoTile at = sm.drawAmmoTile();
+        sm.trashAmmoTile(at);
     }
 
     assertEquals(sm.getAmmoTilesActiveStack().size(), 0);
     assertEquals(sm.getAmmoTilesWasteStack().size(), 36);
-    sm.drawAmmoTile();
+    AmmoTile a = sm.drawAmmoTile();
+    sm.trashAmmoTile(a);
     assertEquals(sm.getAmmoTilesActiveStack().size(), 35);
+    assertEquals(sm.getAmmoTilesWasteStack().size(), 1);
 
     for(int i=0; i<73; i++){
-        sm.drawPowerUp();
+        AmmoTile at = sm.drawAmmoTile();
+        sm.trashAmmoTile(at);
     }
+    sm.discardPowerUp(sm.drawPowerUp());
     assertEquals(sm.getPowerUpActiveStack().size(), 23);
     }
 }

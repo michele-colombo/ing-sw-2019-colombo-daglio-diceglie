@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class PlayingTest {
+    private static final String backupPath = "./src/main/resources/backups/";
     public static void main(String[] args){
 
         GameModel gm = new GameModel();
@@ -41,16 +42,7 @@ public class PlayingTest {
         } else if(choice.toLowerCase().equals("resume")) {
             System.out.println("Insert name of file (without .json):");
             String name = new Scanner(System.in).nextLine();
-            Backup backup = Backup.initFromFile(name);
-            gm.initMatch();
-            backup.resumeMatch(gm.getMatch());
-            for (Player p : gm.getMatch().getPlayers()){
-                try {
-                    gm.addPlayer(p);
-                } catch (NameAlreadyTakenException e){
-                } catch (GameFullException e){}
-            }
-            gm.actionCompleted();
+            gm.resumeMatchFromFile(backupPath, name);
         }
 
         Match match = gm.getMatch();
