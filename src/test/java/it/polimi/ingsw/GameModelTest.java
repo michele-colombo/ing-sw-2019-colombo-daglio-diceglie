@@ -181,6 +181,7 @@ public class GameModelTest {
         gm.startMatch();
         */
 
+        //test comment
 
             Player tempPlayer = match.getPlayers().get(0);
             assertEquals(PlayerState.SPAWN, tempPlayer.getState());
