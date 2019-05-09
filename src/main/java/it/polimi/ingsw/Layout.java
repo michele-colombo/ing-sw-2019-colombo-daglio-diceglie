@@ -105,10 +105,10 @@ public class Layout {
         }
         else if(startingSquare.getY() == pointingSquare.getY()){
             if(startingSquare.getX() > pointingSquare.getX()){
-                return getEasternSquares(startingSquare);
+                return getWesternSquares(startingSquare);
             }
             else{
-                return getWesternSquares(startingSquare);
+                return getEasternSquares(startingSquare);
             }
         }
         return new ArrayList<>();
@@ -147,7 +147,7 @@ public class Layout {
     }
 
     /**
-     * Returns all the squares whose first or second coordinate are the same of startingSquare (not included)
+     * Returns all the squares whose first or second coordinate are the same of startingSquare (included)
      * @param startingSquare The square with selected coordinates
      * @return An ArrayList with all the found squares
      */
@@ -177,7 +177,7 @@ public class Layout {
     }
 
     /**
-     * Returns all the squares adjacent to startingSquare
+     * Returns all the squares adjacent but reachable from startingSquare (not included)
      * @param startingSquare The selected square
      * @return An ArrayList with all the found squares;
      */
@@ -419,7 +419,7 @@ public class Layout {
 
 
     /**
-     * le configurazioni del tabellone rifereite al manuale di gioco sono:
+     * le configurazioni del tabellone riferite al manuale di gioco sono:
      * -0 == piccola "ottima per 4 o 5 giocatori"
      * -1 == quella grande che e' disegnata su entrambe le pagine
      * -2 == piccola "ottima per qualsiasi numero di giocatori

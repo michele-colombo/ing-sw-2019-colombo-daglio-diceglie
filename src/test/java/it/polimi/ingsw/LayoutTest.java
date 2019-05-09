@@ -1,197 +1,208 @@
 package it.polimi.ingsw;
 
-
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+
 import java.util.*;
 
 import static it.polimi.ingsw.Border.*;
 import static it.polimi.ingsw.Color.*;
-import static it.polimi.ingsw.Direction.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+
 public class LayoutTest {
+    private Layout layout;
 
-    @Test
-    public void getVisibleSquare() {
-        Layout layout = new Layout();
-        Square testSquare = new SpawnSquare(1, 1, WALL, DOOR, WALL, WALL, RED);
-        Square eastDoor = new SpawnSquare(2, 1, DOOR, DOOR, DOOR, DOOR, RED);
-        layout.addSquare(testSquare);
-        layout.addSquare(eastDoor);
+    @BeforeEach
+    public void prepareTest(){
+        final int layout_config = 2;
 
-        Room room1 = new Room();
-        room1.addSquare(testSquare);
-        testSquare.setRoom(room1);
-
-        Room room2 = new Room();
-        room2.addSquare(eastDoor);
-        eastDoor.setRoom(room2);
-
-        List<Square> empty = (layout.getVisibleSquares(testSquare));
-        assertEquals(2, empty.size());
+        System.out.println("Preparing layout " + layout_config +  " for tests");
+        layout = new Layout();
+        layout.initLayout(layout_config);
     }
 
     @Test
-    public void getSquaresInDirection() {
-        Layout layout = new Layout();
-        Square startingSquare = new SpawnSquare(2,2, WALL, WALL, WALL, WALL, RED);
-        layout.addSquare(startingSquare);
-        layout.addSquare(new SpawnSquare(3,2, WALL, WALL, WALL, WALL, RED));
-        assertEquals(true , layout.existSquare(3,2));
-        assertEquals(2, layout.getSquaresInDirection(startingSquare, EAST).size());
-        assertEquals(1, layout.getSquaresInDirection(startingSquare, WEST).size());
+    public void getVisibleSquare() {
+        final int X1 = 3;
+        final int Y1 = 0;
+        final int SIZE1 = 4;
+
+        final int X2 = 2;
+        final int Y2 = 1;
+        final int SIZE2 = 7;
+
+        final int X3 = 0;
+        final int Y3 = 2;
+
+        List<Square> visibleSquares = layout.getVisibleSquares(layout.getSquare(X1,Y1));
+        assertEquals(SIZE1, visibleSquares.size());
+
+        visibleSquares = layout.getVisibleSquares(layout.getSquare(X2, Y2));
+        assertEquals(SIZE2, visibleSquares.size());
+        assert(visibleSquares.contains(layout.getSquare(X3,Y3)));
+    }
+
+    @Test
+    public void getSquaresInDirectionNotOverlapping() {
+        final int X1 = 2;
+        final int Y1 = 2;
+
+        final int X2 = 1;
+        final int Y2 = 2;
+
+        List<Square> squaresInDirection = layout.getSquaresInDirection(layout.getSquare(X1, Y1), layout.getSquare(X2, Y2));
+        assertEquals(2, squaresInDirection.size());
+        assertFalse(squaresInDirection.contains(layout.getSquare(X1,Y1)));
+    }
+
+    @Test
+    public void getSquaresInDirection(){
+        final int X = 0;
+        final int Y = 1;
+        Direction D1 = Direction.SOUTH;
+        Direction D2 = Direction.EAST;
+
+        List<Square> south = layout.getSquaresInDirection(layout.getSquare(X, Y), D1);
+        assertEquals(1, south.size());
+        assertTrue(south.contains(layout.getSquare(X, Y)));
+
+        List<Square> east = layout.getSquaresInDirection(layout.getSquare(X, Y), D2);
+        assertEquals(4, east.size());
+    }
+
+    @Test
+    public void getSquaresInDirectionOverlapping(){
+        final int X = 2;
+        final int Y = 1;
+
+        List<Square> squaresInDirection = layout.getSquaresInDirection(layout.getSquare(X,Y), layout.getSquare(X,Y));
+        assertEquals(6, squaresInDirection.size());
+        assertTrue(squaresInDirection.contains(layout.getSquare(X,Y)));
     }
 
     @Test
     public void getSquaresInDistanceRange() {
-        Layout layout = new Layout();
+        final int MIN1 = 1;
+        final int MAX1 = 2;
 
-        Square startingSquare = new SpawnSquare(1,1, WALL, WALL, WALL, DOOR, RED);
-        layout.addSquare(startingSquare);
-        Room startingRoom = new Room();
-        startingRoom.addSquare(startingSquare);
-        startingSquare.setRoom(startingRoom);
-        assertEquals(0, layout.getSquaresInDistanceRange(startingSquare, 2, 3).size());
+        final int X1 = 0;
+        final int Y1 = 2;
 
-        Square s1 = new SpawnSquare(0,1, WALL, DOOR, DOOR, WALL, RED);
-        Room room1 = new Room();
-        room1.addSquare(s1);
-        s1.setRoom(room1);
+        final int X2 = 1;
+        final int Y2 = 1;
 
-        Square s2 = new SpawnSquare(0,0, DOOR, DOOR, WALL, WALL, RED);
-        room1.addSquare(s2);
-        s2.setRoom(room1);
-
-        Square s3 = new SpawnSquare(1,0, WALL, WALL, WALL, DOOR, RED);
-        Room room2 = new Room();
-        room2.addSquare(s3);
-        s3.setRoom(room2);
-
-        layout.addSquare(s1);
-        layout.addSquare(s2);
-        layout.addSquare(s3);
-        assertEquals(2, layout.getSquaresInDistanceRange(startingSquare, 2, 4).size());
-        assertEquals(1, layout.getSquaresInDistanceRange(startingSquare, 1, 1).size());
-    }
-
-    @Test
-    public void getSquaresInDistanceOnLayout2(){
-        Layout layout = new Layout();
-        layout.initLayout(2);
-
-        Square centre = layout.getSquare(2,1);
-        List<Square> expected = new ArrayList<>();
-        expected.add(layout.getSquare(2,1));
-        expected.add(layout.getSquare(1,2));
-        expected.add(layout.getSquare(2,2));
-        expected.add(layout.getSquare(3,2));
-        expected.add(layout.getSquare(3,1));
-        expected.add(layout.getSquare(1,0));
-        expected.add(layout.getSquare(2,0));
-        expected.add(layout.getSquare(3,0));
-
-        assertTrue(expected.containsAll(layout.getSquaresInDistanceRange(centre, 0,2)));
-        assertTrue(layout.getSquaresInDistanceRange(centre, 0,2).containsAll(expected));
+        List<Square> square12 = layout.getSquaresInDistanceRange(layout.getSquare(X1, Y1), MIN1, MAX1);
+        assertEquals(4, square12.size());
+        assertTrue(square12.contains(layout.getSquare(X2,Y2)));
     }
 
     @Test
     public void getHorizontalSquareLine() {
-        Layout layout = new Layout();
-        assertEquals(0, layout.getHorizontalSquareLine(2).size());
+        final int Y1 = 0;
+        final int Y2 = 1;
+        final int Y3 = 2;
 
-        layout.addSquare(new SpawnSquare(1, 1, WALL, WALL, WALL, WALL, BLUE));
-        layout.addSquare(new SpawnSquare(2, 1, WALL, WALL, WALL, WALL, BLUE));
-        layout.addSquare(new SpawnSquare(0, 1, WALL, WALL, WALL, WALL, BLUE));
-        assertEquals(3, layout.getHorizontalSquareLine(1).size());
+        List<Square> horizontalSquares = layout.getHorizontalSquareLine(Y1);
+        assertEquals(3, horizontalSquares.size());
 
-        layout.addSquare(new SpawnSquare(2, 2, WALL, WALL, WALL, WALL, BLUE));
-        assertEquals(3, layout.getHorizontalSquareLine(1).size());
-        assertEquals(1, layout.getHorizontalSquareLine(2).size());
+        horizontalSquares = layout.getHorizontalSquareLine(Y2);
+        assertEquals(4, horizontalSquares.size());
+
+        horizontalSquares = layout.getHorizontalSquareLine(Y3);
+        assertEquals(4, horizontalSquares.size());
     }
 
     @Test
     public void getVerticalSquareLine() {
-        Layout layout = new Layout();
-        assertEquals(0, layout.getVerticalSquareLine(2).size());
+        final int X1 = 0;
+        final int X2 = 1;
+        final int X3 = 2;
+        final int X4 = 3;
 
-        layout.addSquare(new SpawnSquare(1, 0, WALL, WALL, WALL, WALL, BLUE));
-        layout.addSquare(new SpawnSquare(1, 1, WALL, WALL, WALL, WALL, BLUE));
-        layout.addSquare(new SpawnSquare(1, 2, WALL, WALL, WALL, WALL, BLUE));
-        assertEquals(3, layout.getVerticalSquareLine(1).size());
+        List<Square> verticalSquares = layout.getVerticalSquareLine(X1);
+        assertEquals(2, verticalSquares.size());
 
-        layout.addSquare(new SpawnSquare(2, 2, WALL, WALL, WALL, WALL, BLUE));
-        assertEquals(3, layout.getVerticalSquareLine(1).size());
-        assertEquals(1, layout.getVerticalSquareLine(2).size());
+        verticalSquares = layout.getVerticalSquareLine(X2);
+        assertEquals(3, verticalSquares.size());
+
+        verticalSquares = layout.getVerticalSquareLine(X3);
+        assertEquals(3, verticalSquares.size());
+
+        verticalSquares = layout.getVerticalSquareLine(X4);
+        assertEquals(3, verticalSquares.size());
     }
 
     @Test
     public void getNeighbours() {
-        Layout layout = new Layout();
-        Square startingSquare = new SpawnSquare(0,0, DOOR, WALL, WALL, WALL, RED);
+        final int X1 = 2;
+        final int Y1 = 1;
 
-        assertEquals(1, layout.getNeighbours(startingSquare).size());
+        final int X2 = 0;
+        final int Y2 = 1;
 
-        Square startingSquare2 = new SpawnSquare(0,1, WALL, DOOR, DOOR, WALL, RED);
+        List<Square> neighbours = layout.getNeighbours(layout.getSquare(X1, Y1));
+        assertEquals(3, neighbours.size());
+        assertFalse(neighbours.contains(layout.getSquare(X1, Y1)));
 
-        layout.addSquare(startingSquare);
-        layout.addSquare(startingSquare2);
-        layout.addSquare(new SpawnSquare(1,1, DOOR, WALL, WALL, DOOR, RED));
-
-        assertEquals(1, layout.getNeighbours(startingSquare).size());
-        assertEquals(2, layout.getNeighbours(startingSquare2).size());
-
-        Square aloneSquare = new SpawnSquare(2,2, WALL, WALL, WALL, WALL, RED);
-        layout.addSquare(aloneSquare);
-        assertEquals(0, layout.getNeighbours(aloneSquare).size());
+        neighbours = layout.getNeighbours(layout.getSquare(X2, Y2));
+        assertEquals(2, neighbours.size());
+        assertFalse(neighbours.contains(layout.getSquare(X2, Y2)));
     }
 
     @Test
     public void getDistance() {
-        Layout layout = new Layout();
+        final int X1 = 0;
+        final int Y1 = 1;
 
-        Square startingSquare = new SpawnSquare(0,0, WALL, DOOR, WALL, WALL, RED);
+        final int X2 = 3;
+        final int Y2 = 0;
 
-        layout.addSquare(new SpawnSquare(1,0, DOOR, WALL, WALL, DOOR, RED));
-        layout.addSquare(new SpawnSquare(1,1, WALL, DOOR, DOOR, WALL, RED));
-        layout.addSquare(new SpawnSquare(2,1, WALL, DOOR, DOOR, DOOR, RED));
-        layout.addSquare(new SpawnSquare(3,1, WALL, WALL, WALL, DOOR, RED));
+        int distance = layout.getDistance(layout.getSquare(X1, Y1), layout.getSquare(X2, Y2));
+        assertEquals(4, distance);
 
-        Square endingSquare = new SpawnSquare(2,0, DOOR, WALL, WALL, WALL, RED);
-        layout.addSquare(endingSquare);
-
-        assertEquals(4, layout.getDistance(startingSquare, endingSquare));
-        assertEquals(0, layout.getDistance(startingSquare, startingSquare));
+        distance = layout.getDistance(layout.getSquare(X1, Y1), layout.getSquare(X1, Y1));
+        assertEquals(0, distance);
     }
 
     @Test
-    public void getSquare() {
-        Layout layout = new Layout();
-        Square s = layout.getSquare(0,0);
-        assertTrue(s == null);
+    public void getSquareNull() {
+        final int X = 0;
+        final int Y = 0;
 
-        s = new SpawnSquare(0, 0, DOOR, DOOR, WALL, WALL, RED);
-        layout.addSquare(s);
-        assertEquals(s, layout.getSquare(0,0));
+        Square s = layout.getSquare(0,0);
+        assertEquals(null, s);
+    }
+
+    @Test
+    public void getSquareNotNull(){
+        final int X = 2;
+        final int Y = 0;
+
+        Square s = layout.getSquare(X, Y);
+        assertTrue(s.getX() == X && s.getY() == Y);
     }
 
     @Test
     public void getSpawnPoint() {
-        Layout layout = new Layout();
+        final int X1 = 2;
+        final int Y1 = 2;
 
-        assertEquals(null, layout.getSpawnPoint(RED));
+        final int X2 = 3;
+        final int Y2 = 0;
 
-        layout.addSquare(new AmmoSquare(0,0, WALL, WALL, WALL, WALL, RED));
-        assertEquals(null, layout.getSpawnPoint(RED));
+        final int X3 = 0;
+        final int Y3 = 1;
 
-        layout.addSquare(new SpawnSquare(1,1, WALL, WALL, WALL, WALL, RED));
-        assertEquals(null, layout.getSpawnPoint(BLUE));
 
-        SpawnSquare blueSpawn = new SpawnSquare(2, 2, WALL, WALL, WALL, WALL, BLUE);
-        layout.addSquare(blueSpawn);
-        assertEquals(blueSpawn, layout.getSpawnPoint(BLUE));
+        Square blueSpawnPoint = layout.getSpawnPoint(BLUE);
+        Square yellowSpawnPoint = layout.getSpawnPoint(YELLOW);
+        Square redSpawnPoint = layout.getSpawnPoint(RED);
+
+        assertTrue(blueSpawnPoint.getX() == X1 && blueSpawnPoint.getY() == Y1);
+        assertTrue(yellowSpawnPoint.getX() == X2 && yellowSpawnPoint.getY() == Y2);
+        assertTrue(redSpawnPoint.getX() == X3 && redSpawnPoint.getY() == Y3);
     }
 
     @Test
@@ -200,33 +211,26 @@ public class LayoutTest {
 
     @Test
     public void addSquare() {
-        Layout layout = new Layout();
-        boolean addOk = layout.addSquare(new SpawnSquare(0, 0, DOOR, DOOR, WALL, WALL, RED));
-        boolean addNotOk = layout.addSquare(new SpawnSquare(0, 0, DOOR, OPEN, WALL, WALL, RED));
-        boolean addOk2 = layout.addSquare(new SpawnSquare(2, 1, DOOR, DOOR, DOOR, DOOR, RED));
+        final int X1 = 0;
+        final int Y1 = 1;
 
-        assertEquals(true, addOk);
-        assertEquals(false, addNotOk);
-        assertEquals(true, addOk2);
+        final int X2 = 0;
+        final int Y2 = 0;
 
-        layout = new Layout();
-        for(int row = 0; row < 4; row++){
-            for(int column = 0; column < 3; column++){
-                layout.addSquare(new SpawnSquare(row, column, DOOR, DOOR, WALL, WALL, RED));
-            }
-        }
-        addOk = layout.addSquare(new SpawnSquare(0, 0, DOOR, DOOR, WALL, WALL, RED));
-        assertEquals(false, addOk);
+        assertFalse(layout.addSquare(new AmmoSquare(X1, Y1, WALL, WALL, WALL, WALL, RED)));
+        assertTrue(layout.addSquare(new AmmoSquare(X2, Y2, WALL, WALL, WALL, WALL, RED)));
     }
 
     @Test
     public void existSquare(){
-        Layout layout = new Layout();
-        assertEquals(false, layout.existSquare(0,0));
-        layout.addSquare(new SpawnSquare(0, 0, DOOR, DOOR, WALL, WALL, RED));
-        assertEquals(true, layout.existSquare(0, 0));
-        layout.addSquare(new SpawnSquare(2, 2, DOOR, DOOR, WALL, WALL, RED));
-        assertEquals(true, layout.existSquare(2,2));
+        final int X1 = 0;
+        final int Y1 = 1;
+
+        final int X2 = 0;
+        final int Y2 = 0;
+
+        assertTrue(layout.existSquare(X1, Y1));
+        assertFalse(layout.existSquare(X2, Y2));
     }
 
     @Test
