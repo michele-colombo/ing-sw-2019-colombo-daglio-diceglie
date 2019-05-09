@@ -73,6 +73,7 @@ public class Backup {
         }
 
         public void restore(Player p, Match match){
+            p.setColor(color);
             p.setBorn(isBorn);
             p.setBeforeFirst(isBeforeFirst);
             p.setPoints(points);
@@ -365,6 +366,11 @@ public class Backup {
         return temp;
     }
 
+    public static boolean isBackupAvailable(String name){
+        File file = new File(filePath+name+".json");
+        return file.exists();
+    }
+
     public Backup (){}
 
     public boolean saveOnFile(String name) {
@@ -411,6 +417,18 @@ public class Backup {
         }
         killShotTrackBackup.restore(match.getKillShotTrack(), match);
         matchBackup.restore(match);
+    }
+
+    public int getLayoutConfig(){
+        return layoutBackup.layoutConfiguration;
+    }
+
+    public List<String> getPlayerNames(){
+        List<String> result = new ArrayList<>();
+        for (PlayerBackup pb : playerBackups){
+            result.add(pb.name);
+        }
+        return result;
     }
 
 }

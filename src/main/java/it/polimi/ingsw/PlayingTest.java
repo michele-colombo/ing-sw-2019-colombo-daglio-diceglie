@@ -34,14 +34,10 @@ public class PlayingTest {
                 gm.addPlayer(p2);
                 gm.addPlayer(p3);
             } catch(NameAlreadyTakenException e){
-
-            } catch (ColorAlreadyTakenException e){
-
             } catch(GameFullException e){
 
             }
-            gm.initMatch();
-            gm.startMatch();
+            gm.startNewMatch();
         } else if(choice.toLowerCase().equals("resume")) {
             System.out.println("Insert name of file (without .json):");
             String name = new Scanner(System.in).nextLine();
@@ -52,7 +48,6 @@ public class PlayingTest {
                 try {
                     gm.addPlayer(p);
                 } catch (NameAlreadyTakenException e){
-                } catch (ColorAlreadyTakenException e){
                 } catch (GameFullException e){}
             }
             gm.actionCompleted();

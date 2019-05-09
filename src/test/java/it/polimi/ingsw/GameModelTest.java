@@ -31,8 +31,6 @@ public class GameModelTest {
             gm.addPlayer(p5);
         } catch(NameAlreadyTakenException e){
 
-        } catch(ColorAlreadyTakenException e){
-
         } catch(GameFullException e){
 
         }
@@ -81,8 +79,6 @@ public class GameModelTest {
             gm.addPlayer(p3);
             gm.addPlayer(p4);
         } catch(NameAlreadyTakenException e){
-
-        } catch(ColorAlreadyTakenException e){
 
         } catch(GameFullException e){
 
@@ -134,15 +130,14 @@ public class GameModelTest {
             gm.addPlayer(p3);
         } catch(NameAlreadyTakenException e){
 
-        } catch(ColorAlreadyTakenException e){
-
         } catch(GameFullException e){
 
         }
 
-        gm.initMatch();
+        gm.startNewMatch();
         Match match = gm.getMatch();
 
+        /*
         List<Weapon> tempWeapons = new ArrayList<>();
         tempWeapons.add(new Weapon("distruttore", new Cash(2,0,0), Color.BLUE));
         tempWeapons.add(new Weapon("mitragliatrice", new Cash(1, 1, 0), Color.BLUE));
@@ -184,6 +179,8 @@ public class GameModelTest {
         match.getStackManager().initAmmoTilesStack(tempAmmoTiles);
 
         gm.startMatch();
+        */
+
 
             Player tempPlayer = match.getPlayers().get(0);
             assertEquals(PlayerState.SPAWN, tempPlayer.getState());
@@ -252,22 +249,17 @@ public class GameModelTest {
             gm.addPlayer(p4);
         } catch(NameAlreadyTakenException e){
 
-        } catch(ColorAlreadyTakenException e){
-
         } catch(GameFullException e){
 
         }
 
         assertThrows(NameAlreadyTakenException.class, () -> gm.addPlayer(new Player("first", PlayerColor.VIOLET)));
-        assertThrows(ColorAlreadyTakenException.class, () -> gm.addPlayer(new Player("new", PlayerColor.GREEN)));
 
         Player p5 = new Player("fifth", PlayerColor.VIOLET);
         try{
             gm.addPlayer(p5);
 
         } catch(NameAlreadyTakenException e){
-
-        } catch(ColorAlreadyTakenException e){
 
         } catch(GameFullException e){
 

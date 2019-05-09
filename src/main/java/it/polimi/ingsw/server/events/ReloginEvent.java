@@ -10,6 +10,7 @@ public class ReloginEvent extends EventVisitable {
         this.name = name;
     }
 
+    @Override
     public void accept(VisitorServer visitorServer, ServerView serverView){
         visitorServer.visit(this, serverView);
     }

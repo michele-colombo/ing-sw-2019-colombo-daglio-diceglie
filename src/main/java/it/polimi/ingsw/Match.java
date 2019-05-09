@@ -221,11 +221,13 @@ public class Match {
         if(!deadPlayers.isEmpty()){
             for(Player p : deadPlayers){
                 scoreDamageTrack(p.getDamageTrack().score());
+                //todo: remove skulls from killshottrack
             }
         }
         if(deadPlayers.size() > 2){
             currentPlayer.addPoints(1);
         }
+        //todo: check whether to activate frenzy or not. "actviateFrenzy" saves the current player (for and game check)
         if(frenzyOn){
             switchToFrenzyAll(deadPlayers);
         }

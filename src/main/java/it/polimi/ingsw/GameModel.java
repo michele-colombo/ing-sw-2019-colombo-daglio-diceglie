@@ -29,8 +29,10 @@ public class GameModel implements Observable {
      * the current match in progress
      */
     private Match match;
+    private boolean matchInProgress;
     private Backup currBackup;
     private Map<Player, Observer> observers;
+    private final String backupName = "currentBackup";
 
 
     public GameModel(){
@@ -38,6 +40,7 @@ public class GameModel implements Observable {
         inactivePlayers = new ArrayList<>();
         spawningPlayers = new ArrayList<>();
         match = null;
+        matchInProgress = false;
         currBackup = null;
         observers = new HashMap<>();
     }
@@ -50,43 +53,14 @@ public class GameModel implements Observable {
         return match;
     }
 
-    /**
-     * Instantiate a new match, if not currently existing, specifying the number of skull and the layout configuration
-     * @param skull number of skull to put on the killshot track
-     * @param config integer corresponding to a layout configuration (1, 2, 3, or 4)
-     * @return false if a match was present already
-     */
-    public boolean initMatch(int skull, int config){
-        if (match == null){
-            match = new Match(skull, config);
-            return true;
-        } else {
-            return false;
-        }
+    public boolean isMatchInProgress() {
+        return matchInProgress;
     }
 
-    /**
-     *
-     * @return
-     */
-    public boolean initMatch(){
-        if (match == null){
-            match = new Match();
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    //TODO check name and color uniqueness and throw exceptions
-    public void addPlayer (Player p) throws NameAlreadyTakenException, ColorAlreadyTakenException, GameFullException {
+    public void addPlayer (Player p) throws NameAlreadyTakenException, GameFullException {
         if((activePlayers.size() + inactivePlayers.size()) < 5){
             if(!nameTaken(p.getName())){
-                if(!colorTaken(p.getColor())){
-                    activePlayers.add(p);
-                } else {
-                    throw new ColorAlreadyTakenException();
-                }
+                activePlayers.add(p);
             } else{
                 throw new NameAlreadyTakenException();
             }
@@ -95,15 +69,60 @@ public class GameModel implements Observable {
         }
     }
 
-    //TODO check number of players, etc.
-    public void startMatch(){
-        for (Player p : activePlayers){
+    /**
+     *
+     * @return true if a new match begins, false if a saved one is restored
+     */
+    public boolean startMatch(){
+        if (Backup.isBackupAvailable(backupName)){
+            Backup tempBackup = Backup.initFromFile(backupName);
+            if (tempBackup.getPlayerNames().containsAll(getAllPlayerNames()) && getAllPlayerNames().containsAll(tempBackup.getPlayerNames())){
+                //all names match
+                int layoutConfig = tempBackup.getLayoutConfig();
+                match = new Match(layoutConfig, 8);
+                for (Player p : allPlayers()){ //activePlayers only? or all players?
+                    match.addPlayer(p);
+                }
+                tempBackup.restore(match);
+                matchInProgress = true;
+                actionCompleted();
+                return false;
+            } else {
+                //saved backup has at least one different name
+                startNewMatch();
+            }
+        } else {
+            //there is no backup available
+            startNewMatch();
+        }
+        return true;
+    }
+
+    public void startNewMatch(){
+        //todo: choose layout configuration
+        int layoutConfig = 2;
+        //todo: take skulls number from config file
+        match = new Match(layoutConfig, 8);
+        for (Player p : allPlayers()){ //activePlayers only? or all players?
             match.addPlayer(p);
             p.setState(IDLE);
             p.resetSelectables();
         }
         match.getLayout().refillAll(match.getStackManager());
+        for (Player p : allPlayers()){
+            p.setColor(PlayerColor.values()[allPlayers().indexOf(p)]);
+        }
+        matchInProgress = true;
         beginNextTurn();
+    }
+
+    public boolean initMatch(){
+        if (match == null){
+            match = new Match();
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private void prepareForSpawning(Player p, boolean firstSpawn){
@@ -151,6 +170,7 @@ public class GameModel implements Observable {
      * @return Next active player
      */
     public Player nextActivePlayer(Player currP){
+        //todo: check if frenzyOn && nextPlayer = lastPlayer
         int index;
         if (currP == null){
             return activePlayers.get(0);    //if there's no curr player, return the first of the list
@@ -369,7 +389,7 @@ public class GameModel implements Observable {
         match.getCurrentAction().addEffects(match.getCurrentAction().getCurrPowerUp().getEffects());
         try {
             match.getCurrentAction().getCurrEffects().get(0).start(p, match);
-        } catch (Exception e){  //todo: use ApplyEffectImmediatelyException
+        } catch (ApplyEffectImmediatelyException e){
             match.getCurrentAction().getCurrEffects().get(0).applyOn(p, match.getCurrentPlayer(), null, match);
         }
     }
@@ -497,15 +517,23 @@ public class GameModel implements Observable {
     }
 
     public void detach(Observer observer){
-        if(observers.containsValue(observer)){
-            for(Map.Entry<Player, Observer> entry : observers.entrySet()){ //DA SOSTITUIRE CON UN METODO
-                if(observer == entry.getValue()){
-                    observers.remove(observer);
-                    inactivePlayers.add(entry.getKey());
-                    activePlayers.remove(entry.getKey());
-                }
+        try {
+            Player tempPlayer = getPlayerByObserver(observer);
+            observers.remove(observer);
+            inactivePlayers.add(tempPlayer);
+            activePlayers.remove(tempPlayer);
+        } catch (NoSuchObserverException e){
+
+        }
+    }
+
+    public Player getPlayerByObserver(Observer observer) throws NoSuchObserverException {
+        for (Map.Entry<Player, Observer> entry : observers.entrySet()){
+            if (observer == entry.getValue()){
+                return entry.getKey();
             }
         }
+        throw new NoSuchObserverException();
     }
 
     public boolean alreadyActive(String name){
@@ -540,6 +568,16 @@ public class GameModel implements Observable {
             }
         }
         return null;
+    }
+
+
+
+    public List<String> getAllPlayerNames(){
+        List<String> result = new ArrayList<>();
+        for (Player p : allPlayers()){
+            result.add(p.getName());
+        }
+        return result;
     }
 
     public void notify(MessageVisitable messageVisitable, Observer observer){

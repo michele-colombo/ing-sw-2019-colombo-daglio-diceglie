@@ -24,7 +24,7 @@ public class Player {
     /**
      * Color of player-related stuffs: blood drops, marker, board, etc.
      */
-    private final PlayerColor color;
+    private PlayerColor color;
     /**
      * Non-negative integer containing points of the player
      */
@@ -131,11 +131,9 @@ public class Player {
     /**
      * Sets name and color. Instantiate attributes and sets default values.
      * @param name Uniqueness checked by constructor caller
-     * @param color Uniqueness checked by the caller
      */
-    public Player(String name, PlayerColor color) {
+    public Player(String name) {
         this.name = name;
-        this.color = color;
         points = 0;
         isFirstPlayer = false;
         weapons = new HashMap<>();
@@ -158,11 +156,20 @@ public class Player {
         selectableCommands = new ArrayList<>();
     }
 
+    public Player(String name, PlayerColor color){
+        this(name);
+        setColor(color);
+    }
+
     /**
      * Test only constructor. Uses default name and color.
      */
     public Player(){        //TEST constructor
         this("Nome di prova", GREY);
+    }
+
+    public void setColor(PlayerColor color) {
+        this.color = color;
     }
 
     public String getName() {
