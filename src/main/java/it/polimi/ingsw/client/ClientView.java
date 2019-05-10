@@ -1,8 +1,6 @@
 package it.polimi.ingsw.client;
 
-import it.polimi.ingsw.PlayerColor;
 import it.polimi.ingsw.server.events.LoginEvent;
-import it.polimi.ingsw.server.events.ReloginEvent;
 import it.polimi.ingsw.server.message.LoginMessage;
 
 import java.io.BufferedReader;
@@ -16,7 +14,7 @@ public class ClientView implements VisitorClient{
         this.socket = socket;
     }
 
-    public void startLogin(){
+    /*public void startLogin(){
         boolean stopLogin = false;
         try{
             while(!stopLogin){
@@ -33,30 +31,27 @@ public class ClientView implements VisitorClient{
         } catch(IOException e){
             System.out.println("Error while asking whether to log or re-log!");
         }
-    }
+    }*/
 
     public void login(){
-        System.out.println("Please, insert your name and color");
+        System.out.println("Please, insert your name");
         try{
             String name = readStringFromUser();
-            String selectedColor = readStringFromUser();
+            //String selectedColor = readStringFromUser();
             try{
-                PlayerColor color = PlayerColor.valueOf(selectedColor); //SOSTITUIRE CON UN METODO FORWARD
-                LoginEvent loginEvent = new LoginEvent(name, color);
+                //PlayerColor color = PlayerColor.valueOf(selectedColor); //SOSTITUIRE CON UN METODO FORWARD
+                LoginEvent loginEvent = new LoginEvent(name);
                 socket.forward(loginEvent);
             } catch(IOException e){
                 System.out.println("Error while forwarding the login event!");
                 e.printStackTrace();
-            } catch(IllegalArgumentException e){
-                System.out.println(selectedColor + " isn't a valid color!");
-                login();
             }
         } catch(IOException e){
             System.out.println("Error while reading from user!");
         }
     }
 
-    public void reLogin(){
+    /*public void reLogin(){
         System.out.println("Please, insert your name");
         try{
             String name = readStringFromUser();
@@ -69,7 +64,7 @@ public class ClientView implements VisitorClient{
         } catch(IOException e){
             System.out.println("Error while reading from user!");
         }
-    }
+    }*/
 
     public void visit(LoginMessage loginMessage){
         System.out.println(loginMessage.toString());

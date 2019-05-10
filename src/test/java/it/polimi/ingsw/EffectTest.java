@@ -1,7 +1,6 @@
 package it.polimi.ingsw;
 
 import com.google.gson.Gson;
-import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
 import it.polimi.ingsw.exceptions.ApplyEffectImmediatelyException;
 import org.junit.jupiter.api.Test;
 
@@ -13,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class EffectTest {
 
+    @Test
     private Match inizializza(){
         Match m = new Match(0, 5);
         Layout layout= m.getLayout();
@@ -42,6 +42,7 @@ public class EffectTest {
         return m;
     }
 
+    @Test
     private String selectableLists(Match m){
         String result;
         result= "SELECTABLE PLAYERS\n";
@@ -64,6 +65,7 @@ public class EffectTest {
 
     }
 
+    @Test
     private String damaged(Match m){
         String res= "";
         for(int i=0; i< m.getCurrentAction().getDamaged().size(); i++){
@@ -74,6 +76,7 @@ public class EffectTest {
 
     }
 
+    @Test
     public void startTest(){
         Effect effect= new Effect(0, 1, -1, -1, -1, 1, 1, -1, -1, 0, 2, 2, -1);
         Match m= inizializza();

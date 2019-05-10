@@ -32,7 +32,7 @@ public class SocketClient extends Thread{
             ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
             boolean loginOk = false;
             while(!loginOk){
-                clientView.startLogin();
+                clientView.login();
                 LoginMessage loginMessage = (LoginMessage) in.readObject();
                 loginMessage.accept(clientView);
                 if(loginMessage.getLoginSuccessful()){

@@ -57,15 +57,19 @@ public class GameModel implements Observable {
         return matchInProgress;
     }
 
-    public void addPlayer (Player p) throws NameAlreadyTakenException, GameFullException {
-        if((activePlayers.size() + inactivePlayers.size()) < 5){
-            if(!nameTaken(p.getName())){
-                activePlayers.add(p);
-            } else{
-                throw new NameAlreadyTakenException();
+    public void addPlayer (Player p) throws NameAlreadyTakenException, GameFullException, NameNotFoundException, AlreadyLoggedException {
+        if(!matchInProgress){  //todo sostituire con metodo login()
+            if((activePlayers.size() < 5)){
+                if(!nameTaken(p.getName())){
+                    activePlayers.add(p);
+                } else{
+                    throw new NameAlreadyTakenException();
+                }
+            } else {
+                throw new GameFullException();
             }
-        } else {
-            throw new GameFullException();
+        } else{
+            relogin(p);
         }
     }
 
@@ -517,13 +521,17 @@ public class GameModel implements Observable {
     }
 
     public void detach(Observer observer){
-        try {
+        try{
             Player tempPlayer = getPlayerByObserver(observer);
-            observers.remove(observer);
-            inactivePlayers.add(tempPlayer);
             activePlayers.remove(tempPlayer);
-        } catch (NoSuchObserverException e){
-
+            if(!matchInProgress){
+                observers.keySet().remove(tempPlayer);
+            } else{
+                observers.remove(tempPlayer);
+                inactivePlayers.add(tempPlayer);
+            }
+        } catch(NoSuchObserverException e){
+            e.printStackTrace();
         }
     }
 
@@ -552,11 +560,11 @@ public class GameModel implements Observable {
         return allPlayers;
     }
 
-    public void relogin(String name) throws NameNotFoundException, AlreadyLoggedException{
-        if(!nameTaken(name)){
+    public void relogin(Player p) throws NameNotFoundException, AlreadyLoggedException{
+        if(!nameTaken(p.getName())){
             throw new NameNotFoundException();
-        } else if(alreadyActive(name)){
-            throw new AlreadyLoggedException();
+        } else if(alreadyActive(p.getName())){
+            throw new AlreadyLoggedException(); //todo tirare eccezione non puoi loggarti se active.size() == player in match
         }
     }
 

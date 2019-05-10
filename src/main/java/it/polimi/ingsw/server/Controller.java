@@ -21,17 +21,22 @@ public class Controller implements VisitorServer {
             Player newPlayer = new Player(loginEvent.getName());
             gameModel.addPlayer(newPlayer);
             gameModel.attach(newPlayer, serverView);
+            //todo se ci sono 5 player e la partita non è ancora iniziata, allora deve iniziare
         } catch(NameAlreadyTakenException e){
             message = new LoginMessage("Name already taken!", false, false);
         } catch(GameFullException e){
             message = new LoginMessage("Game full!", false, true);
+        } catch(NameNotFoundException e){
+            message = new LoginMessage("Name not found!", false, false);
+        } catch(AlreadyLoggedException e){
+            message = new LoginMessage("Player already logged", false, true);
         }
         finally {
             gameModel.notify(message, serverView);
         }
     }
 
-    public synchronized void visit(ReloginEvent reloginEvent, ServerView serverView){
+    /*public synchronized void visit(ReloginEvent reloginEvent, ServerView serverView){
         LoginMessage message = new LoginMessage("Login successful!", true, false);
         try{
             gameModel.relogin(reloginEvent.getName());
@@ -44,7 +49,7 @@ public class Controller implements VisitorServer {
         finally{
             gameModel.notify(message, serverView);
         }
-    }
+    }*/
 
     @Override
     public synchronized void visit(SquareSelectedEvent squareSelectedEvent, ServerView serverView) {

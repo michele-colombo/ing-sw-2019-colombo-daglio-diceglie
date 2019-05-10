@@ -6,11 +6,9 @@ import it.polimi.ingsw.server.VisitorServer;
 
 public class LoginEvent extends EventVisitable {
     private String name;
-    private PlayerColor color;
 
-    public LoginEvent(String name, PlayerColor color){
+    public LoginEvent(String name){
         this.name = name;
-        this.color = color;
     }
 
     public void accept(VisitorServer visitorServer, ServerView serverView){
@@ -21,7 +19,4 @@ public class LoginEvent extends EventVisitable {
         return name;
     }
 
-    public PlayerColor getColor() {
-        return color;
-    }
 }

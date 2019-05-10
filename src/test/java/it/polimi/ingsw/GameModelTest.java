@@ -1,8 +1,6 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.exceptions.ColorAlreadyTakenException;
-import it.polimi.ingsw.exceptions.GameFullException;
-import it.polimi.ingsw.exceptions.NameAlreadyTakenException;
+import it.polimi.ingsw.exceptions.*;
 import org.junit.jupiter.api.Test;
 
 
@@ -29,10 +27,7 @@ public class GameModelTest {
             gm.addPlayer(p3);
             gm.addPlayer(p4);
             gm.addPlayer(p5);
-        } catch(NameAlreadyTakenException e){
-
-        } catch(GameFullException e){
-
+        } catch(NameAlreadyTakenException | GameFullException | AlreadyLoggedException | NameNotFoundException e){
         }
 
         Player currP = null;
@@ -78,10 +73,7 @@ public class GameModelTest {
             gm.addPlayer(p2);
             gm.addPlayer(p3);
             gm.addPlayer(p4);
-        } catch(NameAlreadyTakenException e){
-
-        } catch(GameFullException e){
-
+        } catch(NameAlreadyTakenException | GameFullException | AlreadyLoggedException | NameNotFoundException e){
         }
 
         Player currP = null;
@@ -128,10 +120,7 @@ public class GameModelTest {
             gm.addPlayer(p1);
             gm.addPlayer(p2);
             gm.addPlayer(p3);
-        } catch(NameAlreadyTakenException e){
-
-        } catch(GameFullException e){
-
+        } catch(NameAlreadyTakenException | GameFullException | AlreadyLoggedException | NameNotFoundException e){
         }
 
         gm.startNewMatch();
@@ -152,7 +141,6 @@ public class GameModelTest {
         tempWeapons.add(new Weapon("cyberguanto", new Cash(1,0,1), Color.YELLOW));
         tempWeapons.add(new Weapon("onda d'urto", new Cash(0,0,1), Color.YELLOW));
         match.getStackManager().initWeaponStack(tempWeapons);
-
         List<PowerUp> tempPowerups = new ArrayList<>();
         for (Color color : Color.getAmmoColors()){
             for (int i=0; i<2; i++){
@@ -163,7 +151,6 @@ public class GameModelTest {
             }
         }
         match.getStackManager().initPowerUpStack(tempPowerups);
-
         List<AmmoTile> tempAmmoTiles = new ArrayList<>();
         for (int i=0; i<4; i++){
             tempAmmoTiles.add(new AmmoTile(new Cash(2, 1, 0), false));
@@ -177,61 +164,60 @@ public class GameModelTest {
             tempAmmoTiles.add(new AmmoTile(new Cash(0, 1, 1), true));
         }
         match.getStackManager().initAmmoTilesStack(tempAmmoTiles);
-
         gm.startMatch();
         */
 
         //test comment
 
-            Player tempPlayer = match.getPlayers().get(0);
-            assertEquals(PlayerState.SPAWN, tempPlayer.getState());
-            assertEquals(null, match.getCurrentPlayer());
-            System.out.println(tempPlayer.selectablesToString());
-            assertEquals(2, tempPlayer.getSelectablePowerUps().size());    //can select two powerups
-            PowerUp selectedPowerUp = tempPlayer.getSelectablePowerUps().get(0);
-            PowerUp notSelectedPowerUp = tempPlayer.getSelectablePowerUps().get(1);
+        Player tempPlayer = match.getPlayers().get(0);
+        assertEquals(PlayerState.SPAWN, tempPlayer.getState());
+        assertEquals(null, match.getCurrentPlayer());
+        System.out.println(tempPlayer.selectablesToString());
+        assertEquals(2, tempPlayer.getSelectablePowerUps().size());    //can select two powerups
+        PowerUp selectedPowerUp = tempPlayer.getSelectablePowerUps().get(0);
+        PowerUp notSelectedPowerUp = tempPlayer.getSelectablePowerUps().get(1);
 
         gm.spawn(tempPlayer, selectedPowerUp); //he select the first (in order to discard and respawn onto)
 
-            assertEquals(match.getCurrentPlayer(), tempPlayer); //he becomes the current player
-            assertEquals(selectedPowerUp.getColor(), match.getCurrentPlayer().getSquarePosition().getColor());  //he is now on the spawnSquare of the discarded powerUp
-            assertFalse(match.getCurrentPlayer().getPowerUps().contains(selectedPowerUp));  //the selected powerUp is discarded
-            assertTrue(match.getCurrentPlayer().getPowerUps().contains(notSelectedPowerUp));    //the notSelected powerUp belongs to the player now
-            assertEquals(PlayerState.CHOOSE_ACTION, match.getCurrentPlayer().getState());       //he can now choose the action to take
-            System.out.println(match.getCurrentPlayer().getSquarePosition().getFullDescription());
-            System.out.println(match.getCurrentPlayer().getPowerUps());
-            printSel(tempPlayer);
+        assertEquals(match.getCurrentPlayer(), tempPlayer); //he becomes the current player
+        assertEquals(selectedPowerUp.getColor(), match.getCurrentPlayer().getSquarePosition().getColor());  //he is now on the spawnSquare of the discarded powerUp
+        assertFalse(match.getCurrentPlayer().getPowerUps().contains(selectedPowerUp));  //the selected powerUp is discarded
+        assertTrue(match.getCurrentPlayer().getPowerUps().contains(notSelectedPowerUp));    //the notSelected powerUp belongs to the player now
+        assertEquals(PlayerState.CHOOSE_ACTION, match.getCurrentPlayer().getState());       //he can now choose the action to take
+        System.out.println(match.getCurrentPlayer().getSquarePosition().getFullDescription());
+        System.out.println(match.getCurrentPlayer().getPowerUps());
+        printSel(tempPlayer);
 
         gm.performAction(tempPlayer, tempPlayer.getSelectableActions().get(1));     //he wants to grab
 
-            assertEquals(PlayerState.GRAB_THERE, match.getCurrentPlayer().getState());  //he is in GRAB_THERE state
-            System.out.println(match.getCurrentPlayer().selectablesToString());
-            Square firstSquareSelected = tempPlayer.getSelectableSquares().get(0);  //he wants to grab in the first square (ammoSquare)
-            Cash tempCash = ((AmmoSquare)firstSquareSelected).getAmmo().getAmmos();
-            assertTrue(new Cash(0,0,0).isEqual(tempPlayer.getWallet()));
+        assertEquals(PlayerState.GRAB_THERE, match.getCurrentPlayer().getState());  //he is in GRAB_THERE state
+        System.out.println(match.getCurrentPlayer().selectablesToString());
+        Square firstSquareSelected = tempPlayer.getSelectableSquares().get(0);  //he wants to grab in the first square (ammoSquare)
+        Cash tempCash = ((AmmoSquare)firstSquareSelected).getAmmo().getAmmos();
+        assertTrue(new Cash(0,0,0).isEqual(tempPlayer.getWallet()));
 
         gm.grabThere(tempPlayer, firstSquareSelected);         //he grabs in the first square (ammoSquare)
 
-            assertEquals(PlayerState.CHOOSE_ACTION, tempPlayer.getState());
-            assertTrue(tempCash.isEqual(tempPlayer.getWallet()));
-            assertEquals(firstSquareSelected, tempPlayer.getSquarePosition());
-            System.out.println(tempPlayer.getPowerUps());
-            System.out.println(tempPlayer.getWallet());
-            Cash previousCash = tempPlayer.getWallet();
-            printSel(tempPlayer);
+        assertEquals(PlayerState.CHOOSE_ACTION, tempPlayer.getState());
+        assertTrue(tempCash.isEqual(tempPlayer.getWallet()));
+        assertEquals(firstSquareSelected, tempPlayer.getSquarePosition());
+        System.out.println(tempPlayer.getPowerUps());
+        System.out.println(tempPlayer.getWallet());
+        Cash previousCash = tempPlayer.getWallet();
+        printSel(tempPlayer);
 
         gm.performAction(tempPlayer, tempPlayer.getSelectableActions().get(1));     //he wants to grab (second action)
 
-            assertEquals(PlayerState.GRAB_THERE, tempPlayer.getState());
-            printSel(tempPlayer);
-            assertFalse(tempPlayer.getSelectableSquares().contains(firstSquareSelected));
-            assertEquals(2, match.getActionsCompleted());
+        assertEquals(PlayerState.GRAB_THERE, tempPlayer.getState());
+        printSel(tempPlayer);
+        assertFalse(tempPlayer.getSelectableSquares().contains(firstSquareSelected));
+        assertEquals(2, match.getActionsCompleted());
 
         gm.grabThere(tempPlayer, tempPlayer.getSelectableSquares().get(0));
 
-            System.out.println(tempPlayer.getPowerUps());
-            System.out.println(tempPlayer.getWallet());
-            printSel(tempPlayer);
+        System.out.println(tempPlayer.getPowerUps());
+        System.out.println(tempPlayer.getWallet());
+        printSel(tempPlayer);
     }
 
     @Test
@@ -248,10 +234,7 @@ public class GameModelTest {
             gm.addPlayer(p2);
             gm.addPlayer(p3);
             gm.addPlayer(p4);
-        } catch(NameAlreadyTakenException e){
-
-        } catch(GameFullException e){
-
+        } catch(NameAlreadyTakenException | GameFullException | AlreadyLoggedException | NameNotFoundException e){
         }
 
         assertThrows(NameAlreadyTakenException.class, () -> gm.addPlayer(new Player("first", PlayerColor.VIOLET)));
@@ -260,10 +243,7 @@ public class GameModelTest {
         try{
             gm.addPlayer(p5);
 
-        } catch(NameAlreadyTakenException e){
-
-        } catch(GameFullException e){
-
+        } catch(NameAlreadyTakenException | GameFullException | AlreadyLoggedException | NameNotFoundException e){
         }
 
         assertThrows(GameFullException.class, () -> gm.addPlayer(new Player("last", PlayerColor.GREEN)));
