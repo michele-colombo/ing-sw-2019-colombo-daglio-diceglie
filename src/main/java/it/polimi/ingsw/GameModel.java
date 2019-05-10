@@ -463,13 +463,13 @@ public class GameModel implements Observable {
         if (selectableActions.isEmpty()){
             endTurn();
         } else {
+            saveSnapshot(match);
             p.setState(CHOOSE_ACTION);
             p.resetSelectables();
             p.setSelectableActions(selectableActions);
             if (match.isTurnCompletable()){
                 p.setSelectableCommands(Command.OK);
             }
-            saveSnapshot(match);
         }
     }
 
@@ -484,6 +484,8 @@ public class GameModel implements Observable {
     }
 
     public void endTurn(){
+        match.setAlreadyCompleted(true);
+        saveSnapshot(match);
         match.getCurrentPlayer().setState(IDLE);
         match.getCurrentPlayer().resetSelectables();
         match.getLayout().refillAll(match.getStackManager());

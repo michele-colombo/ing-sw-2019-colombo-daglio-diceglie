@@ -34,7 +34,7 @@ public class PlayingTest {
                 gm.addPlayer(p3);
             } catch(NameAlreadyTakenException | AlreadyLoggedException | GameFullException | NameNotFoundException e){
             }
-            gm.startNewMatch();
+            gm.startMatch();
         } else if(choice.toLowerCase().equals("resume")) {
             System.out.println("Insert name of file (without .json):");
             String name = new Scanner(System.in).nextLine();

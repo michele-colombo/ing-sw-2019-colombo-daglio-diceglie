@@ -310,6 +310,7 @@ public class Backup {
         private int actionsCompleted;
         private boolean onlyReload;
         private boolean turnCompletable;
+        private boolean alreadyCompleted;
         private String currentPlayer;
 
         public MatchBackup(Match match){
@@ -318,6 +319,7 @@ public class Backup {
             actionsCompleted = match.getActionsCompleted();
             onlyReload = match.isOnlyReload();
             turnCompletable = match.isTurnCompletable();
+            alreadyCompleted = match.isAlreadyCompleted();
             currentPlayer = match.getCurrentPlayer().getName();
         }
 
@@ -327,6 +329,7 @@ public class Backup {
             match.setActionsCompleted(actionsCompleted);
             match.setOnlyReload(onlyReload);
             match.setTurnCompletable(turnCompletable);
+            match.setAlreadyCompleted(alreadyCompleted);
             match.setCurrentPlayer(match.getPlayerFromName(currentPlayer));
         }
     }

@@ -49,6 +49,12 @@ public class Match {
      * It's true if the turn is completable, otherwise it's false
      */
     private boolean turnCompletable;
+
+    /**
+     * True if the player has already completed its turn (used for restoring match)
+     */
+    private boolean alreadyCompleted;
+
     /**
      * It's the reference to the current action
      */
@@ -242,62 +248,64 @@ public class Match {
      * @param p The player sho is in CHOOSE_ACTION state
      * @return
      */
-    public List<Action> createSelectablesAction(Player p){  //todo rename in createSelectableActions
+    public List<Action> createSelectablesAction(Player p) {  //todo rename in createSelectableActions
         //could be loaded from a json file in the future?
         List<Action> result = new ArrayList<>();
         Action temp;
-        if (numberOfActions - actionsCompleted > 0){
-            if (!frenzyOn){
-                switch(p.getDamageTrack().getAdrenaline()){
-                    case 0:
-                        result.add(new Action(true, false, new Move(3)));
-                        result.add(new Action(true, false, new Grab(1)));
-                        temp = new Action (true, false, new Shoot());
-                        if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UsePowerUp(TARGETING_SCOPE));
-                        result.add(temp);
-                        break;
-                    case 1:
-                        result.add(new Action(true, false, new Move(3)));
-                        result.add(new Action(true, false, new Grab(2)));
-                        temp = new Action(true, false, new Shoot());
-                        if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UsePowerUp(TARGETING_SCOPE));
-                        result.add(temp);
-                        break;
-                    case 2:
-                        result.add(new Action(true, false, new Move(3)));
-                        result.add(new Action(true, false, new Grab(2)));
+        if (!alreadyCompleted) {
+            if (numberOfActions - actionsCompleted > 0) {
+                if (!frenzyOn) {
+                    switch (p.getDamageTrack().getAdrenaline()) {
+                        case 0:
+                            result.add(new Action(true, false, new Move(3)));
+                            result.add(new Action(true, false, new Grab(1)));
+                            temp = new Action(true, false, new Shoot());
+                            if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UsePowerUp(TARGETING_SCOPE));
+                            result.add(temp);
+                            break;
+                        case 1:
+                            result.add(new Action(true, false, new Move(3)));
+                            result.add(new Action(true, false, new Grab(2)));
+                            temp = new Action(true, false, new Shoot());
+                            if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UsePowerUp(TARGETING_SCOPE));
+                            result.add(temp);
+                            break;
+                        case 2:
+                            result.add(new Action(true, false, new Move(3)));
+                            result.add(new Action(true, false, new Grab(2)));
+                            temp = new Action(true, false, new Move(1));
+                            temp.add(new Shoot());
+                            if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UsePowerUp(TARGETING_SCOPE));
+                            result.add(temp);
+                            break;
+                    }
+                } else {
+                    if (p.isBeforeFirst()) {
                         temp = new Action(true, false, new Move(1));
+                        temp.add(new Reload());
                         temp.add(new Shoot());
                         if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UsePowerUp(TARGETING_SCOPE));
                         result.add(temp);
-                        break;
+                        result.add(new Action(true, false, new Move(4)));
+                        result.add(new Action(true, false, new Grab(2)));
+                    } else {
+                        temp = new Action(true, false, new Move(2));
+                        temp.add(new Reload());
+                        temp.add(new Shoot());
+                        if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UsePowerUp(TARGETING_SCOPE));
+                        result.add(temp);
+                        result.add(new Action(true, false, new Grab(3)));
+                    }
                 }
             } else {
-                if (p.isBeforeFirst()){
-                    temp = new Action(true, false, new Move(1));
-                    temp.add(new Reload());
-                    temp.add(new Shoot());
-                    if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UsePowerUp(TARGETING_SCOPE));
-                    result.add(temp);
-                    result.add(new Action(true, false, new Move(4)));
-                    result.add(new Action(true, false, new Grab(2)));
-                } else {
-                    temp = new Action(true, false, new Move(2));
-                    temp.add(new Reload());
-                    temp.add(new Shoot());
-                    if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UsePowerUp(TARGETING_SCOPE));
-                    result.add(temp);
-                    result.add(new Action (true, false, new Grab(3)));
+                turnCompletable = true;
+                if (!p.getUnloadedWeapons().isEmpty()) {
+                    result.add(new Action(false, true, new Reload()));
                 }
             }
-        } else {
-            turnCompletable = true;
-            if (!p.getUnloadedWeapons().isEmpty()){
-                result.add(new Action(false, true, new Reload()));
+            if (!onlyReload && p.howManyPowerUps(ACTION_POWERUP) > 0) {
+                result.add(new Action(false, false, new UsePowerUp(ACTION_POWERUP)));
             }
-        }
-        if (!onlyReload && p.howManyPowerUps(ACTION_POWERUP) > 0){
-            result.add(new Action(false, false, new UsePowerUp(ACTION_POWERUP)));
         }
         return result;
     }
@@ -319,6 +327,7 @@ public class Match {
             numberOfActions = 2;
         }
         turnCompletable = false;
+        alreadyCompleted = false;
         actionsCompleted = 0;
         onlyReload = false;
         return createSelectablesAction(p);
@@ -463,5 +472,13 @@ public class Match {
 
     public void setTurnCompletable(boolean turnCompletable) {
         this.turnCompletable = turnCompletable;
+    }
+
+    public boolean isAlreadyCompleted() {
+        return alreadyCompleted;
+    }
+
+    public void setAlreadyCompleted(boolean alreadyCompleted) {
+        this.alreadyCompleted = alreadyCompleted;
     }
 }
