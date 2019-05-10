@@ -2,9 +2,7 @@ package it.polimi.ingsw;
 
 
 import com.google.gson.Gson;
-import it.polimi.ingsw.exceptions.ColorAlreadyTakenException;
-import it.polimi.ingsw.exceptions.GameFullException;
-import it.polimi.ingsw.exceptions.NameAlreadyTakenException;
+import it.polimi.ingsw.exceptions.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -34,9 +32,7 @@ public class PlayingTest {
                 gm.addPlayer(p1);
                 gm.addPlayer(p2);
                 gm.addPlayer(p3);
-            } catch(NameAlreadyTakenException e){
-            } catch(GameFullException e){
-
+            } catch(NameAlreadyTakenException | AlreadyLoggedException | GameFullException | NameNotFoundException e){
             }
             gm.startNewMatch();
         } else if(choice.toLowerCase().equals("resume")) {

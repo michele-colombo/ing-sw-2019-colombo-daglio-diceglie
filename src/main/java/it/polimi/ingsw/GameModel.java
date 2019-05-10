@@ -130,8 +130,7 @@ public class GameModel implements Observable {
                 Player newPlayer = new Player(playerName);
                 addPlayer(newPlayer);
                 match.addPlayer(newPlayer);
-            } catch (NameAlreadyTakenException | GameFullException e1){
-
+            } catch(NameAlreadyTakenException | AlreadyLoggedException | GameFullException | NameNotFoundException e){
             }
         }
         savedBackup.restore(match);
