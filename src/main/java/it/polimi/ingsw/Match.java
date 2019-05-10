@@ -227,13 +227,24 @@ public class Match {
         if(!deadPlayers.isEmpty()){
             for(Player p : deadPlayers){
                 scoreDamageTrack(p.getDamageTrack().score());
+                killShotTrack.removeSkull();
                 //todo: remove skulls from killshottrack
             }
         }
+        for(Player p : players){
+            if(players.indexOf(p) > players.indexOf(currentPlayer)){ //todo sostituire con un metodo
+                p.setBeforeFirst(true);
+            }
+        }
+
         if(deadPlayers.size() > 2){
             currentPlayer.addPoints(1);
         }
-        //todo: check whether to activate frenzy or not. "actviateFrenzy" saves the current player (for and game check)
+        if(!frenzyOn && killShotTrack.getSkulls() == 0){
+            activateFrenezy();
+
+        }
+        //todo: check whether to activate frenzy or not. "activateFrenzy" saves the current player (for and game check)
         if(frenzyOn){
             switchToFrenzyAll(deadPlayers);
         }

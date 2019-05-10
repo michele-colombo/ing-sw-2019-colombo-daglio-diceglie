@@ -139,7 +139,7 @@ public class KillShotTrack {
      * Decreases the number of skulls on the killshot track
      * @return True if the skull was the last
      */
-    private boolean removeSkull(){
+    public boolean removeSkull(){
         skulls--;
         if (skulls <= 0) {
             skulls = 0;

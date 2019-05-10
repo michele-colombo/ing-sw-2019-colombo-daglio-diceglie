@@ -90,7 +90,6 @@ public class Layout {
      * @param pointingSquare The second square from which calculate the direction
      * @return An ArrayList containing all the found squares; it could be empty
      */
-    //TODO controllare se startingSquare sia o no da ritornare
     public List<Square> getSquaresInDirection(Square startingSquare, Square pointingSquare){
         if(startingSquare.equals(pointingSquare)){
             return getCardinalSquares(startingSquare);

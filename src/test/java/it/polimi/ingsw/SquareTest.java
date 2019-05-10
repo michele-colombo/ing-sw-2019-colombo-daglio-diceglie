@@ -1,13 +1,11 @@
 package it.polimi.ingsw;
 
 import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
-import com.google.gson.stream.JsonReader;
-import jdk.nashorn.internal.parser.JSONParser;
+
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
-import java.lang.reflect.Type;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

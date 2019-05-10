@@ -1,19 +1,36 @@
 package it.polimi.ingsw;
 
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CashTest {
+    Cash c1;
+    Cash c2;
+    Cash c3;
+    Cash c4;
+    Cash c5;
+    Cash c6;
+    Cash c7;
+
+
+
+    @BeforeEach
+    public void prepareTest(){
+        c1 = new Cash (1,2,3);
+        c2 = new Cash(2, 3,4);
+        c3 = new Cash(1,1,10);
+        c4 = new Cash(0,0,0);
+        c5 = new Cash(2, 3, 4);
+        c6 = new Cash(0,0,0);
+        c7 = new Cash(1,1,1);
+    }
+
 
     @Test
     public void greaterEqual() {
-        Cash c1 = new Cash (1,2,3);
-        Cash c2 = new Cash(2, 3,4);
-        Cash c3 = new Cash(1,1,10);
-        Cash c4 = new Cash(0,0,0);
-        Cash c5 = new Cash(2, 3, 4);
         assertTrue(c2.greaterEqual(c1));
         assertTrue(c2.greaterEqual(c5));
         assertTrue(c5.greaterEqual(c2));
@@ -27,11 +44,6 @@ public class CashTest {
 
     @Test
     public void lessEqual() {
-        Cash c1 = new Cash (1,2,3);
-        Cash c2 = new Cash(2, 3,4);
-        Cash c3 = new Cash(1,1,10);
-        Cash c4 = new Cash(0,0,0);
-        Cash c5 = new Cash(2, 3, 4);
         assertTrue(c1.lessEqual(c2));
         assertTrue(c2.lessEqual(c5));
         assertTrue(c5.lessEqual(c2));
@@ -45,106 +57,60 @@ public class CashTest {
 
     @Test
     public void isEqual() {
-        Cash c1 = new Cash(2, 3,1);
-        Cash c2 = new Cash(2, 3, 1);
-        assertTrue(c1.isEqual(c2));
-        assertTrue(c2.isEqual(c1));
-        Cash c3 = new Cash (1, 2, 3);
+        c2.set(c3);
+        c2.isEqual(c3);
+        c3.isEqual(c2);
+
         assertFalse(c1.isEqual(c3));
         assertFalse(c3.isEqual(c1));
     }
 
     @Test
     public void subtract() {
-        Cash c1 = new Cash (1,2,3);
-        Cash c2 = new Cash(2, 3,4);
-        Cash c3 = new Cash(1,1,10);
-        Cash c4 = new Cash(0,0,0);
-        Cash c5 = new Cash(2, 3, 4);
-        Cash c6 = new Cash(1,1,1);
-        assertTrue(c6.isEqual(c2.subtract(c1)));
-        assertTrue(c2.isEqual(new Cash(2, 3,4)));
-        assertTrue(c1.isEqual(new Cash(1,2,3)));
-        assertTrue(c6.isEqual(c2.subtract(c1)));
-        assertTrue(c1.isEqual(c1.subtract(c4)));
-        assertTrue(c2.subtract(c5).isEqual(new Cash(0,0,0)));
-        assertTrue(c3.subtract(c6).isEqual(new Cash(0,0,9)));
+
+        assertTrue(c1.subtract(c6).isEqual(c1));
+        assertTrue(c2.subtract(c7).isEqual(c1));
     }
 
     @Test
     public void sum() {
+        assertTrue(c1.sum(c6).isEqual(c1));
+        assertTrue(c6.sum(c1).isEqual(c1));
+        assertTrue(c1.sum(c7).isEqual(c2));
+        assertTrue(c7.sum(c1).isEqual(c2));
     }
 
     @Test
     public void pay() {
-        Cash c1 = new Cash (1,2,3);
-        Cash c2 = new Cash(2, 3,4);
 
         assertFalse(c1.pay(c2));
-        assertTrue(c1.isEqual(c1));
-        assertTrue(c2.isEqual(c2));
-
-        c1 = new Cash (1,2,3);
-        c2 = new Cash(2, 3,4);
-        Cash c6 = new Cash(1,1,1);
-
         assertTrue(c2.pay(c1));
-        assertTrue(c1.isEqual(c1));
-        assertTrue(c2.isEqual(c6));
-
-
-        c2 = new Cash(2, 3,4);
-        Cash c4 = new Cash(0,0,0);
-        Cash c5 = new Cash(2, 3, 4);
-
-        assertFalse(c4.pay(c6));
-
-        assertTrue(c5.pay(c2));
-        assertTrue(c5.isEqual(c4));
-        assertTrue(c2.isEqual(c2));
-
-        c2 = new Cash(2, 3,5);
-        c5 = new Cash(2, 3, 4);
-
-        assertFalse(c5.pay(c2));
-        assertTrue(c5.isEqual(c5));
-        assertTrue(c2.isEqual(c2));
-
+        assertTrue(c5.pay(c1));
+        assertTrue(c1.pay(c1));
     }
 
     @Test
     public void deposit() {
-        Cash c1 = new Cash (1,2,3);
-        Cash c2 = new Cash(2, 3,4);
-        Cash c3 = new Cash(1,1,2);
-        Cash c4 = new Cash(0,0,0);
-        Cash c5 = new Cash(3, 3, 3);
-        Cash c6 = new Cash(1,1,1);
-
-        c2.deposit(c4);
-        assertTrue(c2.isEqual(new Cash(2,3,3)));
-        assertTrue(c4.isEqual(c4));
-        c3.deposit(c6);
-        assertTrue(c3.isEqual(new Cash(2,2,3)));
-        assertTrue(c6.isEqual(c6));
-        c5.deposit(c4);
-        assertTrue(c5.isEqual(c5));
-        assertTrue(c4.isEqual(c4));
-        c1.deposit(c4);
-        assertTrue(c1.isEqual(c1));
-        assertTrue(c4.isEqual(c4));
+        c1.deposit(c2);
+        assertTrue(c1.isEqual(new Cash(3,3,3)));
     }
 
     @Test
     public void getTotal() {
-        Cash c1 = new Cash (1,2,3);
-        Cash c2 = new Cash(2, 3,4);
-        Cash c3 = new Cash(1,1,2);
-        Cash c4 = new Cash(0,0,0);
         assertEquals(6, c1.getTotal());
         assertEquals(9, c2.getTotal());
-        assertEquals(4, c3.getTotal());
+        assertEquals(12, c3.getTotal());
         assertEquals(0, c4.getTotal());
+    }
+
+    @Test
+    public void containsColor(){
+        assertTrue(c1.containsColor(Color.BLUE));
+        assertTrue(c1.containsColor(Color.RED));
+        assertTrue(c1.containsColor(Color.YELLOW));
+        assertFalse(c4.containsColor(Color.BLUE));
+        assertFalse(c4.containsColor(Color.RED));
+        assertFalse(c4.containsColor(Color.YELLOW));
     }
 
     @Test

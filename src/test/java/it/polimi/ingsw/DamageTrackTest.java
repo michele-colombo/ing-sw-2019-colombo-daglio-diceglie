@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class DamageTrackTest {
 
-@Test
+    @Test
     public void controllaLaDamage() {
         Player blinga= new Player();
         Player appoggio= new Player();

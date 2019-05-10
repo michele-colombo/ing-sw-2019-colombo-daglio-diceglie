@@ -34,6 +34,7 @@ public class SocketServer extends Thread implements NetworkInterfaceServer{
             }
         } catch(IOException e){
             serverView.removeGameModelObserver(serverView);
+            //todo passare al prossimo player ed eventualmente annullare l'azione(se match è iniziato)
         } catch(ClassNotFoundException e){
             System.out.println("Class not found!");
             e.printStackTrace();

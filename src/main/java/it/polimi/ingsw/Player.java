@@ -141,6 +141,7 @@ public class Player {
         state = IDLE;
         damageTrack = new NormalDamageTrack();
         isBorn = false;
+        isBeforeFirst = false;
 
         wallet = new Cash();
         pending = new Cash();
