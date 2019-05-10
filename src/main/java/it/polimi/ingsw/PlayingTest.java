@@ -2,7 +2,9 @@ package it.polimi.ingsw;
 
 
 import com.google.gson.Gson;
-import it.polimi.ingsw.exceptions.*;
+import it.polimi.ingsw.exceptions.ColorAlreadyTakenException;
+import it.polimi.ingsw.exceptions.GameFullException;
+import it.polimi.ingsw.exceptions.NameAlreadyTakenException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,6 +16,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class PlayingTest {
+    private static final String backupPath = "./src/main/resources/backups/";
     public static void main(String[] args){
 
         GameModel gm = new GameModel();
@@ -31,22 +34,15 @@ public class PlayingTest {
                 gm.addPlayer(p1);
                 gm.addPlayer(p2);
                 gm.addPlayer(p3);
-            } catch(NameAlreadyTakenException | GameFullException | AlreadyLoggedException | NameNotFoundException e){
+            } catch(NameAlreadyTakenException e){
+            } catch(GameFullException e){
+
             }
             gm.startNewMatch();
         } else if(choice.toLowerCase().equals("resume")) {
             System.out.println("Insert name of file (without .json):");
             String name = new Scanner(System.in).nextLine();
-            Backup backup = Backup.initFromFile(name);
-            gm.initMatch();
-            backup.resumeMatch(gm.getMatch());
-            for (Player p : gm.getMatch().getPlayers()){
-                try {
-                    gm.addPlayer(p);
-                } catch (NameAlreadyTakenException e){
-                } catch (GameFullException | AlreadyLoggedException | NameNotFoundException e){}
-            }
-            gm.actionCompleted();
+            gm.resumeMatchFromFile(backupPath, name);
         }
 
         Match match = gm.getMatch();

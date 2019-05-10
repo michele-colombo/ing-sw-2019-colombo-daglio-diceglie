@@ -350,8 +350,12 @@ public class Backup {
     }
 
     public static Backup initFromFile(String name){
+        return initFromFile(filePath, name);
+    }
+
+    public static Backup initFromFile(String path, String name){
         Gson gson = new Gson();
-        File file = new File(filePath+name+".json");
+        File file = new File(path+name+".json");
         Backup temp = new Backup();
 
         try (Scanner sc = new Scanner(file)){
@@ -399,18 +403,7 @@ public class Backup {
 
     private void restoreMatch(Match match, boolean fromFile){
         stackManagerBackup.restore(match.getStackManager(), match);
-        if (fromFile){
-            match.getLayout().initLayout(layoutBackup.layoutConfiguration);
-        }
         layoutBackup.restore(match.getLayout(), match);
-        //match player reset required?
-        for (PlayerBackup pb : playerBackups) {
-            Player tempPlayer = match.getPlayerFromName(pb.name);
-            if (tempPlayer == null) {
-                Player newPlayer = new Player(pb.name, pb.color);
-                match.addPlayer(newPlayer);
-            }
-        }
         for (PlayerBackup pb : playerBackups) {
             Player tempPlayer = match.getPlayerFromName(pb.name);
             pb.restore(tempPlayer, match);

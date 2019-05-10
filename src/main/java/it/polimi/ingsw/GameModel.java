@@ -106,7 +106,7 @@ public class GameModel implements Observable {
         //todo: choose layout configuration
         int layoutConfig = 2;
         //todo: take skulls number from config file
-        match = new Match(layoutConfig, 8);
+        match = new Match(layoutConfig);
         for (Player p : allPlayers()){ //activePlayers only? or all players?
             match.addPlayer(p);
             p.setState(IDLE);
@@ -120,13 +120,23 @@ public class GameModel implements Observable {
         beginNextTurn();
     }
 
-    public boolean initMatch(){
-        if (match == null){
-            match = new Match();
-            return true;
-        } else {
-            return false;
+    //test only method!
+    public void resumeMatchFromFile(String path, String name){
+        Backup savedBackup = Backup.initFromFile(path, name);
+        int layoutConfig = savedBackup.getLayoutConfig();
+        match = new Match(layoutConfig);
+        for (String playerName : savedBackup.getPlayerNames()){
+            try {
+                Player newPlayer = new Player(playerName);
+                addPlayer(newPlayer);
+                match.addPlayer(newPlayer);
+            } catch (NameAlreadyTakenException | GameFullException e1){
+
+            }
         }
+        savedBackup.restore(match);
+        matchInProgress = true;
+        actionCompleted();
     }
 
     private void prepareForSpawning(Player p, boolean firstSpawn){
@@ -142,6 +152,7 @@ public class GameModel implements Observable {
 
     public void spawn(Player p, PowerUp po){
         p.removePowerUp(po);
+        match.getStackManager().discardPowerUp(po);
         match.spawn(p, po.getColor());
         p.setBorn(true);    //could be moved inside Player.spawn()
         p.setState(IDLE);
@@ -465,6 +476,7 @@ public class GameModel implements Observable {
 
     private void saveSnapshot(Match match){
         currBackup = new Backup(match);
+        currBackup.saveOnFile(backupName);
     }
 
     public void restore(){

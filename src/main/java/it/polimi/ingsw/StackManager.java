@@ -131,7 +131,6 @@ public class StackManager {
 
         AmmoTile result= ammoTilesActiveStack.get(0);
         ammoTilesActiveStack.remove(result);
-        ammoTilesWasteStack.add(result);
         return result;
 
     }
@@ -144,7 +143,6 @@ public class StackManager {
         }
         PowerUp result= powerUpActiveStack.get(0);
         powerUpActiveStack.remove(result);
-        powerUpWasteStack.add(result);
 
         return result;
     }
@@ -161,35 +159,30 @@ public class StackManager {
 
         weaponActiveStack.clear();
         weaponActiveStack.addAll(list);
-        //Collections.shuffle(weaponActiveStack);
     }
 
     public void initAmmoTilesStack(List<AmmoTile> list){
 
         ammoTilesActiveStack.clear();
         ammoTilesActiveStack.addAll(list);
-        //Collections.shuffle(ammoTilesActiveStack);
     }
 
     public void initAmmoTilesWasteStack(List<AmmoTile> list){
 
-        ammoTilesActiveStack.clear();
-        ammoTilesActiveStack.addAll(list);
-        //Collections.shuffle(ammoTilesActiveStack);
+        ammoTilesWasteStack.clear();
+        ammoTilesWasteStack.addAll(list);
     }
 
     public void initPowerUpStack(List<PowerUp> list){
 
         powerUpActiveStack.clear();
         powerUpActiveStack.addAll(list);
-        //Collections.shuffle(powerUpActiveStack);
     }
 
     public void initPowerUpWasteStack(List<PowerUp> list){
 
-        powerUpActiveStack.clear();
-        powerUpActiveStack.addAll(list);
-        //Collections.shuffle(powerUpActiveStack);
+        powerUpWasteStack.clear();
+        powerUpWasteStack.addAll(list);
     }
 
     public PowerUp getPowerUpFromString(String string){
