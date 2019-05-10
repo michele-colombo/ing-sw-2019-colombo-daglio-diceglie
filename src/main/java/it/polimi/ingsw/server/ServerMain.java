@@ -34,7 +34,7 @@ public class ServerMain {
             e.printStackTrace();
         }
         System.out.println("Server ready!");
-        while(true){
+        while(true){  //sara' finche'  i giocatori sono meno di cinque o piu' di tre ed e' scattato il timer
             try{
                 Socket socket = serverSocket.accept();
                 System.out.println("A new client has connected");

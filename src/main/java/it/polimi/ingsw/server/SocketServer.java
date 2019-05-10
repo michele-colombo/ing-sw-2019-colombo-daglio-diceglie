@@ -8,7 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-public class SocketServer extends Thread{
+public class SocketServer extends Thread implements NetworkInterfaceServer{
     private Socket socket;
     private ServerView serverView;
     private ObjectOutputStream out;
@@ -48,6 +48,10 @@ public class SocketServer extends Thread{
 
    public Socket getSocket(){
         return socket;
+   }
+
+   public void closeNetwork() throws  IOException{
+            this.socket.close();
    }
 
 }

@@ -7,11 +7,11 @@ import it.polimi.ingsw.server.observer.Observer;
 import java.io.IOException;
 
 public class ServerView implements Observer {
-    private SocketServer socketServer;
+    private NetworkInterfaceServer network;
     private Controller controller;
 
-    public ServerView(SocketServer socketServer, Controller controller){
-        this.socketServer = socketServer;
+    public ServerView(NetworkInterfaceServer network, Controller controller){
+        this.network = network;
         this.controller = controller;
     }
 
@@ -21,10 +21,10 @@ public class ServerView implements Observer {
 
     public void update(MessageVisitable messageVisitable){
         try{
-            socketServer.forwardMessage(messageVisitable);
+            network.forwardMessage(messageVisitable);
             try{
                 if(messageVisitable.getCloseSocket()){ //close socket connection
-                    socketServer.getSocket().close();
+                    network.closeNetwork();
                 }
             } catch(IOException e){
                 System.out.println("Error while closing the socket!");
