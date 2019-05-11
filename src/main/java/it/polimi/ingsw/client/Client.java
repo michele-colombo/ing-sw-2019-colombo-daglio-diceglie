@@ -2,6 +2,7 @@ package it.polimi.ingsw.client;
 
 import it.polimi.ingsw.server.events.EventVisitable;
 import it.polimi.ingsw.server.events.LoginEvent;
+import it.polimi.ingsw.server.message.DisconnectionMessage;
 import it.polimi.ingsw.server.message.LoginMessage;
 
 import java.io.IOException;
@@ -52,6 +53,10 @@ public class Client implements VisitorClient{
             clientView.askLogin();
         }
 
+    }
+
+    public void visit(DisconnectionMessage message){
+        clientView.printDisconnectionMessage(message.toString());
     }
 
     public void startClient(){

@@ -1,6 +1,7 @@
 package it.polimi.ingsw;
 
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -11,42 +12,35 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DamageTrackTest {
+    DamageTrack normalDamageTrack;
+    Player first;
+    Player second;
+    Player third;
 
+    @BeforeEach
+    public void prepareTest(){
+        normalDamageTrack = new NormalDamageTrack();
+        first = new Player("first");
+        second = new Player("second");
+        third = new Player("third");
+    }
     @Test
-    public void controllaLaDamage() {
-        Player blinga= new Player();
-        Player appoggio= new Player();
-        Player marco= new Player();
+    public void addMark() {
+        final int mark1 = 4;
+        final int mark2 = 0;
+        final int mark3 = 12;
 
-        DamageTrack d= new NormalDamageTrack();
+        normalDamageTrack.addMark(first, mark2);
+        assertEquals(0, normalDamageTrack.getMarkMap().get(first));
 
-        d.addMark(blinga, 1);
-        d.addDamage(blinga, 5);
-        d.addDamage(appoggio, 3);
-        d.addMark(appoggio, 2);
-        d.addMark(marco, 1);
+        normalDamageTrack.addMark(first, mark1);
+        assertEquals(3, normalDamageTrack.getMarkMap().get(first));
 
-        Map<Player, Integer> mark= new HashMap<>();
-        ArrayList<Player> damage= new ArrayList<>();
+        normalDamageTrack.addMark(first, mark2);
+        assertEquals(3, normalDamageTrack.getMarkMap().get(first));
 
-        mark.put(appoggio, 2);
-        mark.put(marco, 1);
-
-        damage.add(blinga);
-        damage.add(blinga);
-        damage.add(blinga);
-        damage.add(blinga);
-        damage.add(blinga);
-        damage.add(blinga);
-
-        damage.add(appoggio);
-        damage.add(appoggio);
-        damage.add(appoggio);
-
-        assertTrue(mark.equals(d.getMarkMap()));
-
-        assertTrue(damage.equals(d.getDamageList()));
-
+        normalDamageTrack.addMark(first, mark3);
+        assertEquals(3, normalDamageTrack.getMarkMap().get(first));
     }
 @Test
     public void controlloCoseStrane(){

@@ -36,7 +36,7 @@ public class ServerView implements Observer {
         }
     }
 
-    public void removeGameModelObserver(Observer observer){
-        controller.removeGameModelObserver(observer);
+    public void playerDisconnetted(Observer observer){
+        controller.playerDisconnetted(observer);
     }
 }

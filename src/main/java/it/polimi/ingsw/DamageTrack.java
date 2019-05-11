@@ -161,8 +161,7 @@ public abstract class DamageTrack {
      */
     public Map<Player, Integer> whoDamagedYou(){
         Map<Player, Integer> result = new HashMap<>();
-        int i = 0;
-        for(i=0; i< damageList.size(); i++){
+        for(int i=0; i< damageList.size(); i++){
             Player key = damageList.get(i);
             if(result.containsKey(key)){
                 int old = result.get(key);
@@ -182,9 +181,9 @@ public abstract class DamageTrack {
      */
     public Player getMostPowerfulDamagerIn(Map<Player, Integer> damagers){
 
-        Integer massimo= 0;
+        Integer massimo = 0;
 
-        Player result= null;
+        Player result = null;
         for(Player p : damagers.keySet()) {
             if (damagers.get(p) > massimo) {
                 result = p;

@@ -6,12 +6,16 @@ import it.polimi.ingsw.server.events.*;
 import it.polimi.ingsw.server.message.LoginMessage;
 import it.polimi.ingsw.server.observer.Observer;
 
+import java.util.Timer;
+
 public class Controller implements VisitorServer {
 
     private final GameModel gameModel;
+    private final Timer loginTimer;
 
     public Controller(GameModel gameModel){
         this.gameModel = gameModel;
+        this.loginTimer = new Timer();
     }
 
     @Override
@@ -292,5 +296,22 @@ public class Controller implements VisitorServer {
 
     public void removeGameModelObserver(Observer observer){
         gameModel.detach(observer);
+    }
+
+    public void playerDisconnetted(Observer observer){
+        try{
+            gameModel.notifyDisconnection(observer); //todo inserire check, se player attivi < 3, termina il match
+        } catch(NoSuchObserverException e){
+            System.out.println("Error while notifying about disconnection of a player!");
+        }
+        finally {
+            removeGameModelObserver(observer);
+        }
+    }
+
+    public void stopMatch(){
+        if(gameModel.tooFewPlayers()){
+            //todo stop match and print scores
+        }
     }
 }

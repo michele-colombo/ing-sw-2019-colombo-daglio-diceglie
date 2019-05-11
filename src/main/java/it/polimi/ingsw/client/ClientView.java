@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 public interface ClientView{
 
     void printLoginMessage(String text);
+    void printDisconnectionMessage(String text);
 
     void askLogin();
 }

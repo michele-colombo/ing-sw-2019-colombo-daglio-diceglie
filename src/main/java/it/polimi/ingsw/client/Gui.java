@@ -14,6 +14,9 @@ public class Gui implements ClientView {
     public void printLoginMessage(String text){
         System.out.println(text);
     }
+    public void printDisconnectionMessage(String text){
+        System.out.println(text);
+    }
 
     @Override
     public void askLogin() {

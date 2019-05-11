@@ -1,6 +1,7 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.exceptions.*;
+import it.polimi.ingsw.server.message.DisconnectionMessage;
 import it.polimi.ingsw.server.message.MessageVisitable;
 import it.polimi.ingsw.server.observer.Observable;
 import it.polimi.ingsw.server.observer.Observer;
@@ -58,16 +59,8 @@ public class GameModel implements Observable {
     }
 
     public void addPlayer (Player p) throws NameAlreadyTakenException, GameFullException, NameNotFoundException, AlreadyLoggedException {
-        if(!matchInProgress){  //todo sostituire con metodo login()
-            if((activePlayers.size() < 5)){
-                if(!nameTaken(p.getName())){
-                    activePlayers.add(p);
-                } else{
-                    throw new NameAlreadyTakenException();
-                }
-            } else {
-                throw new GameFullException();
-            }
+        if(!matchInProgress){
+            login(p);
         } else{
             relogin(p);
         }
@@ -599,6 +592,18 @@ public class GameModel implements Observable {
         return allPlayers;
     }
 
+    public void login(Player p) throws NameAlreadyTakenException, GameFullException{
+        if((activePlayers.size() < 5)){
+            if(!nameTaken(p.getName())){
+                activePlayers.add(p);
+            } else{
+                throw new NameAlreadyTakenException();
+            }
+        } else {
+            throw new GameFullException();
+        }
+    }
+
     public void relogin(Player p) throws NameNotFoundException, AlreadyLoggedException{
         if(!nameTaken(p.getName())){
             throw new NameNotFoundException();
@@ -633,5 +638,18 @@ public class GameModel implements Observable {
 
     public void notify(MessageVisitable messageVisitable, Observer observer){
         observer.update(messageVisitable);
+    }
+
+    public void notifyDisconnection(Observer observer) throws NoSuchObserverException{
+        for(Player p : activePlayers){
+            observers.get(p).update(new DisconnectionMessage("Player " + getPlayerByObserver(observer).getName() + " has disconnetted!"));
+        }
+    }
+
+    public boolean tooFewPlayers(){
+        if(activePlayers.size() < 3){
+            return true;
+        }
+        return false;
     }
 }
