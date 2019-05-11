@@ -56,6 +56,11 @@ public class Match {
     private boolean alreadyCompleted;
 
     /**
+     * List containing players from which an action is required (used for timers)
+     */
+    private List<Player> waitingFor;
+
+    /**
      * It's the reference to the current action
      */
     private Action currentAction;
@@ -73,6 +78,7 @@ public class Match {
         layout = new Layout();
         layout.initLayout(layoutConfig);
         players = new ArrayList<>();
+        waitingFor = new ArrayList<>();
         killShotTrack = new KillShotTrack(skulls);
         stackManager = new StackManager();
         currentAction = null;
@@ -491,5 +497,23 @@ public class Match {
 
     public void setAlreadyCompleted(boolean alreadyCompleted) {
         this.alreadyCompleted = alreadyCompleted;
+    }
+
+    public List<Player> getWaitingFor() {
+        return waitingFor;
+    }
+
+    public void clearWaitingFor() {
+        waitingFor.clear();
+    }
+
+    public void addWaitingFor(Player p){
+        if (!waitingFor.contains(p)){
+            waitingFor.add(p);
+        }
+    }
+
+    public boolean removeWaitingFor(Player p){
+        return waitingFor.remove(p);
     }
 }

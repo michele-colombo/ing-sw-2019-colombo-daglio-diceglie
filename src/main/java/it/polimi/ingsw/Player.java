@@ -129,6 +129,11 @@ public class Player {
     private boolean isBeforeFirst;
 
     /**
+     * It is true if player has at least another turn. When false he has completed his last turn
+     */
+    private boolean hasAnotherTurn;
+
+    /**
      * Sets name and color. Instantiate attributes and sets default values.
      * @param name Uniqueness checked by constructor caller
      */
@@ -136,6 +141,7 @@ public class Player {
         this.name = name;
         points = 0;
         isFirstPlayer = false;
+        hasAnotherTurn = true;
         weapons = new HashMap<>();
         powerUps = new ArrayList<>();
         state = IDLE;
@@ -356,6 +362,21 @@ public class Player {
         selectableColors.clear();
         selectableActions.clear();
         selectableCommands.clear();
+    }
+
+    /**
+     * observer method to know how many selectable objects the player has overall
+     * @return int wich is the sum of the size of each selectable list
+     */
+    public int howManySelectables(){
+        return selectableColors.size()+
+                selectableActions.size()+
+                selectableModes.size()+
+                selectableCommands.size()+
+                selectablePowerUps.size()+
+                selectableWeapons.size()+
+                selectableSquares.size()+
+                selectablePlayers.size();
     }
 
     /**
@@ -686,5 +707,13 @@ public class Player {
         if (damageTrack != null){
             damageTrack = newDamegeTrack;
         }
+    }
+
+    public boolean hasAnotherTurn() {
+        return hasAnotherTurn;
+    }
+
+    public void setAnotherTurn(boolean anotherTurn) {
+        this.hasAnotherTurn = anotherTurn;
     }
 }

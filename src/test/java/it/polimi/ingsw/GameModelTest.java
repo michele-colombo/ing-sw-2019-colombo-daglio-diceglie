@@ -1,6 +1,7 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.exceptions.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 
@@ -10,99 +11,103 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GameModelTest {
+    private static final String testGamePath = "./src/test/resources/";
+
+    public void addPlayers(GameModel gm, List<Player> players){
+        for (Player p : players){
+            try {
+                gm.addPlayer(p);
+            } catch (NameAlreadyTakenException | GameFullException | AlreadyLoggedException | NameNotFoundException e){
+
+            }
+        }
+    }
 
     @Test
     public void nextActivePlayerWithFivePlayers() {
-        Player p1 = new Player("primo giocatore", PlayerColor.YELLOW);
-        Player p2 = new Player("secondo giocatore", PlayerColor.BLUE);
-        Player p3 = new Player("terzo giocatore", PlayerColor.GREEN);
-        Player p4 = new Player("quarto giocatore", PlayerColor.GREY);
-        Player p5 = new Player("quinto giocatore", PlayerColor.VIOLET);
-
         GameModel gm = new GameModel();
+        Player p1, p2, p3, p4, p5;
+        List<Player> newPlayers = new ArrayList<>();
+        newPlayers.add(p1 = new Player("primo giocatore"));
+        newPlayers.add(p2 = new Player("secondo giocatore"));
+        newPlayers.add(p3 = new Player("terzo giocatore"));
+        newPlayers.add(p4 = new Player("quarto giocatore"));
+        newPlayers.add(p5 = new Player("quinto giocatore"));
 
-        try{
-            gm.addPlayer(p1);
-            gm.addPlayer(p2);
-            gm.addPlayer(p3);
-            gm.addPlayer(p4);
-            gm.addPlayer(p5);
-        } catch(NameAlreadyTakenException | GameFullException | AlreadyLoggedException | NameNotFoundException e){
-        }
-
+        addPlayers(gm, newPlayers);
+        gm.startNewMatch();
         Player currP = null;
 
-        currP = gm.nextActivePlayer(null);
-        assertEquals(p1, currP);
-        currP = gm.nextActivePlayer(null);
-        assertEquals(p1, currP);
+        try {
+            currP = gm.nextActivePlayer(null);
+            assertEquals(p1, currP);
+            currP = gm.nextActivePlayer(null);
+            assertEquals(p1, currP);
 
-        currP = gm.nextActivePlayer(p1);
-        assertEquals(p2, currP);
+            currP = gm.nextActivePlayer(p1);
+            assertEquals(p2, currP);
 
-        currP = gm.nextActivePlayer(p2);
-        assertEquals(p3, currP);
+            currP = gm.nextActivePlayer(p2);
+            assertEquals(p3, currP);
 
-        currP = gm.nextActivePlayer(p3);
-        assertEquals(p4, currP);
+            currP = gm.nextActivePlayer(p3);
+            assertEquals(p4, currP);
 
-        currP = gm.nextActivePlayer(p4);
-        assertEquals(p5, currP);
+            currP = gm.nextActivePlayer(p4);
+            assertEquals(p5, currP);
 
-        currP = gm.nextActivePlayer(p5);
-        assertEquals(p1, currP);
+            currP = gm.nextActivePlayer(p5);
+            assertEquals(p1, currP);
 
-        currP = gm.nextActivePlayer(p3);
-        assertEquals(p4, currP);
+            currP = gm.nextActivePlayer(p3);
+            assertEquals(p4, currP);
 
-        currP = gm.nextActivePlayer(null);
-        assertEquals(p1, currP);
+            currP = gm.nextActivePlayer(null);
+            assertEquals(p1, currP);
+        } catch (GameOverException e){}
     }
 
     @Test
     public void nextActivePlayerWithFourPlayers() {
-        Player p1 = new Player("primo giocatore", PlayerColor.YELLOW);
-        Player p2 = new Player("secondo giocatore", PlayerColor.BLUE);
-        Player p3 = new Player("terzo giocatore", PlayerColor.GREEN);
-        Player p4 = new Player("quarto giocatore", PlayerColor.GREY);
-
         GameModel gm = new GameModel();
+        Player p1, p2, p3, p4, p5;
+        List<Player> newPlayers = new ArrayList<>();
+        newPlayers.add(p1 = new Player("primo giocatore"));
+        newPlayers.add(p2 = new Player("secondo giocatore"));
+        newPlayers.add(p3 = new Player("terzo giocatore"));
+        newPlayers.add(p4 = new Player("quarto giocatore"));
 
-        try{
-            gm.addPlayer(p1);
-            gm.addPlayer(p2);
-            gm.addPlayer(p3);
-            gm.addPlayer(p4);
-        } catch(NameAlreadyTakenException | GameFullException | AlreadyLoggedException | NameNotFoundException e){
-        }
-
+        addPlayers(gm, newPlayers);
+        gm.startNewMatch();
         Player currP = null;
 
-        currP = gm.nextActivePlayer(null);
-        assertEquals(p1, currP);
-        currP = gm.nextActivePlayer(null);
-        assertEquals(p1, currP);
+        try {
+            currP = gm.nextActivePlayer(null);
+            assertEquals(p1, currP);
+            currP = gm.nextActivePlayer(null);
+            assertEquals(p1, currP);
 
-        currP = gm.nextActivePlayer(p1);
-        assertEquals(p2, currP);
+            currP = gm.nextActivePlayer(p1);
+            assertEquals(p2, currP);
 
-        currP = gm.nextActivePlayer(p2);
-        assertEquals(p3, currP);
+            currP = gm.nextActivePlayer(p2);
+            assertEquals(p3, currP);
 
-        currP = gm.nextActivePlayer(p3);
-        assertEquals(p4, currP);
+            currP = gm.nextActivePlayer(p3);
+            assertEquals(p4, currP);
 
-        currP = gm.nextActivePlayer(p4);
-        assertEquals(p1, currP);
+            currP = gm.nextActivePlayer(p4);
+            assertEquals(p1, currP);
 
-        currP = gm.nextActivePlayer(p4);
-        assertEquals(p1, currP);
+            currP = gm.nextActivePlayer(p4);
+            assertEquals(p1, currP);
 
-        currP = gm.nextActivePlayer(p3);
-        assertEquals(p4, currP);
+            currP = gm.nextActivePlayer(p3);
+            assertEquals(p4, currP);
 
-        currP = gm.nextActivePlayer(null);
-        assertEquals(p1, currP);
+            currP = gm.nextActivePlayer(null);
+            assertEquals(p1, currP);
+        } catch (GameOverException e){}
     }
 
     public void printSel(Player p){
@@ -111,63 +116,17 @@ public class GameModelTest {
 
     @Test
     public void grabFromAmmoSquares(){
-        Player p1 = new Player("primo giocatore", PlayerColor.YELLOW);
-        Player p2 = new Player("secondo giocatore", PlayerColor.BLUE);
-        Player p3 = new Player("terzo giocatore", PlayerColor.GREEN);
-
         GameModel gm = new GameModel();
-        try{
-            gm.addPlayer(p1);
-            gm.addPlayer(p2);
-            gm.addPlayer(p3);
-        } catch(NameAlreadyTakenException | GameFullException | AlreadyLoggedException | NameNotFoundException e){
-        }
+        Player p1, p2, p3, p4, p5;
+        List<Player> newPlayers = new ArrayList<>();
+        newPlayers.add(p1 = new Player("primo giocatore"));
+        newPlayers.add(p2 = new Player("secondo giocatore"));
+        newPlayers.add(p3 = new Player("terzo giocatore"));
+
+        addPlayers(gm, newPlayers);
 
         gm.startNewMatch();
         Match match = gm.getMatch();
-
-        /*
-        List<Weapon> tempWeapons = new ArrayList<>();
-        tempWeapons.add(new Weapon("distruttore", new Cash(2,0,0), Color.BLUE));
-        tempWeapons.add(new Weapon("mitragliatrice", new Cash(1, 1, 0), Color.BLUE));
-        tempWeapons.add(new Weapon("torpedine", new Cash(1,1,0), Color.BLUE));
-        tempWeapons.add(new Weapon("cannone Vortex", new Cash(1,1,0), Color.RED));
-        tempWeapons.add(new Weapon("vulcanizzatore", new Cash(1,1,0), Color.RED));
-        tempWeapons.add(new Weapon("razzo termico", new Cash(0,2,1), Color.RED));
-        tempWeapons.add(new Weapon("lanciafiamme", new Cash(0,1,0), Color.RED));
-        tempWeapons.add(new Weapon("fucile laser", new Cash(1,0,2), Color.YELLOW));
-        tempWeapons.add(new Weapon("spada fotonica", new Cash(0,1,1), Color.YELLOW));
-        tempWeapons.add(new Weapon("fucile a pompa", new Cash(0,0,2), Color.YELLOW));
-        tempWeapons.add(new Weapon("cyberguanto", new Cash(1,0,1), Color.YELLOW));
-        tempWeapons.add(new Weapon("onda d'urto", new Cash(0,0,1), Color.YELLOW));
-        match.getStackManager().initWeaponStack(tempWeapons);
-        List<PowerUp> tempPowerups = new ArrayList<>();
-        for (Color color : Color.getAmmoColors()){
-            for (int i=0; i<2; i++){
-                tempPowerups.add(new PowerUp(color, PowerUpType.TAGBACK_GRENADE, "Tagback granade"));
-                tempPowerups.add(new PowerUp(color, PowerUpType.TARGETING_SCOPE, "Targeting scope"));
-                tempPowerups.add(new PowerUp(color, PowerUpType.ACTION_POWERUP, "Newton"));
-                tempPowerups.add(new PowerUp(color, PowerUpType.ACTION_POWERUP, "Teleporter"));
-            }
-        }
-        match.getStackManager().initPowerUpStack(tempPowerups);
-        List<AmmoTile> tempAmmoTiles = new ArrayList<>();
-        for (int i=0; i<4; i++){
-            tempAmmoTiles.add(new AmmoTile(new Cash(2, 1, 0), false));
-            tempAmmoTiles.add(new AmmoTile(new Cash(0, 1, 2), false));
-            tempAmmoTiles.add(new AmmoTile(new Cash(0, 2, 1), false));
-            tempAmmoTiles.add(new AmmoTile(new Cash(1, 0, 2), false));
-            tempAmmoTiles.add(new AmmoTile(new Cash(2, 0, 1), false));
-            tempAmmoTiles.add(new AmmoTile(new Cash(1, 1, 1), false));
-            tempAmmoTiles.add(new AmmoTile(new Cash(1, 1, 0), true));
-            tempAmmoTiles.add(new AmmoTile(new Cash(1, 0, 1), true));
-            tempAmmoTiles.add(new AmmoTile(new Cash(0, 1, 1), true));
-        }
-        match.getStackManager().initAmmoTilesStack(tempAmmoTiles);
-        gm.startMatch();
-        */
-
-        //test comment
 
         Player tempPlayer = match.getPlayers().get(0);
         assertEquals(PlayerState.SPAWN, tempPlayer.getState());
@@ -222,12 +181,12 @@ public class GameModelTest {
 
     @Test
     public void exceptionTest(){
+        GameModel gm = new GameModel();
+
         Player p1 = new Player("first", PlayerColor.YELLOW);
         Player p2 = new Player("second", PlayerColor.BLUE);
         Player p3 = new Player("third", PlayerColor.GREEN);
         Player p4 = new Player("fourth", PlayerColor.GREY);
-
-        GameModel gm = new GameModel();
 
         try{
             gm.addPlayer(p1);
@@ -248,5 +207,107 @@ public class GameModelTest {
 
         assertThrows(GameFullException.class, () -> gm.addPlayer(new Player("last", PlayerColor.GREEN)));
     }
+
+    @Test
+    public void StartNewMatchTest(){
+        GameModel gm = new GameModel();
+
+        Player p1, p2, p3, p4, p5;
+        List<Player> newPlayers = new ArrayList<>();
+        newPlayers.add(p1 = new Player("andrea"));
+        newPlayers.add(p2 = new Player("alessandro"));
+        newPlayers.add(p3 = new Player("marco"));
+        newPlayers.add(p4 = new Player("giacomo"));
+        newPlayers.add(p5 = new Player("luca"));
+
+        addPlayers(gm, newPlayers);
+
+        assertEquals(newPlayers.size(), gm.getNumberOfPlayers());
+
+        gm.startNewMatch();
+
+        assertNotNull(gm.getMatch());
+        assertTrue(gm.getMatch().getPlayers().containsAll(newPlayers));
+        assertTrue(newPlayers.containsAll(gm.getMatch().getPlayers()));
+
+        List<PlayerColor> colorsGiven = new ArrayList<>();
+        for (Player p : gm.getMatch().getPlayers()){
+            assertNotNull(p.getColor());
+            assertFalse(colorsGiven.contains(p.getColor()));
+            colorsGiven.add(p.getColor());
+        }
+
+        assertNotNull(gm.getMatch().getLayout());
+        assertNotNull(gm.getMatch().getStackManager());
+        assertNotNull(gm.getMatch().getKillShotTrack());
+
+        //there's just one player spawing, with 2 selectable powerups
+        List<Player> tempPlayers = new ArrayList<>();
+        tempPlayers.addAll(gm.getMatch().getPlayers());
+        tempPlayers.removeIf(p -> p.getState()!=PlayerState.SPAWN);
+        assertEquals(1, tempPlayers.size());
+        Player spawingPlayer = tempPlayers.get(0);
+        assertEquals(2, spawingPlayer.getPowerUps().size());
+        assertEquals(2, spawingPlayer.getSelectablePowerUps().size());
+
+        tempPlayers.clear();
+        tempPlayers.addAll(gm.getMatch().getPlayers());
+        tempPlayers.remove(spawingPlayer);
+        for (Player p : tempPlayers) {
+            assertEquals(PlayerState.IDLE, p.getState());
+            assertEquals(0, p.howManySelectables());
+        }
+    }
+
+    @Test
+    public void StartMatchWithValidBackup(){
+        GameModel gm = new GameModel();
+
+        Player p1, p2, p3, p4, p5;
+        List<Player> newPlayers = new ArrayList<>();
+        newPlayers.add(p1 = new Player("antonio"));
+        newPlayers.add(p2 = new Player("gianfranco"));
+        newPlayers.add(p3 = new Player("enrico"));
+        newPlayers.add(p4 = new Player("matteo"));
+        newPlayers.add(p5 = new Player("evila"));
+
+        addPlayers(gm, newPlayers);
+
+        assertEquals(newPlayers.size(), gm.getNumberOfPlayers());
+
+        gm.startNewMatch();
+
+        gm.spawn(p1, p1.getSelectablePowerUps().get(0));
+        gm.performAction(p1, p1.getSelectableActions().get(1)); //grab
+        Square s1 = p1.getSelectableSquares().get(1);
+        gm.grabThere(p1, s1);
+        gm.endTurn();
+
+        gm.spawn(p2, p2.getSelectablePowerUps().get(0));
+
+        GameModel gm2 = new GameModel();
+        Player p21, p22, p23, p24, p25;
+        List<Player> newPlayers2 = new ArrayList<>();
+        newPlayers2.add(p21 = new Player("antonio"));
+        newPlayers2.add(p22 = new Player("gianfranco"));
+        newPlayers2.add(p23 = new Player("enrico"));
+        newPlayers2.add(p24 = new Player("matteo"));
+        newPlayers2.add(p25 = new Player("evila"));
+
+        addPlayers(gm2, newPlayers2);
+
+        //check player object are different
+        for (Player p : newPlayers2){
+            assertFalse(newPlayers.contains(p));
+        }
+        for (Player p : newPlayers){
+            assertFalse(newPlayers2.contains(p));
+        }
+
+        gm2.startMatch();
+
+
+    }
+
 
 }

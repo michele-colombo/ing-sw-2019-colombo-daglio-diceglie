@@ -15,7 +15,6 @@ public class UsePowerUp implements MicroAction {
 
     @Override
     public void act(Match match, Player p) throws NextMicroActionException {
-        match.getCurrentAction().setWaitingFor(0);
         switch (type){
             case TARGETING_SCOPE:
                 if (p.howManyPowerUps(type)>0 && !match.getCurrentAction().getDamaged().isEmpty()) {
@@ -28,9 +27,10 @@ public class UsePowerUp implements MicroAction {
                 }
                 break;
             case TAGBACK_GRENADE:
+                match.clearWaitingFor();
                 for (Player player : match.getPlayers()){
                     if (match.getCurrentAction().getDamaged().contains(player) && player.howManyPowerUps(type)>0){
-                        match.getCurrentAction().incrWaitingFor(1);
+                        match.addWaitingFor(player);
                         player.setState(PlayerState.USE_POWERUP);
                         player.resetSelectables();
                         player.setSelectablePowerUps(player.getPowerUpsOfType(type));
@@ -39,7 +39,8 @@ public class UsePowerUp implements MicroAction {
                 }
                 p.setState(PlayerState.USE_POWERUP);
                 p.resetSelectables();
-                if (match.getCurrentAction().getWaitingFor() == 0) {    //if there isn't any player which can use tagback, go on with the next microAction
+                if (match.getWaitingFor().isEmpty()) {    //if there isn't any player which can use tagback, go on with the next microAction
+                    match.addWaitingFor(match.getCurrentPlayer());
                     throw new NextMicroActionException();
                 }
                 break;

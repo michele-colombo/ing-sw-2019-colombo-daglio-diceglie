@@ -120,7 +120,7 @@ public class GameModel implements Observable {
         beginNextTurn();
     }
 
-    //test only method!
+    //test-only method!
     public void resumeMatchFromFile(String path, String name){
         Backup savedBackup = Backup.initFromFile(path, name);
         int layoutConfig = savedBackup.getLayoutConfig();
@@ -143,8 +143,9 @@ public class GameModel implements Observable {
         if (firstSpawn){
             p.addPowerUp(match.getStackManager().drawPowerUp());
         }
-        p.setState(SPAWN);
+        match.addWaitingFor(p);
         spawningPlayers.add(p);
+        p.setState(SPAWN);
         p.resetSelectables();
         p.setSelectablePowerUps(p.getPowerUps());
     }
@@ -156,6 +157,7 @@ public class GameModel implements Observable {
         p.setBorn(true);    //could be moved inside Player.spawn()
         p.setState(IDLE);
         p.resetSelectables();
+        match.removeWaitingFor(p);
         spawningPlayers.remove(p);
         if (spawningPlayers.isEmpty()) {      //if there are no other player still (re)spawning
             beginNextTurn();
@@ -164,15 +166,22 @@ public class GameModel implements Observable {
 
     private void beginNextTurn(){
         Player nextP;
-        nextP = nextActivePlayer(match.getCurrentPlayer());
-        if (!nextP.isBorn()){
-            prepareForSpawning(nextP, true);
-        } else {
-            match.setCurrentPlayer(nextP);
-            nextP.setState(CHOOSE_ACTION);
-            nextP.resetSelectables();
-            nextP.setSelectableActions(match.initSelectableActions(nextP));
-            saveSnapshot(match);
+        try {
+            nextP = nextActivePlayer(match.getCurrentPlayer());
+            if (!nextP.isBorn()) {
+                prepareForSpawning(nextP, true);
+            } else {
+                match.setCurrentPlayer(nextP);
+                match.addWaitingFor(nextP);
+                nextP.setState(CHOOSE_ACTION);
+                nextP.resetSelectables();
+                nextP.setSelectableActions(match.initSelectableActions(nextP));
+                saveSnapshot(match);
+            }
+        } catch (GameOverException e){
+            e.printStackTrace();
+            //todo: score killshotTrack points, end game, notify
+            //todo: DELETE BACKUP
         }
     }
 
@@ -183,20 +192,29 @@ public class GameModel implements Observable {
      * @param currP If not null, must be contained in activePlayers
      * @return Next active player
      */
-    public Player nextActivePlayer(Player currP){
+    public Player nextActivePlayer(Player currP) throws GameOverException{
         //todo: check if frenzyOn && nextPlayer = lastPlayer
         int index;
+        Player nextPlayer;
         if (currP == null){
-            return activePlayers.get(0);    //if there's no curr player, return the first of the list
+            nextPlayer = activePlayers.get(0);    //if there's no curr player, return the first of the list
         } else {
             index = activePlayers.indexOf(currP);
             assert (index != -1);
             if (index == activePlayers.size()-1) {
-                return activePlayers.get(0);
+                nextPlayer = activePlayers.get(0);
             } else {
-                return activePlayers.get(index + 1);
+                nextPlayer = activePlayers.get(index + 1);
             }
         }
+        if (!nextPlayer.hasAnotherTurn()){
+            throw new GameOverException();
+        } else {
+            if (match.isFrenzyOn()){
+                nextPlayer.setAnotherTurn(false);
+            }
+        }
+        return nextPlayer;
     }
 
     public void performAction(Player p, Action a){
@@ -371,10 +389,21 @@ public class GameModel implements Observable {
                 p.setSelectableColors(p.getWallet().getColors());
                 break;
             case TAGBACK_GRENADE:
-                match.getCurrentAction().incrWaitingFor(-1);
                 p.setState(IDLE);
                 p.resetSelectables();
+                match.removeWaitingFor(p);
                 useCurrentPowerUp(p);
+                try {
+                    po.getEffects().get(0).start(p, match);
+                } catch (ApplyEffectImmediatelyException e){
+                    po.getEffects().get(0).applyOn(p, match.getCurrentPlayer(), null, match);
+                    //calls applyOn and not ChoosePowerUpTarget() because with tagback always have one effect
+                    //or like that: po.getEffects().get(0).applyOn(p, null, null, match);
+                }
+                if (match.getWaitingFor().isEmpty()){
+                    match.addWaitingFor(match.getCurrentPlayer());
+                    nextMicroAction();
+                }
                 break;
             case ACTION_POWERUP:
                 p.setState(USE_POWERUP);
@@ -400,11 +429,11 @@ public class GameModel implements Observable {
     }
 
     public void useCurrentPowerUp(Player p){
-        match.getCurrentAction().addEffects(match.getCurrentAction().getCurrPowerUp().getEffects());
+        match.getCurrentAction().setCurrEffects(match.getCurrentAction().getCurrPowerUp().getEffects());
         try {
             match.getCurrentAction().getCurrEffects().get(0).start(p, match);
         } catch (ApplyEffectImmediatelyException e){
-            match.getCurrentAction().getCurrEffects().get(0).applyOn(p, match.getCurrentPlayer(), null, match);
+            choosePowerUpTarget(p, null, null);
         }
     }
 
@@ -415,30 +444,25 @@ public class GameModel implements Observable {
             effects.add(1, temp);
         }
         effects.remove(0);
-        if (match.getCurrentAction().getWaitingFor() == 0) {
-            if (effects.isEmpty()) {
-                nextMicroAction();
-            } else {
-                p.setState(USE_POWERUP);
-                p.resetSelectables();
-                try {
-                    effects.get(0).start(p, match);
-                } catch (ApplyEffectImmediatelyException e){
-                    shootTarget(p, null, null);
-                }
-            }
+        if (effects.isEmpty()) {
+            nextMicroAction();
         } else {
             p.setState(USE_POWERUP);
             p.resetSelectables();
+            try {
+                effects.get(0).start(p, match);
+            } catch (ApplyEffectImmediatelyException e){
+                choosePowerUpTarget(p, null, null);
+            }
         }
     }
 
     public void dontUsePowerUp(Player p){
         p.setState(IDLE);
         p.resetSelectables();
-        match.getCurrentAction().incrWaitingFor(-1);
-        if (match.getCurrentAction().getWaitingFor()<0) match.getCurrentAction().setWaitingFor(0);
-        if (match.getCurrentAction().getWaitingFor() == 0) {
+        match.removeWaitingFor(p);
+        if (match.getWaitingFor().isEmpty()){
+            match.addWaitingFor(match.getCurrentPlayer());
             nextMicroAction();
         }
     }
@@ -451,7 +475,7 @@ public class GameModel implements Observable {
         } else {
             try {
                 temp.get(0).act(match, match.getCurrentPlayer());
-            } catch (NextMicroActionException nmae){
+            } catch (NextMicroActionException e){
                 nextMicroAction();
             }
         }
@@ -459,6 +483,7 @@ public class GameModel implements Observable {
 
     public void actionCompleted(){
         Player p = match.getCurrentPlayer();
+        match.addWaitingFor(match.getCurrentPlayer());
         List<Action> selectableActions = match.createSelectablesAction(match.getCurrentPlayer());
         if (selectableActions.isEmpty()){
             endTurn();
@@ -486,6 +511,7 @@ public class GameModel implements Observable {
     public void endTurn(){
         match.setAlreadyCompleted(true);
         saveSnapshot(match);
+        match.removeWaitingFor(match.getCurrentPlayer());
         match.getCurrentPlayer().setState(IDLE);
         match.getCurrentPlayer().resetSelectables();
         match.getLayout().refillAll(match.getStackManager());
@@ -599,6 +625,10 @@ public class GameModel implements Observable {
             result.add(p.getName());
         }
         return result;
+    }
+
+    public List<Player> getWaitingFor() {
+        return match.getWaitingFor();
     }
 
     public void notify(MessageVisitable messageVisitable, Observer observer){

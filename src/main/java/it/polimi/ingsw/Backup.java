@@ -23,6 +23,7 @@ public class Backup {
         private PlayerState state;
         private PlayerState nextState;
         private boolean isFirstPlayer;
+        private boolean hasAnotherTurn;
         private String squarePosition;
         private int skullsNumber;
         private boolean isFrenzy;
@@ -39,6 +40,7 @@ public class Backup {
             color = p.getColor();
             isBorn = p.isBorn();
             isBeforeFirst = p.isBeforeFirst();
+            hasAnotherTurn = p.hasAnotherTurn();
             points = p.getPoints();
             state = p.getState();
             nextState = p.getNextState();
@@ -76,6 +78,7 @@ public class Backup {
             p.setColor(color);
             p.setBorn(isBorn);
             p.setBeforeFirst(isBeforeFirst);
+            p.setAnotherTurn(hasAnotherTurn);
             p.setPoints(points);
             p.setState(state);
             p.setNextState(nextState);

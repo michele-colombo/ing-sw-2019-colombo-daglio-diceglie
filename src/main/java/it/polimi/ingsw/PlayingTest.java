@@ -44,7 +44,12 @@ public class PlayingTest {
         Match match = gm.getMatch();
 
         while (true){
+            System.out.print("waiting for this players: ");
+            for (Player waitingPlayer : gm.getWaitingFor()){
+                System.out.print(waitingPlayer.getName());
+            }
             for (Player p : match.getPlayers()){
+                System.out.print("\n");
                 if (p.hasSelectables()){
                     System.out.println("PLAYER: "+p.getName()+"\n");
                     System.out.println(p.getState());
@@ -83,6 +88,10 @@ public class PlayingTest {
                             } catch (IndexOutOfBoundsException e){
                                 System.out.println("wrong square selection");
                                 break;
+                            } catch (NumberFormatException e){
+                                System.out.println("command must be like: type-#");
+                                System.out.println("where # is a number and type is: wp, sq, pow, act, ...");
+                                break;
                             }
                             switch (p.getState()){
                                 case GRAB_THERE:
@@ -108,6 +117,10 @@ public class PlayingTest {
                                 po = p.getSelectablePowerUps().get(Integer.parseInt(tokens[1].trim()));
                             } catch (IndexOutOfBoundsException e){
                                 System.out.println("wrong powerup selection");
+                                break;
+                            } catch (NumberFormatException e){
+                                System.out.println("command must be like: type-#");
+                                System.out.println("where # is a number and type is: wp, sq, pow, act, ...");
                                 break;
                             }
                             switch (p.getState()){
@@ -135,6 +148,10 @@ public class PlayingTest {
                             } catch (IndexOutOfBoundsException e){
                                 System.out.println("wrong action selection");
                                 break;
+                            } catch (NumberFormatException e){
+                                System.out.println("command must be like: type-#");
+                                System.out.println("where # is a number and type is: wp, sq, pow, act, ...");
+                                break;
                             }
                             switch (p.getState()){
                                 case CHOOSE_ACTION:
@@ -151,6 +168,10 @@ public class PlayingTest {
                                 wp = p.getSelectableWeapons().get(Integer.parseInt(tokens[1].trim()));
                             } catch (IndexOutOfBoundsException e){
                                 System.out.println("wrong weapon selection");
+                                break;
+                            } catch (NumberFormatException e){
+                                System.out.println("command must be like: type-#");
+                                System.out.println("where # is a number and type is: wp, sq, pow, act, ...");
                                 break;
                             }
                             switch (p.getState()){
@@ -179,6 +200,10 @@ public class PlayingTest {
                             } catch (IndexOutOfBoundsException e){
                                 System.out.println("wrong mode selection");
                                 break;
+                            } catch (NumberFormatException e){
+                                System.out.println("command must be like: type-#");
+                                System.out.println("where # is a number and type is: wp, sq, pow, act, ...");
+                                break;
                             }
                             switch (p.getState()){
                                 case CHOOSE_MODE:
@@ -196,6 +221,10 @@ public class PlayingTest {
                                 cmd = p.getSelectableCommands().get(Integer.parseInt(tokens[1].trim()));
                             } catch (IndexOutOfBoundsException e){
                                 System.out.println("wrong command selection");
+                                break;
+                            } catch (NumberFormatException e){
+                                System.out.println("command must be like: type-#");
+                                System.out.println("where # is a number and type is: wp, sq, pow, act, ...");
                                 break;
                             }
                             if (cmd == Command.OK){
@@ -230,7 +259,11 @@ public class PlayingTest {
                             } catch (IndexOutOfBoundsException e){
                                 System.out.println("wrong player selection");
                                 break;
-                            };
+                            } catch (NumberFormatException e){
+                                System.out.println("command must be like: type-#");
+                                System.out.println("where # is a number and type is: wp, sq, pow, act, ...");
+                                break;
+                            }
                             switch (p.getState()){
                                 case SHOOT_TARGET:
                                     gm.shootTarget(p, pl, null);
@@ -250,7 +283,11 @@ public class PlayingTest {
                             } catch (IndexOutOfBoundsException e){
                                 System.out.println("wrong color selection");
                                 break;
-                            };
+                            } catch (NumberFormatException e){
+                                System.out.println("command must be like: type-#");
+                                System.out.println("where # is a number and type is: wp, sq, pow, act, ...");
+                                break;
+                            }
                             switch (p.getState()){
                                 case PAYING_ANY:
                                     gm.payAny(p, col);

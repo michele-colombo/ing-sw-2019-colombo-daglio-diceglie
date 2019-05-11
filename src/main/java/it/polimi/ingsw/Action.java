@@ -61,8 +61,6 @@ public class Action {
      */
     private Square chosenSquare;
 
-    private int waitingFor;
-
 
     /**
      * Constructs an action specifying the effects on the turn status
@@ -190,18 +188,6 @@ public class Action {
 
     public void addEffects(List<Effect> effects){
         this.currEffects.addAll(effects);
-    }
-
-    public int getWaitingFor() {
-        return waitingFor;
-    }
-
-    public void setWaitingFor(int waitingFor) {
-        this.waitingFor = waitingFor;
-    }
-
-    public void incrWaitingFor(int incr){
-        this.waitingFor += incr;
     }
 
     //added by Giuseppe Diceglie

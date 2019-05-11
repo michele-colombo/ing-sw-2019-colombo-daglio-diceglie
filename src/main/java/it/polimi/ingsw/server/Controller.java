@@ -66,6 +66,7 @@ public class Controller implements VisitorServer {
                     //todo: what to do?
                     return;
             }
+
         } catch (NoSuchObserverException e) {
             //todo: what if there is no such serverView?
         }
