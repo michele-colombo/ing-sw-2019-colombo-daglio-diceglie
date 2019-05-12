@@ -5,17 +5,26 @@ import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.server.events.*;
 import it.polimi.ingsw.server.message.LoginMessage;
 import it.polimi.ingsw.server.observer.Observer;
+import it.polimi.ingsw.server.timer.LoginTimer;
 
-import java.util.Timer;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import com.google.gson.*;
 
 public class Controller implements VisitorServer {
 
     private final GameModel gameModel;
     private final Timer loginTimer;
+    private final Integer delayLogin;
+    private boolean loginTimerStarted;
+
 
     public Controller(GameModel gameModel){
         this.gameModel = gameModel;
         this.loginTimer = new Timer();
+        this.delayLogin = loadDelay();
+        this.loginTimerStarted = false;
     }
 
     @Override
@@ -25,8 +34,10 @@ public class Controller implements VisitorServer {
             Player newPlayer = new Player(loginEvent.getName());
             gameModel.addPlayer(newPlayer);
             gameModel.attach(newPlayer, serverView);
+            checkStart();
             //todo se ci sono 5 player e la partita non è ancora iniziata, allora deve iniziare
             //todo se ci sono 3 player attivi e partita non iniziata, starta il countdown
+
         } catch(NameAlreadyTakenException e){
             message = new LoginMessage("Name already taken!", false, false);
         } catch(GameFullException e){
@@ -298,20 +309,62 @@ public class Controller implements VisitorServer {
         gameModel.detach(observer);
     }
 
-    public void playerDisconnetted(Observer observer){
+    public void playerDisconnected(Observer observer){
         try{
-            gameModel.notifyDisconnection(observer); //todo inserire check, se player attivi < 3, termina il match
+            gameModel.notifyDisconnection(observer);
         } catch(NoSuchObserverException e){
             System.out.println("Error while notifying about disconnection of a player!");
         }
         finally {
-            removeGameModelObserver(observer);
+            removeGameModelObserver(observer); //todo inserire check, se player attivi < 3, termina il match
+            checkStopMatch();
         }
     }
 
-    public void stopMatch(){
-        if(gameModel.tooFewPlayers()){
+    public void checkStopMatch(){
+        if(gameModel.tooFewPlayers() && gameModel.isMatchInProgress()){
             //todo stop match and print scores
+            List<Player> players = gameModel.getMatch().getWinners();
+            String rank = gameModel.getMatch().getRank();
+            //todo creare un messaggio di disconnessione e un altro che incapsula la classifica finale
         }
+    }
+
+    public void startMatch(){
+        gameModel.startMatch();
+        //todo notificare i player che la partita inizia
+    }
+
+    public void checkStart(){
+        if(!gameModel.tooFewPlayers() && gameModel.getActivePlayers() < 5 && !loginTimerStarted){
+            loginTimer.schedule(new LoginTimer(this), delayLogin);
+            loginTimerStarted = true;
+        } else if(gameModel.getActivePlayers() == 5){
+            startMatch();
+            loginTimer.cancel();
+            loginTimerStarted = false;
+        }
+        //todo notificare del conto alla rovescia?
+    }
+
+    public GameModel getGameModel() {
+        return gameModel;
+    }
+
+    public void setLoginTimerStarted(){
+        loginTimerStarted = false;
+    }
+
+    private Integer loadDelay(){
+        Gson gson= new Gson();
+        File file = new File(getClass().getClassLoader().getResource("delayConfig/delayLoginConfig.json").getFile());
+        Integer delay = null;
+        try {
+            Scanner sc = new Scanner(file);
+            delay = gson.fromJson(sc.nextLine(), Integer.class);
+        } catch(IOException e){
+            System.out.println("Error while reading login delay!");
+        }
+        return delay;
     }
 }

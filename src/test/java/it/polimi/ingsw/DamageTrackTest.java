@@ -29,6 +29,7 @@ public class DamageTrackTest {
         final int mark1 = 4;
         final int mark2 = 0;
         final int mark3 = 12;
+        final int mark4 = 2;
 
         normalDamageTrack.addMark(first, mark2);
         assertEquals(0, normalDamageTrack.getMarkMap().get(first));
@@ -41,6 +42,9 @@ public class DamageTrackTest {
 
         normalDamageTrack.addMark(first, mark3);
         assertEquals(3, normalDamageTrack.getMarkMap().get(first));
+
+        normalDamageTrack.addMark(second, mark4);
+        assertEquals(2, normalDamageTrack.getMarkMap().get(second));
     }
 @Test
     public void controlloCoseStrane(){

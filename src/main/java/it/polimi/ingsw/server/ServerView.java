@@ -24,7 +24,7 @@ public class ServerView implements Observer {
             network.forwardMessage(messageVisitable);
             try{
                 if(messageVisitable.getCloseSocket()){ //close socket connection
-                    network.closeNetwork();
+                    closeNetwork();
                 }
             } catch(IOException e){
                 System.out.println("Error while closing the socket!");
@@ -36,7 +36,11 @@ public class ServerView implements Observer {
         }
     }
 
-    public void playerDisconnetted(Observer observer){
-        controller.playerDisconnetted(observer);
+    public void playerDisconnected(Observer observer){
+        controller.playerDisconnected(observer);
+    }
+
+    public void closeNetwork() throws IOException{
+        network.closeNetwork();
     }
 }

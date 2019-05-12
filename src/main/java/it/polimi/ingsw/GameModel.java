@@ -652,4 +652,14 @@ public class GameModel implements Observable {
         }
         return false;
     }
+
+    public List<Player> endGame(){
+        //todo qualcosa che effettivament blocchi il game
+        return match.getWinners();
+    }
+
+    public int getActivePlayers(){
+        return activePlayers.size();
+    }
+
 }

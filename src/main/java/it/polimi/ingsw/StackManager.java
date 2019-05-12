@@ -36,7 +36,6 @@ public class StackManager {
                 result.add(new PowerUp(color, PowerUpType.ACTION_POWERUP, "Teleporter"));
             }
         }
-
         return result;
     }
 

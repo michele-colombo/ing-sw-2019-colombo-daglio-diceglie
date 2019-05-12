@@ -188,6 +188,21 @@ public class Match {
         return maxPoints;
     }
 
+    public String getRank(){
+        int rankIndex = 1;
+        StringBuilder rank = new StringBuilder();
+        List<Player> winners = getWinners();
+        for(Player p : winners){
+            rank.append(rankIndex + " " + p.getName() + " has won the game with " + p.getPoints() + " points");
+        }
+        rankIndex = winners.size() + 1;
+        for(Player p : players){
+            rank.append(rankIndex + " " + p.getName() + " has lost the game with " + p.getPoints() + " points");
+            rankIndex++;
+        }
+        return rank.toString();
+    }
+
     /**
      * Returns a map containing each player and his own points
      * @return An HashMap

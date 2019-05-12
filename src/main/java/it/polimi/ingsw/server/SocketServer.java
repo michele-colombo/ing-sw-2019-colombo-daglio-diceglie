@@ -33,7 +33,7 @@ public class SocketServer extends Thread implements NetworkInterfaceServer{
                 serverView.receiveEvent((EventVisitable) in.readObject());
             }
         } catch(IOException e){
-            serverView.playerDisconnetted(serverView);
+            serverView.playerDisconnected(serverView);
             //todo passare al prossimo player ed eventualmente annullare l'azione(se match è iniziato)
         } catch(ClassNotFoundException e){
             System.out.println("Class not found!");
