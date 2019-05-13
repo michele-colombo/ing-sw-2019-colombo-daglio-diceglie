@@ -11,17 +11,9 @@ import java.net.Socket;
 public class SocketServer extends Thread implements NetworkInterfaceServer{
     private Socket socket;
     private ServerView serverView;
-    private ObjectOutputStream out;
 
     public SocketServer(Socket socket, Controller controller){
         this.socket = socket;
-        try{
-            out = new ObjectOutputStream(socket.getOutputStream());
-            out.flush();
-        } catch(IOException e){
-            System.out.println("Error while creating output stream!");
-            e.printStackTrace();
-        }
         serverView = new ServerView(this, controller);
     }
 
@@ -36,13 +28,12 @@ public class SocketServer extends Thread implements NetworkInterfaceServer{
             serverView.playerDisconnected(serverView);
             //todo passare al prossimo player ed eventualmente annullare l'azione(se match è iniziato)
         } catch(ClassNotFoundException e){
-            System.out.println("Class not found!");
-            e.printStackTrace();
+            System.err.println(e.getMessage());
         }
     }
 
     public void forwardMessage(MessageVisitable messageVisitable) throws IOException{
-        //ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
         out.writeObject(messageVisitable);
         out.flush();
     }

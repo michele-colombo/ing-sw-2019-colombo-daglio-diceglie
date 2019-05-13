@@ -23,7 +23,6 @@ public class SocketClient extends Thread implements NetworkInterfaceClient{
     public SocketClient(Socket socket, Client client){
         this.socket = socket;
         this.client= client;
-
         try{
             out = new ObjectOutputStream(socket.getOutputStream());
             out.flush();
@@ -54,22 +53,18 @@ public class SocketClient extends Thread implements NetworkInterfaceClient{
     }
 
     public void run() {
-        while (true) {
             try {
                 ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-
-                MessageVisitable message = (MessageVisitable) in.readObject();
-                message.accept(client);
-
-
+                while(true) {
+                    MessageVisitable message = (MessageVisitable) in.readObject();
+                    message.accept(client);
+                }
             } catch (IOException e) {
                 System.out.println("Error while receiving messages!");
                 // qui mi sa che e' meglio spegnere tutto
             } catch (ClassNotFoundException e) {
                 System.out.println("Class //LoginMessage// not found!");
             }
-
-        }
     }
 
 
