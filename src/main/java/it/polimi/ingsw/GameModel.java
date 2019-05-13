@@ -559,7 +559,7 @@ public class GameModel implements Observable {
             if(!matchInProgress){
                 observers.keySet().remove(tempPlayer);
             } else{
-                observers.remove(tempPlayer);
+                observers.replace(tempPlayer, null);
                 inactivePlayers.add(tempPlayer);
             }
         } catch(NoSuchObserverException e){
@@ -604,11 +604,15 @@ public class GameModel implements Observable {
         }
     }
 
-    public void relogin(Player p) throws NameNotFoundException, AlreadyLoggedException{
-        if(!nameTaken(p.getName())){
-            throw new NameNotFoundException();
-        } else if(alreadyActive(p.getName())){
-            throw new AlreadyLoggedException(); //todo tirare eccezione non puoi loggarti se active.size() == player in match
+    public void relogin(Player p) throws NameNotFoundException, AlreadyLoggedException, GameFullException{
+        if(inactivePlayers.size() == 0){
+            throw new GameFullException();
+        } else {
+            if (!nameTaken(p.getName())) {
+                throw new NameNotFoundException();
+            } else if (alreadyActive(p.getName())) {
+                throw new AlreadyLoggedException(); //todo tirare eccezione non puoi loggarti se active.size() == player in match
+            }
         }
     }
 

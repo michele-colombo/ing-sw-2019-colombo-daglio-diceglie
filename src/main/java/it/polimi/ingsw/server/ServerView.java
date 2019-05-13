@@ -22,6 +22,7 @@ public class ServerView implements Observer {
     public void update(MessageVisitable messageVisitable){
         try{
             network.forwardMessage(messageVisitable);
+            System.out.println("Messaggio mandato!");
             try{
                 if(messageVisitable.getCloseSocket()){ //close socket connection
                     closeNetwork();

@@ -16,14 +16,14 @@ public class Controller implements VisitorServer {
 
     private final GameModel gameModel;
     private final Timer loginTimer;
-    private final Integer delayLogin;
+    //private final Integer delayLogin;
     private boolean loginTimerStarted;
 
 
     public Controller(GameModel gameModel){
         this.gameModel = gameModel;
         this.loginTimer = new Timer();
-        this.delayLogin = loadDelay();
+        //this.delayLogin = loadDelay();
         this.loginTimerStarted = false;
     }
 
@@ -310,15 +310,16 @@ public class Controller implements VisitorServer {
     }
 
     public void playerDisconnected(Observer observer){
-        try{
-            gameModel.notifyDisconnection(observer);
-        } catch(NoSuchObserverException e){
-            System.out.println("Error while notifying about disconnection of a player!");
-        }
-        finally {
-            removeGameModelObserver(observer); //todo inserire check, se player attivi < 3, termina il match
-            checkStopMatch();
-        }
+        //try{
+            //gameModel.notifyDisconnection(observer);
+            removeGameModelObserver(observer);
+        //} catch(NoSuchObserverException e){
+            //System.out.println("Error while notifying about disconnection of a player!");
+        //}
+        //finally {
+            //todo inserire check, se player attivi < 3, termina il match
+            //checkStopMatch();
+        //}
     }
 
     public void checkStopMatch(){
@@ -337,7 +338,7 @@ public class Controller implements VisitorServer {
 
     public void checkStart(){
         if(!gameModel.tooFewPlayers() && gameModel.getActivePlayers() < 5 && !loginTimerStarted){
-            loginTimer.schedule(new LoginTimer(this), delayLogin);
+            //loginTimer.schedule(new LoginTimer(this), delayLogin);
             loginTimerStarted = true;
         } else if(gameModel.getActivePlayers() == 5){
             startMatch();
@@ -357,14 +358,14 @@ public class Controller implements VisitorServer {
 
     private Integer loadDelay(){
         Gson gson= new Gson();
-        File file = new File(getClass().getClassLoader().getResource("delayConfig/delayLoginConfig.json").getFile());
-        Integer delay = null;
+        File file = new File(getClass().getClassLoader().getResource("delayConfig/loginDelayConfig.json").getFile());
+        int[] delay = null;
         try {
             Scanner sc = new Scanner(file);
-            delay = gson.fromJson(sc.nextLine(), Integer.class);
+            delay[0] = gson.fromJson(sc.nextLine(), Integer.class);
         } catch(IOException e){
             System.out.println("Error while reading login delay!");
         }
-        return delay;
+        return delay[0];
     }
 }
