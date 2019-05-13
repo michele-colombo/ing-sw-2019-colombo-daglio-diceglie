@@ -11,6 +11,7 @@ import java.net.Socket;
 public class SocketServer extends Thread implements NetworkInterfaceServer{
     private Socket socket;
     private ServerView serverView;
+    private ObjectOutputStream out;
 
     public SocketServer(Socket socket, Controller controller){
         this.socket = socket;
@@ -20,6 +21,8 @@ public class SocketServer extends Thread implements NetworkInterfaceServer{
     @Override
     public void run(){
         try{
+            out = new ObjectOutputStream(socket.getOutputStream());
+            out.flush();
             ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
             while(true){
                 serverView.receiveEvent((EventVisitable) in.readObject());
@@ -33,7 +36,7 @@ public class SocketServer extends Thread implements NetworkInterfaceServer{
     }
 
     public void forwardMessage(MessageVisitable messageVisitable) throws IOException{
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+        //ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
         out.writeObject(messageVisitable);
         out.flush();
     }
