@@ -23,6 +23,17 @@ public class GameModelTest {
         }
     }
 
+    public <T> void printList(List<T> list){
+        System.out.println("printing a list:");
+        for (T t : list){
+            if (t == null){
+                System.out.println("NULL!!!!");
+            } else {
+                System.out.println(t);
+            }
+        }
+    }
+
     @Test
     public void nextActivePlayerWithFivePlayers() {
         GameModel gm = new GameModel();
@@ -227,9 +238,10 @@ public class GameModelTest {
         gm.startNewMatch();
 
         assertNotNull(gm.getMatch());
-        assertTrue(gm.getMatch().getPlayers().containsAll(newPlayers));
-        assertTrue(newPlayers.containsAll(gm.getMatch().getPlayers()));
+        assertTrue(gm.getMatch().getPlayers().containsAll(gm.allPlayers()));
+        assertTrue(gm.allPlayers().containsAll(gm.getMatch().getPlayers()));
 
+        //each player has a color and each player's color is unique
         List<PlayerColor> colorsGiven = new ArrayList<>();
         for (Player p : gm.getMatch().getPlayers()){
             assertNotNull(p.getColor());
@@ -241,26 +253,34 @@ public class GameModelTest {
         assertNotNull(gm.getMatch().getStackManager());
         assertNotNull(gm.getMatch().getKillShotTrack());
 
+        //no players is born
+        for (Player p : gm.allPlayers()){
+            assertFalse(p.isBorn());
+        }
+
         //there's just one player spawing, with 2 selectable powerups
         List<Player> tempPlayers = new ArrayList<>();
         tempPlayers.addAll(gm.getMatch().getPlayers());
         tempPlayers.removeIf(p -> p.getState()!=PlayerState.SPAWN);
         assertEquals(1, tempPlayers.size());
-        Player spawingPlayer = tempPlayers.get(0);
-        assertEquals(2, spawingPlayer.getPowerUps().size());
-        assertEquals(2, spawingPlayer.getSelectablePowerUps().size());
+        Player spawningPlayer = tempPlayers.get(0);
+        assertEquals(2, spawningPlayer.getPowerUps().size());
+        assertEquals(2, spawningPlayer.getSelectablePowerUps().size());
+        assertTrue(spawningPlayer.getSelectableCommands().isEmpty());
 
+        //other players are in IDLE and have nothing selectable
         tempPlayers.clear();
         tempPlayers.addAll(gm.getMatch().getPlayers());
-        tempPlayers.remove(spawingPlayer);
+        tempPlayers.remove(spawningPlayer);
         for (Player p : tempPlayers) {
             assertEquals(PlayerState.IDLE, p.getState());
             assertEquals(0, p.howManySelectables());
         }
     }
 
+
     @Test
-    public void StartMatchWithValidBackup(){
+    public void GrabAndMoveTestFivePlayers(){
         GameModel gm = new GameModel();
 
         Player p1, p2, p3, p4, p5;
@@ -279,8 +299,106 @@ public class GameModelTest {
 
         gm.spawn(p1, p1.getSelectablePowerUps().get(0));
         gm.performAction(p1, p1.getSelectableActions().get(1)); //grab
-        Square s1 = p1.getSelectableSquares().get(1);
+        Square s1 =  p1.getSelectableSquares().get(1);
+        Cash cash1 = ((AmmoSquare)s1).getAmmo().getAmmos();
         gm.grabThere(p1, s1);
+        gm.performAction(p1, p1.getSelectableActions().get(0)); //move
+        s1 = p1.getSelectableSquares().get(1);
+        gm.moveMeThere(p1, s1);
+        gm.endTurn();
+        assertTrue(p1.isBorn());
+        assertTrue(cash1.isEqual(p1.getWallet()));
+        assertEquals(s1, p1.getSquarePosition());
+
+        for (Player p : gm.getSpawningPlayers()){
+            System.out.println(p+" "+p.getName());
+        }
+        assertEquals(1, gm.getSpawningPlayers().size());
+        gm.spawn(p2, p2.getSelectablePowerUps().get(0));
+
+        assertEquals(0, gm.getSpawningPlayers().size());
+        assertTrue(p2.isBorn());
+        System.out.println(p2.getState());
+        printSel(p2);
+        assertEquals(PlayerState.CHOOSE_ACTION, p2.getState());
+
+        assertFalse(p3.isBorn());
+        assertFalse(p4.isBorn());
+        assertFalse(p5.isBorn());
+
+        //checks if game can go on regularly
+        gm.performAction(p2, p2.getSelectableActions().get(0));   //move
+        assertEquals(PlayerState.MOVE_THERE, p2.getState());
+        gm.moveMeThere(p2, p2.getSelectableSquares().get(1));
+        assertEquals(PlayerState.CHOOSE_ACTION, p2.getState());
+        gm.performAction(p2, p2.getSelectableActions().get(1));  //grab
+        assertEquals(PlayerState.GRAB_THERE, p2.getState());
+        Square s2 = p2.getSelectableSquares().get(1);
+        Cash cash2 = ((AmmoSquare)s2).getAmmo().getAmmos();
+        gm.grabThere(p2, s2);
+        gm.endTurn();
+
+
+
+        assertEquals(PlayerState.SPAWN, p3.getState());
+        gm.spawn(p3, p3.getSelectablePowerUps().get(1));
+        //Backup snapshot = new Backup(gm.getMatch());
+        //snapshot.saveOnFile("snapshot1");
+        System.out.println(p3.getState());
+        printSel(p3);
+        assertEquals(PlayerState.CHOOSE_ACTION, p3.getState());
+        gm.performAction(p3, p3.getSelectableActions().get(0));   //move
+        assertEquals(PlayerState.MOVE_THERE, p3.getState());
+        gm.moveMeThere(p3, p3.getSelectableSquares().get(3));
+        assertEquals(PlayerState.CHOOSE_ACTION, p3.getState());
+        gm.performAction(p3, p3.getSelectableActions().get(1));  //grab
+        Square s3 = p3.getSelectableSquares().get(1);
+        Cash cash3 = new Cash(((AmmoSquare)s3).getAmmo().getAmmos());
+        gm.grabThere(p3, s3);
+        gm.endTurn();
+
+        assertEquals(PlayerState.SPAWN, p4.getState());
+        //assertEquals(2, p4.getSelectablePowerUps().size());
+        //assertEquals(2, p4.getPowerUps().size());
+        gm.spawn(p4, p4.getSelectablePowerUps().get(1));
+        gm.performAction(p4, p4.getSelectableActions().get(1));   //grab
+        Square s4 = p4.getSelectableSquares().get(1);
+        Cash cash4 = ((AmmoSquare)s4).getAmmo().getAmmos();
+        gm.grabThere(p4, s4);
+        gm.performAction(p4, p4.getSelectableActions().get(1));  //grab
+        s4 = p4.getSelectableSquares().get(0);
+        cash4 = cash4.sum(((AmmoSquare)s4).getAmmo().getAmmos());
+        gm.grabThere(p4, s4);
+        assertEquals(s4, p4.getSquarePosition());
+        gm.endTurn();
+    }
+
+    @Test
+    public void StartMatchTwoTimesWithValidBackup(){
+        GameModel gm = new GameModel();
+
+        Player p1, p2, p3, p4, p5;
+        List<Player> newPlayers = new ArrayList<>();
+        newPlayers.add(p1 = new Player("antonio"));
+        newPlayers.add(p2 = new Player("gianfranco"));
+        newPlayers.add(p3 = new Player("enrico"));
+        newPlayers.add(p4 = new Player("matteo"));
+        newPlayers.add(p5 = new Player("evila"));
+
+        addPlayers(gm, newPlayers);
+
+        assertEquals(newPlayers.size(), gm.getNumberOfPlayers());
+
+        gm.startNewMatch();
+
+        gm.spawn(p1, p1.getSelectablePowerUps().get(0));
+        gm.performAction(p1, p1.getSelectableActions().get(1)); //grab
+        Square s1 =  p1.getSelectableSquares().get(1);
+        Cash cash1 = ((AmmoSquare)s1).getAmmo().getAmmos();
+        gm.grabThere(p1, s1);
+        gm.performAction(p1, p1.getSelectableActions().get(0)); //move
+        s1 = p1.getSelectableSquares().get(1);
+        gm.moveMeThere(p1, s1);
         gm.endTurn();
 
         gm.spawn(p2, p2.getSelectablePowerUps().get(0));
@@ -296,7 +414,7 @@ public class GameModelTest {
 
         addPlayers(gm2, newPlayers2);
 
-        //check player object are different
+        //checks player that object are different (rather obvious)
         for (Player p : newPlayers2){
             assertFalse(newPlayers.contains(p));
         }
@@ -304,10 +422,143 @@ public class GameModelTest {
             assertFalse(newPlayers2.contains(p));
         }
 
+        System.out.println("new game: 2");
         gm2.startMatch();
 
+        //match is created correctly
+        StackManager sm = gm2.getMatch().getStackManager();
+        assertEquals(36, sm.getOriginalAmmoTiles().size());
+        assertEquals(24, sm.getOriginalPowerUps().size());
+        assertEquals(21, sm.getOriginalWeaponArsenal().size());
+        assertFalse(sm.getAmmoTilesActiveStack().contains(null));
+        assertFalse(sm.getAmmoTilesWasteStack().contains(null));
+        assertFalse(sm.getPowerUpActiveStack().contains(null));
+        assertFalse(sm.getPowerUpWasteStack().contains(null));
+        assertFalse(sm.getWeaponActiveStack().contains(null));
 
+        //new match's players are identical (same objects) to gameModel's
+        assertTrue(gm2.getMatch().getPlayers().containsAll(gm2.allPlayers()));
+        assertTrue(gm2.allPlayers().containsAll(gm2.getMatch().getPlayers()));
+
+        //since players' name are equal to the ones of the previous match, previous match is resumed
+        assertTrue(p21.isBorn());
+        assertTrue(cash1.isEqual(p21.getWallet()));
+        assertEquals(s1, p21.getSquarePosition());
+
+        assertTrue(p22.isBorn());
+        assertEquals(PlayerState.CHOOSE_ACTION, p22.getState());
+
+        assertFalse(p23.isBorn());
+        assertFalse(p24.isBorn());
+        assertFalse(p25.isBorn());
+
+        //checks if game can go on regularly
+        gm2.performAction(p22, p22.getSelectableActions().get(0));   //move
+        assertEquals(PlayerState.MOVE_THERE, p22.getState());
+        gm2.moveMeThere(p22, p22.getSelectableSquares().get(1));
+        assertEquals(PlayerState.CHOOSE_ACTION, p22.getState());
+        gm2.performAction(p22, p22.getSelectableActions().get(1));  //grab
+        assertEquals(PlayerState.GRAB_THERE, p22.getState());
+        Square s2 = p22.getSelectableSquares().get(1);
+        Cash cash2 = ((AmmoSquare)s2).getAmmo().getAmmos();
+        gm2.grabThere(p22, s2);
+        gm2.endTurn();
+
+
+
+        assertEquals(PlayerState.SPAWN, p23.getState());
+        gm2.spawn(p23, p23.getSelectablePowerUps().get(1));
+        //Backup snapshot = new Backup(gm2.getMatch());
+        //snapshot.saveOnFile("snapshot1");
+        assertEquals(PlayerState.CHOOSE_ACTION, p23.getState());
+        gm2.performAction(p23, p23.getSelectableActions().get(0));   //move
+        assertEquals(PlayerState.MOVE_THERE, p23.getState());
+        gm2.moveMeThere(p23, p23.getSelectableSquares().get(3));
+        assertEquals(PlayerState.CHOOSE_ACTION, p23.getState());
+        gm2.performAction(p23, p23.getSelectableActions().get(1));  //grab
+        Square s3 = p23.getSelectableSquares().get(1);
+        Cash cash3 = ((AmmoSquare)s3).getAmmo().getAmmos();
+        gm2.grabThere(p23, s3);
+
+System.out.println(p24.getName());
+printList(p24.getSelectablePowerUps());
+        if (p23.getSelectableActions().size() > 0 ) gm2.endTurn();
+
+        assertEquals(PlayerState.SPAWN, p24.getState());
+System.out.println(p24.getName());
+printList(p24.getPowerUps());
+        assertEquals(2, p24.getSelectablePowerUps().size());
+        assertEquals(2, p24.getPowerUps().size());
+        gm2.spawn(p24, p24.getSelectablePowerUps().get(1));
+        gm2.performAction(p24, p24.getSelectableActions().get(1));   //grab
+        Square s4 = p24.getSelectableSquares().get(1);
+        Cash cash4 = new Cash (((AmmoSquare)s4).getAmmo().getAmmos());
+        gm2.grabThere(p24, s4);
+        gm2.performAction(p24, p24.getSelectableActions().get(1));  //grab
+        s4 = p24.getSelectableSquares().get(0);
+        cash4.deposit(((AmmoSquare)s4).getAmmo().getAmmos());
+        gm2.grabThere(p24, s4);
+        assertEquals(s4, p24.getSquarePosition());
+        if (p24.getSelectableActions().size() > 0) gm2.endTurn();
+
+        //checks if the current match can be reloaded again (if player are the same)
+        GameModel gm3 = new GameModel();
+        Player p31, p32, p33, p34, p35;
+        List<Player> newPlayers3 = new ArrayList<>();
+        newPlayers3.add(p31 = new Player("antonio"));
+        newPlayers3.add(p32 = new Player("gianfranco"));
+        newPlayers3.add(p33 = new Player("enrico"));
+        newPlayers3.add(p34 = new Player("matteo"));
+        newPlayers3.add(p35 = new Player("evila"));
+
+        addPlayers(gm3, newPlayers3);
+
+        assertFalse(sm.getAmmoTilesActiveStack().contains(null));
+        assertFalse(sm.getAmmoTilesWasteStack().contains(null));
+        assertFalse(sm.getPowerUpActiveStack().contains(null));
+        assertFalse(sm.getPowerUpWasteStack().contains(null));
+        assertFalse(sm.getWeaponActiveStack().contains(null));
+
+        System.out.println("New game: 3");
+        gm3.startMatch();
+
+        //match is created correctly
+        sm = gm2.getMatch().getStackManager();
+        assertEquals(36, sm.getOriginalAmmoTiles().size());
+        assertEquals(24, sm.getOriginalPowerUps().size());
+        assertEquals(21, sm.getOriginalWeaponArsenal().size());
+        assertFalse(sm.getAmmoTilesActiveStack().contains(null));
+        assertFalse(sm.getAmmoTilesWasteStack().contains(null));
+        assertFalse(sm.getPowerUpActiveStack().contains(null));
+        assertFalse(sm.getPowerUpWasteStack().contains(null));
+        assertFalse(sm.getWeaponActiveStack().contains(null));
+
+        //new match's players are identical (same objects) to gameModel's
+        assertTrue(gm3.getMatch().getPlayers().containsAll(gm3.allPlayers()));
+        assertTrue(gm3.allPlayers().containsAll(gm3.getMatch().getPlayers()));
+
+        //since players' name are equal to the ones of the previous match, previous match is resumed
+        assertTrue(p31.isBorn());
+        assertTrue(cash1.isEqual(p31.getWallet()));
+        assertEquals(s1, p31.getSquarePosition());
+
+        assertTrue(p32.isBorn());
+        assertTrue(cash2.isEqual(p32.getWallet()));
+        assertEquals(s2, p32.getSquarePosition());
+
+        assertTrue(p33.isBorn());
+        assertTrue(cash3.isEqual(p33.getWallet()));
+        assertEquals(s3, p33.getSquarePosition());
+
+        assertTrue(p34.isBorn());
+        assertTrue(cash4.isEqual(p34.getWallet()));
+        assertEquals(s4, p34.getSquarePosition());
+
+        assertFalse(p35.isBorn());
+        assertEquals(PlayerState.SPAWN, p35.getState());
+        assertEquals(2, p35.getSelectablePowerUps().size());
     }
+
 
 
 }

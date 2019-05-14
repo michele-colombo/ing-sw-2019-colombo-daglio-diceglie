@@ -1,9 +1,6 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.exceptions.AlreadyLoggedException;
-import it.polimi.ingsw.exceptions.GameFullException;
-import it.polimi.ingsw.exceptions.NameAlreadyTakenException;
-import it.polimi.ingsw.exceptions.NameNotFoundException;
+import it.polimi.ingsw.exceptions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

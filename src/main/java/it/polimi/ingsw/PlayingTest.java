@@ -25,13 +25,17 @@ public class PlayingTest {
         String choice = new Scanner(System.in).nextLine();
         if(choice.toLowerCase().equals("new")){
 
-            Player p1 = new Player("primo giocatore", PlayerColor.YELLOW);
-            Player p2 = new Player("secondo giocatore", PlayerColor.BLUE);
-            Player p3 = new Player("terzo giocatore", PlayerColor.GREEN);
+            Player p1 = new Player("antonio");
+            Player p2 = new Player("gianfranco");
+            Player p3 = new Player("enrico");
+            Player p4 = new Player("matteo");
+            Player p5 = new Player("evila");
             try{
                 gm.addPlayer(p1);
                 gm.addPlayer(p2);
                 gm.addPlayer(p3);
+                gm.addPlayer(p4);
+                gm.addPlayer(p5);
             } catch(NameAlreadyTakenException | AlreadyLoggedException | GameFullException | NameNotFoundException e){
             }
             gm.startMatch();

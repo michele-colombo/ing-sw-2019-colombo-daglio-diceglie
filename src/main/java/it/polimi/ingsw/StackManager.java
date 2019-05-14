@@ -28,12 +28,25 @@ public class StackManager {
 
     private List<PowerUp> loadOriginalPowerups(){
         List<PowerUp> result= new ArrayList<>();
+        int id = 0;
         for (Color color : Color.getAmmoColors()){
             for (int i=0; i<2; i++){
-                result.add(new PowerUp(color, PowerUpType.TAGBACK_GRENADE, "Tagback granade"));
-                result.add(new PowerUp(color, PowerUpType.TARGETING_SCOPE, "Targeting scope"));
-                result.add(new PowerUp(color, PowerUpType.ACTION_POWERUP, "Newton"));
-                result.add(new PowerUp(color, PowerUpType.ACTION_POWERUP, "Teleporter"));
+                PowerUp newPowerUp = new PowerUp(color, PowerUpType.TAGBACK_GRENADE, "Tagback granade");
+                newPowerUp.setPowerUpID(id);
+                id++;
+                result.add(newPowerUp);
+                newPowerUp = new PowerUp(color, PowerUpType.TARGETING_SCOPE, "Targeting scope");
+                newPowerUp.setPowerUpID(id);
+                id++;
+                result.add(newPowerUp);
+                newPowerUp = new PowerUp(color, PowerUpType.ACTION_POWERUP, "Newton");
+                newPowerUp.setPowerUpID(id);
+                id++;
+                result.add(newPowerUp);
+                newPowerUp = new PowerUp(color, PowerUpType.ACTION_POWERUP, "Teleporter");
+                newPowerUp.setPowerUpID(id);
+                id++;
+                result.add(newPowerUp);
             }
         }
         return result;
@@ -53,6 +66,11 @@ public class StackManager {
         catch (IOException e) {
             e.printStackTrace();
 
+        }
+        int id = 0;
+        for (AmmoTile at : result){
+            at.setAmmoTileID(id);
+            id++;
         }
         return result;
     }

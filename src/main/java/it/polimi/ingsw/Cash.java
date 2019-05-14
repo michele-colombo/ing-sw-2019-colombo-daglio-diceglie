@@ -15,6 +15,12 @@ public class Cash {
         this.yellow = yellow;
     }
 
+    public Cash(Cash source){
+        this.blue = source.getBlue();
+        this.red = source.getRed();
+        this.yellow = source.getYellow();
+    }
+
     public Cash(){
         this(0, 0, 0);
     }
@@ -91,18 +97,12 @@ public class Cash {
     }
 
     public void deposit(Cash c){        //should we put an AmmoLostException (just in order to inform the player)?
-        this.blue += c.getBlue();
-        if (this.blue > 3){
-            this.blue = 3;
-        }
-        this.red += c.getRed();
-        if (this.red > 3){
-            this.red = 3;
-        }
-        this.yellow += c.getYellow();
-        if (this.yellow > 3){
-            this.yellow = 3;
-        }
+        blue = blue + c.getBlue();
+        if (blue > 3) blue = 3;
+        red = red + c.getRed();
+        if (red > 3) red = 3;
+        yellow = yellow + c.getYellow();
+        if (yellow > 3) yellow = 3;
     }
 
     public int getTotal(){

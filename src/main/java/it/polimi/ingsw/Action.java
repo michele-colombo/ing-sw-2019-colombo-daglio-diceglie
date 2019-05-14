@@ -99,7 +99,7 @@ public class Action {
     public String toString(){
         String s = "";
         for (MicroAction ma : microActions){
-            s = s + ma;
+            s = s + ma.toString();
         }
         return s;
     }

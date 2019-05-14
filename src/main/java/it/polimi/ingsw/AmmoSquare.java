@@ -35,6 +35,7 @@ public class AmmoSquare extends Square{
             }
         }
         m.getStackManager().trashAmmoTile(ammo);
+        assert(ammo.getAmmos().getTotal()<4);
         ammo = null;
         return true;
     }

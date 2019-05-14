@@ -207,6 +207,7 @@ public class Backup {
 
             ammoTilesWasteStack = new ArrayList<>();
             for (AmmoTile at : sm.getAmmoTilesWasteStack()){
+                assert at.getAmmos().getTotal()<4;
                 ammoTilesWasteStack.add(at.toString());
             }
         }
@@ -315,6 +316,7 @@ public class Backup {
         private boolean turnCompletable;
         private boolean alreadyCompleted;
         private String currentPlayer;
+        private List<String> waitingFor = new ArrayList<>();
 
         public MatchBackup(Match match){
             frenzyOn = match.isFrenzyOn();
@@ -324,6 +326,9 @@ public class Backup {
             turnCompletable = match.isTurnCompletable();
             alreadyCompleted = match.isAlreadyCompleted();
             currentPlayer = match.getCurrentPlayer().getName();
+            for (Player p : match.getWaitingFor()){
+                waitingFor.add(p.getName());
+            }
         }
 
         public void restore (Match match){
@@ -334,6 +339,7 @@ public class Backup {
             match.setTurnCompletable(turnCompletable);
             match.setAlreadyCompleted(alreadyCompleted);
             match.setCurrentPlayer(match.getPlayerFromName(currentPlayer));
+            //todo: restore waitingFor or not (it is recreated when resuming game)
         }
     }
 

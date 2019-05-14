@@ -8,6 +8,7 @@ public class PowerUp{
     private String name;
     private String description;
     private List<Effect> effects;
+    private int powerUpID;
 
     public PowerUp (Color color, PowerUpType type, String name){
         this.color = color;
@@ -23,9 +24,13 @@ public class PowerUp{
         return type;
     }
 
+    public void setPowerUpID(int powerUpID) {
+        this.powerUpID = powerUpID;
+    }
+
     @Override
     public String toString(){
-        return name+"-"+color;
+        return powerUpID+"-"+name+"-"+color;
     }
 
     public String getName() {
