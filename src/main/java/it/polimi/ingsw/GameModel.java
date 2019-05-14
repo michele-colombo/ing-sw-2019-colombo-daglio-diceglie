@@ -521,7 +521,7 @@ public class GameModel implements Observable {
     private boolean nameTaken(String name){
         List<Player> allPlayers = allPlayers();
         for(Player p : allPlayers){
-            if(p.getName().equals(name)){
+            if(p.getName().equalsIgnoreCase(name.toUpperCase())){
                 return true;
             }
         }
