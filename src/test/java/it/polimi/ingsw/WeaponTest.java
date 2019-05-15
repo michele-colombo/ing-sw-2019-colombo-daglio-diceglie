@@ -8,10 +8,39 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static it.polimi.ingsw.Color.*;
 
 public class WeaponTest {
+    private static final String testBackupPath = "./src/test/resources/savedGamesForTests/";
+
+    public void printSel(Player p){
+        System.out.println(p.selectablesToString());
+    }
+
+
+
+    public <T> void printList(List<T> list){
+        System.out.println("printing a list:");
+        for (T t : list){
+            if (t == null){
+                System.out.println("NULL!!!!");
+            } else {
+                System.out.println(t);
+            }
+        }
+    }
+
+    public <K, V> void printMap(Map<K, V> map){
+        System.out.println("printing a map:");
+        for (Map.Entry<K, V> entry : map.entrySet()){
+            if (entry.getKey() == null) System.out.print("null -> ");
+            else System.out.print(entry.getKey()+" -> ");
+            if (entry.getValue() == null) System.out.println("null");
+            else System.out.println(entry.getValue());
+        }
+    }
 
     @Test
     public void initWeaponDescription(){
@@ -141,8 +170,52 @@ public class WeaponTest {
         foundByHand.remove(m2);
 
         assertEquals(z.getSelectableModes(alreadySelected), foundByHand);
+    }
 
+    @Test
+    public void testLockRifle1(){
+        GameModel gm = new GameModel();
+        gm.resumeMatchFromFile(testBackupPath, "lockRifleTestBefore");
 
+        Player p1 = gm.getPlayerByName("first");
+        Player p2 = gm.getPlayerByName("second");
+        Player p3 = gm.getPlayerByName("third");
+        Player p4 = gm.getPlayerByName("fourth");
+        printSel(p1);
+        gm.performAction(p1, p1.getSelectableActions().get(2)); //shoot
+        printSel(p1);
+        gm.shootWeapon(p1, p1.getSelectableWeapons().get(0));
+        printSel(p1);
+        //assert(only base mode selectable here)
+        gm.addMode(p1, p1.getSelectableModes().get(0));
+        printSel(p1);
+        //assert(can select second lock or confirm)
+        gm.addMode(p1, p1.getSelectableModes().get(0));
+        printSel(p1);
+        gm.confirmModes(p1);
+        printSel(p1);
+        assertTrue(p1.getSelectablePlayers().contains(p2));
+        assertTrue(p1.getSelectablePlayers().contains(p4));
+        //assert(p1 ha tot danni)
+        //assert(p1 ha tot marchi)
+        printList(p2.getDamageTrack().getDamageList());
+        printMap(p2.getDamageTrack().getMarkMap());
+        gm.shootTarget(p1, p2, null);
+        //assert(p1 ora ha tot danni)
+        //assert(p1 ora ha tot marchi)
+        printList(p2.getDamageTrack().getDamageList());
+        printMap(p2.getDamageTrack().getMarkMap());
+        printSel(p1);
+        assert(p1.getSelectablePlayers().contains(p4));
+        printList(p4.getDamageTrack().getDamageList());
+        printMap(p4.getDamageTrack().getMarkMap());
+        gm.shootTarget(p1, p4, null);
+        //assertions...
+        printList(p4.getDamageTrack().getDamageList());
+        printMap(p4.getDamageTrack().getMarkMap());
+        printSel(p1);
+        Backup check = Backup.initFromFile(testBackupPath, "lockRifleTestAfter");
+        //assertEquals(check, new Backup(gm.getMatch()));
     }
 
 
