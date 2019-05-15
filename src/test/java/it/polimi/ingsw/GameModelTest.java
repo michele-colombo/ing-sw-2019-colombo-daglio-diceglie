@@ -305,7 +305,7 @@ public class GameModelTest {
         gm.performAction(p1, p1.getSelectableActions().get(0)); //move
         s1 = p1.getSelectableSquares().get(1);
         gm.moveMeThere(p1, s1);
-        gm.endTurn();
+        if (p1.getState() == PlayerState.CHOOSE_ACTION) gm.endTurn();
         assertTrue(p1.isBorn());
         assertTrue(cash1.isEqual(p1.getWallet()));
         assertEquals(s1, p1.getSquarePosition());
@@ -336,7 +336,7 @@ public class GameModelTest {
         Square s2 = p2.getSelectableSquares().get(1);
         Cash cash2 = ((AmmoSquare)s2).getAmmo().getAmmos();
         gm.grabThere(p2, s2);
-        gm.endTurn();
+        if (p2.getState() == PlayerState.CHOOSE_ACTION) gm.endTurn();
 
 
 
@@ -355,7 +355,7 @@ public class GameModelTest {
         Square s3 = p3.getSelectableSquares().get(1);
         Cash cash3 = new Cash(((AmmoSquare)s3).getAmmo().getAmmos());
         gm.grabThere(p3, s3);
-        gm.endTurn();
+        if (p3.getState() == PlayerState.CHOOSE_ACTION) gm.endTurn();
 
         assertEquals(PlayerState.SPAWN, p4.getState());
         //assertEquals(2, p4.getSelectablePowerUps().size());
@@ -370,7 +370,7 @@ public class GameModelTest {
         cash4 = cash4.sum(((AmmoSquare)s4).getAmmo().getAmmos());
         gm.grabThere(p4, s4);
         assertEquals(s4, p4.getSquarePosition());
-        gm.endTurn();
+        if (p4.getState() == PlayerState.CHOOSE_ACTION) gm.endTurn();
     }
 
     @Test
@@ -399,7 +399,7 @@ public class GameModelTest {
         gm.performAction(p1, p1.getSelectableActions().get(0)); //move
         s1 = p1.getSelectableSquares().get(1);
         gm.moveMeThere(p1, s1);
-        gm.endTurn();
+        if (p1.getState() == PlayerState.CHOOSE_ACTION) gm.endTurn();
 
         gm.spawn(p2, p2.getSelectablePowerUps().get(0));
 
@@ -462,7 +462,7 @@ public class GameModelTest {
         Square s2 = p22.getSelectableSquares().get(1);
         Cash cash2 = ((AmmoSquare)s2).getAmmo().getAmmos();
         gm2.grabThere(p22, s2);
-        gm2.endTurn();
+        if (p22.getState() == PlayerState.CHOOSE_ACTION) gm2.endTurn();
 
 
 
@@ -479,14 +479,9 @@ public class GameModelTest {
         Square s3 = p23.getSelectableSquares().get(1);
         Cash cash3 = ((AmmoSquare)s3).getAmmo().getAmmos();
         gm2.grabThere(p23, s3);
-
-System.out.println(p24.getName());
-printList(p24.getSelectablePowerUps());
-        if (p23.getSelectableActions().size() > 0 ) gm2.endTurn();
+        if (p23.getState() == PlayerState.CHOOSE_ACTION) gm2.endTurn();
 
         assertEquals(PlayerState.SPAWN, p24.getState());
-System.out.println(p24.getName());
-printList(p24.getPowerUps());
         assertEquals(2, p24.getSelectablePowerUps().size());
         assertEquals(2, p24.getPowerUps().size());
         gm2.spawn(p24, p24.getSelectablePowerUps().get(1));
@@ -499,7 +494,7 @@ printList(p24.getPowerUps());
         cash4.deposit(((AmmoSquare)s4).getAmmo().getAmmos());
         gm2.grabThere(p24, s4);
         assertEquals(s4, p24.getSquarePosition());
-        if (p24.getSelectableActions().size() > 0) gm2.endTurn();
+        if (p24.getState() == PlayerState.CHOOSE_ACTION) gm2.endTurn();
 
         //checks if the current match can be reloaded again (if player are the same)
         GameModel gm3 = new GameModel();

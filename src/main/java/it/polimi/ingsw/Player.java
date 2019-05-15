@@ -461,7 +461,6 @@ public class Player {
      * @param po powerup to add
      */
     public void addPowerUp(PowerUp po){
-        System.out.println("adding power up "+po+" to "+this.getName());
         if (po != null && !powerUps.contains(po)){
             if (!powerUps.contains(po)){
                 powerUps.add(po);
