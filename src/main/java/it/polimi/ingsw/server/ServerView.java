@@ -37,8 +37,8 @@ public class ServerView implements Observer {
         }
     }
 
-    public void playerDisconnected(Observer observer){
-        controller.playerDisconnected(observer);
+    public void disconnectPlayer(Observer observer){
+        controller.disconnectPlayer(observer);
     }
 
     public void closeNetwork() throws IOException{

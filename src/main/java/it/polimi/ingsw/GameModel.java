@@ -660,9 +660,9 @@ public class GameModel implements Observable {
         observer.update(messageVisitable);
     }
 
-    public void notifyDisconnection(Observer observer) throws NoSuchObserverException{
+    public void notifyAll(MessageVisitable messageVisitable){
         for(Player p : activePlayers){
-            observers.get(p).update(new DisconnectionMessage("Player " + getPlayerByObserver(observer).getName() + " has disconnetted!"));
+            observers.get(p).update(messageVisitable);
         }
     }
 
@@ -681,5 +681,4 @@ public class GameModel implements Observable {
     public int howManyActivePlayers(){
         return activePlayers.size();
     }
-
 }

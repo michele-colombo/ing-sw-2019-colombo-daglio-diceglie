@@ -2,25 +2,20 @@ package it.polimi.ingsw.server.timer;
 
 import it.polimi.ingsw.server.Controller;
 import it.polimi.ingsw.server.ServerView;
+import it.polimi.ingsw.server.observer.Observer;
 
-import java.io.IOException;
 import java.util.TimerTask;
 
 public class InputTimer extends TimerTask {
     private Controller controller;
-    private ServerView serverView;
+    private Observer observer;
 
-    public InputTimer(Controller controller, ServerView serverView){
+    public InputTimer(Controller controller, Observer observer){
         this.controller = controller;
-        this.serverView = serverView;
+        this.observer = observer;
     }
 
     public void run(){
-        controller.getGameModel().endTurn();
-        try{
-            serverView.closeNetwork();
-        } catch(IOException e){
-            System.out.println("Error");
-        }
+        ;
     }
 }

@@ -23,14 +23,14 @@ public class SocketServer extends Thread implements NetworkInterfaceServer{
         try{
             out = new ObjectOutputStream(socket.getOutputStream());
             out.flush();
-            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+            final ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
             while(true){
                 serverView.receiveEvent((EventVisitable) in.readObject());
             }
-        } catch(IOException e){
-            serverView.playerDisconnected(serverView);
+        } catch(final IOException e){
+            serverView.disconnectPlayer(serverView);
             //todo passare al prossimo player ed eventualmente annullare l'azione(se match è iniziato)
-        } catch(ClassNotFoundException e){
+        } catch(final ClassNotFoundException e){
             System.err.println(e.getMessage());
         }
     }
