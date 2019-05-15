@@ -3,15 +3,9 @@ package it.polimi.ingsw.client;
 
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import java.io.*;
-import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Scanner;
 
 import static javafx.application.Application.launch;
@@ -26,9 +20,34 @@ public class ClientMain{
     public static void main(String[] args) throws IOException {
         config= new ClientConfig();
 
-        loadFromConfigurationFile();
-        getFromCmdArguments(args);
+        if(args.length==0) {
+            loadFromConfigurationFile();
+        }
+        else {
+            if (args[0] == "-h" || args[0] == "--help") {
+                printHelpScreen();
+                return;
+            }
+            else {
+                getFromCmdArguments(args);
+            }
+        }
 
+        askUserInput();
+
+
+
+        try {
+            Client client = new Client(config.getIp(), config.getPort(), config.getLink(), config.getUserInterface());
+            client.startClient();
+        }
+        catch (IOException e){
+            System.out.println("Error! Server non raggiungibile");
+            return;
+        }
+    }
+
+    private static void askUserInput(){
         while(! isValidIp(config.getIp())){
             System.out.println("Please insert ip (X.X.X.X): ");
             config.setIp(new Scanner(System.in).nextLine());
@@ -44,16 +63,6 @@ public class ClientMain{
         while(! isValidInterface(config.getUserInterface() )){
             System.out.println("Please insert user interface (cli or gui): ");
             config.setUserInterface(new Scanner(System.in).nextLine());
-        }
-
-
-        try {
-            Client client = new Client(config.getIp(), config.getPort(), config.getLink(), config.getUserInterface());
-            client.startClient();
-        }
-        catch (IOException e){
-            System.out.println("Error! Server non raggiungibile");
-            return;
         }
     }
 
@@ -109,6 +118,10 @@ public class ClientMain{
                     config.setUserInterface(nextArgument);
 
                     break;
+                case "-h":
+                    printHelpScreen();
+                    return;
+
                 default:
                     break;
 
