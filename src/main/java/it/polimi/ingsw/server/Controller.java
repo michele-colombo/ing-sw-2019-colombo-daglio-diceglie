@@ -337,10 +337,10 @@ public class Controller implements VisitorServer {
     }
 
     public void checkStart(){
-        if(!gameModel.tooFewPlayers() && gameModel.getActivePlayers() < 5 && !loginTimerStarted){
+        if(!gameModel.tooFewPlayers() && gameModel.howManyActivePlayers() < 5 && !loginTimerStarted){
             //loginTimer.schedule(new LoginTimer(this), delayLogin);
             loginTimerStarted = true;
-        } else if(gameModel.getActivePlayers() == 5){
+        } else if(gameModel.howManyActivePlayers() == 5){
             startMatch();
             loginTimer.cancel();
             loginTimerStarted = false;

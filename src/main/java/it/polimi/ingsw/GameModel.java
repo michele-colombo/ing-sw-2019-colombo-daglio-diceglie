@@ -38,8 +38,11 @@ public class GameModel implements Observable {
 
     public GameModel(){
         activePlayers = new ArrayList<>();
+        activePlayers.clear();
         inactivePlayers = new ArrayList<>();
+        inactivePlayers.clear();
         spawningPlayers = new ArrayList<>();
+        spawningPlayers.clear();
         match = null;
         matchInProgress = false;
         currBackup = null;
@@ -137,7 +140,7 @@ public class GameModel implements Observable {
             p.addPowerUp(match.getStackManager().drawPowerUp());
         }
         match.addWaitingFor(p);
-        spawningPlayers.add(p);
+        if (!spawningPlayers.contains(p)) spawningPlayers.add(p);
         p.setState(SPAWN);
         p.resetSelectables();
         p.setSelectablePowerUps(p.getPowerUps());
@@ -389,9 +392,9 @@ public class GameModel implements Observable {
                 try {
                     po.getEffects().get(0).start(p, match);
                 } catch (ApplyEffectImmediatelyException e){
-                    po.getEffects().get(0).applyOn(p, match.getCurrentPlayer(), null, match);
+                    po.getEffects().get(0).applyOn(p, null, null, match);
                     //calls applyOn and not ChoosePowerUpTarget() because with tagback always have one effect
-                    //or like that: po.getEffects().get(0).applyOn(p, null, null, match);
+                    //or like that: po.getEffects().get(0).applyOn(p, match.getCurrentPlayer(), null, match);
                 }
                 if (match.getWaitingFor().isEmpty()){
                     match.addWaitingFor(match.getCurrentPlayer());
@@ -565,6 +568,7 @@ public class GameModel implements Observable {
         } catch(NoSuchObserverException e){
             e.printStackTrace();
         }
+        //todo: add check players.size and throw exception
     }
 
     public Player getPlayerByObserver(Observer observer) throws NoSuchObserverException {
@@ -640,6 +644,18 @@ public class GameModel implements Observable {
         return match.getWaitingFor();
     }
 
+    public List<Player> getActivePlayers() {
+        return activePlayers;
+    }
+
+    public List<Player> getInactivePlayers() {
+        return inactivePlayers;
+    }
+
+    public List<Player> getSpawningPlayers() {
+        return spawningPlayers;
+    }
+
     public void notify(MessageVisitable messageVisitable, Observer observer){
         observer.update(messageVisitable);
     }
@@ -662,7 +678,7 @@ public class GameModel implements Observable {
         return match.getWinners();
     }
 
-    public int getActivePlayers(){
+    public int howManyActivePlayers(){
         return activePlayers.size();
     }
 

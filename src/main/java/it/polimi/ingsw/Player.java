@@ -461,8 +461,12 @@ public class Player {
      * @param po powerup to add
      */
     public void addPowerUp(PowerUp po){
-        if (po != null){
-            powerUps.add(po);
+        if (po != null && !powerUps.contains(po)){
+            if (!powerUps.contains(po)){
+                powerUps.add(po);
+            } else {
+                assert (false): "trying to add a duplicate powerUp";
+            }
         } else {
             assert(false): "trying to add a null powerup";
         }
