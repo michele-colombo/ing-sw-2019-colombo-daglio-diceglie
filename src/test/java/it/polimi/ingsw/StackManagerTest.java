@@ -60,7 +60,7 @@ public class StackManagerTest {
         assertTrue(l.containsAll(s.getAmmoTilesActiveStack()));
         assertTrue(l.containsAll(s.getAmmoTilesWasteStack()));
 
-        List<AmmoTile> somma= new ArrayList<AmmoTile>();
+        List<AmmoTile> somma= new ArrayList<>();
         somma.addAll(s.getAmmoTilesActiveStack());
         somma.addAll(s.getAmmoTilesWasteStack());
 
@@ -119,7 +119,7 @@ public class StackManagerTest {
     public void buildingStacks(){
     StackManager sm= new StackManager();
 
-    assertTrue(sm.getOriginalWeaponArsenal().get(0).getName() == "Lock rifle");
+    assertEquals(sm.getOriginalWeaponArsenal().get(0).getName(), "Lock rifle");
 
     assertEquals(sm.getOriginalWeaponArsenal().size(), 21);
     assertEquals(sm.getOriginalAmmoTiles().size(), 36);
@@ -143,5 +143,30 @@ public class StackManagerTest {
     }
     sm.discardPowerUp(sm.drawPowerUp());
     assertEquals(sm.getPowerUpActiveStack().size(), 23);
+    }
+
+    @Test
+    public void powerUpsLoadingTest(){
+    StackManager sm= new StackManager();
+    assertEquals(sm.getOriginalPowerUps().size(), 24);
+
+    for(int i=0; i< sm.getOriginalPowerUps().size(); i++) {
+        assertEquals(sm.getOriginalPowerUps().get(i).toString().charAt(0), String.valueOf(i).charAt(0));
+        assertTrue(sm.getOriginalPowerUps().get(i).getEffects().size()!=0);
+    }
+
+    }
+
+    @Test
+    public void weaponsLoadingTest(){
+    StackManager sm= new StackManager();
+
+    assertEquals(sm.getOriginalWeaponArsenal().size(), 21);
+
+    for(int i=0; i<sm.getOriginalWeaponArsenal().size(); i++){
+        assertTrue( sm.getOriginalWeaponArsenal().get(i).getSelectableModes(new ArrayList<>()).size() >0);
+    }
+
+    assertEquals(sm.getOriginalWeaponArsenal().get(1).getName(), "Machine gun");
     }
 }

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 public class StackManager {
@@ -20,35 +21,25 @@ public class StackManager {
     private List<AmmoTile> originalAmmoTiles;
 
     private List<Weapon> loadOriginalWeaponArsenal(){
-        List<Weapon> result= new ArrayList<>();
-        result.addAll(new WeaponBuilder().getWeapons());
+        Gson gson= new Gson();
+        List<Weapon> result;
+
+        InputStream url= getClass().getClassLoader().getResourceAsStream("weapons.json");
+        Scanner sc= new Scanner(url);
+
+        result= Arrays.asList( gson.fromJson(sc.nextLine(), Weapon[].class));
 
         return result;
     }
 
     private List<PowerUp> loadOriginalPowerups(){
-        List<PowerUp> result= new ArrayList<>();
-        int id = 0;
-        for (Color color : Color.getAmmoColors()){
-            for (int i=0; i<2; i++){
-                PowerUp newPowerUp = new PowerUp(color, PowerUpType.TAGBACK_GRENADE, "Tagback granade");
-                newPowerUp.setPowerUpID(id);
-                id++;
-                result.add(newPowerUp);
-                newPowerUp = new PowerUp(color, PowerUpType.TARGETING_SCOPE, "Targeting scope");
-                newPowerUp.setPowerUpID(id);
-                id++;
-                result.add(newPowerUp);
-                newPowerUp = new PowerUp(color, PowerUpType.ACTION_POWERUP, "Newton");
-                newPowerUp.setPowerUpID(id);
-                id++;
-                result.add(newPowerUp);
-                newPowerUp = new PowerUp(color, PowerUpType.ACTION_POWERUP, "Teleporter");
-                newPowerUp.setPowerUpID(id);
-                id++;
-                result.add(newPowerUp);
-            }
-        }
+        Gson gson= new Gson();
+        List<PowerUp> result;
+
+        InputStream url= getClass().getClassLoader().getResourceAsStream("powerUps.json");
+        Scanner sc= new Scanner(url);
+        result= Arrays.asList( gson.fromJson(sc.nextLine(), PowerUp[].class) );
+
         return result;
     }
 
