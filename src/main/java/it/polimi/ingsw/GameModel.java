@@ -78,9 +78,10 @@ public class GameModel implements Observable {
             Backup tempBackup = Backup.initFromFile(backupName);
             if (tempBackup.getPlayerNames().containsAll(getAllPlayerNames()) && getAllPlayerNames().containsAll(tempBackup.getPlayerNames())){
                 //all names match
+                //todo: players order
                 int layoutConfig = tempBackup.getLayoutConfig();
                 match = new Match(layoutConfig, 8);
-                for (Player p : allPlayers()){ //activePlayers only? or all players?
+                for (Player p : allPlayers()){
                     match.addPlayer(p);
                 }
                 tempBackup.restore(match);
@@ -113,6 +114,7 @@ public class GameModel implements Observable {
             p.setColor(PlayerColor.values()[allPlayers().indexOf(p)]);
         }
         matchInProgress = true;
+        allPlayers().get(0).setFirstPlayer(true);
         beginNextTurn();
     }
 
@@ -497,6 +499,10 @@ public class GameModel implements Observable {
     private void saveSnapshot(Match match){
         currBackup = new Backup(match);
         currBackup.saveOnFile(backupName);
+    }
+
+    public Backup createMatchBackup(){
+        return new Backup(match);
     }
 
     public void restore(){

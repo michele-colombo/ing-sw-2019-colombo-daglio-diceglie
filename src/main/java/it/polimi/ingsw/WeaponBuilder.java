@@ -59,7 +59,7 @@ public class WeaponBuilder {
         weapons.add(weaponInConstruction);
 
         //building thor
-        weaponInConstruction= new Weapon("T.H.O.R", new Cash(1, 1, 0), BLUE);
+        weaponInConstruction= new Weapon("T.H.O.R.", new Cash(1, 1, 0), BLUE);
 
         m1= new Mode(true, -1, "basic effect", "Deal 2 damage to 1 target you can see.", new Cash());
         m1.addEffect(new Effect(0,1,-1,-1,-1,1,1,-1,-1,0,2,0,-1));

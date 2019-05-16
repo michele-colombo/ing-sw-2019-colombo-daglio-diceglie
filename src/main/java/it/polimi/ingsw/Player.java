@@ -660,7 +660,6 @@ public class Player {
             }
             result.append("\n");
         }
-        result.append("\n\n");
         return result.toString();
     }
 
@@ -719,5 +718,10 @@ public class Player {
 
     public void setAnotherTurn(boolean anotherTurn) {
         this.hasAnotherTurn = anotherTurn;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

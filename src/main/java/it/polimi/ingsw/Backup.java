@@ -525,6 +525,10 @@ public class Backup {
         return result;
     }
 
+    public int getPlayerIndex(String name){
+        return getPlayerNames().indexOf(name);
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof Backup)) return false;

@@ -15,6 +15,7 @@ import java.util.Scanner;
 
 public class PlayingTest {
     private static final String backupPath = "./src/main/resources/backups/";
+    private static final String testBackupPath = "./src/test/resources/savedGamesForTest/";
     public static void main(String[] args){
 
         GameModel gm = new GameModel();
@@ -25,17 +26,15 @@ public class PlayingTest {
         String choice = new Scanner(System.in).nextLine();
         if(choice.toLowerCase().equals("new")){
 
-            Player p1 = new Player("antonio");
-            Player p2 = new Player("gianfranco");
-            Player p3 = new Player("enrico");
-            Player p4 = new Player("matteo");
-            Player p5 = new Player("evila");
+            Player p1 = new Player("first");
+            Player p2 = new Player("second");
+            Player p3 = new Player("third");
+            Player p4 = new Player("fourth");
             try{
                 gm.addPlayer(p1);
                 gm.addPlayer(p2);
                 gm.addPlayer(p3);
                 gm.addPlayer(p4);
-                gm.addPlayer(p5);
             } catch(NameAlreadyTakenException | AlreadyLoggedException | GameFullException | NameNotFoundException e){
             }
             gm.startMatch();
@@ -305,7 +304,7 @@ public class PlayingTest {
                             Backup b1 = new Backup(match);
                             System.out.println("Insert file name (without .json):");
                             String name = new Scanner(System.in).nextLine();
-                            b1.saveOnFile(name);
+                            b1.saveOnFile(testBackupPath, name);
                             break;
                         case "back":
                             System.out.println("Insert file to restore (only for test)");
