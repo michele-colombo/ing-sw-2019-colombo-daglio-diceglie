@@ -22,6 +22,7 @@ public class Effect {
     private int damageNumber;
     private int markNumber;
     private int setTempSquare;
+    private int setTempPlayer;
 
     private Effect effectToAdd;
 
@@ -39,6 +40,8 @@ public class Effect {
         this.damageNumber = damageNumber;
         this.markNumber = markNumber;
         this.setTempSquare = setTempSquare;
+
+        this.setTempPlayer= -1;
 
         this.effectToAdd = null;
     }
@@ -58,6 +61,10 @@ public class Effect {
         this.markNumber = markNumber;
         this.setTempSquare = setTempSquare;
         this.effectToAdd = effectToAdd;
+    }
+
+    public void setSetTempPlayer(int setTempPlayer) {
+        this.setTempPlayer = setTempPlayer;
     }
 
     public String toString(){
@@ -87,6 +94,7 @@ public class Effect {
             case 0: sb.append("me"); break;
             case 1: sb.append("last damaged"); break;
             case 2: sb.append("temp sqare"); break;
+            case 3: sb.append(("temp player")); break;
             default: sb.append("ERROR"); break;
         }
 
@@ -143,6 +151,7 @@ public class Effect {
             case 0: sb.append("me"); break;
             case 1: sb.append("selected player"); break;
             case 2: sb.append("last damaged"); break;
+            case 3: sb.append("temp player"); break;
             default: sb.append("ERROR"); break;
         }
 
@@ -167,6 +176,7 @@ public class Effect {
             case 5: sb.append("all in temp square"); break;
             case 6: sb.append("all near me"); break;
             case 7: sb.append("all in temp square except last damaged"); break;
+            case 8: sb.append("shooter"); break;
             default: sb.append("ERROR"); break;
         }
 
@@ -229,6 +239,16 @@ public class Effect {
                     System.out.println("MANCA IL TEMP SQUARE");
                 }
                 break;
+            //TEMP PLAYER
+            case 3:
+                if(m.getCurrentAction().getChosenPlayer() != null){
+                    startingSquare= m.getCurrentAction().getChosenPlayer().getSquarePosition();
+                }
+                else{
+                    System.out.println("MANCA IL TEMP PLAYER");
+                }
+
+
 
             default: System.out.println("NUMERO SBAGLIATO STARTINGPOINT"); break;
 
@@ -376,6 +396,8 @@ public class Effect {
             case 1: movingPlayer= targetP; break;
             //LAST DAMAGED
             case 2: movingPlayer= m.getCurrentAction().getLastDamaged(); break;
+            //chosen player
+            case 3: movingPlayer= m.getCurrentAction().getChosenPlayer(); break;
 
             default: System.out.println("NUMERO SBAGLIATO WHOTOMOVE"); break;
         }
@@ -461,6 +483,12 @@ public class Effect {
                 playersToShoot.remove(m.getCurrentAction().getLastDamaged());
                 break;
 
+            //SHOOTER
+            case 8:
+                playersToShoot.clear();
+                playersToShoot.add(m.getCurrentPlayer());
+                break;
+
             default: System.out.println("NUMERO SBAGLIATO WHOTODAMAGE");
 
         }
@@ -476,6 +504,21 @@ public class Effect {
             for(Player toShoot: playersToShoot){
                 toShoot.getDamageTrack().addMark(source, markNumber);
             }
+        }
+
+        switch (setTempSquare){
+            case -1: break;//sb.append("don't set");
+            case 0: m.getCurrentAction().setChosenSquare(targetS); break; //sb.append("selected square");
+            case 1: m.getCurrentAction().setChosenSquare(targetP.getSquarePosition()); break; //sb.append("selected player's square");
+            case 2: m.getCurrentAction().setChosenSquare(source.getSquarePosition()); break; //sb.append("my square");
+            default: System.out.println("NUMERO SBAGLIATO SETTEMPSQUARE"); break;
+        }
+
+        switch (setTempPlayer){
+            case -1: break; //don't set
+            case 0: m.getCurrentAction().setChosenPlayer(targetP); break; //selected player
+            case 1: m.getCurrentAction().setChosenPlayer(source); break; //me
+            default: System.out.println("NUMERO SBAGLIATO SETTEMPPLAYER"); break;
         }
 
         return effectToAdd;

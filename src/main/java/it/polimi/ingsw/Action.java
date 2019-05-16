@@ -61,6 +61,8 @@ public class Action {
      */
     private Square chosenSquare;
 
+    private Player chosenPlayer;
+
 
     /**
      * Constructs an action specifying the effects on the turn status
@@ -211,7 +213,15 @@ public class Action {
         return chosenSquare;
     }
 
+    public Player getChosenPlayer() {
+        return chosenPlayer;
+    }
+
     public void setChosenSquare(Square chosenSquare) {
         this.chosenSquare = chosenSquare;
+    }
+
+    public void setChosenPlayer(Player chosenPlayer) {
+        this.chosenPlayer = chosenPlayer;
     }
 }

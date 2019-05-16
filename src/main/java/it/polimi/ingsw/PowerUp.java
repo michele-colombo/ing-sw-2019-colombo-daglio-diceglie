@@ -1,5 +1,6 @@
 package it.polimi.ingsw;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PowerUp{
@@ -14,6 +15,8 @@ public class PowerUp{
         this.color = color;
         this.type = type;
         this.name = name;
+
+        this.effects= new ArrayList<>(); //added by Giuseppe: list must not be NULL
     }
 
     public Color getColor() {
