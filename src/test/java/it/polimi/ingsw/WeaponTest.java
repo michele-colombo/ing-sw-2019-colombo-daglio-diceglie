@@ -220,7 +220,4 @@ public class WeaponTest {
         assertTrue(check != currentState);
     }
 
-
-
-
 }
