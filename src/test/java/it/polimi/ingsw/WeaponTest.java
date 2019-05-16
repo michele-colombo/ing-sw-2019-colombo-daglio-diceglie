@@ -215,7 +215,9 @@ public class WeaponTest {
         printMap(p4.getDamageTrack().getMarkMap());
         printSel(p1);
         Backup check = Backup.initFromFile(testBackupPath, "lockRifleTestAfter");
-        //assertEquals(check, new Backup(gm.getMatch()));
+        Backup currentState = new Backup((gm.getMatch()));
+        assertEquals(check, currentState);
+        assertTrue(check != currentState);
     }
 
 

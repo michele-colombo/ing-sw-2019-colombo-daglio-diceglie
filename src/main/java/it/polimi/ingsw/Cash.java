@@ -65,6 +65,13 @@ public class Cash {
         return (blue <= c.blue && red <= c.red && yellow <= c.yellow);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Cash)) return false;
+        Cash other = (Cash)obj;
+        return this.isEqual(other);
+    }
+
     public boolean isEqual(Cash c){
         return (blue == c.blue && red == c.red && yellow == c.yellow);
     }

@@ -119,6 +119,35 @@ public class Backup {
             p.getCredit().set(credit);
             p.getPending().set(pending);
         }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof PlayerBackup)) return false;
+            PlayerBackup other = (PlayerBackup)obj;
+            if (!(name.equals(other.name))) return false;
+            if (!(color.equals(other.color))) return false;
+            if (isBorn != other.isBorn) return false;
+            if (isBeforeFirst != other.isBeforeFirst) return false;
+            if (hasAnotherTurn != other.hasAnotherTurn) return false;
+            if (points != other.points) return false;
+            if (state != other.state) return false;
+            if (nextState != other.nextState) return false;
+            if (isFirstPlayer != other.isFirstPlayer) return false;
+            if (squarePosition == null){
+                if (other.squarePosition != null) return false;
+            } else if (!(squarePosition.equals(other.squarePosition))) return false;
+            if (skullsNumber != other.skullsNumber) return false;
+            if (isFrenzy != other.isFrenzy) return false;
+            if (!(damageList.equals(((PlayerBackup) obj).damageList))) return false;
+            if (!(markMap.equals(other.markMap))) return false;
+            if (!(weapons.equals(other.weapons))) return false;
+            if (!(powerUps.equals(other.powerUps))) return false;
+            if (!(wallet.equals(other.wallet))) return false;
+            if (!(pending.equals(other.pending))) return false;
+            if (!(credit.equals(other.credit))) return false;
+
+            return true;
+        }
     }
 
     private class KillShotTrackBackup{
@@ -174,6 +203,18 @@ public class Backup {
                 tempKillingOrder.add(match.getPlayerFromName(name));
             }
             k.setKillingOrder(tempKillingOrder);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof KillShotTrackBackup)) return false;
+            KillShotTrackBackup other = (KillShotTrackBackup)obj;
+            if (skulls != other.skulls) return false;
+            if (!(track.equals(other.track))) return false;
+            if (!(killingCounter.equals(other.killingCounter))) return false;
+            if (!(killingOrder.equals(other.killingOrder))) return false;
+
+            return true;
         }
     }
 
@@ -244,6 +285,18 @@ public class Backup {
             stackManager.initAmmoTilesWasteStack(tempAmmoTilesWaste);
         }
 
+        @Override
+        public boolean equals(Object obj) {
+            if (!( obj instanceof StackManagerBackup)) return false;
+            StackManagerBackup other = (StackManagerBackup)obj;
+            if (!(weaponActiveStack.equals(other.weaponActiveStack))) return false;
+            if (!(powerUpActiveStack.equals(other.powerUpActiveStack))) return false;
+            if (!(powerUpWasteStack.equals(other.powerUpWasteStack))) return false;
+            if (!(ammoTilesActiveStack.equals(other.ammoTilesActiveStack))) return false;
+            if (!(ammoTilesWasteStack.equals(other.ammoTilesWasteStack))) return false;
+
+            return true;
+        }
     }
 
     private class LayoutBackup{
@@ -306,6 +359,19 @@ public class Backup {
                 tempAmmoSquare.setAmmo(match.getStackManager().getAmmoTileFromString(entry.getValue()));
             }
         }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof LayoutBackup)) return false;
+            LayoutBackup other = (LayoutBackup)obj;
+            if (layoutConfiguration != other.layoutConfiguration) return false;
+            if (!(blueWeapons.equals(other.blueWeapons))) return false;
+            if (!(redWeapons.equals(other.redWeapons))) return false;
+            if (!(yellowWeapons.equals(other.yellowWeapons))) return false;
+            if (!(ammosTilesInSquares.equals(other.ammosTilesInSquares))) return false;
+
+            return true;
+        }
     }
 
     private class MatchBackup{
@@ -340,6 +406,25 @@ public class Backup {
             match.setAlreadyCompleted(alreadyCompleted);
             match.setCurrentPlayer(match.getPlayerFromName(currentPlayer));
             //todo: restore waitingFor or not (it is recreated when resuming game)
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof MatchBackup)) return false;
+            MatchBackup other = (MatchBackup)obj;
+            if (frenzyOn != other.frenzyOn) return false;
+            if (numberOfActions != other.numberOfActions) return false;
+            if (actionsCompleted != other.actionsCompleted) return false;
+            if (onlyReload != other.onlyReload) return false;
+            if (turnCompletable != other.turnCompletable) return false;
+            if (alreadyCompleted != other.alreadyCompleted) return false;
+            if (!(currentPlayer.equals(other.currentPlayer))) return false;
+
+            Set waitingForSet = new HashSet(waitingFor);
+            Set otherWaitingForSet = new HashSet(other.waitingFor);
+            if (!(waitingForSet.equals(otherWaitingForSet))) return false;
+
+            return true;
         }
     }
 
@@ -389,9 +474,13 @@ public class Backup {
 
     public Backup (){}
 
-    public boolean saveOnFile(String name) {
+    public boolean saveOnFile(String name){
+        return saveOnFile(filePath, name);
+    }
+
+    public boolean saveOnFile(String path, String name) {
         Gson gson = new Gson();
-        File file = new File(filePath+name+".json");
+        File file = new File(path+name+".json");
         //File file= new File(getClass().getClassLoader().getResource("backup" + name + ".json").getFile());
         FileWriter fw;
         try {
@@ -436,4 +525,15 @@ public class Backup {
         return result;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Backup)) return false;
+        Backup other = (Backup)obj;
+
+        return playerBackups.equals(other.playerBackups) &&
+                killShotTrackBackup.equals((other.killShotTrackBackup)) &&
+                layoutBackup.equals(other.layoutBackup) &&
+                stackManagerBackup.equals(other.stackManagerBackup) &&
+                matchBackup.equals(other.matchBackup);
+    }
 }
