@@ -31,91 +31,65 @@ public class DamageTrackTest {
         final int mark3 = 12;
         final int mark4 = 2;
 
+        final int assert1 = 0;
+        final int assert2 = 3;
+        final int assert3 = 3;
+        final int assert4 = 3;
+        final int assert5 = 2;
+
         normalDamageTrack.addMark(first, mark2);
-        assertEquals(0, normalDamageTrack.getMarkMap().get(first));
+        assertEquals(assert1, normalDamageTrack.getMarkMap().get(first));
 
         normalDamageTrack.addMark(first, mark1);
-        assertEquals(3, normalDamageTrack.getMarkMap().get(first));
+        assertEquals(assert2, normalDamageTrack.getMarkMap().get(first));
 
         normalDamageTrack.addMark(first, mark2);
-        assertEquals(3, normalDamageTrack.getMarkMap().get(first));
+        assertEquals(assert3, normalDamageTrack.getMarkMap().get(first));
 
         normalDamageTrack.addMark(first, mark3);
-        assertEquals(3, normalDamageTrack.getMarkMap().get(first));
+        assertEquals(assert4, normalDamageTrack.getMarkMap().get(first));
 
         normalDamageTrack.addMark(second, mark4);
-        assertEquals(2, normalDamageTrack.getMarkMap().get(second));
+        assertEquals(assert5, normalDamageTrack.getMarkMap().get(second));
     }
-@Test
-    public void controlloCoseStrane(){
-        DamageTrack d = new NormalDamageTrack();
 
-        assertFalse(d.getMarkMap()==null);
-        Player willy= new Player();
-        Player ghidotti= new Player();
-        Player piero= new Player();
-
-        d.addDamage(willy, 3);
-        d.addDamage(ghidotti, 4);
-        d.addMark(piero, 1);
-        d.addDamage(piero, 1);
-        d.addDamage(willy, 4);
-
-        ArrayList<Player> damage = new ArrayList<>();
-
-        for(int i=0; i<3; i++) damage.add(willy);
-        for(int i=0; i<4; i++) damage.add(ghidotti);
-        for(int i=0; i<2; i++) damage.add(piero);
-        for(int i=0; i<3; i++) damage.add(willy);
-
-        Map<Player, Integer> mark= new HashMap<>();
-
-        Map<Player, Integer> wdy= new HashMap<>();
-
-        wdy.put(willy, 6);
-        wdy.put(ghidotti, 4);
-        wdy.put(piero, 2);
-
-        assertEquals(d.whoDamagedYou(), wdy );
-        assertEquals(d.getDamageList(), damage);
-        assertEquals(d.getMarkMap(), mark);
-        Map<Player, Integer> temp = new HashMap<Player, Integer>();
-        temp.put(willy, 2);
-        assertEquals(d.howDoTheyKilledYou(), temp);
-        assertEquals(d.getMostPowerfulDamagerIn(wdy), willy);
-
-
-    }
     @Test
-    public void vadoOltreDodici(){
-        DamageTrack d= new NormalDamageTrack();
+    public void damageAndReset(){
+        normalDamageTrack.addDamage(first, 5);
+        normalDamageTrack.addDamage(second, 2);
+        normalDamageTrack.addDamage(third, 2);
 
-        Player a= new Player();
-        Player b= new Player();
-        Player c= new Player();
+        assertEquals(5, normalDamageTrack.whoDamagedYou().get(first));
+        assertEquals(first, normalDamageTrack.getDamageList().get(0));
 
+        normalDamageTrack.addDamage(first, 1);
+        assertEquals(6, normalDamageTrack.whoDamagedYou().get(first));
 
-        d.addDamage(a, 5);
-        d.addDamage(b, 5);
-        d.addDamage(c, 5);
+        normalDamageTrack.resetAfterDeath();
+        assertEquals(0, normalDamageTrack.getDamageList().size());
+        assertEquals(1, normalDamageTrack.getSkullsNumber());
 
-        List<Player> l = new ArrayList<>();
-        for(int i=0; i<5; i++) l.add(a);
-        for(int i=0; i<5; i++) l.add(b);
-        for(int i=0; i<2; i++) l.add(c);
+    }
 
-        assertEquals(l, d.getDamageList());
-        assertEquals(d.getSkullsNumber(), 0);
-        assertEquals(d.score().get(a), (Integer) 9);
-        assertEquals(d.score().get(b), (Integer) 6);
-        assertEquals(d.score().get(c), (Integer) 4);
+    @Test
+    public void damageAndMarks(){
+        normalDamageTrack.addMark(first, 2);
+        normalDamageTrack.addDamage(second, 2);
+        assertTrue(normalDamageTrack.getDamageList().contains(second) && normalDamageTrack.getDamageList().size() == 2);
 
-        assertTrue(d.getMarkMap().isEmpty());
-        assertEquals(d.getAdrenaline(), 2);
+        normalDamageTrack.addDamage(first, 1);
+    }
 
-        ((NormalDamageTrack) d).increaseSkull();
+    @Test
+    public void getAdrenaline(){
+        normalDamageTrack.addDamage(first, 2);
+        assertEquals(0, normalDamageTrack.getAdrenaline());
 
+        normalDamageTrack.addDamage(second, 3);
+        assertEquals(1, normalDamageTrack.getAdrenaline());
 
+        normalDamageTrack.addDamage(third, 9);
+        assertEquals(2, normalDamageTrack.getAdrenaline());
     }
 
 }

@@ -329,6 +329,7 @@ public class Controller implements VisitorServer {
             System.out.println("Player already disconnected!");
         } finally {
             checkStopMatch();
+            removeObserverFromTimers(observer);
         }
     }
 
@@ -339,6 +340,7 @@ public class Controller implements VisitorServer {
             List<Player> players = gameModel.getMatch().getWinners();
             String rank = gameModel.getMatch().getRank();
             //todo creare un messaggio di disconnessione e un altro che incapsula la classifica finale
+            //todo fermare tutti i timer
         }
     }
 
@@ -372,11 +374,19 @@ public class Controller implements VisitorServer {
         if(timers.get(observer) == null){
             Timer timer = new Timer();
             timers.replace(observer, timer);
-            timers.get(observer).schedule(new InputTimer(this, observer), 12000);
+            timers.get(observer).schedule(new InputTimer((ServerView)observer), 12000); //todo sistemare i cast
         }
     }
 
     public void removeTimer(Observer observer){
+        if(timers.get(observer) != null){
+            timers.get(observer).cancel();
+        }
         timers.replace(observer, null);
+    }
+
+    public void removeObserverFromTimers(Observer observer){
+        removeTimer(observer);
+        timers.remove(observer);
     }
 }
