@@ -23,6 +23,10 @@ public class GameModelTest {
         }
     }
 
+    public void printSel(Player p){
+        System.out.println(p.selectablesToString());
+    }
+
     public <T> void printList(List<T> list){
         System.out.println("printing a list:");
         for (T t : list){
@@ -81,7 +85,7 @@ public class GameModelTest {
     @Test
     public void nextActivePlayerWithFourPlayers() {
         GameModel gm = new GameModel();
-        Player p1, p2, p3, p4, p5;
+        Player p1, p2, p3, p4;
         List<Player> newPlayers = new ArrayList<>();
         newPlayers.add(p1 = new Player("primo giocatore"));
         newPlayers.add(p2 = new Player("secondo giocatore"));
@@ -121,8 +125,127 @@ public class GameModelTest {
         } catch (GameOverException e){}
     }
 
-    public void printSel(Player p){
-        System.out.println(p.selectablesToString());
+    @Test
+    public void nextActivePlayerWithActivePlayersInADifferentOrder(){
+        GameModel gm = new GameModel();
+        Player p1, p2, p3, p4;
+        List<Player> newPlayers = new ArrayList<>();
+        newPlayers.add(p1 = new Player("primo giocatore"));
+        newPlayers.add(p2 = new Player("secondo giocatore"));
+        newPlayers.add(p3 = new Player("terzo giocatore"));
+        newPlayers.add(p4 = new Player("quarto giocatore"));
+
+        addPlayers(gm, newPlayers);
+        gm.startNewMatch();
+        List<Player> activePlayers = gm.getActivePlayers();
+        activePlayers.add(activePlayers.remove(1));
+        activePlayers.add(activePlayers.remove(0));
+        //now activePlayers is {2,3,1,0}
+
+        Player currP = null;
+
+        try {
+            currP = gm.nextActivePlayer(null);
+            assertEquals(p1, currP);
+            currP = gm.nextActivePlayer(null);
+            assertEquals(p1, currP);
+
+            currP = gm.nextActivePlayer(p1);
+            assertEquals(p2, currP);
+
+            currP = gm.nextActivePlayer(p2);
+            assertEquals(p3, currP);
+
+            currP = gm.nextActivePlayer(p3);
+            assertEquals(p4, currP);
+
+            currP = gm.nextActivePlayer(p4);
+            assertEquals(p1, currP);
+
+            currP = gm.nextActivePlayer(p4);
+            assertEquals(p1, currP);
+
+            currP = gm.nextActivePlayer(p3);
+            assertEquals(p4, currP);
+
+            currP = gm.nextActivePlayer(null);
+            assertEquals(p1, currP);
+        } catch (GameOverException e){}
+    }
+
+    @Test
+    public void nextActivePlayerWithActivePlayersVarying() {
+        GameModel gm = new GameModel();
+        Player p1, p2, p3, p4, p5;
+        List<Player> newPlayers = new ArrayList<>();
+        newPlayers.add(p1 = new Player("primo giocatore"));
+        newPlayers.add(p2 = new Player("secondo giocatore"));
+        newPlayers.add(p3 = new Player("terzo giocatore"));
+        newPlayers.add(p4 = new Player("quarto giocatore"));
+        newPlayers.add(p5 = new Player("quinto giocatore"));
+
+        addPlayers(gm, newPlayers);
+        gm.startNewMatch();
+        Player currP = null;
+
+        try {
+            currP = gm.nextActivePlayer(null);
+            assertEquals(p1, currP);
+            currP = gm.nextActivePlayer(null);
+            assertEquals(p1, currP);
+
+            currP = gm.nextActivePlayer(p1);
+            assertEquals(p2, currP);
+
+            currP = gm.nextActivePlayer(p2);
+            assertEquals(p3, currP);
+
+            currP = gm.nextActivePlayer(p3);
+            assertEquals(p4, currP);
+
+            currP = gm.nextActivePlayer(p4);
+            assertEquals(p5, currP);
+
+            //p1 has disconnected
+            gm.getActivePlayers().remove(p1);
+            currP = gm.nextActivePlayer(p5);
+            assertEquals(p2, currP);
+
+            currP = gm.nextActivePlayer(p2);
+            assertEquals(p3, currP);
+
+            //p4 has disconnected
+            gm.getActivePlayers().remove(p4);
+            currP = gm.nextActivePlayer(p3);
+            assertEquals(p5, currP);
+
+            //p1 has riconnected
+            gm.getActivePlayers().add(p1);
+            currP = gm.nextActivePlayer(p5);
+            assertEquals(p1, currP);
+
+            //p4 has riconnected
+            //p2 and p3 have disconnected
+            gm.getActivePlayers().add(p4);
+            gm.getActivePlayers().remove(p2);
+            gm.getActivePlayers().remove(p3);
+            currP = gm.nextActivePlayer(p1);
+            assertEquals(p4, currP);
+
+            currP = gm.nextActivePlayer(p4);
+            assertEquals(p5, currP);
+
+            currP = gm.nextActivePlayer(p5);
+            assertEquals(p1, currP);
+
+            //p3 has riconnected
+            gm.getActivePlayers().add(p3);
+            currP = gm.nextActivePlayer(p1);
+            assertEquals(p3, currP);
+
+            printList(gm.getActivePlayers());
+
+        } catch (GameOverException e){}
     }
 
     @Test
@@ -371,6 +494,10 @@ public class GameModelTest {
         gm.grabThere(p4, s4);
         assertEquals(s4, p4.getSquarePosition());
         if (p4.getState() == PlayerState.CHOOSE_ACTION) gm.endTurn();
+
+        for (Player p : gm.getMatch().getPlayers()){
+            gm.createUpdateMessageForPlayer(p);
+        }
     }
 
     @Test
@@ -553,7 +680,4 @@ public class GameModelTest {
         assertEquals(PlayerState.SPAWN, p35.getState());
         assertEquals(2, p35.getSelectablePowerUps().size());
     }
-
-
-
 }

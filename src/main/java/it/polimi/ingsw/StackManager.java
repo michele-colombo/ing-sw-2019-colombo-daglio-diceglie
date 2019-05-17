@@ -36,7 +36,7 @@ public class StackManager {
         Gson gson= new Gson();
         List<PowerUp> result;
 
-        InputStream url= getClass().getClassLoader().getResourceAsStream("powerUps.json");
+    InputStream url= getClass().getClassLoader().getResourceAsStream("powerUps.json");
         Scanner sc= new Scanner(url);
         result= Arrays.asList( gson.fromJson(sc.nextLine(), PowerUp[].class) );
 

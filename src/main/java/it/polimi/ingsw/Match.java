@@ -531,4 +531,25 @@ public class Match {
     public boolean removeWaitingFor(Player p){
         return waitingFor.remove(p);
     }
+
+    public Player getNextPlayer(Player currP){
+        int index;
+        Player nextPlayer;
+        if (currP == null){
+            nextPlayer = players.get(0);    //if current player is null, returns the first player
+        } else {
+            index = players.indexOf(currP);
+            assert (index != -1);
+            if (index == players.size()-1){
+                nextPlayer = players.get(0);
+            } else {
+                nextPlayer = players.get(index + 1);
+            }
+        }
+        return nextPlayer;
+    }
+
+    public Player getFirstPlayer(){
+        return players.get(0);
+    }
 }

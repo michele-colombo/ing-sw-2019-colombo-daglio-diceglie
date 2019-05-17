@@ -51,15 +51,15 @@ public abstract class DamageTrack {
         this.markMap = markMap;
     }
 
-    protected List<Player> getDamageList() {
+    public List<Player> getDamageList() {
         return damageList;
     }
 
-    protected Map<Player, Integer> getMarkMap() {
+    public Map<Player, Integer> getMarkMap() {
         return markMap;
     }
 
-    protected int getSkullsNumber() {
+    public int getSkullsNumber() {
         return skullsNumber;
     }
 

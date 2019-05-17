@@ -5,6 +5,7 @@ import it.polimi.ingsw.server.events.LoginEvent;
 import it.polimi.ingsw.server.message.DisconnectionMessage;
 import it.polimi.ingsw.server.message.GenericMessage;
 import it.polimi.ingsw.server.message.LoginMessage;
+import it.polimi.ingsw.server.message.UpdateMessage;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -81,6 +82,10 @@ public class Client implements VisitorClient{
             System.out.println("Error while forwarding the login event!");
             e.printStackTrace();
         }
+    }
+
+    public void visit(UpdateMessage message){
+
     }
 
 }

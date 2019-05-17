@@ -1,14 +1,21 @@
 package it.polimi.ingsw;
 
+import com.google.gson.Gson;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.server.message.DisconnectionMessage;
 import it.polimi.ingsw.server.message.MessageVisitable;
+import it.polimi.ingsw.server.message.UpdateMessage;
 import it.polimi.ingsw.server.observer.Observable;
 import it.polimi.ingsw.server.observer.Observer;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 
 import static it.polimi.ingsw.PlayerState.*;
+import static java.lang.Math.random;
 
 public class GameModel implements Observable {
     /**
@@ -78,11 +85,10 @@ public class GameModel implements Observable {
             Backup tempBackup = Backup.initFromFile(backupName);
             if (tempBackup.getPlayerNames().containsAll(getAllPlayerNames()) && getAllPlayerNames().containsAll(tempBackup.getPlayerNames())){
                 //all names match
-                //todo: players order
                 int layoutConfig = tempBackup.getLayoutConfig();
                 match = new Match(layoutConfig, 8);
-                for (Player p : allPlayers()){
-                    match.addPlayer(p);
+                for (String name : tempBackup.getPlayerNames()){
+                    match.addPlayer(getPlayerByName(name));
                 }
                 tempBackup.restore(match);
                 matchInProgress = true;
@@ -113,8 +119,8 @@ public class GameModel implements Observable {
         for (Player p : allPlayers()){
             p.setColor(PlayerColor.values()[allPlayers().indexOf(p)]);
         }
+        match.getFirstPlayer().setFirstPlayer(true);
         matchInProgress = true;
-        allPlayers().get(0).setFirstPlayer(true);
         beginNextTurn();
     }
 
@@ -191,20 +197,12 @@ public class GameModel implements Observable {
      * @return Next active player
      */
     public Player nextActivePlayer(Player currP) throws GameOverException{
-        //todo: check if frenzyOn && nextPlayer = lastPlayer
-        int index;
         Player nextPlayer;
-        if (currP == null){
-            nextPlayer = activePlayers.get(0);    //if there's no curr player, return the first of the list
-        } else {
-            index = activePlayers.indexOf(currP);
-            assert (index != -1);
-            if (index == activePlayers.size()-1) {
-                nextPlayer = activePlayers.get(0);
-            } else {
-                nextPlayer = activePlayers.get(index + 1);
-            }
+        nextPlayer = match.getNextPlayer(currP);
+        while (!activePlayers.contains(nextPlayer)){
+            nextPlayer = match.getNextPlayer(nextPlayer);
         }
+
         if (!nextPlayer.hasAnotherTurn()){
             throw new GameOverException();
         } else {
@@ -686,5 +684,130 @@ public class GameModel implements Observable {
 
     public int howManyActivePlayers(){
         return activePlayers.size();
+    }
+
+    public UpdateMessage createUpdateMessageForPlayer(Player myPlayer){
+        UpdateMessage message = new UpdateMessage();
+
+        Layout layout = match.getLayout();
+        message.setLayoutConfiguration(layout.getLayoutConfiguration());
+
+        List<String> blueWeapons = new ArrayList<>();
+        for (Weapon w : layout.getSpawnPoint(Color.BLUE).getWeapons()){
+            blueWeapons.add(w.getName());
+        }
+        message.setBlueWeapons(blueWeapons);
+
+        List<String> redWeapons = new ArrayList<>();
+        for (Weapon w : layout.getSpawnPoint(Color.RED).getWeapons()){
+            redWeapons.add(w.getName());
+        }
+        message.setRedWeapons(redWeapons);
+
+        List<String> yellowWeapons = new ArrayList<>();
+        for (Weapon w : layout.getSpawnPoint(Color.YELLOW).getWeapons()){
+            yellowWeapons.add(w.getName());
+        }
+        message.setYellowWeapons(yellowWeapons);
+
+        Map<String, String> ammosTilesInSquares = new HashMap<>();
+        for (AmmoSquare as : layout.getAmmoSquares()){
+            if (as.getAmmo()!=null){
+                ammosTilesInSquares.put(as.toString(), as.getAmmo().toString());
+            } else {
+                ammosTilesInSquares.put(as.toString(), "");
+            }
+        }
+        message.setAmmosTilesInSquares(ammosTilesInSquares);
+
+        KillShotTrack k = match.getKillShotTrack();
+        message.setSkulls(k.getSkulls());
+        message.setFrenzyOn(match.isFrenzyOn());
+        message.setCurrentPlayer(match.getCurrentPlayer().getName());
+
+        List<Map<String, Integer>> track = new ArrayList<>();
+        for (Map<Player, Integer> map : k.getTrack()){
+            Map<String, Integer> temp = new HashMap<>();
+            for (Map.Entry<Player, Integer> entry : map.entrySet()){
+                temp.put(entry.getKey().getName(), entry.getValue());
+            }
+            track.add(temp);
+        }
+        message.setTrack(track);
+
+
+        UpdateMessage.MyPlayerInfo myPlayerInfo = message.getMyPlayerInfo();
+        myPlayerInfo.setName(myPlayer.getName());
+        myPlayerInfo.setColor(myPlayer.getColor());
+        myPlayerInfo.setPoints(myPlayer.getPoints());
+        myPlayerInfo.setState(myPlayer.getState());
+        myPlayerInfo.setFirstPlayer(myPlayer.isFirstPlayer());
+        if (myPlayer.isBorn()) myPlayerInfo.setSquarePosition(myPlayer.getSquarePosition().toString());
+        myPlayerInfo.setSkullsNumber(myPlayer.getDamageTrack().getSkullsNumber());
+        myPlayerInfo.setFrenzy(myPlayer.getDamageTrack().isFrenzy());
+        myPlayerInfo.setWallet(myPlayer.getWallet());
+        myPlayerInfo.setPending(myPlayer.getPending());
+        myPlayerInfo.setCredit(myPlayer.getCredit());
+
+        List<String> damageList = new ArrayList<>();
+        for (Player player : myPlayer.getDamageTrack().getDamageList()){
+            damageList.add(player.getName());
+        }
+        myPlayerInfo.setDamageList(damageList);
+
+        Map<String, Integer> markMap = new HashMap<>();
+        for (Map.Entry<Player, Integer> entry : myPlayer.getDamageTrack().getMarkMap().entrySet()){
+            markMap.put(entry.getKey().getName(), entry.getValue());
+        }
+        myPlayerInfo.setMarkMap(markMap);
+
+        Map<String, Boolean> weapons = new HashMap<>();
+        for (Weapon w : myPlayer.getWeapons()){
+            weapons.put(w.getName(), myPlayer.isLoaded(w));
+        }
+        myPlayerInfo.setWeapons(weapons);
+
+        List<String> powerUps = new ArrayList<>();
+        for (PowerUp po : myPlayer.getPowerUps()){
+            powerUps.add(po.toString());
+        }
+        myPlayerInfo.setPowerUps(powerUps);
+
+
+        for (Player p : match.getPlayers()){
+            if (p != myPlayer){
+                UpdateMessage.OtherPlayerInfo temp = message.createOtherPlayerInfo();
+                temp.setName(p.getName());
+                temp.setColor(p.getColor());
+                temp.setState(p.getState());
+                temp.setFirstPlayer(p.isFirstPlayer());
+                if (p.isBorn()) temp.setSquarePosition(p.getSquarePosition().toString());
+                temp.setSkullsNumber(p.getDamageTrack().getSkullsNumber());
+                temp.setFrenzy(p.getDamageTrack().isFrenzy());
+                temp.setNumLoadedWeapons(p.getLoadedWeapons().size());
+                temp.setNumPowerUps(p.getPowerUps().size());
+                temp.setWallet(p.getWallet());
+
+                damageList = new ArrayList<>();
+                for (Player player : p.getDamageTrack().getDamageList()){
+                    damageList.add(player.getName());
+                }
+                temp.setDamageList(damageList);
+
+                markMap = new HashMap<>();
+                for (Map.Entry<Player, Integer> entry : p.getDamageTrack().getMarkMap().entrySet()){
+                    markMap.put(entry.getKey().getName(), entry.getValue());
+                }
+                temp.setMarkMap(markMap);
+
+                List<String> unloadedWeapons = new ArrayList<>();
+                for (Weapon w : p.getUnloadedWeapons()){
+                    unloadedWeapons.add(w.getName());
+                }
+                temp.setUnloadedWeapons(unloadedWeapons);
+            }
+        }
+
+        return message;
     }
 }
