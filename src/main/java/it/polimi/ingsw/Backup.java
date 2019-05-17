@@ -69,9 +69,9 @@ public class Backup {
                 powerUps.add(po.toString());
             }
 
-            wallet = p.getWallet();
-            pending = p.getPending();
-            credit = p.getCredit();
+            wallet = new Cash(p.getWallet());
+            pending = new Cash(p.getPending());
+            credit = new Cash(p.getCredit());
         }
 
         public void restore(Player p, Match match){
