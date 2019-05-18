@@ -257,7 +257,9 @@ public class Effect {
 
         switch (reciprocalPosition){
             //DON'T CARE
-            case -1: break;
+            case -1:
+                selectableSquares.addAll(m.getLayout().getSquares());
+                break;
             //NOT VISIBLE
             case 0:
                 selectableSquares.addAll(m.getLayout().getSquares());
@@ -358,6 +360,7 @@ public class Effect {
 
         if(optionality == 0){
             selectableCommands.add(Command.OK);
+            selectableCommands.remove(Command.BACK);
         }
 
         p.setSelectableCommands(selectableCommands);
