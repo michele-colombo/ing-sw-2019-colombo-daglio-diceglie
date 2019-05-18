@@ -63,14 +63,17 @@ public class MatchTest {
         Map<Player, Integer> kill1 = new HashMap<>();
         kill1.put(p1, 2);
         match.getKillShotTrack().addKilled(kill1);
+        match.getKillShotTrack().removeSkull();
 
         Map<Player, Integer> kill2 = new HashMap<>();
         kill2.put(p2, 1);
         match.getKillShotTrack().addKilled(kill2);
+        match.getKillShotTrack().removeSkull();
 
         Map<Player, Integer> kill3 = new HashMap<>();
         kill3.put(p3, 1);
         match.getKillShotTrack().addKilled(kill3);
+        match.getKillShotTrack().removeSkull();
 
         assertEquals(1, match.getWinners().size());
         assertTrue(match.getWinners().contains(p1));
@@ -97,14 +100,17 @@ public class MatchTest {
         Map<Player, Integer> kill1 = new HashMap<>();
         kill1.put(p1, 2);
         match.getKillShotTrack().addKilled(kill1);
+        match.getKillShotTrack().removeSkull();
 
         Map<Player, Integer> kill2 = new HashMap<>();
         kill2.put(p2, 1);
         match.getKillShotTrack().addKilled(kill2);
+        match.getKillShotTrack().removeSkull();
 
         Map<Player, Integer> kill3 = new HashMap<>();
         kill3.put(p3, 1);
         match.getKillShotTrack().addKilled(kill3);
+        match.getKillShotTrack().removeSkull();
 
         assertEquals(1, match.getWinners().size());
         assertTrue(match.getWinners().contains(p1));
