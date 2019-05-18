@@ -140,8 +140,17 @@ public class Backup {
             if (isFrenzy != other.isFrenzy) return false;
             if (!(damageList.equals(((PlayerBackup) obj).damageList))) return false;
             if (!(markMap.equals(other.markMap))) return false;
-            if (!(weapons.equals(other.weapons))) return false;
-            if (!(powerUps.equals(other.powerUps))) return false;
+            if (!(weapons.equals(other.weapons))) return false;     //weapons is a map, so order doesn't count in the comparison
+            for (String s : powerUps){      //frequency should always be 1 for every power up string
+                for (String sOther: other.powerUps) {
+                    if (s.equals(sOther) && Collections.frequency(powerUps, s) != Collections.frequency(other.powerUps, sOther)) {
+                        return false;
+                    }
+                }
+            }
+            Set<String> tempPowerUpsSet = new HashSet<>(powerUps);
+            Set<String> tempOtherPowerUpsSet = new HashSet<>(other.powerUps);
+            if (!(tempPowerUpsSet.equals(tempOtherPowerUpsSet))) return false;  //powerUps are compared as sets, so order doesn't count in the comparison
             if (!(wallet.equals(other.wallet))) return false;
             if (!(pending.equals(other.pending))) return false;
             if (!(credit.equals(other.credit))) return false;
@@ -290,9 +299,13 @@ public class Backup {
             StackManagerBackup other = (StackManagerBackup)obj;
             if (!(weaponActiveStack.equals(other.weaponActiveStack))) return false;
             if (!(powerUpActiveStack.equals(other.powerUpActiveStack))) return false;
-            if (!(powerUpWasteStack.equals(other.powerUpWasteStack))) return false;
+            Set<String> set = new HashSet<>(powerUpWasteStack);
+            Set<String> otherSet = new HashSet<>(other.powerUpWasteStack);
+            if (!(set.equals(otherSet))) return false;
             if (!(ammoTilesActiveStack.equals(other.ammoTilesActiveStack))) return false;
-            if (!(ammoTilesWasteStack.equals(other.ammoTilesWasteStack))) return false;
+            set = new HashSet<>(ammoTilesWasteStack);
+            otherSet = new HashSet<>(other.ammoTilesWasteStack);
+            if (!(set.equals(otherSet))) return false;
 
             return true;
         }
@@ -364,9 +377,15 @@ public class Backup {
             if (!(obj instanceof LayoutBackup)) return false;
             LayoutBackup other = (LayoutBackup)obj;
             if (layoutConfiguration != other.layoutConfiguration) return false;
-            if (!(blueWeapons.equals(other.blueWeapons))) return false;
-            if (!(redWeapons.equals(other.redWeapons))) return false;
-            if (!(yellowWeapons.equals(other.yellowWeapons))) return false;
+            Set<String> tempSet1 = new HashSet<>(blueWeapons);
+            Set<String> tempSet2 = new HashSet<>(other.blueWeapons);
+            if (!(tempSet1.equals(tempSet2))) return false;
+            tempSet1 = new HashSet<>(redWeapons);
+            tempSet2 = new HashSet<>(other.redWeapons);
+            if (!(tempSet1.equals(tempSet2))) return false;
+            tempSet1 = new HashSet<>(yellowWeapons);
+            tempSet2 = new HashSet<>(other.yellowWeapons);
+            if (!(tempSet1.equals(tempSet2))) return false;
             if (!(ammosTilesInSquares.equals(other.ammosTilesInSquares))) return false;
 
             return true;
@@ -419,8 +438,8 @@ public class Backup {
             if (alreadyCompleted != other.alreadyCompleted) return false;
             if (!(currentPlayer.equals(other.currentPlayer))) return false;
 
-            Set waitingForSet = new HashSet(waitingFor);
-            Set otherWaitingForSet = new HashSet(other.waitingFor);
+            Set<String> waitingForSet = new HashSet<>(waitingFor);
+            Set<String> otherWaitingForSet = new HashSet<>(other.waitingFor);
             if (!(waitingForSet.equals(otherWaitingForSet))) return false;
 
             return true;

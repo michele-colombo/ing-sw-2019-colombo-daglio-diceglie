@@ -82,7 +82,6 @@ public class KillShotTrack {
                 killingOrder.add(p);
             }
         }
-        removeSkull();
     }
 
     /**

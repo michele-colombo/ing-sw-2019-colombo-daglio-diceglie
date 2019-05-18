@@ -249,7 +249,7 @@ public class Match {
             for(Player p : deadPlayers){
                 scoreDamageTrack(p.getDamageTrack().score());
                 killShotTrack.removeSkull();
-                //todo: remove skulls from killshottrack
+                //todo: add killed in killShotTrack
             }
         }
         for(Player p : players){
