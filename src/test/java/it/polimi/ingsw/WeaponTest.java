@@ -18,6 +18,7 @@ public class WeaponTest {
     private static final String testBackupPath = "./src/test/resources/savedGamesForTests/";
 
     public void printSel(Player p){
+        System.out.println(p.getState());
         System.out.println(p.selectablesToString());
     }
 
@@ -225,42 +226,6 @@ public class WeaponTest {
     @Test
     public void testMachineGun(){
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(testBackupPath, "machineGunTestBefore");
-
-        Player p1 = gm.getPlayerByName("first");
-        Player p2 = gm.getPlayerByName("second");
-        Player p3 = gm.getPlayerByName("third");
-        Player p4 = gm.getPlayerByName("fourth");
-
-        assertEquals(p1.getWeapons().size(), 1);
-        assertEquals(p1.getWeapons().get(0).getName(), new WeaponBuilder().getWeapons().get(1).getName());
-        printSel(p1);
-        gm.performAction(p1, p1.getSelectableActions().get(2)); //shoot
-        printSel(p1);
-        gm.shootWeapon(p1, p1.getSelectableWeapons().get(0));
-        printSel(p1);
-        assertEquals(p1.getSelectableModes().size(), 1);
-        assertEquals(p1.getSelectableModes().get(0).getTitle(), "basic effect");
-        gm.addMode(p1, p1.getSelectableModes().get(0));
-        printSel(p1);
-        assertEquals(p1.getSelectableModes().size(), 1);
-        assertEquals(p1.getSelectableModes().get(0).getTitle(), "with focus shot");
-        gm.addMode(p1, p1.getSelectableModes().get(0));
-        printSel(p1);
-        gm.confirmModes(p1);
-        printSel(p1);
-
-        assertEquals(p2.getDamageTrack().getDamageList().size(), 8);
-        assertEquals(p2.getDamageTrack().getMarkMap().size(), 1);
-        gm.shootTarget(p1, p2, null);
-        assertEquals(p2.getDamageTrack().getDamageList().size(), 9);
-        assertEquals(p2.getDamageTrack().getMarkMap().size(), 1);
-        printSel(p1);
-    }
-
-    @Test
-    public void testMachineGun2(){
-        GameModel gm = new GameModel();
         gm.resumeMatchFromFile(testBackupPath,"machineGunTestBefore");
 
         Player gianni = gm.getPlayerByName("first");
@@ -351,6 +316,7 @@ public class WeaponTest {
         gm.shootTarget(gianni, null, null);
 
         printSel(gianni);
+
 
     }
 
