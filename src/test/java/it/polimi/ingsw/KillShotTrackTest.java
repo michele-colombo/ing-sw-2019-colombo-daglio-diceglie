@@ -120,26 +120,32 @@ public class KillShotTrackTest {
         Map<Player, Integer> kill1 = new HashMap<>();
         kill1.put(p1, 1);
         k.addKilled(kill1);
+        k.removeSkull();
 
         Map<Player, Integer> kill2 = new HashMap<>();
         kill2.put(p2, 2);
         k.addKilled(kill2);
+        k.removeSkull();
 
         Map<Player, Integer> kill3 = new HashMap<>();
         kill3.put(p4, 1);
         k.addKilled(kill3);
+        k.removeSkull();
 
         Map<Player, Integer> kill4 = new HashMap<>();
         kill4.put(p3, 1);
         k.addKilled(kill4);
+        k.removeSkull();
 
         Map<Player, Integer> kill5 = new HashMap<>();
         kill5.put(p5, 2);
         k.addKilled(kill5);
+        k.removeSkull();
 
         Map<Player, Integer> kill6 = new HashMap<>();
         kill6.put(p2, 1);
         k.addKilled(kill6);
+        k.removeSkull();
 
         assertEquals(0, k.getKillingOrder(p1));
         assertEquals(1, k.getKillingOrder(p2));

@@ -15,7 +15,7 @@ import java.util.Scanner;
 
 public class PlayingTest {
     private static final String backupPath = "./src/main/resources/backups/";
-    private static final String testBackupPath = "./src/test/resources/savedGamesForTest/";
+    private static final String testBackupPath = "./src/test/resources/backupTest/";
     public static void main(String[] args){
 
         GameModel gm = new GameModel();
