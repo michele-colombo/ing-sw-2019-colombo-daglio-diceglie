@@ -511,11 +511,11 @@ public class Player {
     }
 
     public void setPending(Cash pending) {
-        this.pending = pending;
+        this.pending = new Cash(pending);
     }
 
     public void setCredit(Cash credit) {
-        this.credit = credit;
+        this.credit = new Cash(credit);
     }
 
     /**

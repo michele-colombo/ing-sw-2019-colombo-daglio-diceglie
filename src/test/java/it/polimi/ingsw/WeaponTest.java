@@ -279,7 +279,7 @@ public class WeaponTest {
         assertTrue(gianni.getSelectableWeapons().containsAll( gm.getMatch().getStackManager().getOriginalWeaponArsenal().subList(0, 3)));
 
         printSel(gianni);
-        gm.shootWeapon(gianni, gianni.getSelectableWeapons().get(2));
+        gm.shootWeapon(gianni, gm.getMatch().getStackManager().getWeaponFromName("Machine gun"));
         assertEquals(gianni.getSelectableModes().size(), 1);
 
         printSel(gianni);
@@ -291,6 +291,7 @@ public class WeaponTest {
 
         System.out.println("COSA STA SUCCEDENDO");
 
+        System.out.println(gianni.getWallet());
         assertTrue(gianni.getWallet().isEqual(new Cash(3, 3, 3)));
         assertEquals(gianni.getState(), PlayerState.PAYING);
 
@@ -332,7 +333,7 @@ public class WeaponTest {
 
         gm.performAction(gianni, gianni.getSelectableActions().get(2));
         assertEquals(gianni.getSelectableWeapons().size(), 3);
-        gm.shootWeapon(gianni, gianni.getSelectableWeapons().get(2));
+        gm.shootWeapon(gianni, gm.getMatch().getStackManager().getWeaponFromName("Machine gun"));
         gm.addMode(gianni, gianni.getSelectableModes().get(0));
         gm.confirmModes(gianni);
 

@@ -286,7 +286,7 @@ public class GameModelTest {
         assertEquals(PlayerState.GRAB_THERE, match.getCurrentPlayer().getState());  //he is in GRAB_THERE state
         System.out.println(match.getCurrentPlayer().selectablesToString());
         Square firstSquareSelected = tempPlayer.getSelectableSquares().get(0);  //he wants to grab in the first square (ammoSquare)
-        Cash tempCash = ((AmmoSquare)firstSquareSelected).getAmmo().getAmmos();
+        Cash tempCash = new Cash(((AmmoSquare)firstSquareSelected).getAmmo().getAmmos());
         assertTrue(new Cash(0,0,0).isEqual(tempPlayer.getWallet()));
 
         gm.grabThere(tempPlayer, firstSquareSelected);         //he grabs in the first square (ammoSquare)
@@ -296,7 +296,7 @@ public class GameModelTest {
         assertEquals(firstSquareSelected, tempPlayer.getSquarePosition());
         System.out.println(tempPlayer.getPowerUps());
         System.out.println(tempPlayer.getWallet());
-        Cash previousCash = tempPlayer.getWallet();
+        Cash previousCash = new Cash(tempPlayer.getWallet());
         printSel(tempPlayer);
 
         gm.performAction(tempPlayer, tempPlayer.getSelectableActions().get(1));     //he wants to grab (second action)
@@ -423,7 +423,7 @@ public class GameModelTest {
         gm.spawn(p1, p1.getSelectablePowerUps().get(0));
         gm.performAction(p1, p1.getSelectableActions().get(1)); //grab
         Square s1 =  p1.getSelectableSquares().get(1);
-        Cash cash1 = ((AmmoSquare)s1).getAmmo().getAmmos();
+        Cash cash1 = new Cash(((AmmoSquare)s1).getAmmo().getAmmos());
         gm.grabThere(p1, s1);
         gm.performAction(p1, p1.getSelectableActions().get(0)); //move
         s1 = p1.getSelectableSquares().get(1);
@@ -457,7 +457,7 @@ public class GameModelTest {
         gm.performAction(p2, p2.getSelectableActions().get(1));  //grab
         assertEquals(PlayerState.GRAB_THERE, p2.getState());
         Square s2 = p2.getSelectableSquares().get(1);
-        Cash cash2 = ((AmmoSquare)s2).getAmmo().getAmmos();
+        Cash cash2 = new Cash(((AmmoSquare)s2).getAmmo().getAmmos());
         gm.grabThere(p2, s2);
         if (p2.getState() == PlayerState.CHOOSE_ACTION) gm.endTurn();
 
@@ -486,11 +486,11 @@ public class GameModelTest {
         gm.spawn(p4, p4.getSelectablePowerUps().get(1));
         gm.performAction(p4, p4.getSelectableActions().get(1));   //grab
         Square s4 = p4.getSelectableSquares().get(1);
-        Cash cash4 = ((AmmoSquare)s4).getAmmo().getAmmos();
+        Cash cash4 = new Cash(((AmmoSquare)s4).getAmmo().getAmmos());
         gm.grabThere(p4, s4);
         gm.performAction(p4, p4.getSelectableActions().get(1));  //grab
         s4 = p4.getSelectableSquares().get(0);
-        cash4 = cash4.sum(((AmmoSquare)s4).getAmmo().getAmmos());
+        cash4.deposit(((AmmoSquare)s4).getAmmo().getAmmos());
         gm.grabThere(p4, s4);
         assertEquals(s4, p4.getSquarePosition());
         if (p4.getState() == PlayerState.CHOOSE_ACTION) gm.endTurn();
@@ -521,7 +521,7 @@ public class GameModelTest {
         gm.spawn(p1, p1.getSelectablePowerUps().get(0));
         gm.performAction(p1, p1.getSelectableActions().get(1)); //grab
         Square s1 =  p1.getSelectableSquares().get(1);
-        Cash cash1 = ((AmmoSquare)s1).getAmmo().getAmmos();
+        Cash cash1 = new Cash(((AmmoSquare)s1).getAmmo().getAmmos());
         gm.grabThere(p1, s1);
         gm.performAction(p1, p1.getSelectableActions().get(0)); //move
         s1 = p1.getSelectableSquares().get(1);
@@ -587,7 +587,7 @@ public class GameModelTest {
         gm2.performAction(p22, p22.getSelectableActions().get(1));  //grab
         assertEquals(PlayerState.GRAB_THERE, p22.getState());
         Square s2 = p22.getSelectableSquares().get(1);
-        Cash cash2 = ((AmmoSquare)s2).getAmmo().getAmmos();
+        Cash cash2 = new Cash(((AmmoSquare)s2).getAmmo().getAmmos());
         gm2.grabThere(p22, s2);
         if (p22.getState() == PlayerState.CHOOSE_ACTION) gm2.endTurn();
 
@@ -604,7 +604,7 @@ public class GameModelTest {
         assertEquals(PlayerState.CHOOSE_ACTION, p23.getState());
         gm2.performAction(p23, p23.getSelectableActions().get(1));  //grab
         Square s3 = p23.getSelectableSquares().get(1);
-        Cash cash3 = ((AmmoSquare)s3).getAmmo().getAmmos();
+        Cash cash3 = new Cash(((AmmoSquare)s3).getAmmo().getAmmos());
         gm2.grabThere(p23, s3);
         if (p23.getState() == PlayerState.CHOOSE_ACTION) gm2.endTurn();
 

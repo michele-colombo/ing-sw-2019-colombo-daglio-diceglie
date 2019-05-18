@@ -1,21 +1,15 @@
 package it.polimi.ingsw;
 
-import com.google.gson.Gson;
 import it.polimi.ingsw.exceptions.*;
-import it.polimi.ingsw.server.message.DisconnectionMessage;
 import it.polimi.ingsw.server.message.MessageVisitable;
 import it.polimi.ingsw.server.message.UpdateMessage;
 import it.polimi.ingsw.server.observer.Observable;
 import it.polimi.ingsw.server.observer.Observer;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.*;
 
 
 import static it.polimi.ingsw.PlayerState.*;
-import static java.lang.Math.random;
 
 public class GameModel implements Observable {
     /**

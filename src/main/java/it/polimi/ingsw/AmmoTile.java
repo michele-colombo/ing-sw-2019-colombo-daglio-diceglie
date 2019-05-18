@@ -6,7 +6,7 @@ public class AmmoTile{
     private int ammoTileID;
 
     public AmmoTile(Cash ammos, boolean hasPowerUp) {
-        this.ammos = ammos;
+        this.ammos = new Cash(ammos);
         this.hasPowerUp = hasPowerUp;
     }
 
@@ -23,8 +23,9 @@ public class AmmoTile{
         return result.toString();
     }
 
+    //ammoTile is immutable
     public Cash getAmmos() {
-        return ammos;
+        return new Cash(ammos);
     }
 
     public boolean hasPowerUp() {

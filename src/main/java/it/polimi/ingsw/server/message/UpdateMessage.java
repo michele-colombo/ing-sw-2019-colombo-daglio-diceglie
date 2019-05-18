@@ -131,7 +131,7 @@ public class UpdateMessage extends MessageVisitable {
         }
 
         public void setWallet(Cash wallet) {
-            this.wallet = wallet;
+            this.wallet = new Cash(wallet);
         }
 
         public Cash getPending() {
@@ -139,7 +139,7 @@ public class UpdateMessage extends MessageVisitable {
         }
 
         public void setPending(Cash pending) {
-            this.pending = pending;
+            this.pending = new Cash(pending);
         }
 
         public Cash getCredit() {
@@ -147,7 +147,7 @@ public class UpdateMessage extends MessageVisitable {
         }
 
         public void setCredit(Cash credit) {
-            this.credit = credit;
+            this.credit = new Cash(credit);
         }
     }
 
@@ -271,7 +271,7 @@ public class UpdateMessage extends MessageVisitable {
         }
 
         public void setWallet(Cash wallet) {
-            this.wallet = wallet;
+            this.wallet = new Cash(wallet);
         }
     }
 

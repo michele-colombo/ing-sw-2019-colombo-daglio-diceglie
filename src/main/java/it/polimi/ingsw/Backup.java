@@ -248,7 +248,6 @@ public class Backup {
 
             ammoTilesWasteStack = new ArrayList<>();
             for (AmmoTile at : sm.getAmmoTilesWasteStack()){
-                assert at.getAmmos().getTotal()<4;
                 ammoTilesWasteStack.add(at.toString());
             }
         }
