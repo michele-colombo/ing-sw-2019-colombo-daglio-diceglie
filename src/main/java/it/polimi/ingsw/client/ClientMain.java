@@ -33,8 +33,6 @@ public class ClientMain{
             }
         }
 
-        testGUI.main(null);
-
         askUserInput();
 
 
