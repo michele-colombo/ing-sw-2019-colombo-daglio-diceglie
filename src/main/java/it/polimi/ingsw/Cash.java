@@ -72,6 +72,11 @@ public class Cash {
         return this.isEqual(other);
     }
 
+    @Override
+    public int hashCode() {
+        return 100*blue + 10*red + yellow;
+    }
+
     public boolean isEqual(Cash c){
         return (blue == c.blue && red == c.red && yellow == c.yellow);
     }

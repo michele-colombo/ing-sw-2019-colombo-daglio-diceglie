@@ -91,6 +91,23 @@ class BackupTest {
         assertNotEquals(backup_a, backup_b);
     }
 
+    @Test
+    public void equalsDifferentName(){
+        //damages are in a different order (relevant for equality), therefore backups are different
+        Backup backup_a = Backup.initFromFile(testBackupPath, "backup_1");
+        Backup backup_b = Backup.initFromFile(testBackupPath, "backup_1h");
+
+        assertNotEquals(backup_a, backup_b);
+    }
+
+    @Test
+    public void equalsMarkMapsDifferentOrder(){
+        Backup backup_a = Backup.initFromFile(testBackupPath, "backup_2a");
+        Backup backup_b = Backup.initFromFile(testBackupPath, "backup_2b");
+        boolean result = backup_a.equals(backup_b);
+        assertTrue(result);
+    }
+
 
 
 

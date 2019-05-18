@@ -157,6 +157,17 @@ public class Backup {
 
             return true;
         }
+
+        @Override
+        public int hashCode() {
+            return name.hashCode() +
+                    color.toString().hashCode() +
+                    points * 127 +
+                    state.toString().hashCode() +
+                    squarePosition.hashCode() +
+                    skullsNumber * 63 +
+                    wallet.hashCode();
+        }
     }
 
     private class KillShotTrackBackup{
@@ -224,6 +235,11 @@ public class Backup {
             if (!(killingOrder.equals(other.killingOrder))) return false;
 
             return true;
+        }
+
+        @Override
+        public int hashCode() {
+            return skulls;
         }
     }
 
@@ -309,6 +325,13 @@ public class Backup {
 
             return true;
         }
+
+        @Override
+        public int hashCode() {
+            return weaponActiveStack.hashCode() +
+                    powerUpActiveStack.hashCode() +
+                    ammoTilesActiveStack.hashCode();
+        }
     }
 
     private class LayoutBackup{
@@ -390,6 +413,20 @@ public class Backup {
 
             return true;
         }
+
+        @Override
+        public int hashCode() {
+            int blueHash, redHash, yellowHash, ammoHash;
+            blueHash = new HashSet<String>(blueWeapons).hashCode();
+            redHash = new HashSet<String>(redWeapons).hashCode();
+            yellowHash = new HashSet<String>(yellowWeapons).hashCode();
+            ammoHash = ammosTilesInSquares.hashCode();
+            return layoutConfiguration +
+                    blueHash * 63 +
+                    redHash * 31 +
+                    yellowHash * 15 +
+                    ammoHash * 7;
+        }
     }
 
     private class MatchBackup{
@@ -443,6 +480,13 @@ public class Backup {
             if (!(waitingForSet.equals(otherWaitingForSet))) return false;
 
             return true;
+        }
+
+        @Override
+        public int hashCode() {
+            return numberOfActions * 31 +
+                    actionsCompleted * 15 +
+                    currentPlayer.hashCode();
         }
     }
 

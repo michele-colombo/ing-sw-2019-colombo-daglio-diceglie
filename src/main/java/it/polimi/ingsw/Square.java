@@ -60,6 +60,11 @@ public abstract class Square {
                 getY() == square.getY();
     }
 
+    @Override
+    public int hashCode() {
+        return 10 * getY() + getY();
+    }
+
     public void setRoom(Room room) {
         this.room = room;
     }
