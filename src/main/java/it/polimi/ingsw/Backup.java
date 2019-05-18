@@ -3,7 +3,6 @@ package it.polimi.ingsw;
 import com.google.gson.Gson;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
@@ -92,8 +91,8 @@ public class Backup {
             p.getDamageTrack().setSkullsNumber(skullsNumber);
 
             List<Player> tempDamageList = new ArrayList<>();
-            for (String name : damageList){
-                tempDamageList.add(match.getPlayerFromName(name));
+            for (String damagerName : damageList){
+                tempDamageList.add(match.getPlayerFromName(damagerName));
             }
             p.getDamageTrack().setDamageList(tempDamageList);
 
@@ -277,7 +276,7 @@ public class Backup {
             }
         }
 
-        public void restore(StackManager stackManager, Match match){
+        public void restore(StackManager stackManager){
             List<Weapon> tempWeapons = new ArrayList<>();
             for (String name : weaponActiveStack){
                 tempWeapons.add(stackManager.getWeaponFromName(name));
@@ -495,7 +494,8 @@ public class Backup {
     private StackManagerBackup stackManagerBackup;
     private LayoutBackup layoutBackup;
     private MatchBackup matchBackup;
-    private static final String filePath = "./src/main/resources/backups/";
+    private static final String FILE_PATH = "./src/main/resources/backups/";
+    private static final String EXTENSION = ".json";
 
     public Backup(Match match){
         playerBackups = new ArrayList<>();
@@ -509,12 +509,12 @@ public class Backup {
     }
 
     public static Backup initFromFile(String name){
-        return initFromFile(filePath, name);
+        return initFromFile(FILE_PATH, name);
     }
 
     public static Backup initFromFile(String path, String name){
         Gson gson = new Gson();
-        File file = new File(path+name+".json");
+        File file = new File(path+name+EXTENSION);
         Backup temp = new Backup();
 
         try (Scanner sc = new Scanner(file)){
@@ -530,20 +530,20 @@ public class Backup {
     }
 
     public static boolean isBackupAvailable(String name){
-        File file = new File(filePath+name+".json");
+        File file = new File(FILE_PATH +name+EXTENSION);
         return file.exists();
     }
 
     public Backup (){}
 
     public boolean saveOnFile(String name){
-        return saveOnFile(filePath, name);
+        return saveOnFile(FILE_PATH, name);
     }
 
     public boolean saveOnFile(String path, String name) {
         Gson gson = new Gson();
-        File file = new File(path+name+".json");
-        //File file= new File(getClass().getClassLoader().getResource("backup" + name + ".json").getFile());
+        File file = new File(path+name+EXTENSION);
+        //File file= new File(getClass().getClassLoader().getResource("backup" + name + EXTENSION).getFile());
         FileWriter fw;
         try {
             fw = new FileWriter(file);
@@ -557,15 +557,11 @@ public class Backup {
     }
 
     public void restore(Match match){
-        restoreMatch(match, false);
+        restoreMatch(match);
     }
 
-    public void resumeMatch(Match match){
-        restoreMatch(match, true);
-    }
-
-    private void restoreMatch(Match match, boolean fromFile){
-        stackManagerBackup.restore(match.getStackManager(), match);
+    private void restoreMatch(Match match){
+        stackManagerBackup.restore(match.getStackManager());
         layoutBackup.restore(match.getLayout(), match);
         for (PlayerBackup pb : playerBackups) {
             Player tempPlayer = match.getPlayerFromName(pb.name);
@@ -601,5 +597,14 @@ public class Backup {
                 layoutBackup.equals(other.layoutBackup) &&
                 stackManagerBackup.equals(other.stackManagerBackup) &&
                 matchBackup.equals(other.matchBackup);
+    }
+
+    @Override
+    public int hashCode() {
+        return playerBackups.hashCode() +
+                killShotTrackBackup.hashCode() +
+                layoutBackup.hashCode() +
+                stackManagerBackup.hashCode() +
+                matchBackup.hashCode();
     }
 }

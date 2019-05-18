@@ -34,7 +34,7 @@ public class GameModel implements Observable {
     private boolean matchInProgress;
     private Backup currBackup;
     private Map<Player, Observer> observers;
-    private final String backupName = "currentBackup";
+    private static final String BACKUP_NAME = "currentBackup";
 
 
     public GameModel(){
@@ -75,8 +75,8 @@ public class GameModel implements Observable {
      * @return true if a new match begins, false if a saved one is restored
      */
     public boolean startMatch(){
-        if (Backup.isBackupAvailable(backupName)){
-            Backup tempBackup = Backup.initFromFile(backupName);
+        if (Backup.isBackupAvailable(BACKUP_NAME)){
+            Backup tempBackup = Backup.initFromFile(BACKUP_NAME);
             if (tempBackup.getPlayerNames().containsAll(getAllPlayerNames()) && getAllPlayerNames().containsAll(tempBackup.getPlayerNames())){
                 //all names match
                 int layoutConfig = tempBackup.getLayoutConfig();
@@ -490,7 +490,7 @@ public class GameModel implements Observable {
 
     private void saveSnapshot(Match match){
         currBackup = new Backup(match);
-        currBackup.saveOnFile(backupName);
+        currBackup.saveOnFile(BACKUP_NAME);
     }
 
     public Backup createMatchBackup(){
@@ -607,7 +607,7 @@ public class GameModel implements Observable {
     }
 
     public void relogin(Player p) throws NameNotFoundException, AlreadyLoggedException, GameFullException{
-        if(inactivePlayers.size() == 0){
+        if(inactivePlayers.isEmpty()){
             throw new GameFullException();
         } else {
             if (!nameTaken(p.getName())) {
@@ -665,10 +665,7 @@ public class GameModel implements Observable {
     }
 
     public boolean tooFewPlayers(){
-        if(activePlayers.size() < 3){
-            return true;
-        }
-        return false;
+        return activePlayers.size() < 3;
     }
 
     public List<Player> endGame(){

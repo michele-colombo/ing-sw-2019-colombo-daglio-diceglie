@@ -38,7 +38,17 @@ public class SpawnSquare extends Square{
         m.getCurrentAction().setCurrSpawnSquare(this);
         p.setState(PlayerState.GRAB_WEAPON);
         p.resetSelectables();
-        p.setSelectableWeapons(weapons);    //TODO: what if there are no weapons?
+        List<Weapon> weaponsToAdd = new ArrayList<>();
+        for (Weapon w : weapons){
+            if (p.canAfford(w.getDiscountedCost())){
+                weaponsToAdd.add(w);
+            }
+        }
+        if (weaponsToAdd.isEmpty()){
+            p.setSelectableCommands(Command.BACK);
+        } else {
+            p.setSelectableWeapons(weaponsToAdd);
+        }
         return false;
     }
 

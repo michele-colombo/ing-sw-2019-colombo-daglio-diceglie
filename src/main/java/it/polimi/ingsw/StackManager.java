@@ -58,11 +58,6 @@ public class StackManager {
             e.printStackTrace();
 
         }
-        int id = 0;
-        for (AmmoTile at : result){
-            at.setAmmoTileID(id);
-            id++;
-        }
         return result;
     }
 
