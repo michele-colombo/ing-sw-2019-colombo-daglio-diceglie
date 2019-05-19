@@ -293,6 +293,7 @@ public class Match {
                             result.add(new Action(true, false, new Grab(1)));
                             temp = new Action(true, false, new Shoot());
                             if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UsePowerUp(TARGETING_SCOPE));
+                            temp.add(new UsePowerUp(TAGBACK_GRENADE));
                             result.add(temp);
                             break;
                         case 1:
@@ -300,6 +301,7 @@ public class Match {
                             result.add(new Action(true, false, new Grab(2)));
                             temp = new Action(true, false, new Shoot());
                             if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UsePowerUp(TARGETING_SCOPE));
+                            temp.add(new UsePowerUp(TAGBACK_GRENADE));
                             result.add(temp);
                             break;
                         case 2:
@@ -308,6 +310,7 @@ public class Match {
                             temp = new Action(true, false, new Move(1));
                             temp.add(new Shoot());
                             if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UsePowerUp(TARGETING_SCOPE));
+                            temp.add(new UsePowerUp(TAGBACK_GRENADE));
                             result.add(temp);
                             break;
                     }
@@ -317,6 +320,7 @@ public class Match {
                         temp.add(new Reload());
                         temp.add(new Shoot());
                         if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UsePowerUp(TARGETING_SCOPE));
+                        temp.add(new UsePowerUp(TAGBACK_GRENADE));
                         result.add(temp);
                         result.add(new Action(true, false, new Move(4)));
                         result.add(new Action(true, false, new Grab(2)));
@@ -325,6 +329,7 @@ public class Match {
                         temp.add(new Reload());
                         temp.add(new Shoot());
                         if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UsePowerUp(TARGETING_SCOPE));
+                        temp.add(new UsePowerUp(TAGBACK_GRENADE));
                         result.add(temp);
                         result.add(new Action(true, false, new Grab(3)));
                     }

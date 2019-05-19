@@ -1,42 +1,16 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.exceptions.*;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static it.polimi.ingsw.PlayerState.*;
+import static it.polimi.ingsw.testUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GameModelTest {
-    private static final String testGamePath = "./src/test/resources/savedGamesForTests/";
-
-    public void addPlayers(GameModel gm, List<Player> players){
-        for (Player p : players){
-            try {
-                gm.addPlayer(p);
-            } catch (NameAlreadyTakenException | GameFullException | AlreadyLoggedException | NameNotFoundException e){
-
-            }
-        }
-    }
-
-    public void printSel(Player p){
-        System.out.println(p.selectablesToString());
-    }
-
-    public <T> void printList(List<T> list){
-        System.out.println("printing a list:");
-        for (T t : list){
-            if (t == null){
-                System.out.println("NULL!!!!");
-            } else {
-                System.out.println(t);
-            }
-        }
-    }
 
     public boolean isNewMatch(GameModel gm){
         //no players is born
@@ -692,7 +666,7 @@ public class GameModelTest {
         //players were: antonio, gianfranco, enrico, matteo, evila
         //enrico inserts a slightly different name, therefore a new game starts
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(testGamePath, "currentBackupForTest");
+        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "currentBackupForTest");
 
         GameModel gm2 = new GameModel();
         Player p21, p22, p23, p24, p25;
@@ -714,7 +688,7 @@ public class GameModelTest {
         //players are recreated the same, in teh same order,
         // therefore the old match is resumed
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(testGamePath, "currentBackupForTest");
+        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "currentBackupForTest");
 
         GameModel gm2 = new GameModel();
         Player p21, p22, p23, p24, p25;
@@ -737,7 +711,7 @@ public class GameModelTest {
         //new players have the same names, but in a different order.
         //Nevertheless, the old match is resumed
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(testGamePath, "currentBackupForTest");
+        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "currentBackupForTest");
 
         GameModel gm2 = new GameModel();
         Player p21, p22, p23, p24, p25;
@@ -759,7 +733,7 @@ public class GameModelTest {
         //players were: antonio, gianfranco, enrico, matteo, evila
         //they are in a different order, but one of the new players has a different name
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(testGamePath, "currentBackupForTest");
+        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "currentBackupForTest");
 
         GameModel gm2 = new GameModel();
         Player p21, p22, p23, p24, p25;
@@ -780,7 +754,7 @@ public class GameModelTest {
         //players were: antonio, gianfranco, enrico, matteo, evila
         //one of the old players doesn't login again, therefore a new match is started
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(testGamePath, "currentBackupForTest");
+        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "currentBackupForTest");
 
         GameModel gm2 = new GameModel();
         Player p21, p22, p23, p24, p25;
@@ -804,7 +778,7 @@ public class GameModelTest {
         //He moves in the blue spawnpoint (2-1), grabs railgun and pays with a powerup (only railgun and shockwave selectable)
         //Then he grabs shockwave (doesn't pay anything)
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(testGamePath, "grabWeaponTestBefore");
+        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "grabWeaponTestBefore");
         Match match = gm.getMatch();
         Layout layout = gm.getMatch().getLayout();
         StackManager sm = gm.getMatch().getStackManager();
@@ -868,7 +842,7 @@ public class GameModelTest {
         //second has wallet: 220 without powerups and 3 weapons. In yellow spawnpoint there are: plasma gun (001), thor (010), rocket launcher(010).
         //He moves there (3-0), grabs thor,but has to discard one weapon. He discards cyberblade.
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(testGamePath, "grabWeaponWithDiscardingBefore");
+        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "grabWeaponWithDiscardingBefore");
         Match match = gm.getMatch();
         Layout layout = gm.getMatch().getLayout();
         StackManager sm = gm.getMatch().getStackManager();
@@ -924,7 +898,7 @@ public class GameModelTest {
         //third has wallet: 000 + yellow powerup. In redspawnpoin there are: zx-2 (010), furnace (100), power glove (100).
         //since he can't grab anything, he can only go back to action choice
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(testGamePath, "cantGrabAnythingBefore");
+        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "cantGrabAnythingBefore");
         Match match = gm.getMatch();
         Layout layout = gm.getMatch().getLayout();
         StackManager sm = gm.getMatch().getStackManager();
@@ -953,6 +927,6 @@ public class GameModelTest {
         gm.restore();
 
             //everything is brought back as it was
-            assertEquals(Backup.initFromFile(testGamePath, "cantGrabAnythingBefore"), new Backup(gm.getMatch()));
+            assertEquals(Backup.initFromFile(SAVED_GAMES_FOR_TESTS, "cantGrabAnythingBefore"), new Backup(gm.getMatch()));
     }
 }
