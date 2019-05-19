@@ -93,7 +93,7 @@ class BackupTest {
 
     @Test
     public void equalsDifferentName(){
-        //damages are in a different order (relevant for equality), therefore backups are different
+        //a name is different, therefore backups are different
         Backup backup_a = Backup.initFromFile(testBackupPath, "backup_1");
         Backup backup_b = Backup.initFromFile(testBackupPath, "backup_1h");
 
@@ -101,14 +101,12 @@ class BackupTest {
     }
 
     @Test
-    public void equalsMarkMapsDifferentOrder(){
+    public void anotherEqualsTest(){
+        //another 'random' equals test
         Backup backup_a = Backup.initFromFile(testBackupPath, "backup_2a");
         Backup backup_b = Backup.initFromFile(testBackupPath, "backup_2b");
-        boolean result = backup_a.equals(backup_b);
-        assertTrue(result);
+
+        assertEquals(backup_a, backup_b);
     }
-
-
-
 
 }

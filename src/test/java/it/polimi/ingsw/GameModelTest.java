@@ -4,14 +4,14 @@ import it.polimi.ingsw.exceptions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
+import static it.polimi.ingsw.PlayerState.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GameModelTest {
-    private static final String testGamePath = "./src/test/resources/";
+    private static final String testGamePath = "./src/test/resources/savedGamesForTests/";
 
     public void addPlayers(GameModel gm, List<Player> players){
         for (Player p : players){
@@ -36,6 +36,34 @@ public class GameModelTest {
                 System.out.println(t);
             }
         }
+    }
+
+    public boolean isNewMatch(GameModel gm){
+        //no players is born
+        for (Player p : gm.allPlayers()){
+            if(p.isBorn()) return false;
+        }
+
+        //there's just one player spawing, with 2 selectable powerups
+        List<Player> tempPlayers = new ArrayList<>();
+        tempPlayers.addAll(gm.getMatch().getPlayers());
+        tempPlayers.removeIf(p -> p.getState()!=PlayerState.SPAWN);
+        if (1 != tempPlayers.size()) return false;
+        Player spawningPlayer = tempPlayers.get(0);
+        if (PlayerState.SPAWN != spawningPlayer.getState()) return false;
+        if (2 != spawningPlayer.getPowerUps().size()) return false;
+        if (2 != spawningPlayer.getSelectablePowerUps().size()) return false;
+        if(!spawningPlayer.getSelectableCommands().isEmpty()) return false;
+
+        //other players are in IDLE and have nothing selectable
+        tempPlayers.clear();
+        tempPlayers.addAll(gm.getMatch().getPlayers());
+        tempPlayers.remove(spawningPlayer);
+        for (Player p : tempPlayers) {
+            if(PlayerState.IDLE != p.getState()) return false;
+            if(0 != p.howManySelectables()) return false;
+        }
+        return true;
     }
 
     @Test
@@ -283,7 +311,7 @@ public class GameModelTest {
 
         gm.performAction(tempPlayer, tempPlayer.getSelectableActions().get(1));     //he wants to grab
 
-        assertEquals(PlayerState.GRAB_THERE, match.getCurrentPlayer().getState());  //he is in GRAB_THERE state
+        assertEquals(GRAB_THERE, match.getCurrentPlayer().getState());  //he is in GRAB_THERE state
         System.out.println(match.getCurrentPlayer().selectablesToString());
         Square firstSquareSelected = tempPlayer.getSelectableSquares().get(0);  //he wants to grab in the first square (ammoSquare)
         Cash tempCash = new Cash(((AmmoSquare)firstSquareSelected).getAmmo().getAmmos());
@@ -301,7 +329,7 @@ public class GameModelTest {
 
         gm.performAction(tempPlayer, tempPlayer.getSelectableActions().get(1));     //he wants to grab (second action)
 
-        assertEquals(PlayerState.GRAB_THERE, tempPlayer.getState());
+        assertEquals(GRAB_THERE, tempPlayer.getState());
         printSel(tempPlayer);
         assertFalse(tempPlayer.getSelectableSquares().contains(firstSquareSelected));
         assertEquals(2, match.getActionsCompleted());
@@ -376,29 +404,7 @@ public class GameModelTest {
         assertNotNull(gm.getMatch().getStackManager());
         assertNotNull(gm.getMatch().getKillShotTrack());
 
-        //no players is born
-        for (Player p : gm.allPlayers()){
-            assertFalse(p.isBorn());
-        }
-
-        //there's just one player spawing, with 2 selectable powerups
-        List<Player> tempPlayers = new ArrayList<>();
-        tempPlayers.addAll(gm.getMatch().getPlayers());
-        tempPlayers.removeIf(p -> p.getState()!=PlayerState.SPAWN);
-        assertEquals(1, tempPlayers.size());
-        Player spawningPlayer = tempPlayers.get(0);
-        assertEquals(2, spawningPlayer.getPowerUps().size());
-        assertEquals(2, spawningPlayer.getSelectablePowerUps().size());
-        assertTrue(spawningPlayer.getSelectableCommands().isEmpty());
-
-        //other players are in IDLE and have nothing selectable
-        tempPlayers.clear();
-        tempPlayers.addAll(gm.getMatch().getPlayers());
-        tempPlayers.remove(spawningPlayer);
-        for (Player p : tempPlayers) {
-            assertEquals(PlayerState.IDLE, p.getState());
-            assertEquals(0, p.howManySelectables());
-        }
+        assertTrue(isNewMatch(gm));
     }
 
 
@@ -455,7 +461,7 @@ public class GameModelTest {
         gm.moveMeThere(p2, p2.getSelectableSquares().get(1));
         assertEquals(PlayerState.CHOOSE_ACTION, p2.getState());
         gm.performAction(p2, p2.getSelectableActions().get(1));  //grab
-        assertEquals(PlayerState.GRAB_THERE, p2.getState());
+        assertEquals(GRAB_THERE, p2.getState());
         Square s2 = p2.getSelectableSquares().get(1);
         Cash cash2 = new Cash(((AmmoSquare)s2).getAmmo().getAmmos());
         gm.grabThere(p2, s2);
@@ -585,7 +591,7 @@ public class GameModelTest {
         gm2.moveMeThere(p22, p22.getSelectableSquares().get(1));
         assertEquals(PlayerState.CHOOSE_ACTION, p22.getState());
         gm2.performAction(p22, p22.getSelectableActions().get(1));  //grab
-        assertEquals(PlayerState.GRAB_THERE, p22.getState());
+        assertEquals(GRAB_THERE, p22.getState());
         Square s2 = p22.getSelectableSquares().get(1);
         Cash cash2 = new Cash(((AmmoSquare)s2).getAmmo().getAmmos());
         gm2.grabThere(p22, s2);
@@ -679,5 +685,274 @@ public class GameModelTest {
         assertFalse(p35.isBorn());
         assertEquals(PlayerState.SPAWN, p35.getState());
         assertEquals(2, p35.getSelectablePowerUps().size());
+    }
+
+    @Test
+    public void startMatchWithDifferentPlayers(){
+        //players were: antonio, gianfranco, enrico, matteo, evila
+        //enrico inserts a slightly different name, therefore a new game starts
+        GameModel gm = new GameModel();
+        gm.resumeMatchFromFile(testGamePath, "currentBackupForTest");
+
+        GameModel gm2 = new GameModel();
+        Player p21, p22, p23, p24, p25;
+        List<Player> newPlayers2 = new ArrayList<>();
+        newPlayers2.add(p21 = new Player("antonio"));
+        newPlayers2.add(p22 = new Player("gianfranco"));
+        newPlayers2.add(p23 = new Player("enrici"));
+        newPlayers2.add(p24 = new Player("matteo"));
+        newPlayers2.add(p25 = new Player("evila"));
+        addPlayers(gm2, newPlayers2);
+        gm2.startMatch();
+
+        assertTrue(isNewMatch(gm2));
+    }
+
+    @Test
+    public void startMatchWithSamePlayers(){
+        //players were: antonio, gianfranco, enrico, matteo, evila
+        //players are recreated the same, in teh same order,
+        // therefore the old match is resumed
+        GameModel gm = new GameModel();
+        gm.resumeMatchFromFile(testGamePath, "currentBackupForTest");
+
+        GameModel gm2 = new GameModel();
+        Player p21, p22, p23, p24, p25;
+        List<Player> newPlayers2 = new ArrayList<>();
+        newPlayers2.add(p21 = new Player("antonio"));
+        newPlayers2.add(p22 = new Player("gianfranco"));
+        newPlayers2.add(p23 = new Player("enrico"));
+        newPlayers2.add(p24 = new Player("matteo"));
+        newPlayers2.add(p25 = new Player("evila"));
+        addPlayers(gm2, newPlayers2);
+        gm2.startMatch();
+
+        assertFalse(isNewMatch(gm2));
+        assertEquals(new Backup(gm.getMatch()), new Backup(gm2.getMatch()));
+    }
+
+    @Test
+    public void startMatchSamePlayersDifferentOrder(){
+        //players were: antonio, gianfranco, enrico, matteo, evila
+        //new players have the same names, but in a different order.
+        //Nevertheless, the old match is resumed
+        GameModel gm = new GameModel();
+        gm.resumeMatchFromFile(testGamePath, "currentBackupForTest");
+
+        GameModel gm2 = new GameModel();
+        Player p21, p22, p23, p24, p25;
+        List<Player> newPlayers2 = new ArrayList<>();
+        newPlayers2.add(p25 = new Player("evila"));
+        newPlayers2.add(p21 = new Player("antonio"));
+        newPlayers2.add(p24 = new Player("matteo"));
+        newPlayers2.add(p22 = new Player("gianfranco"));
+        newPlayers2.add(p23 = new Player("enrico"));
+        addPlayers(gm2, newPlayers2);
+        gm2.startMatch();
+
+        assertFalse(isNewMatch(gm2));
+        assertEquals(new Backup(gm.getMatch()), new Backup(gm2.getMatch()));
+    }
+
+    @Test
+    public void startMatchDifferentPlayersDifferentOrder(){
+        //players were: antonio, gianfranco, enrico, matteo, evila
+        //they are in a different order, but one of the new players has a different name
+        GameModel gm = new GameModel();
+        gm.resumeMatchFromFile(testGamePath, "currentBackupForTest");
+
+        GameModel gm2 = new GameModel();
+        Player p21, p22, p23, p24, p25;
+        List<Player> newPlayers2 = new ArrayList<>();
+        newPlayers2.add(p25 = new Player("evila"));
+        newPlayers2.add(p21 = new Player("antonio"));
+        newPlayers2.add(p24 = new Player("matteo"));
+        newPlayers2.add(p22 = new Player("gianfranco"));
+        newPlayers2.add(p23 = new Player("osvaldo"));
+        addPlayers(gm2, newPlayers2);
+        gm2.startMatch();
+
+        assertTrue(isNewMatch(gm2));
+    }
+
+    @Test
+    public void startMatchOnePlayerLess(){
+        //players were: antonio, gianfranco, enrico, matteo, evila
+        //one of the old players doesn't login again, therefore a new match is started
+        GameModel gm = new GameModel();
+        gm.resumeMatchFromFile(testGamePath, "currentBackupForTest");
+
+        GameModel gm2 = new GameModel();
+        Player p21, p22, p23, p24, p25;
+        List<Player> newPlayers2 = new ArrayList<>();
+        newPlayers2.add(p21 = new Player("antonio"));
+        newPlayers2.add(p22 = new Player("gianfranco"));
+        newPlayers2.add(p23 = new Player("enrici"));
+        newPlayers2.add(p24 = new Player("matteo"));
+        addPlayers(gm2, newPlayers2);
+        gm2.startMatch();
+
+        assertTrue(isNewMatch(gm2));
+        assertEquals(4, gm2.allPlayers().size());
+        assertTrue(gm2.allPlayers().containsAll(newPlayers2));
+        assertTrue(newPlayers2.containsAll(gm2.allPlayers()));
+    }
+
+    @Test
+    public void grabWeaponTest(){
+        //first has wallet: 100 + yellow powerup. In bluespawnpoint there are: shockwave (000), machine gun (010) e railgun (101).
+        //He moves in the blue spawnpoint (2-1), grabs railgun and pays with a powerup (only railgun and shockwave selectable)
+        //Then he grabs shockwave (doesn't pay anything)
+        GameModel gm = new GameModel();
+        gm.resumeMatchFromFile(testGamePath, "grabWeaponTestBefore");
+        Match match = gm.getMatch();
+        Layout layout = gm.getMatch().getLayout();
+        StackManager sm = gm.getMatch().getStackManager();
+        Player first = gm.getPlayerByName("first");
+        Player second = gm.getPlayerByName("second");
+        printSel(first);
+
+            List<Weapon>temp = new ArrayList<>();
+            temp.add(sm.getWeaponFromName("Shockwave"));
+            temp.add(sm.getWeaponFromName("Railgun"));
+            temp.add(sm.getWeaponFromName("Machine gun"));
+            assertTrue(layout.getSpawnPoint(Color.BLUE).getWeapons().containsAll(temp));
+            assertTrue(temp.containsAll(layout.getSpawnPoint(Color.BLUE).getWeapons()));
+            assertEquals(CHOOSE_ACTION, first.getState());
+
+        gm.performAction(first, first.getSelectableActions().get(1)); //first grabs
+
+            assertTrue(first.getSelectableSquares().contains(layout.getSquare(2,2)));
+            assertEquals(GRAB_THERE, first.getState());
+
+        gm.grabThere(first, layout.getSquare(2,2));
+
+            temp = new ArrayList<>();
+            temp.add(sm.getWeaponFromName("Shockwave"));
+            temp.add(sm.getWeaponFromName("Railgun"));
+            assertTrue(first.getSelectableWeapons().containsAll(temp));
+            assertTrue(temp.containsAll(first.getSelectableWeapons()));
+            assertEquals(GRAB_WEAPON, first.getState());
+
+        gm.grabWeapon(first, sm.getWeaponFromName("Railgun"));
+
+            printSel(first);
+            assertEquals(PAYING, first.getState());
+            assertFalse(first.getSelectableCommands().contains(Command.OK));
+            assertEquals(1, first.getSelectablePowerUps().size());
+
+        gm.payWith(first, first.getSelectablePowerUps().get(0));
+
+            printSel(first);
+            assertEquals(CHOOSE_ACTION, first.getState());
+
+        gm.performAction(first, first.getSelectableActions().get(1));   //he grabs again
+
+            assertEquals(GRAB_THERE, first.getState());
+            assertTrue(first.getSelectableSquares().contains(layout.getSquare(2,2)));
+
+        gm.grabThere(first, layout.getSquare(2,2));
+
+            assertEquals(1, first.getSelectableWeapons().size());
+            assertTrue(first.getSelectableWeapons().contains(sm.getWeaponFromName("Shockwave")));
+            assertEquals(GRAB_WEAPON, first.getState());
+
+        gm.grabWeapon(first, sm.getWeaponFromName("Shockwave"));
+
+            //since first has neither unloadedweapons nor 'your-action-powerups', his turn ends
+            assertEquals(second, match.getCurrentPlayer());
+    }
+
+    @Test
+    public void grabWeaponWithDiscarding() {
+        //second has wallet: 220 without powerups and 3 weapons. In yellow spawnpoint there are: plasma gun (001), thor (010), rocket launcher(010).
+        //He moves there (3-0), grabs thor,but has to discard one weapon. He discards cyberblade.
+        GameModel gm = new GameModel();
+        gm.resumeMatchFromFile(testGamePath, "grabWeaponWithDiscardingBefore");
+        Match match = gm.getMatch();
+        Layout layout = gm.getMatch().getLayout();
+        StackManager sm = gm.getMatch().getStackManager();
+        Player second = gm.getPlayerByName("second");
+        printSel(second);
+
+            List<Weapon>temp = new ArrayList<>();
+            temp.add(sm.getWeaponFromName("Plasma gun"));
+            temp.add(sm.getWeaponFromName("T.H.O.R."));
+            temp.add(sm.getWeaponFromName("Rocket launcher"));
+            assertTrue(layout.getSpawnPoint(Color.YELLOW).getWeapons().containsAll(temp));
+            assertTrue(temp.containsAll(layout.getSpawnPoint(Color.YELLOW).getWeapons()));
+            assertEquals(CHOOSE_ACTION, second.getState());
+
+        gm.performAction(second, second.getSelectableActions().get(1)); //he grabs
+
+            assertTrue(second.getSelectableSquares().contains(layout.getSquare(3,0)));
+            assertEquals(GRAB_THERE, second.getState());
+
+        gm.grabThere(second, layout.getSquare(3,0));
+
+            temp = new ArrayList<>();
+            temp.add(sm.getWeaponFromName("T.H.O.R."));
+            temp.add(sm.getWeaponFromName("Rocket launcher"));
+            assertTrue(second.getSelectableWeapons().containsAll(temp));
+            assertTrue(temp.containsAll(second.getSelectableWeapons()));
+            assertEquals(GRAB_WEAPON, second.getState());
+
+        gm.grabWeapon(second, sm.getWeaponFromName("T.H.O.R."));
+
+            printSel(second);
+            assertEquals(DISCARD_WEAPON, second.getState());
+            assertFalse(second.getSelectableCommands().contains(Command.OK));
+            temp = new ArrayList<>();
+            temp.add(sm.getWeaponFromName("T.H.O.R."));
+            temp.add(sm.getWeaponFromName("Electoscythe"));
+            temp.add(sm.getWeaponFromName("Cyberblade"));
+            temp.add(sm.getWeaponFromName("Shotgun"));
+            assertTrue(second.getSelectableWeapons().containsAll(temp));
+            assertTrue(temp.containsAll(second.getSelectableWeapons()));
+
+        gm.discardWeapon(second, sm.getWeaponFromName("Cyberblade"));
+
+            assertEquals(CHOOSE_ACTION, second.getState());
+            temp.remove(sm.getWeaponFromName("Cyberblade"));
+            assertTrue(second.getWeapons().containsAll(temp));
+            assertTrue(temp.containsAll(second.getWeapons()));
+            assertEquals(new Cash(2, 1,0), second.getWallet());
+    }
+
+    @Test
+    public void cantGrabAnythingTest(){
+        //third has wallet: 000 + yellow powerup. In redspawnpoin there are: zx-2 (010), furnace (100), power glove (100).
+        //since he can't grab anything, he can only go back to action choice
+        GameModel gm = new GameModel();
+        gm.resumeMatchFromFile(testGamePath, "cantGrabAnythingBefore");
+        Match match = gm.getMatch();
+        Layout layout = gm.getMatch().getLayout();
+        StackManager sm = gm.getMatch().getStackManager();
+        Player third = gm.getPlayerByName("third");
+        printSel(third);
+
+            List<Weapon>temp = new ArrayList<>();
+            temp.add(sm.getWeaponFromName("ZX-2"));
+            temp.add(sm.getWeaponFromName("Furnace"));
+            temp.add(sm.getWeaponFromName("Power glove"));
+            assertTrue(layout.getSpawnPoint(Color.RED).getWeapons().containsAll(temp));
+            assertTrue(temp.containsAll(layout.getSpawnPoint(Color.RED).getWeapons()));
+            assertEquals(CHOOSE_ACTION, third.getState());
+
+        gm.performAction(third, third.getSelectableActions().get(1)); //he grabs
+
+            assertTrue(third.getSelectableSquares().contains(layout.getSquare(0,1)));
+            assertEquals(GRAB_THERE, third.getState());
+
+        gm.grabThere(third, layout.getSquare(0,1));
+
+            assertTrue(third.getSelectableWeapons().isEmpty());
+            assertEquals(1, third.getSelectableCommands().size());
+            assertTrue(third.getSelectableCommands().contains(Command.BACK));
+
+        gm.restore();
+
+            //everything is brought back as it was
+            assertEquals(Backup.initFromFile(testGamePath, "cantGrabAnythingBefore"), new Backup(gm.getMatch()));
     }
 }

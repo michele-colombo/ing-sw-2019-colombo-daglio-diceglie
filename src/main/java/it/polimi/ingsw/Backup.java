@@ -130,7 +130,7 @@ public class Backup {
             if (hasAnotherTurn != other.hasAnotherTurn) return false;
             if (points != other.points) return false;
             if (state != other.state) return false;
-            if (nextState != other.nextState) return false;
+            //if (nextState != other.nextState) return false;
             if (isFirstPlayer != other.isFirstPlayer) return false;
             if (squarePosition == null){
                 if (other.squarePosition != null) return false;
