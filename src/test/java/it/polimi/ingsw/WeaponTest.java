@@ -307,6 +307,9 @@ public class WeaponTest {
 
     @Test
     public void testMachineGunSecondScenario(){
+        Gson gson= new Gson();
+
+
         GameModel gm = new GameModel();
         gm.resumeMatchFromFile(testBackupPath, "machineGunTestBefore");
 
@@ -329,6 +332,8 @@ public class WeaponTest {
 /*
         Backup check = Backup.initFromFile(testBackupPath, "machineGunTestBefore");
         Backup currentState = new Backup((gm.getMatch()));
+
+        System.out.println(gson.toJson(currentState));
         assertTrue(check.equals(currentState));
 */
 
@@ -584,6 +589,204 @@ public class WeaponTest {
 
 
     }
+
+
+    @Test
+    public void testElectroScythe(){
+        GameModel gm = new GameModel();
+        gm.resumeMatchFromFile(testBackupPath,"electroScytheTestBefore");
+        StackManager sm= gm.getMatch().getStackManager();
+
+        //System.out.println(sm.getOriginalPowerUps());
+
+        Player primo = gm.getPlayerByName("first");
+        Player secondo = gm.getPlayerByName("second");
+        Player terzo = gm.getPlayerByName("third");
+        Player quarto = gm.getPlayerByName("fourth");
+        Player quinto= gm.getPlayerByName("fifth");
+
+
+
+        for(Player p: gm.getActivePlayers()){
+            assertEquals(p.getSquarePosition(), gm.getMatch().getLayout().getSquare(2, 2));
+        }
+
+        assertEquals(primo.getState(), PlayerState.CHOOSE_ACTION);
+        assertEquals(primo.getSelectableActions().size(), 4);
+        assertEquals(primo.getSelectableActions().get(2).toString(), "S");
+        gm.performAction(primo, primo.getSelectableActions().get(2));  //primo shoots
+
+        assertEquals(primo.getSelectableWeapons().size(), 3);
+        assertTrue(primo.getSelectableWeapons().containsAll(gm.getMatch().getStackManager().getOriginalWeaponArsenal().subList(5, 8)));
+
+        Weapon electroscythe= gm.getMatch().getStackManager().getWeaponFromName("Electoscythe");
+        gm.shootWeapon(primo, electroscythe);  //choosing electrocythe
+
+        assertEquals(primo.getState(), PlayerState.CHOOSE_MODE);
+        assertEquals(primo.getSelectableModes().size(), 2);
+        assertTrue(primo.getSelectableModes().containsAll(electroscythe.getMyModes()));
+
+        gm.addMode(primo, electroscythe.getMyModes().get(0));
+
+        assertEquals(primo.getSelectableModes().size(), 0);
+
+        assertEquals(secondo.getDamageTrack().getDamageList().size(), 4);
+        assertEquals(terzo.getDamageTrack().getDamageList().size(), 4);
+        assertEquals(quarto.getDamageTrack().getDamageList().size(), 6);
+        assertEquals(quinto.getDamageTrack().getDamageList().size(), 6);
+
+        gm.confirmModes(primo);
+
+        assertEquals(secondo.getDamageTrack().getDamageList().size(), 7);
+        assertEquals(terzo.getDamageTrack().getDamageList().size(), 6);
+        assertEquals(quarto.getDamageTrack().getDamageList().size(), 7);
+        assertEquals(quinto.getDamageTrack().getDamageList().size(), 7);
+
+
+        assertEquals(primo.getState(), PlayerState.CHOOSE_ACTION);
+
+
+        Backup check = Backup.initFromFile(testBackupPath, "electroScytheTestAfter");
+        Backup currentState = new Backup((gm.getMatch()));
+
+        assertTrue(check.equals(currentState));
+
+
+
+
+
+    }
+
+
+    @Test
+    public void testElectroScytheSecondMode(){
+        GameModel gm = new GameModel();
+        gm.resumeMatchFromFile(testBackupPath,"electroScytheTestBefore");
+        StackManager sm= gm.getMatch().getStackManager();
+
+        //System.out.println(sm.getOriginalPowerUps());
+
+        Player primo = gm.getPlayerByName("first");
+        Player secondo = gm.getPlayerByName("second");
+        Player terzo = gm.getPlayerByName("third");
+        Player quarto = gm.getPlayerByName("fourth");
+        Player quinto= gm.getPlayerByName("fifth");
+
+
+
+        for(Player p: gm.getActivePlayers()){
+            assertEquals(p.getSquarePosition(), gm.getMatch().getLayout().getSquare(2, 2));
+        }
+
+        assertEquals(primo.getState(), PlayerState.CHOOSE_ACTION);
+        assertEquals(primo.getSelectableActions().size(), 4);
+        assertEquals(primo.getSelectableActions().get(2).toString(), "S");
+        gm.performAction(primo, primo.getSelectableActions().get(2));  //primo shoots
+
+        assertEquals(primo.getSelectableWeapons().size(), 3);
+        assertTrue(primo.getSelectableWeapons().containsAll(gm.getMatch().getStackManager().getOriginalWeaponArsenal().subList(5, 8)));
+
+        Weapon electroscythe= gm.getMatch().getStackManager().getWeaponFromName("Electoscythe");
+        gm.shootWeapon(primo, electroscythe);  //choosing electrocythe
+
+        assertEquals(primo.getState(), PlayerState.CHOOSE_MODE);
+        assertEquals(primo.getSelectableModes().size(), 2);
+        assertTrue(primo.getSelectableModes().containsAll(electroscythe.getMyModes()));
+
+        gm.addMode(primo, electroscythe.getMyModes().get(1));
+
+        assertEquals(primo.getSelectableModes().size(), 0);
+
+        assertEquals(secondo.getDamageTrack().getDamageList().size(), 4);
+        assertEquals(terzo.getDamageTrack().getDamageList().size(), 4);
+        assertEquals(quarto.getDamageTrack().getDamageList().size(), 6);
+        assertEquals(quinto.getDamageTrack().getDamageList().size(), 6);
+
+        gm.confirmModes(primo);
+
+        assertEquals(secondo.getDamageTrack().getDamageList().size(), 8);
+        assertEquals(terzo.getDamageTrack().getDamageList().size(), 7);
+        assertEquals(quarto.getDamageTrack().getDamageList().size(), 8);
+        assertEquals(quinto.getDamageTrack().getDamageList().size(), 8);
+
+
+        assertEquals(primo.getState(), PlayerState.CHOOSE_ACTION);
+
+
+        Backup check = Backup.initFromFile(testBackupPath, "electroScytheSecondModeTestAfter");
+        Backup currentState = new Backup((gm.getMatch()));
+
+        assertTrue(check.equals(currentState));
+
+
+
+
+
+    }
+
+
+    @Test
+    public void testTractorBeam(){
+        GameModel gm = new GameModel();
+        gm.resumeMatchFromFile(testBackupPath,"tractorBeamTestBefore");
+        StackManager sm= gm.getMatch().getStackManager();
+
+        //System.out.println(sm.getOriginalPowerUps());
+
+        Player primo = gm.getPlayerByName("first");
+        Player secondo = gm.getPlayerByName("second");
+        Player terzo = gm.getPlayerByName("third");
+        Player quarto = gm.getPlayerByName("fourth");
+        Player quinto= gm.getPlayerByName("fifth");
+
+
+        // I try doing all operation in a row
+
+        gm.performAction(primo, primo.getSelectableActions().get(2));  //choosing to shoot
+
+        Weapon tractorBeam= sm.getWeaponFromName("Tractor Beam");
+
+        gm.shootWeapon(primo, tractorBeam);  //choosing tractor beam
+
+        assertEquals(primo.getState(), PlayerState.CHOOSE_MODE);
+        assertEquals(primo.getSelectableModes().size(), 2);
+        assertTrue(primo.getSelectableModes().containsAll(tractorBeam.getMyModes()));
+
+        gm.addMode(primo, tractorBeam.getMyModes().get(0) );  //choosing free mode
+        assertEquals(primo.getSelectableModes().size(), 0);
+
+        gm.confirmModes(primo);  //starting shooting
+
+        assertEquals(primo.getState(), PlayerState.SHOOT_TARGET);
+        assertEquals(primo.getSelectableSquares().size(), 5);
+
+        gm.shootTarget(primo, null, gm.getMatch().getLayout().getSquare(2, 0));
+
+        assertEquals(primo.getSelectablePlayers().size(), 2);
+        assertTrue(primo.getSelectablePlayers().containsAll(Arrays.asList(new Player[]{terzo, quarto})) );
+
+        assertEquals(quarto.getDamageTrack().getDamageList().size(), 6);
+
+        gm.shootTarget(primo, quarto, null);
+
+        assertEquals(quarto.getDamageTrack().getDamageList().size(), 7);
+
+        assertEquals(primo.getState(), PlayerState.CHOOSE_ACTION);
+        assertEquals(quarto.getSquarePosition(), gm.getMatch().getLayout().getSquare(2, 0));
+
+
+        Backup check = Backup.initFromFile(testBackupPath, "tractorBeamTestAfter");
+        Backup currentState = new Backup((gm.getMatch()));
+
+        //System.out.println(new Gson().toJson(currentState));
+
+        assertTrue(check.equals(currentState));
+    }
+
+
+
+
+
 
 
 

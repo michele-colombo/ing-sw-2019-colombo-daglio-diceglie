@@ -467,6 +467,7 @@ public class Effect {
             //ALL IN MY SQUARE
             case 4:
                 playersToShoot.addAll(m.getPlayersOn(new ArrayList<Square>(Arrays.asList(source.getSquarePosition()))));
+                playersToShoot.remove(source);
                 break;
             //ALL IN TEMP SQUARE
             case 5:
@@ -495,6 +496,8 @@ public class Effect {
             default: System.out.println("NUMERO SBAGLIATO WHOTODAMAGE");
 
         }
+
+        playersToShoot.remove(source);
 
         if(damageNumber>0){
             for(Player toShoot: playersToShoot) {
