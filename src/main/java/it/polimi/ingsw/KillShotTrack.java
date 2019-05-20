@@ -147,12 +147,12 @@ public class KillShotTrack {
         return false;
     }
 
-    public Map<Player, Integer> getKillingCounter() {
-        return killingCounter;
+    public void clearKillingCounter() {
+        killingCounter.clear();
     }
 
-    public List<Player> getKillingOrder() {
-        return killingOrder;
+    public void clearKillingOrder() {
+        killingOrder.clear();
     }
 
     public List<Map<Player, Integer>> getTrack() {

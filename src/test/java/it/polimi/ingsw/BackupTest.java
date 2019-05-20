@@ -94,4 +94,11 @@ class BackupTest {
         assertEquals(backup_a, backup_b);
     }
 
+    @Test
+    public void resumeBackupWithoutKillingOrderAndKillingCounter(){
+        GameModel gm = new GameModel();
+        gm.resumeMatchFromFile(BACKUP_TEST,"backup_1");
+        assertTrue(true);
+    }
+
 }

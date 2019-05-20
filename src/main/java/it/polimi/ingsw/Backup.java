@@ -172,8 +172,6 @@ public class Backup {
     private class KillShotTrackBackup{
         private int skulls;
         private List<Map<String, Integer>> track;
-        private Map<String, Integer> killingCounter;
-        private List<String> killingOrder;
 
         public KillShotTrackBackup(KillShotTrack k){
             skulls = k.getSkulls();
@@ -186,20 +184,12 @@ public class Backup {
                 }
                 track.add(temp);
             }
-
-            killingCounter = new HashMap<>();
-            for (Map.Entry<Player, Integer> entry : k.getKillingCounter().entrySet()){
-                killingCounter.put(entry.getKey().getName(), entry.getValue());
-            }
-
-            killingOrder = new ArrayList<>();
-            for (Player p : k.getKillingOrder()){
-                killingOrder.add(p.getName());
-            }
         }
 
         public void restore(KillShotTrack k, Match match){
             k.setSkulls(skulls);
+            k.clearKillingCounter();
+            k.clearKillingOrder();
 
             List<Map<Player, Integer>> tempTrack = new ArrayList<>();
             for (Map<String, Integer> map : track){
@@ -207,21 +197,8 @@ public class Backup {
                 for (Map.Entry<String, Integer> entry : map.entrySet()){
                     temp.put(match.getPlayerFromName(entry.getKey()), entry.getValue());
                 }
-                tempTrack.add(temp);
+                k.addKilled(temp);
             }
-            k.setTrack(tempTrack);
-
-            Map<Player, Integer> tempKillingCounter = new HashMap<>();
-            for (Map.Entry<String, Integer> entry : killingCounter.entrySet()){
-                tempKillingCounter.put(match.getPlayerFromName(entry.getKey()), entry.getValue());
-            }
-            k.setKillingCounter(tempKillingCounter);
-
-            List<Player> tempKillingOrder = new ArrayList<>();
-            for (String name : killingOrder){
-                tempKillingOrder.add(match.getPlayerFromName(name));
-            }
-            k.setKillingOrder(tempKillingOrder);
         }
 
         @Override
@@ -230,8 +207,6 @@ public class Backup {
             KillShotTrackBackup other = (KillShotTrackBackup)obj;
             if (skulls != other.skulls) return false;
             if (!(track.equals(other.track))) return false;
-            if (!(killingCounter.equals(other.killingCounter))) return false;
-            if (!(killingOrder.equals(other.killingOrder))) return false;
 
             return true;
         }
