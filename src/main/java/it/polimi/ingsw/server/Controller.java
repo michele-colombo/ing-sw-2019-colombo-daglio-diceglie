@@ -55,6 +55,7 @@ public class Controller implements VisitorServer {
 
     @Override
     public synchronized void visit(SquareSelectedEvent squareSelectedEvent, ServerView serverView) {
+        removeObserverFromTimers(serverView);
         Square sq;
         try {
             Player p = gameModel.getPlayerByObserver(serverView);
@@ -86,11 +87,13 @@ public class Controller implements VisitorServer {
         } catch (NoSuchObserverException e) {
             //todo: what if there is no such serverView?
         }
+        startTimers();
         //todo: update all players
     }
 
     @Override
     public synchronized void visit(ActionSelectedEvent actionSelectedEvent, ServerView serverView) {
+        removeObserverFromTimers(serverView);
         Action act;
         try {
             Player p = gameModel.getPlayerByObserver(serverView);
@@ -111,11 +114,13 @@ public class Controller implements VisitorServer {
         } catch (NoSuchObserverException e){
             //todo (should not occur)
         }
+        startTimers();
         //todo: update
     }
 
     @Override
     public synchronized void visit(PlayerSelectedEvent playerSelectedEvent, ServerView serverView) {
+    removeObserverFromTimers(serverView);
         Player pl;
         try {
             Player p = gameModel.getPlayerByObserver(serverView);
@@ -140,11 +145,13 @@ public class Controller implements VisitorServer {
         } catch (NoSuchObserverException e){
             //todo
         }
+        startTimers();
         //todo: update
     }
 
     @Override
     public synchronized void visit(WeaponSelectedEvent weaponSelectedEvent, ServerView serverView) {
+        removeObserverFromTimers(serverView);
         Weapon wp;
         try {
             Player p = gameModel.getPlayerByObserver(serverView);
@@ -174,11 +181,13 @@ public class Controller implements VisitorServer {
         } catch (NoSuchObserverException e){
             //todo
         }
+        startTimers();
         //todo: update
     }
 
     @Override
     public synchronized void visit(ModeSelectedEvent modeSelectedEvent, ServerView serverView) {
+        removeObserverFromTimers(serverView);
         Mode mod;
         try {
             Player p = gameModel.getPlayerByObserver(serverView);
@@ -199,12 +208,13 @@ public class Controller implements VisitorServer {
         } catch (NoSuchObserverException e){
             //todo
         }
+        startTimers();
         //todo: update
     }
 
     @Override
     public synchronized void visit(CommandSelectedEvent commandSelectedEvent, ServerView serverView) {
-        //todo: complete with all possible commands
+        removeObserverFromTimers(serverView);
         Command cmd;
         try {
             Player p = gameModel.getPlayerByObserver(serverView);
@@ -241,11 +251,13 @@ public class Controller implements VisitorServer {
         } catch (NoSuchObserverException e){
             //todo
         }
+        startTimers();
         //todo:  update
     }
 
     @Override
     public synchronized void visit(ColorSelectedEvent colorSelectedEvent, ServerView serverView) {
+        removeObserverFromTimers(serverView);
         Color col;
         try {
             Player p = gameModel.getPlayerByObserver(serverView);
@@ -267,11 +279,13 @@ public class Controller implements VisitorServer {
         } catch (NoSuchObserverException e){
             //todo
         }
+        startTimers();
         //todo: update
     }
 
     @Override
     public synchronized void visit(PowerUpSelectedEvent powerUpSelectedEvent, ServerView serverView) {
+        removeObserverFromTimers(serverView);
         PowerUp po;
         try {
             Player p = gameModel.getPlayerByObserver(serverView);
@@ -303,33 +317,26 @@ public class Controller implements VisitorServer {
         } catch (NoSuchObserverException e){
             //todo (should not occur)
         }
+        startTimers();
         //todo: update
     }
 
     public void disconnectPlayer(Observer observer){
         try{
             Player disconnected = gameModel.getPlayerByObserver(observer);
-            if(gameModel.isMatchInProgress()){
-                if(gameModel.getWaitingFor().contains(disconnected)){
-                    if(gameModel.getMatch().getCurrentPlayer() == disconnected){
-                        gameModel.restore();
-                        gameModel.endTurn();
-                    } else{
-                        //gamemodel.fakeAction(Player);
-                        //todo se il giocatore ha OK tra i selectable, premi OK
-                        //todo altrimenti, se ha i power up, scegli un powerUp a caso
-                    }
-                }
-            } //todo controllo se devo togliere il timer
-            if(gameModel.getActivePlayers().contains(disconnected)){
+            if(gameModel.getActivePlayers().contains(disconnected)){    //should always be true, right?
                 gameModel.detach(observer);
             }
+            if(gameModel.isMatchInProgress()){
+                gameModel.fakeAction(disconnected);
+            }//todo controllo se devo togliere il timer (michele: "looks like this 'todo' has already been satisfied (look below)")
             gameModel.notifyAll(new DisconnectionMessage("Player " +disconnected.getName() + " has disconnected!"));
         } catch(NoSuchObserverException e){
             System.out.println("Player already disconnected!");
         } finally {
             checkStopMatch();
             removeObserverFromTimers(observer);
+            startTimers();
         }
     }
 
@@ -347,6 +354,7 @@ public class Controller implements VisitorServer {
     public void startMatch(){
         gameModel.startMatch();
         gameModel.notifyAll(new GenericMessage("Match started!"));
+        startTimers();
         //todo notificare i player che la partita inizia
     }
 
@@ -368,6 +376,13 @@ public class Controller implements VisitorServer {
 
     public void setLoginTimerStarted(){
         loginTimerStarted = false;
+    }
+
+    //todo: added by michele, check!
+    public void startTimers(){
+        for (Player p : gameModel.getWaitingFor()){
+            addTimer(gameModel.getObserver(p)); //addTimer checks if there is no timer active for the corresponding observer
+        }
     }
 
     public void addTimer(Observer observer){

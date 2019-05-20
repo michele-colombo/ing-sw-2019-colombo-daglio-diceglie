@@ -163,14 +163,6 @@ public class KillShotTrack {
         this.skulls = skulls;
     }
 
-    public void setKillingCounter(Map<Player, Integer> killingCounter) {
-        this.killingCounter = killingCounter;
-    }
-
-    public void setKillingOrder(List<Player> killingOrder) {
-        this.killingOrder = killingOrder;
-    }
-
     public void setTrack(List<Map<Player, Integer>> track) {
         this.track = track;
     }

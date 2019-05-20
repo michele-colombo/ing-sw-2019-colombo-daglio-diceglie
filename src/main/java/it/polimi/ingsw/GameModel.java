@@ -142,7 +142,9 @@ public class GameModel implements Observable {
             p.addPowerUp(match.getStackManager().drawPowerUp());
         }
         match.addWaitingFor(p);
-        //add to toFakeList
+        if (!activePlayers.contains(p)){
+            match.addToFakeList(p);
+        }
         if (!spawningPlayers.contains(p)) spawningPlayers.add(p);
         p.setState(SPAWN);
         p.resetSelectables();
@@ -453,9 +455,9 @@ public class GameModel implements Observable {
     public void dontUsePowerUp(Player p){
         //if the current player  is (not) using the targeting scope, at this point he is certainly active (because otherwise the match would have been restored)
         //even if it were inactive, either the next microAction would have been a 'receive tagback grenade' (which is possibile even for an inactive current player)
-        //or the action would have been completed (and there is checked the activity state of current player)
+        //or the action would have been completed (in actionCompleted the actual state of activity of current player is checked)
         //if it is another (not the current one) player (not) using the tagback grenade, current player could be inactive
-        //in that case, the activity state of current player is chacke in ActionCompleted
+        //in that case, the activity state of current player is chacked in ActionCompleted
         p.setState(IDLE);
         p.resetSelectables();
         match.removeWaitingFor(p);
@@ -481,11 +483,11 @@ public class GameModel implements Observable {
 
     public void actionCompleted(){
         Player p = match.getCurrentPlayer();
-        match.addWaitingFor(match.getCurrentPlayer());  //todo: only if is not turn end
         List<Action> selectableActions = match.createSelectablesAction(match.getCurrentPlayer());
-        if (selectableActions.isEmpty()){   //todo: or current player is no longer active
+        if (selectableActions.isEmpty() || !activePlayers.contains(p)){
             endTurn();
         } else {
+            match.addWaitingFor(match.getCurrentPlayer());
             saveSnapshot(match);
             p.setState(CHOOSE_ACTION);
             p.resetSelectables();
@@ -524,7 +526,9 @@ public class GameModel implements Observable {
             for (Player p : deadPlayers) {
                 prepareForSpawning(p, false);
             }
-            //fakeAction for all players in toFakeList
+            for (Player p : match.getToFakeList()){
+                fakeAction(p);
+            }
         }
     }
 
@@ -585,6 +589,10 @@ public class GameModel implements Observable {
             }
         }
         throw new NoSuchObserverException();
+    }
+
+    public Observer getObserver(Player p){
+        return observers.get(p);
     }
 
     public boolean alreadyActive(String name){
@@ -814,7 +822,6 @@ public class GameModel implements Observable {
         if (p == match.getCurrentPlayer()){
             if (match.getWaitingFor().contains(p)){
                 restore();
-                endTurn();
                 //if fakeAction is called after actually detaching and disconnecting current player,
                 //endTurn() is implicit in ActionCompeted, since currentPlayer is no longer active (see comments below)
             } else {
