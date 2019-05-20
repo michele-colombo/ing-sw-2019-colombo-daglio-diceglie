@@ -1,10 +1,9 @@
 package it.polimi.ingsw;
 
 import com.google.gson.Gson;
-import it.polimi.ingsw.Cash;
-import it.polimi.ingsw.Mode;
-import it.polimi.ingsw.Weapon;
 import org.junit.jupiter.api.Test;
+
+import static it.polimi.ingsw.testUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.*;
@@ -12,35 +11,6 @@ import java.util.*;
 import static it.polimi.ingsw.Color.*;
 
 public class WeaponTest {
-    private static final String testBackupPath = "./src/test/resources/savedGamesForTests/";
-
-    public void printSel(Player p){
-        System.out.println(p.getState());
-        System.out.println(p.selectablesToString());
-    }
-
-
-
-    public <T> void printList(List<T> list){
-        System.out.println("printing a list:");
-        for (T t : list){
-            if (t == null){
-                System.out.println("NULL!!!!");
-            } else {
-                System.out.println(t);
-            }
-        }
-    }
-
-    public <K, V> void printMap(Map<K, V> map){
-        System.out.println("printing a map:");
-        for (Map.Entry<K, V> entry : map.entrySet()){
-            if (entry.getKey() == null) System.out.print("null -> ");
-            else System.out.print(entry.getKey()+" -> ");
-            if (entry.getValue() == null) System.out.println("null");
-            else System.out.println(entry.getValue());
-        }
-    }
 
     @Test
     public void initWeaponDescription(){
@@ -175,7 +145,7 @@ public class WeaponTest {
     @Test
     public void testLockRifle1(){
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(testBackupPath, "lockRifleTestBefore");
+        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "lockRifleTestBefore");
 
         Player p1 = gm.getPlayerByName("first");
         Player p2 = gm.getPlayerByName("second");
@@ -214,7 +184,7 @@ public class WeaponTest {
         printList(p4.getDamageTrack().getDamageList());
         printMap(p4.getDamageTrack().getMarkMap());
         printSel(p1);
-        Backup check = Backup.initFromFile(testBackupPath, "lockRifleTestAfter");
+        Backup check = Backup.initFromFile(SAVED_GAMES_FOR_TESTS, "lockRifleTestAfter");
         Backup currentState = new Backup((gm.getMatch()));
         assertEquals(check, currentState);
         assertTrue(check != currentState);
@@ -223,7 +193,7 @@ public class WeaponTest {
     @Test
     public void testMachineGun() {
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(testBackupPath, "machineGunTestBefore");
+        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "machineGunTestBefore");
 
         Player gianni = gm.getPlayerByName("first");
         Player beppe = gm.getPlayerByName("second");
@@ -311,7 +281,7 @@ public class WeaponTest {
 
 
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(testBackupPath, "machineGunTestBefore");
+        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "machineGunTestBefore");
 
         Player gianni = gm.getPlayerByName("first");
         Player beppe = gm.getPlayerByName("second");
@@ -330,7 +300,7 @@ public class WeaponTest {
         printSel(gianni);
         //todo it will pass when everything works
 /*
-        Backup check = Backup.initFromFile(testBackupPath, "machineGunTestBefore");
+        Backup check = Backup.initFromFile(SAVED_GAMES_FOR_TESTS, "machineGunTestBefore");
         Backup currentState = new Backup((gm.getMatch()));
 
         System.out.println(gson.toJson(currentState));
@@ -364,7 +334,7 @@ public class WeaponTest {
     @Test
     public void testTHOR(){
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(testBackupPath,"machineGunTestBefore");
+        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS,"machineGunTestBefore");
         StackManager sm= gm.getMatch().getStackManager();
 
         Player gianni = gm.getPlayerByName("first");
@@ -450,7 +420,7 @@ public class WeaponTest {
     @Test
     public void testPlasmaGun(){
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(testBackupPath,"plasmaGunTestBefore");
+        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS,"plasmaGunTestBefore");
         StackManager sm= gm.getMatch().getStackManager();
 
         //System.out.println(sm.getOriginalPowerUps());
@@ -544,7 +514,7 @@ public class WeaponTest {
     @Test
     public void testWhisper(){
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(testBackupPath,"plasmaGunTestBefore");
+        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS,"plasmaGunTestBefore");
         StackManager sm= gm.getMatch().getStackManager();
 
         //System.out.println(sm.getOriginalPowerUps());
@@ -594,7 +564,7 @@ public class WeaponTest {
     @Test
     public void testElectroScythe(){
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(testBackupPath,"electroScytheTestBefore");
+        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS,"electroScytheTestBefore");
         StackManager sm= gm.getMatch().getStackManager();
 
         //System.out.println(sm.getOriginalPowerUps());
@@ -646,7 +616,7 @@ public class WeaponTest {
         assertEquals(primo.getState(), PlayerState.CHOOSE_ACTION);
 
 
-        Backup check = Backup.initFromFile(testBackupPath, "electroScytheTestAfter");
+        Backup check = Backup.initFromFile(SAVED_GAMES_FOR_TESTS, "electroScytheTestAfter");
         Backup currentState = new Backup((gm.getMatch()));
 
         assertTrue(check.equals(currentState));
@@ -661,7 +631,7 @@ public class WeaponTest {
     @Test
     public void testElectroScytheSecondMode(){
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(testBackupPath,"electroScytheTestBefore");
+        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS,"electroScytheTestBefore");
         StackManager sm= gm.getMatch().getStackManager();
 
         //System.out.println(sm.getOriginalPowerUps());
@@ -713,7 +683,7 @@ public class WeaponTest {
         assertEquals(primo.getState(), PlayerState.CHOOSE_ACTION);
 
 
-        Backup check = Backup.initFromFile(testBackupPath, "electroScytheSecondModeTestAfter");
+        Backup check = Backup.initFromFile(SAVED_GAMES_FOR_TESTS, "electroScytheSecondModeTestAfter");
         Backup currentState = new Backup((gm.getMatch()));
 
         assertTrue(check.equals(currentState));
@@ -728,7 +698,7 @@ public class WeaponTest {
     @Test
     public void testTractorBeam(){
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(testBackupPath,"tractorBeamTestBefore");
+        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS,"tractorBeamTestBefore");
         StackManager sm= gm.getMatch().getStackManager();
 
         //System.out.println(sm.getOriginalPowerUps());
@@ -775,7 +745,7 @@ public class WeaponTest {
         assertEquals(quarto.getSquarePosition(), gm.getMatch().getLayout().getSquare(2, 0));
 
 
-        Backup check = Backup.initFromFile(testBackupPath, "tractorBeamTestAfter");
+        Backup check = Backup.initFromFile(SAVED_GAMES_FOR_TESTS, "tractorBeamTestAfter");
         Backup currentState = new Backup((gm.getMatch()));
 
         //System.out.println(new Gson().toJson(currentState));

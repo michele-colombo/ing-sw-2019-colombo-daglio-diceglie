@@ -366,7 +366,7 @@ public class Player {
 
     /**
      * observer method to know how many selectable objects the player has overall
-     * @return int wich is the sum of the size of each selectable list
+     * @return int which is the sum of the size of each selectable list
      */
     public int howManySelectables(){
         return selectableColors.size()+
@@ -591,14 +591,7 @@ public class Player {
     }
 
     public boolean hasSelectables(){
-        return !(selectableColors.isEmpty() &&
-                selectableActions.isEmpty() &&
-                selectableModes.isEmpty() &&
-                selectableCommands.isEmpty() &&
-                selectablePlayers.isEmpty() &&
-                selectableSquares.isEmpty() &&
-                selectablePowerUps.isEmpty() &&
-                selectableWeapons.isEmpty());
+        return howManySelectables()>0;
     }
 
     public String selectablesToString(){

@@ -29,14 +29,17 @@ public class UsePowerUp implements MicroAction {
             case TAGBACK_GRENADE:
                 match.clearWaitingFor();
                 for (Player player : match.getPlayers()){
-                    if (match.getCurrentAction().getDamaged().contains(player) && player.howManyPowerUps(type)>0){
+                    if (match.getCurrentAction().getDamaged().contains(player) && player.howManyPowerUps(type)>0
+                            && match.getLayout().getVisibleSquares(player.getSquarePosition()).contains(p.getSquarePosition())){
                         match.addWaitingFor(player);
+                        //check: if inactive is put in the toFakeList, too
                         player.setState(PlayerState.USE_POWERUP);
                         player.resetSelectables();
                         player.setSelectablePowerUps(player.getPowerUpsOfType(type));
                         player.setSelectableCommands(Command.OK);
                     }
                 }
+                //each player in the toFakeList has the action faked
                 p.setState(PlayerState.USE_POWERUP);
                 p.resetSelectables();
                 if (match.getWaitingFor().isEmpty()) {    //if there isn't any player which can use tagback, go on with the next microAction

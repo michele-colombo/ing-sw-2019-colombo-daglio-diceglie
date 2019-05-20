@@ -142,6 +142,7 @@ public class GameModel implements Observable {
             p.addPowerUp(match.getStackManager().drawPowerUp());
         }
         match.addWaitingFor(p);
+        //add to toFakeList
         if (!spawningPlayers.contains(p)) spawningPlayers.add(p);
         p.setState(SPAWN);
         p.resetSelectables();
@@ -171,6 +172,7 @@ public class GameModel implements Observable {
             } else {
                 match.setCurrentPlayer(nextP);
                 match.addWaitingFor(nextP);
+                //check not required, since nextP is certainly active
                 nextP.setState(CHOOSE_ACTION);
                 nextP.resetSelectables();
                 nextP.setSelectableActions(match.initSelectableActions(nextP));
@@ -382,16 +384,17 @@ public class GameModel implements Observable {
                 p.setState(IDLE);
                 p.resetSelectables();
                 match.removeWaitingFor(p);
-                useCurrentPowerUp(p);
                 try {
                     po.getEffects().get(0).start(p, match);
                 } catch (ApplyEffectImmediatelyException e){
                     po.getEffects().get(0).applyOn(p, null, null, match);
-                    //calls applyOn and not ChoosePowerUpTarget() because with tagback always have one effect
+                    //calls applyOn and not ChoosePowerUpTarget() because tagback always has just one effect
                     //or like that: po.getEffects().get(0).applyOn(p, match.getCurrentPlayer(), null, match);
                 }
                 if (match.getWaitingFor().isEmpty()){
                     match.addWaitingFor(match.getCurrentPlayer());
+                    //in actionCompleted (called from nextMicroAction) is checked whether the currentPlayer is still active or not
+                    //if not, is called endTurn()
                     nextMicroAction();
                 }
                 break;
@@ -448,6 +451,11 @@ public class GameModel implements Observable {
     }
 
     public void dontUsePowerUp(Player p){
+        //if the current player  is (not) using the targeting scope, at this point he is certainly active (because otherwise the match would have been restored)
+        //even if it were inactive, either the next microAction would have been a 'receive tagback grenade' (which is possibile even for an inactive current player)
+        //or the action would have been completed (and there is checked the activity state of current player)
+        //if it is another (not the current one) player (not) using the tagback grenade, current player could be inactive
+        //in that case, the activity state of current player is chacke in ActionCompleted
         p.setState(IDLE);
         p.resetSelectables();
         match.removeWaitingFor(p);
@@ -473,9 +481,9 @@ public class GameModel implements Observable {
 
     public void actionCompleted(){
         Player p = match.getCurrentPlayer();
-        match.addWaitingFor(match.getCurrentPlayer());
+        match.addWaitingFor(match.getCurrentPlayer());  //todo: only if is not turn end
         List<Action> selectableActions = match.createSelectablesAction(match.getCurrentPlayer());
-        if (selectableActions.isEmpty()){
+        if (selectableActions.isEmpty()){   //todo: or current player is no longer active
             endTurn();
         } else {
             saveSnapshot(match);
@@ -517,6 +525,7 @@ public class GameModel implements Observable {
                 prepareForSpawning(p, false);
             }
         }
+        //fakeAction for all players in toFakeList
     }
 
     private boolean nameTaken(String name){
@@ -798,7 +807,6 @@ public class GameModel implements Observable {
                 temp.setUnloadedWeapons(unloadedWeapons);
             }
         }
-
         return message;
     }
 }
