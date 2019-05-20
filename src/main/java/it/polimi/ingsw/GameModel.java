@@ -483,7 +483,7 @@ public class GameModel implements Observable {
 
     public void actionCompleted(){
         Player p = match.getCurrentPlayer();
-        List<Action> selectableActions = match.createSelectablesAction(match.getCurrentPlayer());
+        List<Action> selectableActions = match.createSelectableActions(match.getCurrentPlayer());
         if (selectableActions.isEmpty() || !activePlayers.contains(p)){
             endTurn();
         } else {

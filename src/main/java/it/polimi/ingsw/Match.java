@@ -137,7 +137,7 @@ public class Match {
         this.players.add(p);
     }
 
-    public void activateFrenezy(){
+    public void activateFrenzy(){
         this.frenzyOn = true;
     }
 
@@ -243,9 +243,10 @@ public class Match {
     }
 
     /**
-     *  At the end of the turn, check if some players is dead: in this case, their DamageTrack will be scored. Then,
-     *  if there are at least two deaths, the active player will get an additional point. If frenzy mode is true, switches
-     *  to frenzy all the dead players and, in the end, calls resetAfterDeathAll on them
+     *  At the end of the turn, check if some players is dead: in this case, their DamageTrack will be scored.
+     *  Then, if there are at least two deaths, the active player will get an additional point.
+     *  If frenzy has to be activated (last skull removed), it activates frenzy and set the flag 'isBeforeFirst' in each player.
+     *  If frenzy mode is true, switches to frenzy all the dead players and, in the end, calls resetAfterDeathAll on them
      * @return An ArrayList containing all the dead players; it could be empty
      */
     public List<Player> endTurnCheck(){
@@ -254,27 +255,25 @@ public class Match {
             for(Player p : deadPlayers){
                 scoreDamageTrack(p.getDamageTrack().score());
                 killShotTrack.removeSkull();
-                //todo: add killed in killShotTrack
-            }
-        }
-        for(Player p : players){
-            if(players.indexOf(p) > players.indexOf(currentPlayer)){ //todo sostituire con un metodo
-                p.setBeforeFirst(true);
+                killShotTrack.addKilled(p.getDamageTrack().howDoTheyKilledYou());
             }
         }
 
         if(deadPlayers.size() > 2){
             currentPlayer.addPoints(1);
         }
-        if(!frenzyOn && killShotTrack.getSkulls() == 0){
-            activateFrenezy();
-
+        if(!frenzyOn && killShotTrack.getSkulls() <= 0){
+            activateFrenzy();
+            for(Player p : players){
+                if(players.indexOf(p) > players.indexOf(currentPlayer)){
+                    p.setBeforeFirst(true);
+                }
+            }
         }
-        //todo: check whether to activate frenzy or not. "activateFrenzy" saves the current player (for and game check)
         if(frenzyOn){
             switchToFrenzyAll(deadPlayers);
         }
-        resetAfterDeathAll(deadPlayers);
+        resetAfterDeathAll(deadPlayers);    //if is a NormalDamageTrack, it also increases the number of skullsk
         return deadPlayers;
     }
 
@@ -285,7 +284,7 @@ public class Match {
      * @param p The player sho is in CHOOSE_ACTION state
      * @return
      */
-    public List<Action> createSelectablesAction(Player p) {  //todo rename in createSelectableActions
+    public List<Action> createSelectableActions(Player p) {
         //could be loaded from a json file in the future?
         List<Action> result = new ArrayList<>();
         Action temp;
@@ -372,7 +371,7 @@ public class Match {
         alreadyCompleted = false;
         actionsCompleted = 0;
         onlyReload = false;
-        return createSelectablesAction(p);
+        return createSelectableActions(p);
     }
 
     /**
