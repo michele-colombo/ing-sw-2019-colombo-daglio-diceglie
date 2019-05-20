@@ -524,8 +524,8 @@ public class GameModel implements Observable {
             for (Player p : deadPlayers) {
                 prepareForSpawning(p, false);
             }
+            //fakeAction for all players in toFakeList
         }
-        //fakeAction for all players in toFakeList
     }
 
     private boolean nameTaken(String name){
@@ -808,5 +808,39 @@ public class GameModel implements Observable {
             }
         }
         return message;
+    }
+
+    public void fakeAction(Player p){
+        if (p == match.getCurrentPlayer()){
+            if (match.getWaitingFor().contains(p)){
+                restore();
+                endTurn();
+                //if fakeAction is called after actually detaching and disconnecting current player,
+                //endTurn() is implicit in ActionCompeted, since currentPlayer is no longer active (see comments below)
+            } else {
+                //current player is either receiving a tagback grenade or someone is spawning after his turn
+                    //if someone is using tagback grenade, there's nothing to do.
+                    //in ActionCompleted, check if currentPlayer is still active. If not -> endTurn()
+
+                    //if someone is spawning, there's nothing to do, too.
+                    //once they are all spawned, the next turn begins normally
+
+                    //should never occur a third possibility
+            }
+        } else {
+            //p is not the current player
+            if (p.getState() == USE_POWERUP){
+                dontUsePowerUp(p);
+                //p is removed from waitingFor
+                //If there is someone else using power up, he is left there
+                //otherwise, ActionCompeted is called (from nextMicroAction)
+                //If the current player had disconnected, actionCompleted automatically ends his turn
+            } else if (p.getState() == SPAWN) {
+                spawn(p, p.getSelectablePowerUps().get(p.getSelectablePowerUps().size()-1));
+                //he always respawns on the last powerup
+                //if there is someone else respawning, he is left there
+                //otherwise, beginNextTurn() is called and the next turn begins normally
+            }
+        }
     }
 }

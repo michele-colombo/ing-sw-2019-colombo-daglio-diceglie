@@ -592,11 +592,12 @@ public class Backup {
         if (!(obj instanceof Backup)) return false;
         Backup other = (Backup)obj;
 
-        return playerBackups.equals(other.playerBackups) &&
+        boolean result = playerBackups.equals(other.playerBackups) &&
                 killShotTrackBackup.equals((other.killShotTrackBackup)) &&
                 layoutBackup.equals(other.layoutBackup) &&
                 stackManagerBackup.equals(other.stackManagerBackup) &&
                 matchBackup.equals(other.matchBackup);
+        return result;
     }
 
     @Override

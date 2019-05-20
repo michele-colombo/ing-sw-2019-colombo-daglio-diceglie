@@ -225,6 +225,193 @@ public class PowerUpTest {
 
     }
 
+    @Test
+    public void tagbackAndTargeting(){
+        //first shoots to third (which has a tagback and sees first) and fifth (which has a tagback and sees first)
+        GameModel gm = new GameModel();
+        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "tagbackAndTargetingBefore");
+        Match match = gm.getMatch();
+        StackManager sm = gm.getMatch().getStackManager();
+        Layout layout = gm.getMatch().getLayout();
 
+        Player first = gm.getPlayerByName("first");
+        Player second = gm.getPlayerByName("second");
+        Player third = gm.getPlayerByName("third");
+        Player fourth = gm.getPlayerByName("fourth");
+        Player fifth = gm.getPlayerByName("fifth");
 
+        gm.performAction(first, first.getSelectableActions().get(2));   //he shoots
+        gm.shootWeapon(first, sm.getWeaponFromName("Machine gun"));
+        gm.addMode(first, first.getSelectableModes().get(0));
+        gm.confirmModes(first);
+
+            printSel(first);
+            List<Player> temp = new ArrayList<>();
+            temp.add(second);
+            temp.add(third);
+            temp.add(fourth);
+            temp.add(fifth);
+            assertTrue(first.getSelectablePlayers().containsAll(temp));
+            assertTrue(temp.containsAll(first.getSelectablePlayers()));
+
+        gm.shootTarget(first, fifth, null);
+
+            printSel(first);
+            temp.remove(fifth);
+            assertTrue(first.getSelectablePlayers().containsAll(temp));
+            assertTrue(temp.containsAll(first.getSelectablePlayers()));
+            int damagesThird = third.getDamageTrack().getDamageList().size();
+
+        gm.shootTarget(first, third, null);
+
+            assertEquals(damagesThird += 2, third.getDamageTrack().getDamageList().size());  //he had a mark from first player
+            assertEquals(USE_POWERUP, first.getState());
+            assertTrue(first.getSelectablePowerUps().contains(sm.getPowerUpFromString("13-Targeting scope-RED")));
+            assertEquals(1, first.getSelectablePowerUps().size());
+            assertTrue(match.getWaitingFor().contains(first));
+            assertEquals(1, match.getWaitingFor().size());
+
+        gm.usePowerUp(first, first.getSelectablePowerUps().get(0));
+
+            assertEquals(PAYING_ANY, first.getState());
+            assertTrue(match.getWaitingFor().contains(first));
+            assertFalse(match.getWaitingFor().contains(third));
+            assertFalse(match.getWaitingFor().contains(fifth));
+            //first had wallet: (3,3,3) and 3 powerups
+            assertTrue(first.getSelectableColors().contains(Color.BLUE));
+            assertTrue(first.getSelectableColors().contains(Color.RED));
+            assertTrue(first.getSelectableColors().contains(Color.YELLOW));
+            assertTrue(!first.getSelectablePowerUps().contains(sm.getPowerUpFromString("13-Targeting scope-RED")));
+            assertTrue(first.getSelectablePowerUps().size()>0);
+
+        gm.payAny(first, sm.getPowerUpFromString("18-Newton-YELLOW"));
+
+            assertTrue(match.getWaitingFor().contains(first));
+            assertFalse(match.getWaitingFor().contains(third));
+            assertFalse(match.getWaitingFor().contains(fifth));
+
+        gm.choosePowerUpTarget(first, third, null);
+
+            assertEquals(damagesThird += 1, third.getDamageTrack().getDamageList().size());
+            assertFalse(match.getWaitingFor().contains(first));
+            assertTrue(match.getWaitingFor().contains(third));
+            assertTrue(match.getWaitingFor().contains(fifth));
+            assertEquals(USE_POWERUP, first.getState());
+            assertFalse(first.hasSelectables());
+            assertEquals(USE_POWERUP, fifth.getState());
+            assertEquals(1, fifth.getSelectablePowerUps().size());
+            assertTrue(fifth.getSelectableCommands().contains(Command.OK));
+            assertFalse(first.getDamageTrack().getMarkMap().containsKey(fifth));
+            assertEquals(USE_POWERUP, third.getState());
+            assertEquals(1, third.getSelectablePowerUps().size());
+            assertTrue(third.getSelectableCommands().contains(Command.OK));
+            assertEquals(1, first.getDamageTrack().getMarkMap().get(third));
+
+        gm.usePowerUp(fifth, fifth.getSelectablePowerUps().get(0));
+
+            assertEquals(0, fifth.howManyPowerUps(PowerUpType.TAGBACK_GRENADE));
+            assertEquals(1, first.getDamageTrack().getMarkMap().get(fifth));
+            assertEquals(USE_POWERUP, first.getState());
+            assertEquals(IDLE, fifth.getState());
+            assertFalse(fifth.hasSelectables());
+            assertFalse(match.getWaitingFor().contains(first));
+            assertTrue(match.getWaitingFor().contains(third));
+
+        gm.usePowerUp(third, third.getSelectablePowerUps().get(0));
+
+            assertTrue(match.getWaitingFor().contains(first));
+            assertEquals(0, third.howManyPowerUps(PowerUpType.TAGBACK_GRENADE));
+            assertEquals(2, first.getDamageTrack().getMarkMap().get(third));
+            assertEquals(CHOOSE_ACTION, first.getState());
+            assertEquals(IDLE, third.getState());
+            assertFalse(third.hasSelectables());
+
+            Backup b1 = Backup.initFromFile(SAVED_GAMES_FOR_TESTS, "tagbackAndTargetingAfter");
+            Backup b2 = new Backup(gm.getMatch());
+
+            assertTrue(b1.equals(b2));
+    }
+
+    @Test
+    public void tagbackButRefusingTargeting(){
+        //first shoots to third (which has a tagback and sees first) and fifth (which has a tagback and sees first)
+        GameModel gm = new GameModel();
+        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "tagbackAndTargetingBefore");
+        Match match = gm.getMatch();
+        StackManager sm = gm.getMatch().getStackManager();
+        Layout layout = gm.getMatch().getLayout();
+
+        Player first = gm.getPlayerByName("first");
+        Player second = gm.getPlayerByName("second");
+        Player third = gm.getPlayerByName("third");
+        Player fourth = gm.getPlayerByName("fourth");
+        Player fifth = gm.getPlayerByName("fifth");
+
+        gm.performAction(first, first.getSelectableActions().get(2));   //he shoots
+        gm.shootWeapon(first, sm.getWeaponFromName("Machine gun"));
+        gm.addMode(first, first.getSelectableModes().get(0));
+        gm.confirmModes(first);
+
+            printSel(first);
+            List<Player> temp = new ArrayList<>();
+            temp.add(second);
+            temp.add(third);
+            temp.add(fourth);
+            temp.add(fifth);
+            assertTrue(first.getSelectablePlayers().containsAll(temp));
+            assertTrue(temp.containsAll(first.getSelectablePlayers()));
+
+        gm.shootTarget(first, fifth, null);
+
+            printSel(first);
+            temp.remove(fifth);
+            assertTrue(first.getSelectablePlayers().containsAll(temp));
+            assertTrue(temp.containsAll(first.getSelectablePlayers()));
+            int damagesThird = third.getDamageTrack().getDamageList().size();
+
+        gm.shootTarget(first, third, null);
+
+            assertEquals(damagesThird += 2, third.getDamageTrack().getDamageList().size());  //he had a mark from first player
+            assertEquals(USE_POWERUP, first.getState());
+            assertTrue(first.getSelectablePowerUps().contains(sm.getPowerUpFromString("13-Targeting scope-RED")));
+            assertEquals(1, first.getSelectablePowerUps().size());
+            assertTrue(match.getWaitingFor().contains(first));
+            assertEquals(1, match.getWaitingFor().size());
+
+        gm.dontUsePowerUp(first);
+
+            assertEquals(damagesThird, third.getDamageTrack().getDamageList().size());
+            assertFalse(match.getWaitingFor().contains(first));
+            assertTrue(match.getWaitingFor().contains(third));
+            assertTrue(match.getWaitingFor().contains(fifth));
+            assertEquals(USE_POWERUP, first.getState());
+            assertFalse(first.hasSelectables());
+            assertEquals(USE_POWERUP, fifth.getState());
+            assertEquals(1, fifth.getSelectablePowerUps().size());
+            assertTrue(fifth.getSelectableCommands().contains(Command.OK));
+            assertFalse(first.getDamageTrack().getMarkMap().containsKey(fifth));
+            assertEquals(USE_POWERUP, third.getState());
+            assertEquals(1, third.getSelectablePowerUps().size());
+            assertTrue(third.getSelectableCommands().contains(Command.OK));
+            assertEquals(1, first.getDamageTrack().getMarkMap().get(third));
+
+        gm.usePowerUp(fifth, fifth.getSelectablePowerUps().get(0));
+
+            assertEquals(0, fifth.howManyPowerUps(PowerUpType.TAGBACK_GRENADE));
+            assertEquals(1, first.getDamageTrack().getMarkMap().get(fifth));
+            assertEquals(USE_POWERUP, first.getState());
+            assertEquals(IDLE, fifth.getState());
+            assertFalse(fifth.hasSelectables());
+            assertFalse(match.getWaitingFor().contains(first));
+            assertTrue(match.getWaitingFor().contains(third));
+
+        gm.usePowerUp(third, third.getSelectablePowerUps().get(0));
+
+            assertTrue(match.getWaitingFor().contains(first));
+            assertEquals(0, third.howManyPowerUps(PowerUpType.TAGBACK_GRENADE));
+            assertEquals(2, first.getDamageTrack().getMarkMap().get(third));
+            assertEquals(CHOOSE_ACTION, first.getState());
+            assertEquals(IDLE, third.getState());
+            assertFalse(third.hasSelectables());
+    }
 }
