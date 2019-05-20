@@ -40,12 +40,15 @@ public class KillShotTrackTest {
         shot2.put(third, kill);
 
         killShotTrack.addKilled(shot1);
+        killShotTrack.removeSkull();
         killShotTrack.addKilled(shot2);
+        killShotTrack.removeSkull();
         assertEquals(order1, killShotTrack.getKillingOrder(first));
         assertEquals(order2, killShotTrack.getKillingOrder(third));
 
         Map<Player, Integer> shot3 = new HashMap<>();
         shot3.put(first, kill);
+        killShotTrack.removeSkull();
         killShotTrack.addKilled(shot3);
         assertEquals(order1, killShotTrack.getKillingOrder(first));
         assertEquals(skulls, killShotTrack.getSkulls());
