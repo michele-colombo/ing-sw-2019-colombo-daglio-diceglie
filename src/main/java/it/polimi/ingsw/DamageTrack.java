@@ -120,8 +120,8 @@ public abstract class DamageTrack {
     public void addDamage(Player p, int damage){
         int toAdd;
 
-        if(markMap.containsKey(p)){       //why the getter is used instead of the private attribute markMap?
-            toAdd= damage +  this.getMarkMap().get(p);
+        if(markMap.containsKey(p)){
+            toAdd= damage +  this.markMap.get(p);
             this.markMap.remove(p);
         }
         else{
@@ -179,7 +179,7 @@ public abstract class DamageTrack {
      * @param damagers the list where to find the most powerful
      * @return the most powerful damager
      */
-    public Player getMostPowerfulDamagerIn(Map<Player, Integer> damagers){
+    private Player getMostPowerfulDamagerIn(Map<Player, Integer> damagers){
 
         Integer massimo = 0;
 

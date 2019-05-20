@@ -1,77 +1,52 @@
 package it.polimi.ingsw;
 
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FrenzyDamageTrackTest {
-    @Test
-    public void testTuttoVuoto(){
+    private DamageTrack normalDamageTrack;
+    private DamageTrack frenzyDamageTrack;
+    private Player first;
 
-        Player p= new Player();
-        assertFalse(p == null);
 
-        FrenzyDamageTrack d = new FrenzyDamageTrack();
-        assertEquals(d.getSkullsNumber(), 0);
-        assertFalse(d.getMarkMap()== null);
-        assertFalse(d.getDamageList()== null);
+    @BeforeEach
+    public void prepareTest(){
+        final int mark1 = 2;
 
+        first = new Player("first");
+        normalDamageTrack = new NormalDamageTrack();
+        normalDamageTrack.addMark(first, mark1);
+        normalDamageTrack.resetAfterDeath();
+        frenzyDamageTrack = new FrenzyDamageTrack(normalDamageTrack);
     }
+
+
     @Test
-    public void testNormalita(){
-        Player aldo= new Player();
-        Player giovanni= new Player();
-        Player giacomo= new Player();
-        Player ingconti= new Player();
-        DamageTrack old= new NormalDamageTrack();
-        old.addMark(aldo, 3);
-        old.addDamage(giovanni, 2);
-        FrenzyDamageTrack d= new FrenzyDamageTrack(old);
+    public void frenzyFromNormal(){
+        final int mark1 = 2;
 
-        d.addDamage(aldo, 2);
-        d.addDamage(ingconti, 4);
-
-        assertTrue(d.whoDamagedYou().get(aldo)== 5);
-        assertTrue(d.score().get(ingconti)== 1);
+        assertTrue(frenzyDamageTrack.getMarkMap().get(first) == mark1);
     }
 
     @Test
-    public void testNazionaleForFrenzy(){
-        Player aldo= new Player();
-        Player giovanni= new Player();
-        Player giacomo= new Player();
-        Player ingconti= new Player();
+    public void reset(){
+        final int damage1 = 6;
+        final int damage2 = 3;
+        final int damage3 = 2;
+        final int reset = 0;
 
-        DamageTrack old= new NormalDamageTrack();
-        DamageTrack d= new FrenzyDamageTrack(old);
+        frenzyDamageTrack.addDamage(first, damage1);
+        frenzyDamageTrack.addDamage(first, damage2);
+        frenzyDamageTrack.addDamage(first, damage3);
 
-        Map<Player, Integer> score= new HashMap<>();
+        frenzyDamageTrack.resetAfterDeath();
 
-        for(int i=0; i<4; i++) {
-
-            d.addDamage(aldo, 3);
-            d.addDamage(giovanni, 3);
-            d.addDamage(giacomo, 3);
-            d.addDamage(ingconti, 3);
-
-
-            score.put(aldo, 2);
-            score.put(giovanni, 1);
-            score.put(giacomo, 1);
-            score.put(ingconti, 1);
-
-            assertEquals(d.score(), score);
-
-            d.resetAfterDeath();
-            score.clear();
-        }
-
-
-
+        assertTrue(frenzyDamageTrack.getDamageList().size() == reset);
+        assertTrue(frenzyDamageTrack.getSkullsNumber() == reset);
     }
 
 }

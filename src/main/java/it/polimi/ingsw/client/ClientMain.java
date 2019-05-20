@@ -4,11 +4,8 @@ package it.polimi.ingsw.client;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
-
 import java.io.*;
 import java.util.Scanner;
-
-import static javafx.application.Application.launch;
 
 public class ClientMain{
 
@@ -18,13 +15,13 @@ public class ClientMain{
 
 
     public static void main(String[] args) throws IOException {
-        config= new ClientConfig();
+        config = new ClientConfig();
 
-        if(args.length==0) {
+        if(args.length == 0) {
             loadFromConfigurationFile();
         }
         else {
-            if (args[0] == "-h" || args[0] == "--help") {
+            if (args[0].equals("-h") || args[0].equals("--help")) {
                 printHelpScreen();
                 return;
             }
@@ -35,11 +32,15 @@ public class ClientMain{
 
         askUserInput();
 
+        if(config.getUserInterface().equals("cli")){
+            new Cli();
+        } else {
+            Gui.main(null);
+        }
 
 
-
-        Client client = new Client(config.getIp(), config.getPort(), config.getUserInterface());
-        client.startClient();
+        //Client client = new Client(config.getIp(), config.getPort(), config.getUserInterface());
+        //client.startClient();
 
 
     }
@@ -153,7 +154,7 @@ public class ClientMain{
     }
 
 
-    private static class ClientConfig{
+    public static class ClientConfig{
         private String ip;
         private int port;
         private String userInterface;

@@ -78,7 +78,7 @@ public class Cash {
     }
 
     public boolean isEqual(Cash c){
-        return (blue == c.blue && red == c.red && yellow == c.yellow);
+        return (blue == c.getBlue() && red == c.getRed() && yellow == c.getYellow());
     }
 
     public Cash subtract(Cash c){

@@ -6,33 +6,43 @@ import java.io.InputStreamReader;
 import java.util.Scanner;
 
 public class Cli implements ClientView {
-    Client client;
+    private Client client;
 
-    public Cli(Client client){
-        this.client= client;
+    public Cli(){
+        this.client = null;
+        askLogin();
     }
 
-    public void printLoginMessage(String text){
+    public void printLoginMessage(String text, boolean loginSuccessful){
         System.out.println(text);
+        if(!loginSuccessful){
+            System.out.println("Insert a new name: ");
+            try{
+                client.chooseName(readStringFromUser());
+            } catch(IOException e){
+                System.out.println("Error while reading input from user!");
+            }
+        }
     }
+
     public void printDisconnectionMessage(String text){
         System.out.println(text);
     }
 
-    @Override
+
     public void askLogin() {
 
-        System.out.println("Vuoi utilizzare connessione socket o rmi?");
-        Boolean ok= false;
+        System.out.println("Choose: socket or rmi?");
+        boolean ok = false;
 
-        String choice= "";
-        String name= "";
+        String choice = "";
+        String name = "";
 
         while(!ok){
-            choice= new Scanner(System.in).nextLine();
+            choice  = new Scanner(System.in).nextLine();
 
             if(choice.equalsIgnoreCase("socket") || choice.equalsIgnoreCase("rmi")){
-                ok= true;
+                ok = true;
             }
             else{
                 System.out.println("Illegal answer. Please insert only socket or rmi");
@@ -40,21 +50,22 @@ public class Cli implements ClientView {
         }
 
 
-        System.out.println("Inserisci il tuo nome:");
+
+        System.out.println("Insert your name");
         try{
-            name= readStringFromUser();
+            name = readStringFromUser();
         }
         catch (IOException e){
             System.out.println("Something went wrong IOException");
         }
 
+        this.client = new Client(this);
         client.login(choice, name);
-
     }
 
 
-    public String readStringFromUser() throws IOException {
+    private String readStringFromUser() throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        return reader.readLine().toUpperCase();
+        return reader.readLine();
     }
 }

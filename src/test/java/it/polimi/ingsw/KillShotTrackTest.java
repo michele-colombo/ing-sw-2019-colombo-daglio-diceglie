@@ -1,6 +1,7 @@
 package it.polimi.ingsw;
 
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -9,30 +10,45 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class KillShotTrackTest {
+    private KillShotTrack killShotTrack;
+    private Player first;
+    private Player second;
+    private Player third;
+
+    @BeforeEach
+    public void prepareTest(){
+        final int skulls = 8;
+
+        killShotTrack = new KillShotTrack(skulls);
+        first = new Player("first");
+        second = new Player("second");
+        third = new Player("third");
+    }
 
     @Test
     public void SimpleAddingAndScoring() {
-        KillShotTrack k = new KillShotTrack(8);
-        Player p1 = new Player("nome1", PlayerColor.YELLOW);
-        Player p2 = new Player("nome2", PlayerColor.BLUE);
-        Player p3 = new Player("nome3", PlayerColor.VIOLET);
-        Player p4 = new Player("nome4", PlayerColor.GREY);
-        Player p5 = new Player("nome5", PlayerColor.GREEN);
-        Map<Player, Integer> kill1 = new HashMap<>();
-        kill1.put(p1, 2);
-        k.addKilled(kill1);
-        Map<Player, Integer> kill2 = new HashMap<>();
-        kill2.put(p2, 1);
-        k.addKilled(kill2);
-        Map<Player, Integer> kill3 = new HashMap<>();
-        kill3.put(p2, 1);
-        k.addKilled(kill3);
-        assertEquals(0, k.getKillingOrder(p1));
-        assertEquals(1, k.getKillingOrder(p2));
-        assertEquals(2, k.getKillingOf(p1));
-        assertEquals(2, k.getKillingOf(p2));
-        assertEquals(8, (int)k.score().get(p1));
-        assertEquals(6, (int)k.score().get(p2));
+        final Integer kill = 1;
+        final int order1 = 0;
+        final int order2 = 1;
+        final int skulls = 5;
+
+        Map<Player, Integer> shot1 = new HashMap<>();
+        shot1.put(first, kill);
+
+
+        Map<Player, Integer> shot2 = new HashMap<>();
+        shot2.put(third, kill);
+
+        killShotTrack.addKilled(shot1);
+        killShotTrack.addKilled(shot2);
+        assertEquals(order1, killShotTrack.getKillingOrder(first));
+        assertEquals(order2, killShotTrack.getKillingOrder(third));
+
+        Map<Player, Integer> shot3 = new HashMap<>();
+        shot3.put(first, kill);
+        killShotTrack.addKilled(shot3);
+        assertEquals(order1, killShotTrack.getKillingOrder(first));
+        assertEquals(skulls, killShotTrack.getSkulls());
     }
 
     @Test

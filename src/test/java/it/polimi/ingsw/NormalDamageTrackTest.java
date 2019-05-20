@@ -1,195 +1,133 @@
 package it.polimi.ingsw;
 
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class NormalDamageTrackTest {
+    private DamageTrack normalDamageTrack;
+    private Player first;
+    private Player second;
+    private Player third;
+    private Player fourth;
 
+    @BeforeEach
+    public void prepareTest(){
+        normalDamageTrack = new NormalDamageTrack();
+        first = new Player("first");
+        second = new Player("second");
+        third = new Player("third");
+        fourth = new Player("fourth");
+    }
     @Test
-    public void casoNormale(){
-        DamageTrack d= new NormalDamageTrack();
-        Player willy= new Player();
-        Player gigi= new Player();
-        Player pippo= new Player();
-        Player anna= new Player();
+    public void addMark() {
+        final int mark1 = 4;
+        final int mark2 = 0;
+        final int mark3 = 12;
+        final int mark4 = 2;
 
-        d.addDamage(willy, 2);
-        d.addMark(gigi, 2);
-        d.addDamage(pippo, 3);
-        d.addDamage(anna, 4);
-        d.addDamage(willy, 2);
+        final int assert1 = 0;
+        final int assert2 = 3;
+        final int assert3 = 3;
+        final int assert4 = 3;
+        final int assert5 = 2;
 
-        Map<Player, Integer> score= new HashMap<>();
-        score.put(willy, 9);
-        score.put(pippo, 4);
-        score.put(anna, 6);
-        assertEquals(d.score(), score);
+        normalDamageTrack.addMark(first, mark2);
+        assertEquals(assert1, normalDamageTrack.getMarkMap().get(first));
 
-        Map<Player, Integer> wdy= new HashMap<>();
+        normalDamageTrack.addMark(first, mark1);
+        assertEquals(assert2, normalDamageTrack.getMarkMap().get(first));
 
-        wdy.put(willy, 4);
-        wdy.put(anna, 4);
-        wdy.put(pippo, 3);
+        normalDamageTrack.addMark(first, mark2);
+        assertEquals(assert3, normalDamageTrack.getMarkMap().get(first));
 
-        assertEquals(d.whoDamagedYou(), wdy);
-        assertEquals(d.getMostPowerfulDamagerIn(wdy), willy);
-        wdy.remove(willy);
-        assertEquals(d.getMostPowerfulDamagerIn(wdy), anna);
+        normalDamageTrack.addMark(first, mark3);
+        assertEquals(assert4, normalDamageTrack.getMarkMap().get(first));
 
-        d.resetAfterDeath();
-
-        assertTrue(d.getMarkMap().get(gigi)==2);
-
-        d.addDamage(gigi, 11);
-
-        assertTrue(d.score().get(gigi)==7);
-        d.resetAfterDeath();
-        assertNull(d.getMostPowerfulDamagerIn(d.whoDamagedYou()));
-
-        ((NormalDamageTrack) d).increaseSkull();
-        ((NormalDamageTrack) d).increaseSkull();
-
-        d.addDamage(willy, 2);
-        d.addDamage(gigi, 3);
-        d.addDamage(anna, 3);
-        d.addDamage(pippo, 3);
-
-        score.clear();
-        score.put(willy, 2);
-        score.put(gigi, 1);
-        score.put(anna, 1);
-        score.put(pippo, 1);
-
-        assertEquals(d.score(), score);
-
-        Map<Player, Integer> uccisore = new HashMap<>();
-        uccisore.put(pippo, 1);
-        assertTrue(d.howDoTheyKilledYou().equals(uccisore));
-
+        normalDamageTrack.addMark(second, mark4);
+        assertEquals(assert5, normalDamageTrack.getMarkMap().get(second));
     }
 
-@Test
-    public void casoLimiteTuttoVuoto(){
-        NormalDamageTrack d= new NormalDamageTrack();
+    @Test
+    public void damageAndReset(){
+        normalDamageTrack.addDamage(first, 5);
+        normalDamageTrack.addDamage(second, 2);
+        normalDamageTrack.addDamage(third, 2);
 
-        assertTrue(d.getAdrenaline()== 0);
-        assertTrue(d.score().isEmpty());
-        assertTrue(d.whoDamagedYou().isEmpty());
-        assertNull(d.getMostPowerfulDamagerIn(d.whoDamagedYou()));
-        assertTrue(d.howDoTheyKilledYou().isEmpty());
-        d.resetAfterDeath();
-    assertTrue(d.getMarkMap().isEmpty());
-    assertTrue(d.getDamageList().isEmpty());
-    assertTrue(d.getSkullsNumber()==1);
+        assertEquals(5, normalDamageTrack.whoDamagedYou().get(first));
+        assertEquals(first, normalDamageTrack.getDamageList().get(0));
 
+        normalDamageTrack.addDamage(first, 1);
+        assertEquals(6, normalDamageTrack.whoDamagedYou().get(first));
 
-
+        assertEquals(0, normalDamageTrack.getSkullsNumber());
+        normalDamageTrack.resetAfterDeath();
+        assertEquals(0, normalDamageTrack.getDamageList().size());
+        assertEquals(1, normalDamageTrack.getSkullsNumber());
 
     }
 
     @Test
-    public void testNazionale(){
-        Player aldo= new Player();
-        Player giovanni= new Player();
-        Player giacomo= new Player();
-        Player ingconti= new Player();
+    public void damageAndMarks(){
+        normalDamageTrack.addMark(first, 2);
+        normalDamageTrack.addDamage(second, 2);
+        assertTrue(normalDamageTrack.getDamageList().contains(second) && normalDamageTrack.getDamageList().size() == 2);
 
-        DamageTrack d= new NormalDamageTrack();
-
-        d.addDamage(aldo, 3);
-        d.addDamage(giovanni, 3);
-        d.addDamage(giacomo, 3);
-        d.addDamage(ingconti, 3);
-
-        Map<Player, Integer> score= new HashMap<>();
-        score.put(aldo, 9);
-        score.put(giovanni, 6);
-        score.put(giacomo, 4);
-        score.put(ingconti, 2);
-
-        assertEquals(d.score(), score);
-
-        d.resetAfterDeath();
-
-        //secondo giro
-
-        d.addDamage(aldo, 3);
-        d.addDamage(giovanni, 3);
-        d.addDamage(giacomo, 3);
-        d.addDamage(ingconti, 3);
-
-        score.clear();
-        score.put(aldo, 7);
-        score.put(giovanni, 4);
-        score.put(giacomo, 2);
-        score.put(ingconti, 1);
-
-        assertEquals(d.score(), score);
-
-        d.resetAfterDeath();
-
-        //terzo giro
-
-        d.addDamage(aldo, 3);
-        d.addDamage(giovanni, 3);
-        d.addDamage(giacomo, 3);
-        d.addDamage(ingconti, 3);
-
-        score.clear();
-        score.put(aldo, 5);
-        score.put(giovanni, 2);
-        score.put(giacomo, 1);
-        score.put(ingconti, 1);
-
-        assertEquals(d.score(), score);
-
-        d.resetAfterDeath();
-
-        //quarto giro
-
-        d.addDamage(aldo, 3);
-        d.addDamage(giovanni, 3);
-        d.addDamage(giacomo, 3);
-        d.addDamage(ingconti, 3);
-
-        score.clear();
-        score.put(aldo, 3);
-        score.put(giovanni, 1);
-        score.put(giacomo, 1);
-        score.put(ingconti, 1);
-
-        assertEquals(d.score(), score);
-
-        d.resetAfterDeath();
-
-        //ultimo giro
-
-        d.addDamage(aldo, 3);
-        d.addDamage(giovanni, 3);
-        d.addDamage(giacomo, 3);
-        d.addDamage(ingconti, 3);
-
-        score.clear();
-        score.put(aldo, 2);
-        score.put(giovanni, 1);
-        score.put(giacomo, 1);
-        score.put(ingconti, 1);
-
-        assertEquals(d.score(), score);
-
-
-
-
+        normalDamageTrack.addDamage(first, 1);
     }
 
+    @Test
+    public void score(){
+        final Integer score1 = 9;
+        final Integer score2 = 6;
+        final Integer score3 = 4;
+        final Integer score4 = null;
+
+        Map<Player, Integer> score = normalDamageTrack.score();
+        assertTrue(score.size() == 0);
+
+        normalDamageTrack.addDamage(first, 7);
+        normalDamageTrack.addDamage(second, 2);
+        normalDamageTrack.addDamage(third, 2);
+        normalDamageTrack.addDamage(fourth, 0);
+
+        score = normalDamageTrack.score();
+        assertEquals(score1, score.get(first));
+        assertEquals(score2, score.get(second));
+        assertEquals(score3, score.get(third));
+        assertEquals(score4, score.get(fourth));
+    }
+
+    @Test
+    public void killingAndDamage(){
+        final Integer score1 = 4;
+        final Integer score2 = 2;
+        final Integer score3 = 3;
+        final Integer score4 = 1;
+
+        final Integer how1 = 1;
+        final Integer how2 = 2;
 
 
+        normalDamageTrack.addDamage(first, score1);
+        normalDamageTrack.addDamage(second, score2);
+        normalDamageTrack.addDamage(third, score2);
+        normalDamageTrack.addDamage(first, score3);
 
+        assertEquals(how1, normalDamageTrack.howDoTheyKilledYou().get(first));
 
+        normalDamageTrack.addDamage(first, score4);
+        assertEquals(how2, normalDamageTrack.howDoTheyKilledYou().get(first));
+
+        normalDamageTrack.addDamage(first, score1);
+        assertEquals(how2, normalDamageTrack.howDoTheyKilledYou().get(first));
+
+        Map<Player, Integer> damage = normalDamageTrack.whoDamagedYou();
+        assertEquals(score1 + score3 + score4, damage.get(first));
+
+    }
 }

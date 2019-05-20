@@ -9,8 +9,8 @@ import java.io.InputStreamReader;
 
 public interface ClientView{
 
-    void printLoginMessage(String text);
+    void printLoginMessage(String text, boolean loginSuccessful);
     void printDisconnectionMessage(String text);
 
-    void askLogin();
+    //void askLogin();
 }
