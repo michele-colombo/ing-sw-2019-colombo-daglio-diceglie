@@ -1077,6 +1077,147 @@ public class WeaponTest {
     }
 
 
+    @Test
+    public void tesRocketLauncher() {
+        GameModel gm = new GameModel();
+        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "rocketLauncherTestBefore");
+        StackManager sm = gm.getMatch().getStackManager();
+
+        Player primo = gm.getPlayerByName("first");
+        Player secondo = gm.getPlayerByName("second");
+        Player terzo = gm.getPlayerByName("third");
+        Player quarto = gm.getPlayerByName("fourth");
+        Player quinto = gm.getPlayerByName("fifth");
+
+        gm.performAction(primo, primo.getSelectableActions().get(2));
+
+        assertEquals(primo.getSelectableWeapons().containsAll(primo.getWeapons()), true);
+        assertEquals(primo.getSelectableWeapons().size(), 3);
+
+        Weapon rocket= sm.getWeaponFromName("Rocket launcher");
+        gm.shootWeapon(primo, rocket);
+
+        assertEquals(primo.getSelectableModes().size(), 2);
+        assertEquals(primo.getSelectableModes().containsAll(rocket.getMyModes().subList(0, 2)), true);
+
+        gm.addMode(primo, rocket.getMyModes().get(1));
+
+        assertEquals(primo.getSelectableModes().size(), 1);
+        assertEquals(primo.getSelectableModes().contains(rocket.getMyModes().get(0)), true);
+
+        gm.addMode(primo, rocket.getMyModes().get(0));
+
+        assertEquals(primo.getSelectableModes(), Collections.singletonList(rocket.getMyModes().get(2)));
+
+        gm.addMode(primo, rocket.getMyModes().get(2));
+
+        assertEquals(primo.getState(), PlayerState.PAYING);
+
+        assertEquals(primo.getSelectableCommands(), Collections.singletonList(Command.OK));
+        assertEquals(primo.getSelectablePowerUps(), Collections.singletonList(primo.getPowerUps().get(0)));
+
+        gm.payWith(primo, primo.getPowerUps().get(0));
+
+        printSel(primo);
+        assertEquals(primo.getState(), PlayerState.CHOOSE_MODE);
+
+        gm.confirmModes(primo);
+
+        assertEquals(primo.getState(), PlayerState.SHOOT_TARGET);
+        assertEquals(primo.getSelectableSquares().size(), 7);
+
+        Layout l= gm.getMatch().getLayout();
+
+        List<Square> reachables= new ArrayList<>();
+        reachables.add(l.getSquare(0,1));
+        reachables.add(l.getSquare(0,0));
+        reachables.add(l.getSquare(1,1));
+        reachables.add(l.getSquare(1,2));
+        reachables.add(l.getSquare(2,0));
+        reachables.add(l.getSquare(2,1));
+        reachables.add(l.getSquare(3,0));
+
+        assertEquals(primo.getSelectableSquares().containsAll(reachables), true);
+
+        gm.shootTarget(primo, null, l.getSquare(2, 1));
+
+        assertEquals(primo.getSelectablePlayers().size(), 3);
+        assertEquals(primo.getSelectablePlayers().containsAll(Arrays.asList(new Player[]{secondo, quarto, quinto})), true);
+
+        gm.shootTarget(primo, quinto, null);
+
+        assertEquals(primo.getSelectableSquares().size(), 3);
+        reachables.clear();
+
+        reachables.add(l.getSquare(2, 1));
+        reachables.add(l.getSquare(3, 1));
+        reachables.add(l.getSquare(3, 0));
+
+        assertEquals(primo.getSelectableSquares().containsAll(reachables), true);
+
+        assertEquals(quinto.getDamageTrack().getDamageList().size(), 8);
+
+        gm.shootTarget(primo, null, l.getSquare(3, 0));
+
+        assertEquals(primo.getState(), PlayerState.CHOOSE_ACTION);
+
+        assertEquals(quinto.getSquarePosition(), l.getSquare(3, 0));
+        assertEquals(quinto.getDamageTrack().getDamageList().size(), 9);
+
+        assertEquals(secondo.getDamageTrack().getDamageList().size(), 7);
+        assertEquals(quarto.getDamageTrack().getDamageList().size(), 7);
+
+
+        Backup check = Backup.initFromFile(SAVED_GAMES_FOR_TESTS, "rocketLauncherTestAfter");
+        Backup currentState = new Backup((gm.getMatch()));
+
+        //System.out.println(new Gson().toJson(currentState));
+
+        assertTrue(check.equals(currentState));
+    }
+
+    @Test
+    public void tesRailGun() {
+        GameModel gm = new GameModel();
+        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "railGunTestBefore");
+        StackManager sm = gm.getMatch().getStackManager();
+
+        Player primo = gm.getPlayerByName("first");
+        Player secondo = gm.getPlayerByName("second");
+        Player terzo = gm.getPlayerByName("third");
+        Player quarto = gm.getPlayerByName("fourth");
+        Player quinto = gm.getPlayerByName("fifth");
+
+        gm.performAction(primo, primo.getSelectableActions().get(2));
+
+        gm.shootWeapon(primo, sm.getWeaponFromName("Railgun"));
+
+        gm.addMode(primo, sm.getWeaponFromName("Railgun").getMyModes().get(1));
+
+        gm.confirmModes(primo);
+
+        assertEquals(primo.getSelectablePlayers().size(), 4);
+        assertEquals(primo.getSelectablePlayers().containsAll(Arrays.asList(new Player[]{secondo, terzo, quarto, quinto})), true);
+
+        gm.shootTarget(primo, secondo, null);
+
+        assertEquals(primo.getSelectablePlayers().containsAll(Arrays.asList(new Player[]{terzo, quarto, quinto})), true);
+
+        gm.shootTarget(primo, terzo, null);
+
+        assertEquals(primo.getState(), PlayerState.CHOOSE_ACTION);
+
+        Backup check = Backup.initFromFile(SAVED_GAMES_FOR_TESTS, "railGunTestAfter");
+        Backup currentState = new Backup((gm.getMatch()));
+
+        //System.out.println(new Gson().toJson(currentState));
+
+        assertTrue(check.equals(currentState));
+
+
+    }
+
+
 
 
 
