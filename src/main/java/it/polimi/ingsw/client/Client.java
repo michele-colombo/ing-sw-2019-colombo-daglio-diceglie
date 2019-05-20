@@ -18,10 +18,16 @@ public class Client implements VisitorClient{
 
     private String name;
 
+    private String ip;
+    private int port;
 
 
-    public Client(String ip, int port, String connection, String userInterface) throws IOException {
 
+    public Client(String ip, int port, String userInterface) throws IOException {
+
+        this.ip= ip;
+        this.port= port;
+/*
         try {
 
             switch (connection) {
@@ -39,6 +45,9 @@ public class Client implements VisitorClient{
         catch (IOException e){
             throw new IOException();
         }
+        */
+
+
 
         switch (userInterface){
             case "gui": clientView= new Gui(this); break;
@@ -68,7 +77,42 @@ public class Client implements VisitorClient{
         clientView.askLogin();
     }
 
+    public void login(String choice, String name){
 
+        try {
+
+            switch (choice) {
+                case "socket":
+                    network = new SocketClient(this.ip, this.port, this);
+                    break;
+                case "rmi":
+                    break;
+                default: //non deve succedere
+                    break;
+            }
+
+            network.startNetwork();
+        }
+        catch (IOException e){
+            System.out.println("Error while creating the network. Try again loggin in");
+            clientView.askLogin();
+        }
+
+        this.name= name;
+
+        try{
+            //PlayerColor color = PlayerColor.valueOf(selectedColor); //SOSTITUIRE CON UN METODO FORWARD
+            EventVisitable loginEvent = new LoginEvent(name);
+            network.forward(loginEvent);
+
+        } catch(IOException e){
+            System.out.println("Error while forwarding the login event!");
+            e.printStackTrace();
+        }
+
+    }
+
+/*
     public void setName(String name) {
 
         this.name = name;
@@ -83,6 +127,7 @@ public class Client implements VisitorClient{
             e.printStackTrace();
         }
     }
+    */
 
     public void visit(UpdateMessage message){
 

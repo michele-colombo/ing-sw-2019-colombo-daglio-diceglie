@@ -3,6 +3,7 @@ package it.polimi.ingsw.client;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Scanner;
 
 public class Cli implements ClientView {
     Client client;
@@ -20,14 +21,34 @@ public class Cli implements ClientView {
 
     @Override
     public void askLogin() {
+
+        System.out.println("Vuoi utilizzare connessione socket o rmi?");
+        Boolean ok= false;
+
+        String choice= "";
+        String name= "";
+
+        while(!ok){
+            choice= new Scanner(System.in).nextLine();
+
+            if(choice.equalsIgnoreCase("socket") || choice.equalsIgnoreCase("rmi")){
+                ok= true;
+            }
+            else{
+                System.out.println("Illegal answer. Please insert only socket or rmi");
+            }
+        }
+
+
         System.out.println("Inserisci il tuo nome:");
         try{
-            String name= readStringFromUser();
-            client.setName(name);
+            name= readStringFromUser();
         }
         catch (IOException e){
             System.out.println("Something went wrong IOException");
         }
+
+        client.login(choice, name);
 
     }
 

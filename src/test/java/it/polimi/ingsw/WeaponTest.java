@@ -805,14 +805,134 @@ public class WeaponTest {
         Backup check = Backup.initFromFile(SAVED_GAMES_FOR_TESTS, "tractorBeamSecondModeTestAfter");
         Backup currentState = new Backup((gm.getMatch()));
 
-        System.out.println(new Gson().toJson(currentState));
+        //System.out.println(new Gson().toJson(currentState));
 
         assertTrue(check.equals(currentState));
 
 
     }
 
+    @Test
+    public void testVortexCannon(){
+        GameModel gm = new GameModel();
+        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS,"tractorBeamTestBefore");
+        StackManager sm= gm.getMatch().getStackManager();
 
+        Player primo = gm.getPlayerByName("first");
+        Player secondo = gm.getPlayerByName("second");
+        Player terzo = gm.getPlayerByName("third");
+        Player quarto = gm.getPlayerByName("fourth");
+        Player quinto= gm.getPlayerByName("fifth");
+
+        gm.performAction(primo, primo.getSelectableActions().get(2));
+
+        Weapon vortex= sm.getWeaponFromName("Vortex cannon");
+
+        gm.shootWeapon(primo, vortex);
+
+        assertEquals(primo.getSelectableModes(), Collections.singletonList( vortex.getMyModes().get(0)));
+
+        gm.addMode(primo, vortex.getMyModes().get(0));
+
+        assertEquals(primo.getSelectableModes(), Collections.singletonList(vortex.getMyModes().get(1)));
+        assertEquals(primo.getSelectableCommands(), Collections.singletonList(Command.OK));
+
+        gm.addMode(primo, vortex.getMyModes().get(1));
+
+
+        gm.confirmModes(primo);
+
+        assertEquals(primo.getSelectableSquares().size(), 4);
+
+        Layout l= gm.getMatch().getLayout();
+        List<Square> expectedSquares= new ArrayList<>();
+        expectedSquares.add(l.getSquare(0, 1));
+        expectedSquares.add(l.getSquare(1, 0));
+        expectedSquares.add(l.getSquare(2, 1));
+        expectedSquares.add(l.getSquare(2, 0));
+
+        assertEquals(primo.getSelectableSquares().containsAll(expectedSquares), true);
+
+        printSel(primo);
+
+        gm.shootTarget(primo, null, l.getSquare(2, 1));
+
+        assertEquals(primo.getSelectablePlayers().size(), 2);
+        assertTrue(primo.getSelectablePlayers().containsAll(Arrays.asList(new Player[]{secondo, quarto})));
+
+        gm.shootTarget(primo, quarto, null);
+
+        assertEquals(primo.getSelectablePlayers(), Collections.singletonList(secondo));
+        assertEquals(primo.getSelectableCommands().size(), 0);
+
+        gm.shootTarget(primo, secondo, null);
+
+        assertEquals(primo.getSelectableCommands(), Collections.singletonList(Command.OK));
+
+        assertEquals(secondo.getSquarePosition(), quarto.getSquarePosition());
+        assertEquals(secondo.getSquarePosition(), l.getSquare(2, 1));
+        printSel(primo);
+
+        gm.shootTarget(primo, null, null);
+
+        assertEquals(primo.getState(), PlayerState.CHOOSE_ACTION);
+
+        Backup check = Backup.initFromFile(SAVED_GAMES_FOR_TESTS, "vortexCannonTestAfter");
+        Backup currentState = new Backup((gm.getMatch()));
+
+        //System.out.println(new Gson().toJson(currentState));
+
+        assertTrue(check.equals(currentState));
+
+
+
+    }
+
+    @Test
+    public void testFurnace(){
+        GameModel gm = new GameModel();
+        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS,"furnaceTestBefore");
+        StackManager sm= gm.getMatch().getStackManager();
+
+        Player primo = gm.getPlayerByName("first");
+        Player secondo = gm.getPlayerByName("second");
+        Player terzo = gm.getPlayerByName("third");
+        Player quarto = gm.getPlayerByName("fourth");
+        Player quinto= gm.getPlayerByName("fifth");
+
+        gm.performAction(primo, primo.getSelectableActions().get(2));
+
+        assertEquals(primo.getSelectableWeapons().size(), 3);
+        Weapon[] disponibles= new Weapon[]{sm.getWeaponFromName("Furnace"), sm.getWeaponFromName("Heatseeker"), sm.getWeaponFromName("Flamethrower")};
+
+        assertTrue(primo.getSelectableWeapons().containsAll( Arrays.asList(disponibles)));
+
+        Weapon furnace= disponibles[0];
+
+        gm.shootWeapon(primo, furnace);
+        assertEquals(primo.getSelectableModes().size(), 2);
+        assertTrue(primo.getSelectableModes().containsAll(Arrays.asList(new Mode[]{furnace.getMyModes().get(0), furnace.getMyModes().get(1)})));
+
+        gm.addMode(primo, furnace.getMyModes().get(0));
+        printSel(primo);
+        gm.confirmModes(primo);
+
+        assertEquals(primo.getSelectableSquares().size(), 7);
+        printSel(primo);
+
+        gm.shootTarget(primo, null, gm.getMatch().getLayout().getSquare(0, 2));
+
+        assertEquals(primo.getState(), PlayerState.CHOOSE_ACTION);
+
+        Backup check = Backup.initFromFile(SAVED_GAMES_FOR_TESTS, "furnaceTestAfter");
+        Backup currentState = new Backup((gm.getMatch()));
+
+        System.out.println(new Gson().toJson(currentState));
+
+        assertTrue(check.equals(currentState));
+
+
+    }
 
 
 

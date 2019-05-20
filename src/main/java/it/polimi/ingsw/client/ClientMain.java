@@ -37,14 +37,11 @@ public class ClientMain{
 
 
 
-        try {
-            Client client = new Client(config.getIp(), config.getPort(), config.getLink(), config.getUserInterface());
-            client.startClient();
-        }
-        catch (IOException e){
-            System.out.println("Error! Server non raggiungibile");
-            return;
-        }
+
+        Client client = new Client(config.getIp(), config.getPort(), config.getUserInterface());
+        client.startClient();
+
+
     }
 
     private static void askUserInput(){
@@ -55,10 +52,6 @@ public class ClientMain{
         while(! isValidPort( config.getPort())){
             System.out.println("Please insert port (from 1024 to 65535): ");
             config.setPort(new Scanner(System.in).nextInt());
-        }
-        while(! isValidConnection(config.getLink())){
-            System.out.println("Please insert link type (socket or rmi): ");
-            config.setLink(new Scanner(System.in).nextLine());
         }
         while(! isValidInterface(config.getUserInterface() )){
             System.out.println("Please insert user interface (cli or gui): ");
@@ -108,11 +101,7 @@ public class ClientMain{
                     config.setPort(Integer.parseInt(nextArgument));
 
                     break;
-                case "-link":
 
-                    config.setLink(nextArgument);
-
-                    break;
                 case "-ui":
 
                     config.setUserInterface(nextArgument);
@@ -138,12 +127,6 @@ public class ClientMain{
     }
 
 
-    private static boolean isValidConnection(String connection) {
-        if(connection.equals("socket") || connection.equals("rmi")) {
-            return true;
-        }
-        return false;
-    }
 
     private static boolean isValidPort(int port) {
         if(port>1023 && port<65536) {
@@ -173,13 +156,11 @@ public class ClientMain{
     private static class ClientConfig{
         private String ip;
         private int port;
-        private String link;
         private String userInterface;
 
         public ClientConfig() {
             ip= "non-initialized";
             port= -1;
-            link="non-initialized";
             userInterface= "non-initialized";
         }
 
@@ -191,9 +172,6 @@ public class ClientMain{
             this.port = port;
         }
 
-        public void setLink(String link) {
-            this.link = link;
-        }
 
         public void setUserInterface(String userInterface) {
             this.userInterface = userInterface;
@@ -207,9 +185,6 @@ public class ClientMain{
             return port;
         }
 
-        public String getLink() {
-            return link;
-        }
 
         public String getUserInterface() {
             return userInterface;
