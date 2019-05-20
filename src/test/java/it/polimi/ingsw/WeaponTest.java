@@ -753,6 +753,65 @@ public class WeaponTest {
         assertTrue(check.equals(currentState));
     }
 
+    @Test
+    public void testTractorBeamSecondMode(){
+
+        GameModel gm = new GameModel();
+        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS,"tractorBeamTestBefore");
+        StackManager sm= gm.getMatch().getStackManager();
+
+        //System.out.println(sm.getOriginalPowerUps());
+
+        Player primo = gm.getPlayerByName("first");
+        Player secondo = gm.getPlayerByName("second");
+        Player terzo = gm.getPlayerByName("third");
+        Player quarto = gm.getPlayerByName("fourth");
+        Player quinto= gm.getPlayerByName("fifth");
+
+        gm.performAction(primo, primo.getSelectableActions().get(2));
+
+        Weapon tractorbeam= sm.getWeaponFromName("Tractor Beam");
+        gm.shootWeapon(primo, tractorbeam);
+
+        gm.addMode(primo, tractorbeam.getMyModes().get(1));
+
+        assertEquals(primo.getState(), PlayerState.PAYING);
+
+        gm.payWith(primo, primo.getPowerUps().get(0));
+
+        assertEquals(primo.getPowerUps().size(), 0);
+
+        printSel(primo);
+
+        assertEquals(primo.getSelectableCommands(), Collections.singletonList(Command.OK));
+        gm.confirmModes(primo);
+
+        printSel(primo);
+
+        assertEquals(primo.getSelectablePlayers().size(), 4);
+        assertEquals(primo.getSelectablePlayers().containsAll(Arrays.asList(new Player[]{secondo, terzo, quarto, quinto})), true);
+
+
+        assertEquals(secondo.getDamageTrack().getDamageList().size(), 4);
+        gm.shootTarget(primo, secondo, null);
+
+        assertEquals(secondo.getDamageTrack().getDamageList().size(), 9);
+
+        assertEquals(primo.getState(), PlayerState.CHOOSE_ACTION);
+
+        assertEquals(primo.getSquarePosition(), secondo.getSquarePosition());
+
+
+        Backup check = Backup.initFromFile(SAVED_GAMES_FOR_TESTS, "tractorBeamSecondModeTestAfter");
+        Backup currentState = new Backup((gm.getMatch()));
+
+        System.out.println(new Gson().toJson(currentState));
+
+        assertTrue(check.equals(currentState));
+
+
+    }
+
 
 
 

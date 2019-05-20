@@ -406,4 +406,16 @@ public class LayoutTest {
             System.out.println(s.getX() + " " + s.getY());
         }
     }
+
+    @Test
+    public void distanceTest(){
+        Layout l= new Layout();
+        l.initLayout(3);
+
+        assertEquals(l.getDistance(l.getSquare(1, 1), l.getSquare(3, 1)), 2);
+
+        assertEquals(l.getSquaresInDistanceRange(l.getSquare(1, 1), 0, 2).size(), 8);
+    }
+
+
 }
