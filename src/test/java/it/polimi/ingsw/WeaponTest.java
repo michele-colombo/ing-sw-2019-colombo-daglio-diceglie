@@ -927,10 +927,152 @@ public class WeaponTest {
         Backup check = Backup.initFromFile(SAVED_GAMES_FOR_TESTS, "furnaceTestAfter");
         Backup currentState = new Backup((gm.getMatch()));
 
-        System.out.println(new Gson().toJson(currentState));
+        //System.out.println(new Gson().toJson(currentState));
 
         assertTrue(check.equals(currentState));
 
+
+    }
+
+    @Test
+    public void testHeatSeeker() {
+        GameModel gm = new GameModel();
+        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "heatSeekerTestBefore");
+        StackManager sm = gm.getMatch().getStackManager();
+
+        Player primo = gm.getPlayerByName("first");
+        Player secondo = gm.getPlayerByName("second");
+        Player terzo = gm.getPlayerByName("third");
+        Player quarto = gm.getPlayerByName("fourth");
+        Player quinto = gm.getPlayerByName("fifth");
+
+        printSel(primo);
+        gm.performAction(primo, primo.getSelectableActions().get(2));
+
+        printSel(primo);
+        gm.shootWeapon(primo, sm.getWeaponFromName("Heatseeker"));
+
+        printSel(primo);
+        gm.addMode(primo, sm.getWeaponFromName("Heatseeker").getMyModes().get(0));
+
+        printSel(primo);
+        gm.confirmModes(primo);
+
+        assertEquals(primo.getSelectablePlayers(), Collections.singletonList(quinto));
+
+        printSel(primo);
+        gm.shootTarget(primo, quinto, null);
+
+        Backup check = Backup.initFromFile(SAVED_GAMES_FOR_TESTS, "heatSeekerTestAfter");
+        Backup currentState = new Backup((gm.getMatch()));
+
+        //System.out.println(new Gson().toJson(currentState));
+
+        assertTrue(check.equals(currentState));
+
+
+    }
+
+
+    @Test
+    public void testFlameThrower() {
+        GameModel gm = new GameModel();
+        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "flameThrowerTestBefore");
+        StackManager sm = gm.getMatch().getStackManager();
+
+        Player primo = gm.getPlayerByName("first");
+        Player secondo = gm.getPlayerByName("second");
+        Player terzo = gm.getPlayerByName("third");
+        Player quarto = gm.getPlayerByName("fourth");
+        Player quinto = gm.getPlayerByName("fifth");
+
+        gm.performAction(primo, primo.getSelectableActions().get(2));
+
+        Weapon flame= sm.getWeaponFromName("Flamethrower");
+
+        gm.shootWeapon(primo, flame);
+
+        assertEquals(primo.getSelectableModes().size(), 2);
+        assertEquals(primo.getSelectableModes().containsAll(flame.getMyModes()), true);
+
+        gm.addMode(primo, flame.getMyModes().get(0));
+
+        assertEquals(primo.getSelectableModes().size(), 0);
+
+        gm.confirmModes(primo);
+
+        printSel(primo);
+
+        gm.shootTarget(primo, terzo, null);
+
+        assertEquals(primo.getSelectablePlayers(), Collections.singletonList(quarto));
+
+        gm.shootTarget(primo, quarto, null);
+
+        assertEquals(primo.getState(), PlayerState.CHOOSE_ACTION);
+
+        Backup check = Backup.initFromFile(SAVED_GAMES_FOR_TESTS, "flameThrowerTestAfter");
+        Backup currentState = new Backup((gm.getMatch()));
+
+        //System.out.println(new Gson().toJson(currentState));
+
+        assertTrue(check.equals(currentState));
+
+
+    }
+
+
+    @Test
+    public void testFlameThrowerSecondMode() {
+        GameModel gm = new GameModel();
+        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "flameThrowerTestBefore");
+        StackManager sm = gm.getMatch().getStackManager();
+
+        Player primo = gm.getPlayerByName("first");
+        Player secondo = gm.getPlayerByName("second");
+        Player terzo = gm.getPlayerByName("third");
+        Player quarto = gm.getPlayerByName("fourth");
+        Player quinto = gm.getPlayerByName("fifth");
+
+        gm.performAction(primo, primo.getSelectableActions().get(2));
+        Weapon flame= sm.getWeaponFromName("Flamethrower");
+
+        gm.shootWeapon(primo, flame);
+        assertEquals(primo.getSelectableModes().containsAll(flame.getMyModes()), true);
+        assertEquals(primo.getSelectableModes().size(), 2);
+
+        gm.addMode(primo, flame.getMyModes().get(1));
+
+        assertEquals(primo.getSelectableCommands(), Collections.singletonList(Command.OK));
+        assertEquals(primo.getSelectablePowerUps(), Collections.singletonList(primo.getPowerUps().get(0)));
+
+        printSel(primo);
+
+        assertEquals(primo.getState(), PlayerState.PAYING);
+        gm.payWith(primo, primo.getPowerUps().get(0));
+
+        assertEquals(primo.getState(), PlayerState.CHOOSE_MODE);
+
+        gm.confirmModes(primo);
+
+        assertEquals(primo.getSelectableSquares().size(), 2);
+
+        printSel(primo);
+        gm.shootTarget(primo, null, gm.getMatch().getLayout().getSquare(2, 2));
+
+        assertEquals(primo.getState(), PlayerState.SHOOT_TARGET);
+        assertEquals(primo.getSelectableSquares(), Collections.singletonList(gm.getMatch().getLayout().getSquare(1, 2)));
+
+        gm.shootTarget(primo, null, gm.getMatch().getLayout().getSquare(1, 2));
+
+        assertEquals(primo.getState(), PlayerState.CHOOSE_ACTION);
+
+        Backup check = Backup.initFromFile(SAVED_GAMES_FOR_TESTS, "flameThrowerSecondModeTestAfter");
+        Backup currentState = new Backup((gm.getMatch()));
+
+        //System.out.println(new Gson().toJson(currentState));
+
+        assertTrue(check.equals(currentState));
 
     }
 
