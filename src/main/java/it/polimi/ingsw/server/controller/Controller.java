@@ -329,11 +329,11 @@ public class Controller implements VisitorServer {
             Player disconnected = gameModel.getPlayerByObserver(observer);
             if(gameModel.getActivePlayers().contains(disconnected)){    //should always be true, right?
                 gameModel.detach(observer);
+                gameModel.notifyAll(new DisconnectionMessage("Player " +disconnected.getName() + " has disconnected!"));
             }
             if(gameModel.isMatchInProgress()){
                 gameModel.fakeAction(disconnected);
             }//todo controllo se devo togliere il timer (michele: "looks like this 'todo' has already been satisfied (look below)")
-            gameModel.notifyAll(new DisconnectionMessage("Player " +disconnected.getName() + " has disconnected!"));
         } catch(NoSuchObserverException e){
             System.out.println("Player already disconnected!");
         } finally {
