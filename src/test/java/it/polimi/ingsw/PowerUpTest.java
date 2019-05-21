@@ -1,6 +1,8 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.exceptions.*;
+import it.polimi.ingsw.server.message.DisconnectionMessage;
+import it.polimi.ingsw.server.observer.Observer;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -11,6 +13,7 @@ import static it.polimi.ingsw.testUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PowerUpTest {
+
 
     @Test
     public void tagbackGrenadeTest(){
@@ -78,6 +81,78 @@ public class PowerUpTest {
             assertEquals(IDLE, fifth.getState());
             assertFalse(fifth.hasSelectables());
 
+    }
+
+    @Test
+    public void tagbackGrenadeTestWithDisconnection(){
+        //first shoots to fourth (which has a tagback, but can't see first) and fifth (which has a tagback and sees first)
+        GameModel gm = new GameModel();
+        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "tagbackGrenadeTestBefore");
+        Match match = gm.getMatch();
+        StackManager sm = gm.getMatch().getStackManager();
+        Layout layout = gm.getMatch().getLayout();
+
+        Player first = gm.getPlayerByName("first");
+        Player second = gm.getPlayerByName("second");
+        Player third = gm.getPlayerByName("third");
+        Player fourth = gm.getPlayerByName("fourth");
+        Player fifth = gm.getPlayerByName("fifth");
+
+            printSel(first);
+
+        gm.performAction(first, first.getSelectableActions().get(2));   //he shoots
+        startTimers(gm);
+
+            printSel(first);
+
+        gm.shootWeapon(first, sm.getWeaponFromName("Machine gun"));
+        startTimers(gm);
+
+            printSel(first);
+
+        gm.addMode(first, first.getSelectableModes().get(0));
+        startTimers(gm);
+        disconnectPlayer(gm, fifth);
+        startTimers(gm);
+        disconnectPlayer(gm, third);
+        startTimers(gm);
+
+            printSel(first);
+
+        gm.confirmModes(first);
+        startTimers(gm);
+
+            printSel(first);
+            List<Player> temp = new ArrayList<>();
+            temp.add(second);
+            temp.add(third);
+            temp.add(fourth);
+            temp.add(fifth);
+            assertTrue(first.getSelectablePlayers().containsAll(temp));
+            assertTrue(temp.containsAll(first.getSelectablePlayers()));
+
+        gm.shootTarget(first, fifth, null);
+        startTimers(gm);
+
+            printSel(first);
+            temp.remove(fifth);
+            assertTrue(first.getSelectablePlayers().containsAll(temp));
+            assertTrue(temp.containsAll(first.getSelectablePlayers()));
+
+        gm.shootTarget(first, fourth, null);
+        startTimers(gm);
+
+            printList(match.getWaitingFor());
+            printList(gm.getActivePlayers());
+            printList(gm.getInactivePlayers());
+            assertEquals(IDLE, fourth.getState());
+            assertEquals(1, fourth.howManyPowerUps(PowerUpType.TAGBACK_GRENADE));
+            assertFalse(fourth.hasSelectables());   //because he can't see first
+            assertEquals(CHOOSE_ACTION, first.getState());
+            assertTrue(first.hasSelectables());
+            assertFalse(gm.getWaitingFor().contains(fifth));
+            assertTrue(gm.getWaitingFor().contains(first));
+            assertFalse(first.getDamageTrack().getMarkMap().containsKey(fifth));
     }
 
     @Test
@@ -160,6 +235,126 @@ public class PowerUpTest {
     }
 
     @Test
+    public void testWithTagbackAvailableWithOneDisconnection(){
+        //first shoots to third (which has a tagback and sees first) and fifth (which has a tagback and sees first)
+        //but only third uses the tagback grenade
+        GameModel gm = new GameModel();
+        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "tagbackGrenadeTestBefore");
+        Match match = gm.getMatch();
+        StackManager sm = gm.getMatch().getStackManager();
+        Layout layout = gm.getMatch().getLayout();
+
+        Player first = gm.getPlayerByName("first");
+        Player second = gm.getPlayerByName("second");
+        Player third = gm.getPlayerByName("third");
+        Player fourth = gm.getPlayerByName("fourth");
+        Player fifth = gm.getPlayerByName("fifth");
+
+        gm.performAction(first, first.getSelectableActions().get(2));   //he shoots
+        startTimers(gm);
+        gm.shootWeapon(first, sm.getWeaponFromName("Machine gun"));
+        startTimers(gm);
+        gm.addMode(first, first.getSelectableModes().get(0));
+        startTimers(gm);
+        disconnectPlayer(gm, fifth);
+        startTimers(gm);
+        gm.confirmModes(first);
+        startTimers(gm);
+
+            List<Player> temp = new ArrayList<>();
+            temp.add(second);
+            temp.add(third);
+            temp.add(fourth);
+            temp.add(fifth);
+            assertTrue(first.getSelectablePlayers().containsAll(temp));
+            assertTrue(temp.containsAll(first.getSelectablePlayers()));
+
+        gm.shootTarget(first, fifth, null);
+        startTimers(gm);
+
+            temp.remove(fifth);
+            assertTrue(first.getSelectablePlayers().containsAll(temp));
+            assertTrue(temp.containsAll(first.getSelectablePlayers()));
+
+        gm.shootTarget(first, third, null);
+        startTimers(gm);
+
+            assertEquals(1, fifth.howManyPowerUps(PowerUpType.TAGBACK_GRENADE));
+            assertFalse(first.getDamageTrack().getMarkMap().containsKey(fifth));
+            assertEquals(USE_POWERUP, first.getState());
+            assertEquals(IDLE, fifth.getState());
+            assertFalse(fifth.hasSelectables());
+
+        gm.usePowerUp(third, third.getSelectablePowerUps().get(0));
+        startTimers(gm);
+
+            assertEquals(0, third.howManyPowerUps(PowerUpType.TAGBACK_GRENADE));
+            assertEquals(2, first.getDamageTrack().getMarkMap().get(third));
+            assertEquals(CHOOSE_ACTION, first.getState());
+            assertEquals(IDLE, third.getState());
+            assertFalse(third.hasSelectables());
+    }
+
+    @Test
+    public void testWithTagbackAvailableWithTwoDisconnections(){
+        //first shoots to third (which has a tagback and sees first) and fifth (which has a tagback and sees first)
+        //but only third uses the tagback grenade
+        GameModel gm = new GameModel();
+        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "tagbackGrenadeTestBefore");
+        Match match = gm.getMatch();
+        StackManager sm = gm.getMatch().getStackManager();
+        Layout layout = gm.getMatch().getLayout();
+
+        Player first = gm.getPlayerByName("first");
+        Player second = gm.getPlayerByName("second");
+        Player third = gm.getPlayerByName("third");
+        Player fourth = gm.getPlayerByName("fourth");
+        Player fifth = gm.getPlayerByName("fifth");
+
+        gm.performAction(first, first.getSelectableActions().get(2));   //he shoots
+        startTimers(gm);
+        gm.shootWeapon(first, sm.getWeaponFromName("Machine gun"));
+        startTimers(gm);
+        gm.addMode(first, first.getSelectableModes().get(0));
+        startTimers(gm);
+        disconnectPlayer(gm, fifth);
+        startTimers(gm);
+        gm.confirmModes(first);
+        startTimers(gm);
+
+            List<Player> temp = new ArrayList<>();
+            temp.add(second);
+            temp.add(third);
+            temp.add(fourth);
+            temp.add(fifth);
+            assertTrue(first.getSelectablePlayers().containsAll(temp));
+            assertTrue(temp.containsAll(first.getSelectablePlayers()));
+
+        gm.shootTarget(first, fifth, null);
+        startTimers(gm);
+        disconnectPlayer(gm, third);
+        startTimers(gm);
+
+            temp.remove(fifth);
+            assertTrue(first.getSelectablePlayers().containsAll(temp));
+            assertTrue(temp.containsAll(first.getSelectablePlayers()));
+
+        gm.shootTarget(first, third, null);
+        startTimers(gm);
+
+            assertEquals(1, fifth.howManyPowerUps(PowerUpType.TAGBACK_GRENADE));
+            assertFalse(first.getDamageTrack().getMarkMap().containsKey(fifth));
+            assertEquals(1, first.getDamageTrack().getMarkMap().get(third));
+            assertEquals(CHOOSE_ACTION, first.getState());
+            assertEquals(IDLE, fifth.getState());
+            assertEquals(IDLE, third.getState());
+            assertFalse(fifth.hasSelectables());
+            assertFalse(third.hasSelectables());
+
+        printSel(first);
+    }
+
+    @Test
     public void onlyOnePlayerOutOfTwoUsesTagback(){
         //first shoots to third (which has a tagback and sees first) and fifth (which has a tagback and sees first)
         //but only third uses the tagback grenade
@@ -222,7 +417,73 @@ public class PowerUpTest {
             assertEquals(CHOOSE_ACTION, first.getState());
             assertEquals(IDLE, third.getState());
             assertFalse(third.hasSelectables());
+    }
 
+    @Test
+    public void currentPlayerDisconnectsWhileReceivingPowerUp(){
+        //first shoots to third (which has a tagback and sees first) and fifth (which has a tagback and sees first)
+        //but only third uses the tagback grenade
+        //while he is receiving tagback grenade, the current player disconnects
+        GameModel gm = new GameModel();
+        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "tagbackGrenadeTestBefore");
+        Match match = gm.getMatch();
+        StackManager sm = gm.getMatch().getStackManager();
+        Layout layout = gm.getMatch().getLayout();
+
+        Player first = gm.getPlayerByName("first");
+        Player second = gm.getPlayerByName("second");
+        Player third = gm.getPlayerByName("third");
+        Player fourth = gm.getPlayerByName("fourth");
+        Player fifth = gm.getPlayerByName("fifth");
+
+        gm.performAction(first, first.getSelectableActions().get(2));   //he shoots
+        startTimers(gm);
+        gm.shootWeapon(first, sm.getWeaponFromName("Machine gun"));
+        startTimers(gm);
+        gm.addMode(first, first.getSelectableModes().get(0));
+        startTimers(gm);
+        gm.confirmModes(first);
+        startTimers(gm);
+        gm.shootTarget(first, fifth, null);
+        startTimers(gm);
+        gm.shootTarget(first, third, null);
+        startTimers(gm);
+
+            assertEquals(USE_POWERUP, first.getState());
+            assertFalse(first.hasSelectables());
+            assertEquals(USE_POWERUP, fifth.getState());
+            assertEquals(1, fifth.getSelectablePowerUps().size());
+            assertTrue(fifth.getSelectableCommands().contains(Command.OK));
+            assertFalse(first.getDamageTrack().getMarkMap().containsKey(fifth));
+            assertEquals(USE_POWERUP, third.getState());
+            assertEquals(1, third.getSelectablePowerUps().size());
+            assertTrue(third.getSelectableCommands().contains(Command.OK));
+            assertEquals(1, first.getDamageTrack().getMarkMap().get(third));
+
+        disconnectPlayer(gm, first);
+        startTimers(gm);
+        gm.dontUsePowerUp(fifth);
+        startTimers(gm);
+
+            assertEquals(1, fifth.howManyPowerUps(PowerUpType.TAGBACK_GRENADE));
+            assertFalse(first.getDamageTrack().getMarkMap().containsKey(fifth));
+            assertEquals(USE_POWERUP, first.getState());
+            assertEquals(IDLE, fifth.getState());
+            assertFalse(fifth.hasSelectables());
+
+        gm.usePowerUp(third, third.getSelectablePowerUps().get(0));
+        startTimers(gm);
+
+            assertEquals(0, third.howManyPowerUps(PowerUpType.TAGBACK_GRENADE));
+            assertEquals(2, first.getDamageTrack().getMarkMap().get(third));
+            assertEquals(IDLE, first.getState());
+            assertFalse(first.hasSelectables());
+            assertEquals(IDLE, third.getState());
+            assertFalse(third.hasSelectables());
+            assertEquals(CHOOSE_ACTION, second.getState());
+            assertTrue(second.hasSelectables());
+            assertEquals(second, match.getCurrentPlayer());
+            printSel(second);
     }
 
     @Test

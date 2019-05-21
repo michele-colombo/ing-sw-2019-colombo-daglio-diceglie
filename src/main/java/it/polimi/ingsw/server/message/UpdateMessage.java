@@ -25,6 +25,14 @@ public class UpdateMessage extends MessageVisitable {
         private Cash wallet;
         private Cash pending;
         private Cash credit;
+        private List<String> selectableWeapons;
+        private List<String> selectableSquares;
+        private List<String> selectablePlayers;
+        private List<String> selectableModes;
+        private List<String> selectableActions;
+        private List<String> selectableColors;
+        private List<String> selectablePowerUps;
+        private List<String> selectableCommands;
 
         public MyPlayerInfo(){
 
@@ -148,6 +156,70 @@ public class UpdateMessage extends MessageVisitable {
 
         public void setCredit(Cash credit) {
             this.credit = new Cash(credit);
+        }
+
+        public List<String> getSelectableWeapons() {
+            return selectableWeapons;
+        }
+
+        public void setSelectableWeapons(List<String> selectableWeapons) {
+            this.selectableWeapons = selectableWeapons;
+        }
+
+        public List<String> getSelectableSquares() {
+            return selectableSquares;
+        }
+
+        public void setSelectableSquares(List<String> selectableSquares) {
+            this.selectableSquares = selectableSquares;
+        }
+
+        public List<String> getSelectablePlayers() {
+            return selectablePlayers;
+        }
+
+        public void setSelectablePlayers(List<String> selectablePlayers) {
+            this.selectablePlayers = selectablePlayers;
+        }
+
+        public List<String> getSelectableModes() {
+            return selectableModes;
+        }
+
+        public void setSelectableModes(List<String> selectableModes) {
+            this.selectableModes = selectableModes;
+        }
+
+        public List<String> getSelectableActions() {
+            return selectableActions;
+        }
+
+        public void setSelectableActions(List<String> selectableActions) {
+            this.selectableActions = selectableActions;
+        }
+
+        public List<String> getSelectableColors() {
+            return selectableColors;
+        }
+
+        public void setSelectableColors(List<String> selectableColors) {
+            this.selectableColors = selectableColors;
+        }
+
+        public List<String> getSelectablePowerUps() {
+            return selectablePowerUps;
+        }
+
+        public void setSelectablePowerUps(List<String> selectablePowerUps) {
+            this.selectablePowerUps = selectablePowerUps;
+        }
+
+        public List<String> getSelectableCommands() {
+            return selectableCommands;
+        }
+
+        public void setSelectableCommands(List<String> selectableCommands) {
+            this.selectableCommands = selectableCommands;
         }
     }
 

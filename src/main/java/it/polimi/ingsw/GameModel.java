@@ -142,9 +142,11 @@ public class GameModel implements Observable {
             p.addPowerUp(match.getStackManager().drawPowerUp());
         }
         match.addWaitingFor(p);
+        /*
         if (!activePlayers.contains(p)){
             match.addToFakeList(p);
         }
+        */
         if (!spawningPlayers.contains(p)) spawningPlayers.add(p);
         p.setState(SPAWN);
         p.resetSelectables();
@@ -526,9 +528,11 @@ public class GameModel implements Observable {
             for (Player p : deadPlayers) {
                 prepareForSpawning(p, false);
             }
+            /*
             for (Player p : match.getToFakeList()){
                 fakeAction(p);
             }
+            */
         }
     }
 
@@ -781,6 +785,54 @@ public class GameModel implements Observable {
         }
         myPlayerInfo.setPowerUps(powerUps);
 
+        List<String> selWeapons = new ArrayList<>();
+        for (Weapon w : myPlayer.getSelectableWeapons()){
+            selWeapons.add(w.getName());
+        }
+        myPlayerInfo.setSelectableWeapons(selWeapons);
+
+        List<String> selSquares = new ArrayList<>();
+        for (Square s : myPlayer.getSelectableSquares()){
+            selSquares.add(s.toString());
+        }
+        myPlayerInfo.setSelectableSquares(selSquares);
+
+        List<String> selPlayers = new ArrayList<>();
+        for (Player p : myPlayer.getSelectablePlayers()){
+            selPlayers.add(p.getName());
+        }
+        myPlayerInfo.setSelectablePlayers(selPlayers);
+
+        List<String> selModes = new ArrayList<>();
+        for (Mode m : myPlayer.getSelectableModes()){
+            selModes.add(m.toString());
+        }
+        myPlayerInfo.setSelectableModes(selModes);
+
+        List<String> selActions = new ArrayList<>();
+        for (Action a : myPlayer.getSelectableActions()){
+            selActions.add(a.toString());
+        }
+        myPlayerInfo.setSelectableActions(selActions);
+
+        List<String> selColors = new ArrayList<>();
+        for (Color c : myPlayer.getSelectableColors()){
+            selColors.add(c.toString());
+        }
+        myPlayerInfo.setSelectableColors(selColors);
+
+        List<String> selPowerUps = new ArrayList<>();
+        for (PowerUp p : myPlayer.getSelectablePowerUps()){
+            selPowerUps.add(p.toString());
+        }
+        myPlayerInfo.setSelectablePowerUps(selPowerUps);
+
+        List<String> selCommands = new ArrayList<>();
+        for (Command c : myPlayer.getSelectableCommands()){
+            selCommands.add(c.toString());
+        }
+        myPlayerInfo.setSelectableCommands(selCommands);
+
 
         for (Player p : match.getPlayers()){
             if (p != myPlayer){
@@ -834,7 +886,7 @@ public class GameModel implements Observable {
 
                     //should never occur a third possibility
             }
-        } else {
+        } else if (match.getWaitingFor().contains(p)){
             //p is not the current player
             if (p.getState() == USE_POWERUP){
                 dontUsePowerUp(p);

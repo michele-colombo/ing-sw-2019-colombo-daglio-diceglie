@@ -321,7 +321,7 @@ public class Controller implements VisitorServer {
         //todo: update
     }
 
-    public void disconnectPlayer(Observer observer){
+    public void disconnectPlayer(Observer observer){    //todo: synchronized??
         try{
             Player disconnected = gameModel.getPlayerByObserver(observer);
             if(gameModel.getActivePlayers().contains(disconnected)){    //should always be true, right?
@@ -380,6 +380,17 @@ public class Controller implements VisitorServer {
 
     //todo: added by michele, check!
     public void startTimers(){
+        while (gameModel.getActivePlayers().containsAll(gameModel.getWaitingFor())){
+            List<Player> toFakeList = new ArrayList<>();
+            for (Player p : gameModel.getWaitingFor()){
+                if (!gameModel.getActivePlayers().contains(p)){
+                    toFakeList.add(p);
+                }
+            }
+            for (Player p : toFakeList){
+                gameModel.fakeAction(p);
+            }
+        }
         for (Player p : gameModel.getWaitingFor()){
             addTimer(gameModel.getObserver(p)); //addTimer checks if there is no timer active for the corresponding observer
         }

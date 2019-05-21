@@ -61,11 +61,6 @@ public class Match {
     private List<Player> waitingFor;
 
     /**
-     * List containing players that are in waitingFor, but are not actually active, so the model has to fake their actions
-     */
-    private List<Player> toFakeList;
-
-    /**
      * It's the reference to the current action
      */
     private Action currentAction;
@@ -527,16 +522,8 @@ public class Match {
         return waitingFor;
     }
 
-    public List<Player> getToFakeList() {
-        return toFakeList;
-    }
-
     public void clearWaitingFor() {
         waitingFor.clear();
-    }
-
-    public void clearToFakeList() {
-        toFakeList.clear();
     }
 
     public void addWaitingFor(Player p){
@@ -545,18 +532,8 @@ public class Match {
         }
     }
 
-    public void addToFakeList(Player p){
-        if (!toFakeList.contains(p)){
-            toFakeList.add(p);
-        }
-    }
-
     public boolean removeWaitingFor(Player p){
         return waitingFor.remove(p);
-    }
-
-    public boolean removeToFakeList(Player p){
-        return toFakeList.remove(p);
     }
 
     public Player getNextPlayer(Player currP){

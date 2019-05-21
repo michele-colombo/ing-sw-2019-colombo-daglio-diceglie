@@ -929,4 +929,46 @@ public class GameModelTest {
             //everything is brought back as it was
             assertEquals(Backup.initFromFile(SAVED_GAMES_FOR_TESTS, "cantGrabAnythingBefore"), new Backup(gm.getMatch()));
     }
+
+    @Test
+    public void currentPlayerDisconnectsDuringAction(){
+        GameModel gm = new GameModel();
+        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "genericState1");
+        Match match = gm.getMatch();
+        Layout layout = gm.getMatch().getLayout();
+        StackManager sm = gm.getMatch().getStackManager();
+
+        Player first = gm.getPlayerByName("first");
+        Player second = gm.getPlayerByName("second");
+        Player third = gm.getPlayerByName("third");
+        Player fourth = gm.getPlayerByName("fourth");
+
+            printSituation(match);
+
+        gm.performAction(first, first.getSelectableActions().get(1));//grab
+        startTimers(gm);
+
+            assertTrue(first.getSelectableSquares().contains(layout.getSquare(2,2)));
+
+        gm.grabThere(first, layout.getSquare(2,2));
+        startTimers(gm);
+
+            printSel(first);
+            assertTrue(first.getSelectableWeapons().contains(sm.getWeaponFromName("Heatseeker")));
+
+        gm.grabWeapon(first, sm.getWeaponFromName("Heatseeker"));
+        startTimers(gm);
+
+            assertTrue(first.getSelectablePowerUps().contains(sm.getPowerUpFromString("16-Tagback granade-YELLOW")));
+
+        gm.payWith(first, sm.getPowerUpFromString("16-Tagback granade-YELLOW"));
+        startTimers(gm);
+        disconnectPlayer(gm, first);
+        startTimers(gm);
+
+            assertEquals(second, match.getCurrentPlayer());
+            assertEquals(IDLE, first.getState());
+            printSituation(match);
+            boolean result = Backup.initFromFile(SAVED_GAMES_FOR_TESTS, "currentPlayerDisconnectsDuringActionAfter").equals(new Backup(gm.getMatch()));
+    }
 }

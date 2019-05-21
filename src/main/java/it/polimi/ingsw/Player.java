@@ -594,6 +594,7 @@ public class Player {
         return howManySelectables()>0;
     }
 
+    //test-only method!
     public String selectablesToString(){
         StringBuilder result = new StringBuilder();
         if (!selectableSquares.isEmpty()) {
