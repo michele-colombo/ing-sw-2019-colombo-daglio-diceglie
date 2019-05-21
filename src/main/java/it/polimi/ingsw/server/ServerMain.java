@@ -1,5 +1,8 @@
 package it.polimi.ingsw.server;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import it.polimi.ingsw.GameModel;
 
 import java.io.*;
@@ -48,8 +51,15 @@ public class ServerMain {
     }
 
     public static void main(String[] args){
-        System.out.println("Insert port number");
-        Scanner in = new Scanner(System.in);
-        new ServerMain(in.nextInt());
+
+        InputStream url= ServerMain.class.getClassLoader().getResourceAsStream("serverConfig.json");
+        Scanner sc= new Scanner(url);
+
+        //getting port number
+        JsonObject o= (JsonObject) new JsonParser().parse(sc.nextLine());
+        JsonElement data=  o.get("port");
+        int portNumber= data.getAsInt();
+
+        new ServerMain(portNumber);
     }
 }
