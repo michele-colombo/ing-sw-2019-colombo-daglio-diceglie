@@ -27,7 +27,7 @@ public class Gui extends Application implements ClientView{
     }
 
     public void printLoginMessage(String text, boolean loginSuccessful){
-        actiontarget.setFill(Color.FIREBRICK);
+        actiontarget.setFill(Color.GREEN);
         actiontarget.setText(text);
         if(loginSuccessful){
             btn.setDisable(true);
