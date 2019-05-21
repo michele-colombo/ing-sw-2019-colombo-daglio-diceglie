@@ -598,7 +598,7 @@ public class WeaponTest {
         assertEquals(primo.getSelectableWeapons().size(), 3);
         assertTrue(primo.getSelectableWeapons().containsAll(gm.getMatch().getStackManager().getOriginalWeaponArsenal().subList(5, 8)));
 
-        Weapon electroscythe= gm.getMatch().getStackManager().getWeaponFromName("Electoscythe");
+        Weapon electroscythe= gm.getMatch().getStackManager().getWeaponFromName("Electroscythe");
         gm.shootWeapon(primo, electroscythe);  //choosing electrocythe
 
         assertEquals(primo.getState(), PlayerState.CHOOSE_MODE);
@@ -665,7 +665,7 @@ public class WeaponTest {
         assertEquals(primo.getSelectableWeapons().size(), 3);
         assertTrue(primo.getSelectableWeapons().containsAll(gm.getMatch().getStackManager().getOriginalWeaponArsenal().subList(5, 8)));
 
-        Weapon electroscythe= gm.getMatch().getStackManager().getWeaponFromName("Electoscythe");
+        Weapon electroscythe= gm.getMatch().getStackManager().getWeaponFromName("Electroscythe");
         gm.shootWeapon(primo, electroscythe);  //choosing electrocythe
 
         assertEquals(primo.getState(), PlayerState.CHOOSE_MODE);

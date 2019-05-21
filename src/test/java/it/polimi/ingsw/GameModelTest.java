@@ -883,7 +883,7 @@ public class GameModelTest {
             assertFalse(second.getSelectableCommands().contains(Command.OK));
             temp = new ArrayList<>();
             temp.add(sm.getWeaponFromName("T.H.O.R."));
-            temp.add(sm.getWeaponFromName("Electoscythe"));
+            temp.add(sm.getWeaponFromName("Electroscythe"));
             temp.add(sm.getWeaponFromName("Cyberblade"));
             temp.add(sm.getWeaponFromName("Shotgun"));
             assertTrue(second.getSelectableWeapons().containsAll(temp));
