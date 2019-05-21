@@ -128,7 +128,7 @@ public class Cli implements ClientView {
         System.out.println("\n\nME:");
         if (update.getCurrentPlayer().equals(me.getName())) System.out.println("It's my turn!");
         System.out.println(me.getName()+" in "+me.getSquarePosition() + " with " + me.getWallet() + " state: " + me.getState() + " points: " + me.getPoints());
-        if (!me.getPending().equals("b:0|r:0|y:0")) System.out.println("You have to pay "+me.getPending()+" (you have already paid "+me.getCredit()+")");
+        if (!me.getPending().toString().equals("b:0|r:0|y:0")) System.out.println("You have to pay "+me.getPending()+" (you have already paid "+me.getCredit()+")");
         System.out.println("        powerups: "+listToString(me.getPowerUps()));
         System.out.print("        weapons:");
         for (Map.Entry<String, Boolean> entry : me.getWeapons().entrySet()){

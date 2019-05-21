@@ -1,5 +1,9 @@
 package it.polimi.ingsw.server.model;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import it.polimi.ingsw.server.ServerMain;
 import it.polimi.ingsw.server.exceptions.*;
 import it.polimi.ingsw.communication.message.MessageVisitable;
 import it.polimi.ingsw.communication.message.UpdateMessage;
@@ -9,6 +13,7 @@ import it.polimi.ingsw.server.model.enums.PlayerColor;
 import it.polimi.ingsw.server.observer.Observable;
 import it.polimi.ingsw.server.observer.Observer;
 
+import java.io.InputStream;
 import java.util.*;
 
 
@@ -83,7 +88,7 @@ public class GameModel implements Observable {
             if (tempBackup.getPlayerNames().containsAll(getAllPlayerNames()) && getAllPlayerNames().containsAll(tempBackup.getPlayerNames())){
                 //all names match
                 int layoutConfig = tempBackup.getLayoutConfig();
-                match = new Match(layoutConfig, 8);
+                match = new Match(layoutConfig);
                 for (String name : tempBackup.getPlayerNames()){
                     match.addPlayer(getPlayerByName(name));
                 }
@@ -103,10 +108,15 @@ public class GameModel implements Observable {
     }
 
     public void startNewMatch(){
-        //todo: choose layout configuration
-        int layoutConfig = 2;
-        //todo: take skulls number from config file
-        match = new Match(layoutConfig);
+        InputStream url = ServerMain.class.getClassLoader().getResourceAsStream("serverConfig.json");
+        Scanner sc = new Scanner(url);
+        //getting port number
+        JsonObject o = (JsonObject) new JsonParser().parse(sc.nextLine());
+        JsonElement data =  o.get("layoutConfig");
+        int layoutConfig = data.getAsInt();
+        data =  o.get("skullNumber");
+        int skulls = data.getAsInt();
+        match = new Match(layoutConfig, skulls);
         for (Player p : allPlayers()){ //activePlayers only? or all players?
             match.addPlayer(p);
             p.setState(IDLE);
