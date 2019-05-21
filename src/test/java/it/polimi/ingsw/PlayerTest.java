@@ -1,5 +1,9 @@
 package it.polimi.ingsw;
 
+import it.polimi.ingsw.server.model.*;
+import it.polimi.ingsw.server.model.enums.AmmoColor;
+import it.polimi.ingsw.server.model.enums.PlayerColor;
+import it.polimi.ingsw.server.model.enums.PowerUpType;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -14,9 +18,9 @@ public class PlayerTest {
     @Test
     public void canAfford() {
         Player p = new Player("SignorTest", PlayerColor.GREY);
-        PowerUp po1 = new PowerUp(Color.BLUE, PowerUpType.TARGETING_SCOPE, "Targeting scope");
-        PowerUp po2 = new PowerUp(Color.YELLOW, PowerUpType.TAGBACK_GRENADE, "Tagback granade");
-        PowerUp po3 = new PowerUp(Color.BLUE, PowerUpType.TARGETING_SCOPE, "Targeting scope");
+        PowerUp po1 = new PowerUp(AmmoColor.BLUE, PowerUpType.TARGETING_SCOPE, "Targeting scope");
+        PowerUp po2 = new PowerUp(AmmoColor.YELLOW, PowerUpType.TAGBACK_GRENADE, "Tagback granade");
+        PowerUp po3 = new PowerUp(AmmoColor.BLUE, PowerUpType.TARGETING_SCOPE, "Targeting scope");
         p.addPowerUp(po1);
         p.addPowerUp(po2);
         p.addPowerUp(po3);

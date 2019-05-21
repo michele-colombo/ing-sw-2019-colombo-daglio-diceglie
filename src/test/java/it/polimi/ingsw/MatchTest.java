@@ -2,6 +2,9 @@ package it.polimi.ingsw;
 
 
 
+import it.polimi.ingsw.server.model.Match;
+import it.polimi.ingsw.server.model.Player;
+import it.polimi.ingsw.server.model.Square;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -9,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static it.polimi.ingsw.PlayerColor.*;
+import static it.polimi.ingsw.server.model.enums.PlayerColor.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MatchTest {

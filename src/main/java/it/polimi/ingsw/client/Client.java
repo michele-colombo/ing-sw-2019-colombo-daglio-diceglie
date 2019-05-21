@@ -1,15 +1,16 @@
 package it.polimi.ingsw.client;
 
-import it.polimi.ingsw.server.events.EventVisitable;
-import it.polimi.ingsw.server.events.LoginEvent;
-import it.polimi.ingsw.server.message.DisconnectionMessage;
-import it.polimi.ingsw.server.message.GenericMessage;
-import it.polimi.ingsw.server.message.LoginMessage;
-import it.polimi.ingsw.server.message.UpdateMessage;
+import it.polimi.ingsw.client.network.NetworkInterfaceClient;
+import it.polimi.ingsw.client.network.SocketClient;
+import it.polimi.ingsw.client.userInterface.ClientView;
+import it.polimi.ingsw.communication.events.EventVisitable;
+import it.polimi.ingsw.communication.events.LoginEvent;
+import it.polimi.ingsw.communication.message.DisconnectionMessage;
+import it.polimi.ingsw.communication.message.GenericMessage;
+import it.polimi.ingsw.communication.message.LoginMessage;
+import it.polimi.ingsw.communication.message.UpdateMessage;
 
 import java.io.IOException;
-import java.net.Socket;
-import java.net.UnknownHostException;
 
 public class Client implements VisitorClient{
 

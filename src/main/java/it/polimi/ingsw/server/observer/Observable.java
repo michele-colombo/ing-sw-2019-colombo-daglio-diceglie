@@ -1,7 +1,7 @@
 package it.polimi.ingsw.server.observer;
 
-import it.polimi.ingsw.Player;
-import it.polimi.ingsw.server.message.MessageVisitable;
+import it.polimi.ingsw.server.model.Player;
+import it.polimi.ingsw.communication.message.MessageVisitable;
 
 public interface Observable {
     void attach(Player player, Observer observer);

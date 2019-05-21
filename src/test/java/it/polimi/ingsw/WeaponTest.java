@@ -1,6 +1,9 @@
 package it.polimi.ingsw;
 
 import com.google.gson.Gson;
+import it.polimi.ingsw.server.model.*;
+import it.polimi.ingsw.server.model.enums.Command;
+import it.polimi.ingsw.server.model.enums.PlayerState;
 import org.junit.jupiter.api.Test;
 
 import static it.polimi.ingsw.testUtils.*;
@@ -8,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.*;
 
-import static it.polimi.ingsw.Color.*;
+import static it.polimi.ingsw.server.model.enums.AmmoColor.*;
 
 public class WeaponTest {
 
@@ -56,7 +59,8 @@ public class WeaponTest {
 
     @Test
     public void selectableModesFromBuilder(){
-        List<Weapon> arsenale= new WeaponBuilder().getWeapons();
+        StackManager sm = new StackManager();
+        List<Weapon> arsenale = sm.getOriginalWeaponArsenal();
 
         Weapon distrutt= arsenale.get(0);
         Weapon mitra= arsenale.get(1);
@@ -89,7 +93,10 @@ public class WeaponTest {
 
     @Test
     public void ancoraSelectableModesZX(){
-        Weapon z = new WeaponBuilder().getWeapons().get(16);  //zx-2
+
+        StackManager sm = new StackManager();
+        List<Weapon> arsenale = sm.getOriginalWeaponArsenal();
+        Weapon z = sm.getWeaponFromName("ZX-2");
 
         List<Mode> alreadySelected= new ArrayList<>();
         List<Mode> foundByHand= new ArrayList<>();
@@ -108,7 +115,9 @@ public class WeaponTest {
 
     @Test
     public void selectableModesspadaFotonica(){
-        Weapon z = new WeaponBuilder().getWeapons().get(15);  //spada fotonica
+        StackManager sm = new StackManager();
+        List<Weapon> arsenale = sm.getOriginalWeaponArsenal();
+        Weapon z = sm.getWeaponFromName("Cyberblade");
 
         List<Mode> alreadySelected= new ArrayList<>();
         List<Mode> foundByHand= new ArrayList<>();

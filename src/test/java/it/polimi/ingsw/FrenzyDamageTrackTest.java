@@ -1,6 +1,10 @@
 package it.polimi.ingsw;
 
 
+import it.polimi.ingsw.server.model.DamageTrack;
+import it.polimi.ingsw.server.model.FrenzyDamageTrack;
+import it.polimi.ingsw.server.model.NormalDamageTrack;
+import it.polimi.ingsw.server.model.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

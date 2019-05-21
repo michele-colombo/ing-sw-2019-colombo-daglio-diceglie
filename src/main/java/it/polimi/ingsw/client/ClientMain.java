@@ -4,6 +4,9 @@ package it.polimi.ingsw.client;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
+import it.polimi.ingsw.client.userInterface.Cli;
+import it.polimi.ingsw.client.userInterface.Gui;
+
 import java.io.*;
 import java.util.Scanner;
 

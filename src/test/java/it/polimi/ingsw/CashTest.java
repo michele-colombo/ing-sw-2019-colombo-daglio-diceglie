@@ -1,6 +1,8 @@
 package it.polimi.ingsw;
 
 
+import it.polimi.ingsw.server.model.Cash;
+import it.polimi.ingsw.server.model.enums.AmmoColor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +21,7 @@ public class CashTest {
 
     @BeforeEach
     public void prepareTest(){
-        c1 = new Cash (1,2,3);
+        c1 = new Cash(1,2,3);
         c2 = new Cash(2, 3,4);
         c3 = new Cash(1,1,10);
         c4 = new Cash(0,0,0);
@@ -105,12 +107,12 @@ public class CashTest {
 
     @Test
     public void containsColor(){
-        assertTrue(c1.containsColor(Color.BLUE));
-        assertTrue(c1.containsColor(Color.RED));
-        assertTrue(c1.containsColor(Color.YELLOW));
-        assertFalse(c4.containsColor(Color.BLUE));
-        assertFalse(c4.containsColor(Color.RED));
-        assertFalse(c4.containsColor(Color.YELLOW));
+        assertTrue(c1.containsColor(AmmoColor.BLUE));
+        assertTrue(c1.containsColor(AmmoColor.RED));
+        assertTrue(c1.containsColor(AmmoColor.YELLOW));
+        assertFalse(c4.containsColor(AmmoColor.BLUE));
+        assertFalse(c4.containsColor(AmmoColor.RED));
+        assertFalse(c4.containsColor(AmmoColor.YELLOW));
     }
 
     @Test

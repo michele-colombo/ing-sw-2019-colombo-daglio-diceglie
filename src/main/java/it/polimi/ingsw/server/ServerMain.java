@@ -3,13 +3,13 @@ package it.polimi.ingsw.server;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import it.polimi.ingsw.GameModel;
+import it.polimi.ingsw.server.model.GameModel;
+import it.polimi.ingsw.server.controller.Controller;
+import it.polimi.ingsw.server.network.SocketServer;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

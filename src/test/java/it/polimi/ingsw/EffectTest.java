@@ -1,14 +1,10 @@
 package it.polimi.ingsw;
 
-import com.google.gson.Gson;
-import it.polimi.ingsw.exceptions.ApplyEffectImmediatelyException;
+import it.polimi.ingsw.server.exceptions.ApplyEffectImmediatelyException;
+import it.polimi.ingsw.server.model.*;
+import it.polimi.ingsw.server.model.enums.Command;
+import it.polimi.ingsw.server.model.enums.PlayerColor;
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class EffectTest {
 

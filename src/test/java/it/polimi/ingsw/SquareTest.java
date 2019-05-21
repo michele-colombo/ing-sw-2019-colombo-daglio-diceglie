@@ -2,16 +2,16 @@ package it.polimi.ingsw;
 
 import com.google.gson.*;
 
+import it.polimi.ingsw.server.model.AmmoSquare;
+import it.polimi.ingsw.server.model.SpawnSquare;
+import it.polimi.ingsw.server.model.Square;
 import org.junit.jupiter.api.Test;
 
-import java.io.*;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import static it.polimi.ingsw.Border.*;
-import static it.polimi.ingsw.Color.RED;
+import static it.polimi.ingsw.server.model.enums.Border.*;
+import static it.polimi.ingsw.server.model.enums.AmmoColor.RED;
 import static org.junit.jupiter.api.Assertions.*;
 
 

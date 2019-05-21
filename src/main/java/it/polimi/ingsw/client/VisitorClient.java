@@ -1,9 +1,9 @@
 package it.polimi.ingsw.client;
 
-import it.polimi.ingsw.server.message.DisconnectionMessage;
-import it.polimi.ingsw.server.message.GenericMessage;
-import it.polimi.ingsw.server.message.LoginMessage;
-import it.polimi.ingsw.server.message.UpdateMessage;
+import it.polimi.ingsw.communication.message.DisconnectionMessage;
+import it.polimi.ingsw.communication.message.GenericMessage;
+import it.polimi.ingsw.communication.message.LoginMessage;
+import it.polimi.ingsw.communication.message.UpdateMessage;
 
 public interface VisitorClient {
     void visit(LoginMessage loginMessage);

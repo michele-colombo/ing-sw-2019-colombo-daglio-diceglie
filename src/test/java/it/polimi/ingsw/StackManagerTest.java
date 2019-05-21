@@ -1,12 +1,12 @@
 package it.polimi.ingsw;
 
 
+import it.polimi.ingsw.server.model.*;
+import it.polimi.ingsw.server.model.enums.AmmoColor;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Stack;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -96,11 +96,11 @@ public class StackManagerTest {
 
     @Test
     public void proveConArrayList(){
-    List<Color> lista= new ArrayList<>();
-    Color uno= Color.RED;
-    Color due= Color.BLUE;
-    Color tre= Color.YELLOW;
-    Color quattro= Color.GREEN;
+    List<AmmoColor> lista= new ArrayList<>();
+    AmmoColor uno= AmmoColor.RED;
+    AmmoColor due= AmmoColor.BLUE;
+    AmmoColor tre= AmmoColor.YELLOW;
+    AmmoColor quattro= AmmoColor.GREEN;
 
     lista.add(uno);
     lista.add(due);

@@ -1,7 +1,9 @@
 package it.polimi.ingsw.server;
 
-import it.polimi.ingsw.server.events.EventVisitable;
-import it.polimi.ingsw.server.message.MessageVisitable;
+import it.polimi.ingsw.communication.events.EventVisitable;
+import it.polimi.ingsw.communication.message.MessageVisitable;
+import it.polimi.ingsw.server.controller.Controller;
+import it.polimi.ingsw.server.network.NetworkInterfaceServer;
 import it.polimi.ingsw.server.observer.Observer;
 
 import java.io.IOException;

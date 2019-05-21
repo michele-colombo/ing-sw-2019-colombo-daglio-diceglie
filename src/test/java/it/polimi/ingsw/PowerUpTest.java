@@ -1,14 +1,15 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.exceptions.*;
-import it.polimi.ingsw.server.message.DisconnectionMessage;
-import it.polimi.ingsw.server.observer.Observer;
+import it.polimi.ingsw.server.model.*;
+import it.polimi.ingsw.server.model.enums.AmmoColor;
+import it.polimi.ingsw.server.model.enums.Command;
+import it.polimi.ingsw.server.model.enums.PowerUpType;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static it.polimi.ingsw.PlayerState.*;
+import static it.polimi.ingsw.server.model.enums.PlayerState.*;
 import static it.polimi.ingsw.testUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -539,9 +540,9 @@ public class PowerUpTest {
             assertFalse(match.getWaitingFor().contains(third));
             assertFalse(match.getWaitingFor().contains(fifth));
             //first had wallet: (3,3,3) and 3 powerups
-            assertTrue(first.getSelectableColors().contains(Color.BLUE));
-            assertTrue(first.getSelectableColors().contains(Color.RED));
-            assertTrue(first.getSelectableColors().contains(Color.YELLOW));
+            assertTrue(first.getSelectableColors().contains(AmmoColor.BLUE));
+            assertTrue(first.getSelectableColors().contains(AmmoColor.RED));
+            assertTrue(first.getSelectableColors().contains(AmmoColor.YELLOW));
             assertTrue(!first.getSelectablePowerUps().contains(sm.getPowerUpFromString("13-Targeting scope-RED")));
             assertTrue(first.getSelectablePowerUps().size()>0);
 

@@ -1,12 +1,17 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.exceptions.*;
+import it.polimi.ingsw.server.exceptions.*;
+import it.polimi.ingsw.server.model.*;
+import it.polimi.ingsw.server.model.enums.AmmoColor;
+import it.polimi.ingsw.server.model.enums.Command;
+import it.polimi.ingsw.server.model.enums.PlayerColor;
+import it.polimi.ingsw.server.model.enums.PlayerState;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static it.polimi.ingsw.PlayerState.*;
+import static it.polimi.ingsw.server.model.enums.PlayerState.*;
 import static it.polimi.ingsw.testUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -790,8 +795,8 @@ public class GameModelTest {
             temp.add(sm.getWeaponFromName("Shockwave"));
             temp.add(sm.getWeaponFromName("Railgun"));
             temp.add(sm.getWeaponFromName("Machine gun"));
-            assertTrue(layout.getSpawnPoint(Color.BLUE).getWeapons().containsAll(temp));
-            assertTrue(temp.containsAll(layout.getSpawnPoint(Color.BLUE).getWeapons()));
+            assertTrue(layout.getSpawnPoint(AmmoColor.BLUE).getWeapons().containsAll(temp));
+            assertTrue(temp.containsAll(layout.getSpawnPoint(AmmoColor.BLUE).getWeapons()));
             assertEquals(CHOOSE_ACTION, first.getState());
 
         gm.performAction(first, first.getSelectableActions().get(1)); //first grabs
@@ -853,8 +858,8 @@ public class GameModelTest {
             temp.add(sm.getWeaponFromName("Plasma gun"));
             temp.add(sm.getWeaponFromName("T.H.O.R."));
             temp.add(sm.getWeaponFromName("Rocket launcher"));
-            assertTrue(layout.getSpawnPoint(Color.YELLOW).getWeapons().containsAll(temp));
-            assertTrue(temp.containsAll(layout.getSpawnPoint(Color.YELLOW).getWeapons()));
+            assertTrue(layout.getSpawnPoint(AmmoColor.YELLOW).getWeapons().containsAll(temp));
+            assertTrue(temp.containsAll(layout.getSpawnPoint(AmmoColor.YELLOW).getWeapons()));
             assertEquals(CHOOSE_ACTION, second.getState());
 
         gm.performAction(second, second.getSelectableActions().get(1)); //he grabs
@@ -909,8 +914,8 @@ public class GameModelTest {
             temp.add(sm.getWeaponFromName("ZX-2"));
             temp.add(sm.getWeaponFromName("Furnace"));
             temp.add(sm.getWeaponFromName("Power glove"));
-            assertTrue(layout.getSpawnPoint(Color.RED).getWeapons().containsAll(temp));
-            assertTrue(temp.containsAll(layout.getSpawnPoint(Color.RED).getWeapons()));
+            assertTrue(layout.getSpawnPoint(AmmoColor.RED).getWeapons().containsAll(temp));
+            assertTrue(temp.containsAll(layout.getSpawnPoint(AmmoColor.RED).getWeapons()));
             assertEquals(CHOOSE_ACTION, third.getState());
 
         gm.performAction(third, third.getSelectableActions().get(1)); //he grabs

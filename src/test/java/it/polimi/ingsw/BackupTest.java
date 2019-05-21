@@ -1,9 +1,8 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.exceptions.*;
+import it.polimi.ingsw.server.model.Backup;
+import it.polimi.ingsw.server.model.GameModel;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 import static it.polimi.ingsw.testUtils.*;
 import static org.junit.jupiter.api.Assertions.*;

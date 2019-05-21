@@ -1,13 +1,16 @@
 package it.polimi.ingsw;
 
+import it.polimi.ingsw.server.model.*;
+import it.polimi.ingsw.server.model.enums.AmmoColor;
+import it.polimi.ingsw.server.model.enums.Direction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 
 import java.util.*;
 
-import static it.polimi.ingsw.Border.*;
-import static it.polimi.ingsw.Color.*;
+import static it.polimi.ingsw.server.model.enums.Border.*;
+import static it.polimi.ingsw.server.model.enums.AmmoColor.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -238,7 +241,7 @@ public class LayoutTest {
         Layout layout= new Layout("/media/data/Media/Documents/Universita/AnnoIII/ProvaFinaleINGSW/Backups/");
         layout.initLayout(0);
 
-        assertTrue( layout.getSquare(0,0).getColor() == Color.valueOf("WHITE"));
+        assertTrue( layout.getSquare(0,0).getColor() == AmmoColor.valueOf("WHITE"));
         assertTrue( layout.getDistance(layout.getSquare(0,0), layout.getSquare(1,2)) == 3);
 
 
