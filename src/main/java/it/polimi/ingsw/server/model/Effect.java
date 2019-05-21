@@ -513,13 +513,18 @@ public class Effect {
             }
         }
 
+      /*
         switch (setTempSquare){
             case -1: break;//sb.append("don't set");
             case 0: m.getCurrentAction().setChosenSquare(targetS); break; //sb.append("selected square");
-            case 1: m.getCurrentAction().setChosenSquare(targetP.getSquarePosition()); break; //sb.append("selected player's square");
+            case 1:
+                m.getCurrentAction().setChosenSquare(targetP.getSquarePosition());
+
+                break; //sb.append("selected player's square");
             case 2: m.getCurrentAction().setChosenSquare(source.getSquarePosition()); break; //sb.append("my square");
             default: System.out.println("NUMERO SBAGLIATO SETTEMPSQUARE"); break;
         }
+        */
 
         switch (setTempPlayer){
             case -1: break; //don't set

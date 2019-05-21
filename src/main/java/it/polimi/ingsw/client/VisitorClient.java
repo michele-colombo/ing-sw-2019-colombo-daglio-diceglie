@@ -1,13 +1,31 @@
 package it.polimi.ingsw.client;
 
-import it.polimi.ingsw.communication.message.DisconnectionMessage;
-import it.polimi.ingsw.communication.message.GenericMessage;
-import it.polimi.ingsw.communication.message.LoginMessage;
-import it.polimi.ingsw.communication.message.UpdateMessage;
+import it.polimi.ingsw.communication.message.*;
 
 public interface VisitorClient {
     void visit(LoginMessage loginMessage);
     void visit(DisconnectionMessage disconnectionMessage);
     void visit(GenericMessage genericMessage);
     void visit(UpdateMessage updateMessage);
+    void visit(LayoutUpdateMessage layoutUpdateMessage);
+
+    void visit(KillshotTrackUpdateMessage killshotTrackUpdate);
+
+    void visit(CurrentPlayerUpdateMessage currentPlayerUpdate);
+
+    void visit(StartMatchUpdateMessage startMatchUpdateMessage);
+
+    void visit(PlayerUpdateMessage playerUpdateMessage);
+
+    void visit(PaymentUpdateMessage paymentUpdateMessage);
+
+    void visit(WeaponsUpdateMessage weaponsUpdateMessage);
+
+    void visit(PowerUpUpdateMessage powerUpUpdateMessage);
+
+    void visit(SelectablesUpdateMessage selectablesUpdateMessage);
+
+    void visit(DamageUpdateMessage damageUpdateMessage);
+
+    void visit(ConnectionUpdateMessage connectionUpdateMessage);
 }

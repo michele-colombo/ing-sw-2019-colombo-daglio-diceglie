@@ -5,10 +5,7 @@ import it.polimi.ingsw.client.network.SocketClient;
 import it.polimi.ingsw.client.userInterface.ClientView;
 import it.polimi.ingsw.communication.events.EventVisitable;
 import it.polimi.ingsw.communication.events.LoginEvent;
-import it.polimi.ingsw.communication.message.DisconnectionMessage;
-import it.polimi.ingsw.communication.message.GenericMessage;
-import it.polimi.ingsw.communication.message.LoginMessage;
-import it.polimi.ingsw.communication.message.UpdateMessage;
+import it.polimi.ingsw.communication.message.*;
 
 import java.io.IOException;
 
@@ -79,6 +76,61 @@ public class Client implements VisitorClient{
     }
 
     public void visit(UpdateMessage message){
+
+    }
+
+    @Override
+    public void visit(LayoutUpdateMessage layoutUpdateMessage) {
+
+    }
+
+    @Override
+    public void visit(KillshotTrackUpdateMessage killshotTrackUpdate) {
+
+    }
+
+    @Override
+    public void visit(CurrentPlayerUpdateMessage currentPlayerUpdate) {
+
+    }
+
+    @Override
+    public void visit(StartMatchUpdateMessage startMatchUpdateMessage) {
+
+    }
+
+    @Override
+    public void visit(PlayerUpdateMessage playerUpdateMessage) {
+
+    }
+
+    @Override
+    public void visit(PaymentUpdateMessage paymentUpdateMessage) {
+
+    }
+
+    @Override
+    public void visit(WeaponsUpdateMessage weaponsUpdateMessage) {
+
+    }
+
+    @Override
+    public void visit(PowerUpUpdateMessage powerUpUpdateMessage) {
+
+    }
+
+    @Override
+    public void visit(SelectablesUpdateMessage selectablesUpdateMessage) {
+
+    }
+
+    @Override
+    public void visit(DamageUpdateMessage damageUpdateMessage) {
+
+    }
+
+    @Override
+    public void visit(ConnectionUpdateMessage connectionUpdateMessage) {
 
     }
 
