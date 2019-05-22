@@ -31,10 +31,10 @@ public class Controller {
     }
 
 
-    public synchronized void visit(LoginEvent loginEvent, ServerView serverView){
+    public synchronized void login(String name, ServerView serverView){
         LoginMessage message = new LoginMessage("Login successful!", true, false);
         try{
-            Player newPlayer = new Player(loginEvent.getName());
+            Player newPlayer = new Player(name);
             gameModel.addPlayer(newPlayer);
             gameModel.attach(newPlayer, serverView);
             timers.put(serverView, null);
@@ -52,18 +52,18 @@ public class Controller {
             message = new LoginMessage("Player already logged", false, true);
         }
         finally {
-            gameModel.notify(message, serverView);
+            serverView.update(message);
         }
     }
 
 
-    public synchronized void visit(SquareSelectedEvent squareSelectedEvent, ServerView serverView) {
+    public synchronized void squareSelected(int selection, ServerView serverView) {
         removeObserverFromTimers(serverView);
         Square sq;
         try {
             Player p = gameModel.getPlayerByObserver(serverView);
             try {
-                sq = p.getSelectableSquares().get(squareSelectedEvent.getSelection());
+                sq = p.getSelectableSquares().get(selection);
             } catch (IndexOutOfBoundsException e) {
                 System.out.println("wrong square selection");
                 return; //todo: what to do? create a responseMessage? or errorMessage?
@@ -94,13 +94,13 @@ public class Controller {
         //todo: update all players
     }
 
-    public synchronized void visit(ActionSelectedEvent actionSelectedEvent, ServerView serverView) {
+    public synchronized void actionSelected(int selection, ServerView serverView) {
         removeObserverFromTimers(serverView);
         Action act;
         try {
             Player p = gameModel.getPlayerByObserver(serverView);
             try {
-                act = p.getSelectableActions().get(actionSelectedEvent.getSelection());
+                act = p.getSelectableActions().get(selection);
             } catch (IndexOutOfBoundsException e) {
                 System.out.println("wrong action selection");
                 return; //todo (should not occur)
@@ -120,13 +120,13 @@ public class Controller {
         //todo: update
     }
 
-    public synchronized void visit(PlayerSelectedEvent playerSelectedEvent, ServerView serverView) {
+    public synchronized void playerSelected(int selection, ServerView serverView) {
     removeObserverFromTimers(serverView);
         Player pl;
         try {
             Player p = gameModel.getPlayerByObserver(serverView);
             try {
-                pl = p.getSelectablePlayers().get(playerSelectedEvent.getSelection());
+                pl = p.getSelectablePlayers().get(selection);
             } catch (IndexOutOfBoundsException e) {
                 System.out.println("wrong player selection");
                 return; //todo
@@ -150,13 +150,13 @@ public class Controller {
         //todo: update
     }
 
-    public synchronized void visit(WeaponSelectedEvent weaponSelectedEvent, ServerView serverView) {
+    public synchronized void weaponSelected(int selection, ServerView serverView) {
         removeObserverFromTimers(serverView);
         Weapon wp;
         try {
             Player p = gameModel.getPlayerByObserver(serverView);
             try {
-                wp = p.getSelectableWeapons().get(weaponSelectedEvent.getSelection());
+                wp = p.getSelectableWeapons().get(selection);
             } catch (IndexOutOfBoundsException e) {
                 System.out.println("wrong weapon selection");
                 return; //todo
@@ -185,13 +185,13 @@ public class Controller {
         //todo: update
     }
 
-    public synchronized void visit(ModeSelectedEvent modeSelectedEvent, ServerView serverView) {
+    public synchronized void modeSelected(int selection, ServerView serverView) {
         removeObserverFromTimers(serverView);
         Mode mod;
         try {
             Player p = gameModel.getPlayerByObserver(serverView);
             try {
-                mod = p.getSelectableModes().get(modeSelectedEvent.getSelection());
+                mod = p.getSelectableModes().get(selection);
             } catch (IndexOutOfBoundsException e) {
                 System.out.println("wrong mode selection");
                 return; //todo
@@ -211,13 +211,13 @@ public class Controller {
         //todo: update
     }
 
-    public synchronized void visit(CommandSelectedEvent commandSelectedEvent, ServerView serverView) {
+    public synchronized void commandSelected(int selection, ServerView serverView) {
         removeObserverFromTimers(serverView);
         Command cmd;
         try {
             Player p = gameModel.getPlayerByObserver(serverView);
             try {
-                cmd = p.getSelectableCommands().get(commandSelectedEvent.getSelection());
+                cmd = p.getSelectableCommands().get(selection);
             } catch (IndexOutOfBoundsException e) {
                 System.out.println("wrong command selection");
                 return; //todo
@@ -253,13 +253,13 @@ public class Controller {
         //todo:  update
     }
 
-    public synchronized void visit(ColorSelectedEvent colorSelectedEvent, ServerView serverView) {
+    public synchronized void visit(int selection, ServerView serverView) {
         removeObserverFromTimers(serverView);
         AmmoColor col;
         try {
             Player p = gameModel.getPlayerByObserver(serverView);
             try {
-                col = p.getSelectableColors().get(colorSelectedEvent.getSelection());
+                col = p.getSelectableColors().get(selection);
             } catch (IndexOutOfBoundsException e) {
                 System.out.println("wrong color selection");
                 return; //todo
@@ -280,13 +280,13 @@ public class Controller {
         //todo: update
     }
 
-    public synchronized void visit(PowerUpSelectedEvent powerUpSelectedEvent, ServerView serverView) {
+    public synchronized void powerUpSelected(int selection, ServerView serverView) {
         removeObserverFromTimers(serverView);
         PowerUp po;
         try {
             Player p = gameModel.getPlayerByObserver(serverView);
             try {
-                po = p.getSelectablePowerUps().get(powerUpSelectedEvent.getSelection());
+                po = p.getSelectablePowerUps().get(selection);
             } catch (IndexOutOfBoundsException e) {
                 //todo (should not occur)
                 System.out.println("wrong powerup selection");
@@ -317,7 +317,7 @@ public class Controller {
         //todo: update
     }
 
-    public void disconnectPlayer(Observer observer){    //todo: synchronized??
+    public synchronized void disconnectPlayer(Observer observer){
         try{
             Player disconnected = gameModel.getPlayerByObserver(observer);
             if(gameModel.getActivePlayers().contains(disconnected)){    //should always be true, right?
@@ -336,7 +336,7 @@ public class Controller {
         }
     }
 
-    public void checkStopMatch(){
+    private void checkStopMatch(){
         if(gameModel.tooFewPlayers() && gameModel.isMatchInProgress()){
             //todo stop match and print scores
             //todo gamemodel.gameOver()
@@ -347,14 +347,14 @@ public class Controller {
         }
     }
 
-    public void startMatch(){
+    public synchronized void startMatch(){
         gameModel.startMatch();
         gameModel.notifyAll(new GenericMessage("Match started!"));
         startTimers();
         //todo notificare i player che la partita inizia
     }
 
-    public void checkStart(){
+    private void checkStart(){
         if(!gameModel.tooFewPlayers() && gameModel.howManyActivePlayers() < 5 && !loginTimerStarted){
             loginTimer.schedule(new LoginTimer(this), 15000);
             loginTimerStarted = true;
@@ -370,12 +370,12 @@ public class Controller {
         return gameModel;
     }
 
-    public void setLoginTimerStarted(){
+    public synchronized void setLoginTimerStarted(){
         loginTimerStarted = false;
     }
 
     //todo: added by michele, check!
-    public void startTimers(){
+    private void startTimers(){
         while (gameModel.getActivePlayers().containsAll(gameModel.getWaitingFor())){
             List<Player> toFakeList = new ArrayList<>();
             for (Player p : gameModel.getWaitingFor()){
@@ -392,7 +392,7 @@ public class Controller {
         }
     }
 
-    public void addTimer(Observer observer){
+    private void addTimer(Observer observer){
         if(timers.get(observer) == null){
             Timer timer = new Timer();
             timers.replace(observer, timer);
@@ -400,14 +400,14 @@ public class Controller {
         }
     }
 
-    public void removeTimer(Observer observer){
+    private void removeTimer(Observer observer){
         if(timers.get(observer) != null){
             timers.get(observer).cancel();
         }
         timers.replace(observer, null);
     }
 
-    public void removeObserverFromTimers(Observer observer){
+    private void removeObserverFromTimers(Observer observer){
         removeTimer(observer);
         timers.remove(observer);
     }

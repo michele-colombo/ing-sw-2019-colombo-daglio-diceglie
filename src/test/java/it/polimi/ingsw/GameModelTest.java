@@ -480,9 +480,6 @@ public class GameModelTest {
         assertEquals(s4, p4.getSquarePosition());
         if (p4.getState() == PlayerState.CHOOSE_ACTION) gm.endTurn();
 
-        for (Player p : gm.getMatch().getPlayers()){
-            gm.createUpdateMessageForPlayer(p);
-        }
     }
 
     @Test

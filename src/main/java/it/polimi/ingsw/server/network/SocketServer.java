@@ -20,6 +20,7 @@ public class SocketServer extends Thread implements NetworkInterfaceServer, Mess
 
     public SocketServer(Socket socket, Controller controller){
         this.socket = socket;
+        //todo: non crea la serverView
         serverView = new ServerView(this, controller);
     }
 

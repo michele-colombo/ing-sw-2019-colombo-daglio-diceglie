@@ -51,55 +51,55 @@ public class ServerView implements Observer, EventVisitor {
 
     @Override
     public void visit(LoginEvent loginEvent) {
-        controller.visit(loginEvent, this);
+        controller.login(loginEvent.getName(), this);
 
     }
 
     @Override
     public void visit(SquareSelectedEvent squareSelectedEvent) {
-        controller.visit(squareSelectedEvent, this);
+        controller.squareSelected(squareSelectedEvent.getSelection(), this);
 
     }
 
     @Override
     public void visit(ActionSelectedEvent actionSelectedEvent) {
-        controller.visit(actionSelectedEvent, this);
+        controller.actionSelected(actionSelectedEvent.getSelection(), this);
 
     }
 
     @Override
     public void visit(PlayerSelectedEvent playerSelectedEvent) {
-        controller.visit(playerSelectedEvent, this);
+        controller.playerSelected(playerSelectedEvent.getSelection(), this);
 
     }
 
     @Override
     public void visit(WeaponSelectedEvent weaponSelectedEvent) {
-        controller.visit(weaponSelectedEvent, this);
+        controller.weaponSelected(weaponSelectedEvent.getSelection(), this);
 
     }
 
     @Override
     public void visit(ModeSelectedEvent modeSelectedEvent) {
-        controller.visit(modeSelectedEvent, this);
+        controller.modeSelected(modeSelectedEvent.getSelection(), this);
 
     }
 
     @Override
     public void visit(CommandSelectedEvent commandSelectedEvent) {
-        controller.visit(commandSelectedEvent, this);
+        controller.commandSelected(commandSelectedEvent.getSelection(), this);
 
     }
 
     @Override
     public void visit(ColorSelectedEvent colorSelectedEvent) {
-        controller.visit(colorSelectedEvent, this);
+        controller.visit(colorSelectedEvent.getSelection(), this);
 
     }
 
     @Override
     public void visit(PowerUpSelectedEvent powerUpSelectedEvent) {
-        controller.visit(powerUpSelectedEvent, this);
+        controller.powerUpSelected(powerUpSelectedEvent.getSelection(), this);
 
     }
 }

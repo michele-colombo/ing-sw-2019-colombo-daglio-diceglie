@@ -14,6 +14,49 @@ public class SelectablesUpdateMessage extends MessageVisitable {
     private List<String> selectablePlayers;
     private List<String> selectablePowerUps;
 
+    public SelectablesUpdateMessage(List<String> selectableWeapons, List<String> selectableSquares, List<String> selectableModes, List<String> selectableCommands, List<String> selectableActions, List<String> selectableColors, List<String> selectablePlayers, List<String> selectablePowerUps) {
+        this.selectableWeapons = selectableWeapons;
+        this.selectableSquares = selectableSquares;
+        this.selectableModes = selectableModes;
+        this.selectableCommands = selectableCommands;
+        this.selectableActions = selectableActions;
+        this.selectableColors = selectableColors;
+        this.selectablePlayers = selectablePlayers;
+        this.selectablePowerUps = selectablePowerUps;
+    }
+
+    public List<String> getSelectableWeapons() {
+        return selectableWeapons;
+    }
+
+    public List<String> getSelectableSquares() {
+        return selectableSquares;
+    }
+
+    public List<String> getSelectableModes() {
+        return selectableModes;
+    }
+
+    public List<String> getSelectableCommands() {
+        return selectableCommands;
+    }
+
+    public List<String> getSelectableActions() {
+        return selectableActions;
+    }
+
+    public List<String> getSelectableColors() {
+        return selectableColors;
+    }
+
+    public List<String> getSelectablePlayers() {
+        return selectablePlayers;
+    }
+
+    public List<String> getSelectablePowerUps() {
+        return selectablePowerUps;
+    }
+
     @Override
     public void accept(MessageVisitor messageVisitor) {
         messageVisitor.visit(this);

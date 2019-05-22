@@ -41,7 +41,9 @@ public class ServerMain {
             try{
                 Socket socket = serverSocket.accept();
                 System.out.println("A new client has connected");
-                executor.submit(new SocketServer(socket, controller));
+                SocketServer socketServer = new SocketServer(socket, controller);
+                executor.submit(socketServer);
+                //todo: viene chiamato un metodo createServerView(NetworkInterfcaeServer socketServer)
                 //CREARE IL THREAD
             } catch (IOException e){
                 break;

@@ -2,7 +2,13 @@ package it.polimi.ingsw.server.model;
 
 
 
+import it.polimi.ingsw.communication.message.*;
 import it.polimi.ingsw.server.model.enums.AmmoColor;
+import it.polimi.ingsw.server.model.enums.Command;
+import it.polimi.ingsw.server.model.enums.PlayerColor;
+import it.polimi.ingsw.server.model.enums.PlayerState;
+import it.polimi.ingsw.server.observer.Observable;
+import it.polimi.ingsw.server.observer.Observer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,6 +78,11 @@ public class Match {
     private Player currentPlayer;
 
     /**
+     * It's the reference to the map of observers in gameModel
+     */
+    private Map<Player, Observer> observers;
+
+    /**
      * It creates the match with the selected layout configuration and number of skulls
      * @param layoutConfig It's the number of the selected layout
      * @param skulls It's the number of skull of the KillShotTrack
@@ -91,8 +102,8 @@ public class Match {
         this(layoutConfig, 8);
     }
 
-    public Match(){
-        this(2, 8);
+    public void setObservers(Map<Player, Observer> observers) {
+        this.observers = observers;
     }
 
     public StackManager getStackManager() {
@@ -558,4 +569,213 @@ public class Match {
     public Player getFirstPlayer(){
         return players.get(0);
     }
+
+    public void notifyLayotUpdate(){
+        List<String> blueWeapons = new ArrayList<>();
+        List<String> redWeapons = new ArrayList<>();
+        List<String> yellowWeapons = new ArrayList<>();
+        Map<String, String> ammosTilesInSquares = new HashMap<>();
+        for (Weapon w : layout.getSpawnPoint(AmmoColor.BLUE).getWeapons()){
+            blueWeapons.add(w.getName());
+        }
+
+        for (Weapon w : layout.getSpawnPoint(AmmoColor.RED).getWeapons()){
+            redWeapons.add(w.getName());
+        }
+
+        for (Weapon w : layout.getSpawnPoint(AmmoColor.YELLOW).getWeapons()){
+            yellowWeapons.add(w.getName());
+        }
+
+        for (AmmoSquare as : layout.getAmmoSquares()){
+            if (as.getAmmo()!=null){
+                ammosTilesInSquares.put(as.toString(), as.getAmmo().toString());
+            } else {
+                ammosTilesInSquares.put(as.toString(), "");
+            }
+        }
+
+        for (Observer o : observers.values()){
+            LayoutUpdateMessage message = new LayoutUpdateMessage(blueWeapons, redWeapons, yellowWeapons, ammosTilesInSquares);
+            o.update(message);
+        }
+    }
+
+    public void notifyKillShotTrackUpdate(){
+        int skulls = killShotTrack.getSkulls();
+        boolean frenzyOn = isFrenzyOn();
+
+        List<Map<String, Integer>> track = new ArrayList<>();
+        for (Map<Player, Integer> map : killShotTrack.getTrack()){
+            Map<String, Integer> temp = new HashMap<>();
+            for (Map.Entry<Player, Integer> entry : map.entrySet()){
+                temp.put(entry.getKey().getName(), entry.getValue());
+            }
+            track.add(temp);
+        }
+
+        for (Map.Entry<Player, Observer> o : observers.entrySet()){
+            int yourPoints = o.getKey().getPoints();
+            KillshotTrackUpdateMessage message = new KillshotTrackUpdateMessage(skulls, track, frenzyOn, yourPoints);
+            o.getValue().update(message);
+        }
+    }
+
+    public void notifyCurrentPlayerUpdate(){
+        String currentPlayer = getCurrentPlayer().getName();
+
+        for (Observer o : observers.values()){
+            CurrentPlayerUpdateMessage message = new CurrentPlayerUpdateMessage(currentPlayer);
+            o.update(message);
+        }
+    }
+
+    public void notifyStartMatchUpdate(){
+        int layoutConfiguration = layout.getLayoutConfiguration();
+        List<String> names = new ArrayList<>();
+        List<PlayerColor> colors = new ArrayList<>();
+        for (Player p : players){
+            names.add(p.getName());
+            colors.add(p.getColor());
+        }
+
+        for (Observer o : observers.values()){
+            StartMatchUpdateMessage message = new StartMatchUpdateMessage(layoutConfiguration, names, colors);
+            o.update(message);
+        }
+    }
+
+    public void notifyPlayerUpdate(Player player){
+        String name = player.getName();
+        PlayerState state = player.getState();
+        String position = player.getSquarePosition().toString();
+        Cash wallet = player.getWallet();
+
+        for (Observer o : observers.values()){
+            PlayerUpdateMessage message = new PlayerUpdateMessage(name, state, position, wallet);
+            o.update(message);
+        }
+    }
+
+    public void notifyPaymentUpdate(Player receiver){
+        Cash pending = receiver.getPending();
+        Cash credit = receiver.getCredit();
+
+        PaymentUpdateMessage message = new PaymentUpdateMessage(pending, credit);
+        observers.get(receiver).update(message);
+    }
+
+    public void notifyWeaponsUpdate(Player player){
+        String name = player.getName();
+        List<String> loadedWeapons = new ArrayList<>();
+        List<String> unloadedWeapons = new ArrayList<>();
+        int numLoadedWeapons;
+        for (Weapon w : player.getLoadedWeapons()){
+            loadedWeapons.add(w.getName());
+        }
+        numLoadedWeapons = loadedWeapons.size();
+
+        WeaponsUpdateMessage message;
+        for (Map.Entry<Player, Observer> o : observers.entrySet()){
+            if (o.getKey() == player){
+                message = new WeaponsUpdateMessage(name, loadedWeapons, unloadedWeapons, numLoadedWeapons);
+            } else {
+                message = new WeaponsUpdateMessage(name, unloadedWeapons, numLoadedWeapons);
+            }
+            o.getValue().update(message);
+        }
+    }
+
+    public void notifyPowerUpUpdate(Player player){
+        String name = player.getName();
+        List<String> powerUps = new ArrayList<>();
+        int numPowerUps;
+        for (PowerUp p : player.getPowerUps()){
+            powerUps.add(p.toString());
+        }
+        numPowerUps = powerUps.size();
+
+        for (Map.Entry<Player, Observer> o : observers.entrySet()){
+            PowerUpUpdateMessage message;
+            if (o.getKey() == player){
+                message = new PowerUpUpdateMessage(name, powerUps, numPowerUps);
+            } else {
+                message = new PowerUpUpdateMessage(name, numPowerUps);
+            }
+            o.getValue().update(message);
+        }
+    }
+
+    public void notifyDamageUpdate(Player damaged){
+        String name = damaged.getName();
+        List<String> damageList = new ArrayList<>();
+        Map<String, Integer> markMap = new HashMap<>();
+        int skulls = damaged.getDamageTrack().getSkullsNumber();
+        boolean isFrenzy = damaged.getDamageTrack().isFrenzy();
+
+        for (Player p : damaged.getDamageTrack().getDamageList()){
+            damageList.add(p.getName());
+        }
+
+        for (Map.Entry<Player, Integer> entry : damaged.getDamageTrack().getMarkMap().entrySet()){
+            markMap.put(entry.getKey().getName(), entry.getValue());
+        }
+
+        for (Observer o : observers.values()){
+            DamageUpdateMessage message = new DamageUpdateMessage(name, damageList, markMap, skulls, isFrenzy);
+            o.update(message);
+        }
+    }
+
+    public void notifySelectableUpdate(Player player){
+        List<String> selWeapons = new ArrayList<>();
+        for (Weapon w : player.getSelectableWeapons()){
+            selWeapons.add(w.getName());
+        }
+
+        List<String> selSquares = new ArrayList<>();
+        for (Square s : player.getSelectableSquares()){
+            selSquares.add(s.toString());
+        }
+
+        List<String> selPlayers = new ArrayList<>();
+        for (Player p : player.getSelectablePlayers()){
+            selPlayers.add(p.getName());
+        }
+
+        List<String> selModes = new ArrayList<>();
+        for (Mode m : player.getSelectableModes()){
+            selModes.add(m.toString());
+        }
+
+        List<String> selActions = new ArrayList<>();
+        for (Action a : player.getSelectableActions()){
+            selActions.add(a.toString());
+        }
+
+        List<String> selColors = new ArrayList<>();
+        for (AmmoColor c : player.getSelectableColors()){
+            selColors.add(c.toString());
+        }
+
+        List<String> selPowerUps = new ArrayList<>();
+        for (PowerUp p : player.getSelectablePowerUps()){
+            selPowerUps.add(p.toString());
+        }
+
+        List<String> selCommands = new ArrayList<>();
+        for (Command c : player.getSelectableCommands()){
+            selCommands.add(c.toString());
+        }
+
+        SelectablesUpdateMessage message = new SelectablesUpdateMessage(selWeapons, selSquares, selModes, selCommands, selActions, selColors, selPlayers, selPowerUps);
+        observers.get(player).update(message);
+    }
+
+    public void notifyAllSelectablesUpdate(){
+        for (Player p : players){
+            notifySelectableUpdate(p);
+        }
+    }
 }
+

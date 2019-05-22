@@ -10,6 +10,29 @@ public class PlayerUpdateMessage extends MessageVisitable {
     private String position;
     private Cash wallet;
 
+    public PlayerUpdateMessage(String name, PlayerState state, String position, Cash wallet) {
+        this.name = name;
+        this.state = state;
+        this.position = position;
+        this.wallet = wallet;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public PlayerState getState() {
+        return state;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public Cash getWallet() {
+        return wallet;
+    }
+
     @Override
     public void accept(MessageVisitor messageVisitor) {
         messageVisitor.visit(this);
