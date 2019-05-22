@@ -1,10 +1,10 @@
 package it.polimi.ingsw.communication.events;
 
-import it.polimi.ingsw.server.ServerView;
-import it.polimi.ingsw.server.controller.VisitorServer;
+import it.polimi.ingsw.communication.EventVisitor;
 
 import java.io.Serializable;
 
 public abstract class EventVisitable implements Serializable {
-    public abstract void accept(VisitorServer visitorServer, ServerView serverView); //Class Controller is the VisitorServer
+    public abstract void accept(EventVisitor eventVisitor);
+
 }

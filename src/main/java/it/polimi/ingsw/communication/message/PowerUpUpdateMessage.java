@@ -1,6 +1,6 @@
 package it.polimi.ingsw.communication.message;
 
-import it.polimi.ingsw.client.VisitorClient;
+import it.polimi.ingsw.communication.MessageVisitor;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ public class PowerUpUpdateMessage extends MessageVisitable {
     private int numPowerUps;
 
     @Override
-    public void accept(VisitorClient visitorClient) {
-        visitorClient.visit(this);
+    public void accept(MessageVisitor messageVisitor) {
+        messageVisitor.visit(this);
     }
 }

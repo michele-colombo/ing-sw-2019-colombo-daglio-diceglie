@@ -1,6 +1,6 @@
 package it.polimi.ingsw.communication.message;
 
-import it.polimi.ingsw.client.VisitorClient;
+import it.polimi.ingsw.communication.MessageVisitor;
 
 public class LoginMessage extends MessageVisitable {
     private boolean loginSuccessful;
@@ -11,8 +11,8 @@ public class LoginMessage extends MessageVisitable {
         this.closeSocket = closeSocket;
     }
 
-    public void accept(VisitorClient visitorClient){
-        visitorClient.visit(this);
+    public void accept(MessageVisitor messageVisitor){
+        messageVisitor.visit(this);
     }
 
     public boolean getLoginSuccessful(){
