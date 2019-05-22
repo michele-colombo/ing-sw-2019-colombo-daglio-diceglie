@@ -1,6 +1,6 @@
 package it.polimi.ingsw.communication.message;
 
-import it.polimi.ingsw.client.VisitorClient;
+import it.polimi.ingsw.communication.MessageVisitor;
 import it.polimi.ingsw.server.model.enums.PlayerColor;
 
 import java.util.List;
@@ -11,7 +11,7 @@ public class StartMatchUpdateMessage extends MessageVisitable{
     private List<PlayerColor> colors;
 
     @Override
-    public void accept(VisitorClient visitorClient) {
-        visitorClient.visit(this);
+    public void accept(MessageVisitor messageVisitor) {
+        messageVisitor.visit(this);
     }
 }

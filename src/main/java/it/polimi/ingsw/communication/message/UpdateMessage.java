@@ -1,6 +1,6 @@
 package it.polimi.ingsw.communication.message;
 
-import it.polimi.ingsw.client.VisitorClient;
+import it.polimi.ingsw.communication.MessageVisitor;
 import it.polimi.ingsw.server.model.Cash;
 import it.polimi.ingsw.server.model.enums.PlayerColor;
 import it.polimi.ingsw.server.model.enums.PlayerState;
@@ -367,8 +367,8 @@ public class UpdateMessage extends MessageVisitable {
         otherPlayers = new ArrayList<>();
     }
 
-    public void accept(VisitorClient visitorClient){
-        visitorClient.visit(this);
+    public void accept(MessageVisitor messageVisitor){
+        messageVisitor.visit(this);
     }
 
     public MyPlayerInfo getMyPlayerInfo() {

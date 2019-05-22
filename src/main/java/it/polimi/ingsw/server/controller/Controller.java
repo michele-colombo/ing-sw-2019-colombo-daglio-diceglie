@@ -15,7 +15,7 @@ import it.polimi.ingsw.server.controller.timer.LoginTimer;
 import java.util.*;
 
 
-public class Controller implements VisitorServer {
+public class Controller {
 
     private final GameModel gameModel;
     private final Timer loginTimer;
@@ -30,7 +30,7 @@ public class Controller implements VisitorServer {
         this.timers = new HashMap<>();
     }
 
-    @Override
+
     public synchronized void visit(LoginEvent loginEvent, ServerView serverView){
         LoginMessage message = new LoginMessage("Login successful!", true, false);
         try{
@@ -56,7 +56,7 @@ public class Controller implements VisitorServer {
         }
     }
 
-    @Override
+
     public synchronized void visit(SquareSelectedEvent squareSelectedEvent, ServerView serverView) {
         removeObserverFromTimers(serverView);
         Square sq;
@@ -94,7 +94,6 @@ public class Controller implements VisitorServer {
         //todo: update all players
     }
 
-    @Override
     public synchronized void visit(ActionSelectedEvent actionSelectedEvent, ServerView serverView) {
         removeObserverFromTimers(serverView);
         Action act;
@@ -121,7 +120,6 @@ public class Controller implements VisitorServer {
         //todo: update
     }
 
-    @Override
     public synchronized void visit(PlayerSelectedEvent playerSelectedEvent, ServerView serverView) {
     removeObserverFromTimers(serverView);
         Player pl;
@@ -152,7 +150,6 @@ public class Controller implements VisitorServer {
         //todo: update
     }
 
-    @Override
     public synchronized void visit(WeaponSelectedEvent weaponSelectedEvent, ServerView serverView) {
         removeObserverFromTimers(serverView);
         Weapon wp;
@@ -188,7 +185,6 @@ public class Controller implements VisitorServer {
         //todo: update
     }
 
-    @Override
     public synchronized void visit(ModeSelectedEvent modeSelectedEvent, ServerView serverView) {
         removeObserverFromTimers(serverView);
         Mode mod;
@@ -215,7 +211,6 @@ public class Controller implements VisitorServer {
         //todo: update
     }
 
-    @Override
     public synchronized void visit(CommandSelectedEvent commandSelectedEvent, ServerView serverView) {
         removeObserverFromTimers(serverView);
         Command cmd;
@@ -258,7 +253,6 @@ public class Controller implements VisitorServer {
         //todo:  update
     }
 
-    @Override
     public synchronized void visit(ColorSelectedEvent colorSelectedEvent, ServerView serverView) {
         removeObserverFromTimers(serverView);
         AmmoColor col;
@@ -286,7 +280,6 @@ public class Controller implements VisitorServer {
         //todo: update
     }
 
-    @Override
     public synchronized void visit(PowerUpSelectedEvent powerUpSelectedEvent, ServerView serverView) {
         removeObserverFromTimers(serverView);
         PowerUp po;

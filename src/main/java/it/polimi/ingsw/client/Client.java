@@ -3,13 +3,14 @@ package it.polimi.ingsw.client;
 import it.polimi.ingsw.client.network.NetworkInterfaceClient;
 import it.polimi.ingsw.client.network.SocketClient;
 import it.polimi.ingsw.client.userInterface.ClientView;
+import it.polimi.ingsw.communication.MessageVisitor;
 import it.polimi.ingsw.communication.events.EventVisitable;
 import it.polimi.ingsw.communication.events.LoginEvent;
 import it.polimi.ingsw.communication.message.*;
 
 import java.io.IOException;
 
-public class Client implements VisitorClient{
+public class Client implements MessageVisitor {
 
     private NetworkInterfaceClient network;
     private ClientView clientView;

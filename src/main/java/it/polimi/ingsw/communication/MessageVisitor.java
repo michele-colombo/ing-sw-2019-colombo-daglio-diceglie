@@ -1,8 +1,8 @@
-package it.polimi.ingsw.client;
+package it.polimi.ingsw.communication;
 
 import it.polimi.ingsw.communication.message.*;
 
-public interface VisitorClient {
+public interface MessageVisitor {
     void visit(LoginMessage loginMessage);
     void visit(DisconnectionMessage disconnectionMessage);
     void visit(GenericMessage genericMessage);

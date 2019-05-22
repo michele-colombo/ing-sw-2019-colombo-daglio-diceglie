@@ -1,7 +1,6 @@
 package it.polimi.ingsw.communication.events;
 
-import it.polimi.ingsw.server.ServerView;
-import it.polimi.ingsw.server.controller.VisitorServer;
+import it.polimi.ingsw.communication.EventVisitor;
 
 public class SquareSelectedEvent extends EventVisitable{
     private int selection;
@@ -20,7 +19,7 @@ public class SquareSelectedEvent extends EventVisitable{
         return nickname;
     }
 
-    public void accept(VisitorServer visitorServer, ServerView serverView){
-        visitorServer.visit(this, serverView);
+    public void accept(EventVisitor eventVisitor){
+        eventVisitor.visit(this);
     }
 }
