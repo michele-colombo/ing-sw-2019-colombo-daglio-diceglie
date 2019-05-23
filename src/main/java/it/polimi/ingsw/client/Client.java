@@ -43,7 +43,7 @@ public class Client implements MessageVisitor {
         chooseName(name);
     }
 
-    private void createConnection(String connection){
+    public void createConnection(String connection){
         try {
             switch (connection) {
                 case "socket":
