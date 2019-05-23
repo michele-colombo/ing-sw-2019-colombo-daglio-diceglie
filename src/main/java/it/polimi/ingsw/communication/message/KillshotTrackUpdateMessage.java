@@ -24,4 +24,19 @@ public class KillshotTrackUpdateMessage extends MessageVisitable {
         messageVisitor.visit(this);
     }
 
+    public int getSkulls() {
+        return skulls;
+    }
+
+    public List<Map<String, Integer>> getTrack() {
+        return track;
+    }
+
+    public boolean isFrenzyOn() {
+        return frenzyOn;
+    }
+
+    public int getYourPoints() {
+        return yourPoints;
+    }
 }

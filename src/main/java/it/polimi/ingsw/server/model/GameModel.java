@@ -112,7 +112,6 @@ public class GameModel implements Observable {
     public void startNewMatch(){
         InputStream url = ServerMain.class.getClassLoader().getResourceAsStream("serverConfig.json");
         Scanner sc = new Scanner(url);
-        //getting port number
         JsonObject o = (JsonObject) new JsonParser().parse(sc.nextLine());
         JsonElement data =  o.get("layoutConfig");
         int layoutConfig = data.getAsInt();

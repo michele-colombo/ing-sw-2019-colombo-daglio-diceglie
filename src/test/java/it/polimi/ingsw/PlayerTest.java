@@ -19,7 +19,7 @@ public class PlayerTest {
     public void canAfford() {
         Player p = new Player("SignorTest", PlayerColor.GREY);
         PowerUp po1 = new PowerUp(AmmoColor.BLUE, PowerUpType.TARGETING_SCOPE, "Targeting scope");
-        PowerUp po2 = new PowerUp(AmmoColor.YELLOW, PowerUpType.TAGBACK_GRENADE, "Tagback granade");
+        PowerUp po2 = new PowerUp(AmmoColor.YELLOW, PowerUpType.TAGBACK_GRENADE, "Tagback grenade");
         PowerUp po3 = new PowerUp(AmmoColor.BLUE, PowerUpType.TARGETING_SCOPE, "Targeting scope");
         p.addPowerUp(po1);
         p.addPowerUp(po2);

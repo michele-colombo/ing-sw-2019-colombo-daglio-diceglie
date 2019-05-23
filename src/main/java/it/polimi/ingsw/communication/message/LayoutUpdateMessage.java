@@ -6,29 +6,29 @@ import java.util.List;
 import java.util.Map;
 
 public class LayoutUpdateMessage extends MessageVisitable {
-    private List<String> blueWeapon;
-    private List<String> redWeapon;
-    private List<String> yellowWeapon;
+    private List<String> blueWeapons;
+    private List<String> redWeapons;
+    private List<String> yellowWeapons;
 
     private Map<String, String> ammoTilesInSquares;
 
-    public LayoutUpdateMessage(List<String> blueWeapon, List<String> redWeapon, List<String> yellowWeapon, Map<String, String> ammoTilesInSquares) {
-        this.blueWeapon = blueWeapon;
-        this.redWeapon = redWeapon;
-        this.yellowWeapon = yellowWeapon;
+    public LayoutUpdateMessage(List<String> blueWeapons, List<String> redWeapons, List<String> yellowWeapons, Map<String, String> ammoTilesInSquares) {
+        this.blueWeapons = blueWeapons;
+        this.redWeapons = redWeapons;
+        this.yellowWeapons = yellowWeapons;
         this.ammoTilesInSquares = ammoTilesInSquares;
     }
 
-    public List<String> getBlueWeapon() {
-        return blueWeapon;
+    public List<String> getBlueWeapons() {
+        return blueWeapons;
     }
 
-    public List<String> getRedWeapon() {
-        return redWeapon;
+    public List<String> getRedWeapons() {
+        return redWeapons;
     }
 
-    public List<String> getYellowWeapon() {
-        return yellowWeapon;
+    public List<String> getYellowWeapons() {
+        return yellowWeapons;
     }
 
     public Map<String, String> getAmmoTilesInSquares() {

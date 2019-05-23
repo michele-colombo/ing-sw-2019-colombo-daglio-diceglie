@@ -4,9 +4,13 @@ import it.polimi.ingsw.communication.message.*;
 
 public interface MessageVisitor {
     void visit(LoginMessage loginMessage);
+
     void visit(DisconnectionMessage disconnectionMessage);
+
     void visit(GenericMessage genericMessage);
+
     void visit(UpdateMessage updateMessage);
+
     void visit(LayoutUpdateMessage layoutUpdateMessage);
 
     void visit(KillshotTrackUpdateMessage killshotTrackUpdate);

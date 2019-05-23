@@ -961,9 +961,9 @@ public class GameModelTest {
         gm.grabWeapon(first, sm.getWeaponFromName("Heatseeker"));
         startTimers(gm);
 
-            assertTrue(first.getSelectablePowerUps().contains(sm.getPowerUpFromString("16-Tagback granade-YELLOW")));
+            assertTrue(first.getSelectablePowerUps().contains(sm.getPowerUpFromString("16-Tagback grenade-YELLOW")));
 
-        gm.payWith(first, sm.getPowerUpFromString("16-Tagback granade-YELLOW"));
+        gm.payWith(first, sm.getPowerUpFromString("16-Tagback grenade-YELLOW"));
         startTimers(gm);
         disconnectPlayer(gm, first);
         startTimers(gm);

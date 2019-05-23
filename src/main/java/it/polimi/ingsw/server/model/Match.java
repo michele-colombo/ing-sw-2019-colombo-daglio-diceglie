@@ -622,11 +622,12 @@ public class Match {
     }
 
     public void notifyCurrentPlayerUpdate(){
-        String currentPlayer = getCurrentPlayer().getName();
-
-        for (Observer o : observers.values()){
-            CurrentPlayerUpdateMessage message = new CurrentPlayerUpdateMessage(currentPlayer);
-            o.update(message);
+        if (currentPlayer != null) {
+            String currentPlayer = getCurrentPlayer().getName();
+            for (Observer o : observers.values()) {
+                CurrentPlayerUpdateMessage message = new CurrentPlayerUpdateMessage(currentPlayer);
+                o.update(message);
+            }
         }
     }
 
@@ -648,7 +649,10 @@ public class Match {
     public void notifyPlayerUpdate(Player player){
         String name = player.getName();
         PlayerState state = player.getState();
-        String position = player.getSquarePosition().toString();
+        String position = "";
+        if (player.getSquarePosition() != null){
+            position = player.getSquarePosition().toString();
+        }
         Cash wallet = player.getWallet();
 
         for (Observer o : observers.values()){
@@ -774,6 +778,20 @@ public class Match {
 
     public void notifyAllSelectablesUpdate(){
         for (Player p : players){
+            notifySelectableUpdate(p);
+        }
+    }
+
+    public void notifyFullUpdateAllPlayers(){
+        notifyLayotUpdate();
+        notifyKillShotTrackUpdate();
+        notifyCurrentPlayerUpdate();
+        for (Player p : players){
+            notifyPlayerUpdate(p);
+            notifyPaymentUpdate(p);
+            notifyWeaponsUpdate(p);
+            notifyPowerUpUpdate(p);
+            notifyDamageUpdate(p);
             notifySelectableUpdate(p);
         }
     }

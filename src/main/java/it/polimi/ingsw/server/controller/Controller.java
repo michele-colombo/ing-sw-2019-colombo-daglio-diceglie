@@ -2,7 +2,6 @@ package it.polimi.ingsw.server.controller;
 
 import it.polimi.ingsw.server.ServerView;
 import it.polimi.ingsw.server.exceptions.*;
-import it.polimi.ingsw.communication.events.*;
 import it.polimi.ingsw.communication.message.DisconnectionMessage;
 import it.polimi.ingsw.communication.message.GenericMessage;
 import it.polimi.ingsw.communication.message.LoginMessage;
@@ -17,7 +16,7 @@ import java.util.*;
 
 public class Controller {
 
-    private final GameModel gameModel;
+   private final GameModel gameModel;
     private final Timer loginTimer;
     private boolean loginTimerStarted;
     private Map<Observer, Timer> timers;
@@ -39,6 +38,7 @@ public class Controller {
             gameModel.attach(newPlayer, serverView);
             timers.put(serverView, null);
             checkStart();
+            System.out.println("Player "+name+" has correctly logged in");
             //todo se ci sono 5 player e la partita non è ancora iniziata, allora deve iniziare
             //todo se ci sono 3 player attivi e partita non iniziata, starta il countdown
 
@@ -349,7 +349,8 @@ public class Controller {
 
     public synchronized void startMatch(){
         gameModel.startMatch();
-        gameModel.notifyAll(new GenericMessage("Match started!"));
+        gameModel.getMatch().notifyStartMatchUpdate();
+        //gameModel.getMatch().notifyFullUpdateAllPlayers();
         startTimers();
         //todo notificare i player che la partita inizia
     }
