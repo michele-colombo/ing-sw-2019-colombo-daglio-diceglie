@@ -56,7 +56,7 @@ public class SocketClient extends Thread implements NetworkInterfaceClient, Even
             try {
                 Scanner in = new Scanner(socket.getInputStream());
                 while(true) {
-                    MessageVisitable received= unwrap( in.nextLine() );
+                    MessageVisitable received = unwrap( in.nextLine() );
                     received.accept(client);
                 }
             } catch (IOException e) {

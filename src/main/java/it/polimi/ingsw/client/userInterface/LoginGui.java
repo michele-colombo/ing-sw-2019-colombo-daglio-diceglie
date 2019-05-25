@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client.userInterface;
 
+import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -14,49 +15,53 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 public class LoginGui {
-    private final GridPane view;
+    private final BorderPane view;
     private Text actionTarget;
     private Button loginButton;
 
 
     public LoginGui(){
+        view = new BorderPane();
 
-        view = new GridPane();
-        view.setAlignment(Pos.CENTER);
-        view.setBackground(new Background(new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
-        view.setHgap(10);
-        view.setVgap(10);
-        view.setPadding(new Insets(25, 25, 25, 25));
+        GridPane loginGrid = new GridPane();
+        view.setCenter(loginGrid);
+        loginGrid.setAlignment(Pos.CENTER);
+        loginGrid.setBackground(new Background(new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
+        loginGrid.setHgap(10);
+        loginGrid.setVgap(10);
+        loginGrid.setPadding(new Insets(25, 25, 25, 25));
 
         Text sceneTitle = new Text("Login");
         sceneTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
-        view.add(sceneTitle, 1, 0, 2, 1);
+        loginGrid.add(sceneTitle, 1, 0, 2, 1);
         GridPane.setHalignment(sceneTitle, HPos.CENTER);
 
         Label userName = new Label("User Name:");
-        view.add(userName, 0, 1);
+        loginGrid.add(userName, 0, 1);
 
         TextField userTextField = new TextField();
-        view.add(userTextField, 1, 1);
+        loginGrid.add(userTextField, 1, 1);
 
         loginButton = new Button("Login");
         GridPane.setHalignment(loginButton, HPos.CENTER);
-        loginButton.prefWidthProperty().bind(view.widthProperty());
-        loginButton.prefHeightProperty().bind(view.heightProperty());
+        loginButton.prefWidthProperty().bind(loginGrid.widthProperty());
+        loginButton.prefHeightProperty().bind(loginGrid.heightProperty());
         loginButton.setMaxHeight(Gui.getScreenBounds().getHeight()/25);
         loginButton.setMaxWidth(Gui.getScreenBounds().getWidth()/5);
         //loginButton.setMinHeight(Gui.getScreenHeight()/20);
-        /*HBox hbBtn = new HBox(10);
-        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.CENTER);
         hbBtn.getChildren().add(loginButton);
         HBox.setHgrow(loginButton, Priority.ALWAYS);
-        view.add(hbBtn, 1, 4);*/
-        view.add(loginButton,1 ,4);
+        loginGrid.add(hbBtn, 1, 4);
+        loginGrid.add(loginButton,1 ,4);
 
         actionTarget = new Text();
-        view.add(actionTarget, 1, 6);
+        loginGrid.add(actionTarget, 1, 6);
         GridPane.setHalignment(actionTarget, HPos.CENTER);
-        view.setGridLinesVisible(true);
+        loginGrid.setGridLinesVisible(true);
+
+        Gui.disconnectionText = actionTarget;
 
 
         loginButton.setOnAction(event -> {
@@ -69,13 +74,13 @@ public class LoginGui {
         actionTarget.setText(text);
         if(loginSuccessful){
             loginButton.setDisable(true);
-            /*Platform.runLater(new Runnable() {
+            Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
                     Parent newView = new BoardGui().getView();
-                    grid.getScene().setRoot(newView);
+                    view.getScene().setRoot(newView);
                 }
-            });*/
+            });
         }
     }
 

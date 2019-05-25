@@ -29,6 +29,7 @@ import javafx.stage.Stage;
 public class Gui extends Application implements ClientView {
     private static Client client;
     private Text actionTarget;
+    public static Text disconnectionText;
     private Button btn;
     private GridPane grid;
     private Stage stage;
@@ -46,9 +47,17 @@ public class Gui extends Application implements ClientView {
     }
 
     public void printDisconnectionMessage(String text){
-        actionTarget.setFill(Color.BLUE);
-        actionTarget.setText(text);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                disconnectionText.setFill(Color.GREEN);
+                disconnectionText.setText(text);
+            }
+        });
+        //System.out.println(text);
     }
+
+    //public void startMatchUpdate()
 
     @Override
     public void start(Stage primaryStage) {
@@ -68,7 +77,7 @@ public class Gui extends Application implements ClientView {
         sceneTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
         grid.add(sceneTitle, 1, 0, 2, 1);
         GridPane.setHalignment(sceneTitle, HPos.CENTER);
-        grid.setGridLinesVisible(false);
+        grid.setGridLinesVisible(true);
 
 
         Label connection = new Label("Connection:");
@@ -88,7 +97,7 @@ public class Gui extends Application implements ClientView {
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
         grid.setVgap(10);
-        grid.setPadding(new Insets(25, 25, 25, 25));
+        grid.setPadding(new Insets(0,0,0,0));
 
 
         btn = new Button("Connect");
@@ -106,8 +115,6 @@ public class Gui extends Application implements ClientView {
         actionTarget = new Text();
         grid.add(actionTarget, 1, 6);
         GridPane.setHalignment(actionTarget, HPos.CENTER);
-        grid.setGridLinesVisible(true);
-
 
         btn.setOnAction(event -> {
             if(comboBox.getValue() != null && !comboBox.getValue().toString().isEmpty()){
