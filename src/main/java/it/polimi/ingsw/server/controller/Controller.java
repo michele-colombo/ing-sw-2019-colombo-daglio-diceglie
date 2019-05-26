@@ -44,6 +44,7 @@ public class Controller {
     }
 
     public synchronized void login(String name, ServerView serverView){
+        System.out.println("Message received");
         LoginMessage message = new LoginMessage("Login successful!", true, false);
         try{
             Player newPlayer = new Player(name);
@@ -368,7 +369,7 @@ public class Controller {
         }
     }
 
-    public synchronized void startMatch(){
+    public void startMatch(){
         gameModel.startMatch();
         gameModel.getMatch().notifyStartMatchUpdate();
         gameModel.getMatch().notifyFullUpdateAllPlayers();
@@ -397,7 +398,7 @@ public class Controller {
     }
 
     //todo: added by michele, check!
-    private void startTimers(){
+    private void startTimers(){ //era synchronized ma dava problemi
         while (gameModel.getActivePlayers().containsAll(gameModel.getWaitingFor())){
             List<Player> toFakeList = new ArrayList<>();
             for (Player p : gameModel.getWaitingFor()){

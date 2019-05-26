@@ -3,6 +3,7 @@ package it.polimi.ingsw.client;
 import it.polimi.ingsw.client.network.NetworkInterfaceClient;
 import it.polimi.ingsw.client.network.SocketClient;
 import it.polimi.ingsw.client.userInterface.ClientView;
+import it.polimi.ingsw.client.userInterface.Gui;
 import it.polimi.ingsw.communication.MessageVisitor;
 import it.polimi.ingsw.communication.events.*;
 import it.polimi.ingsw.communication.message.*;
@@ -24,6 +25,7 @@ public class Client implements MessageVisitor {
     private String name;
     private String ip;
     private int port;
+    private boolean connected;
     private MatchView match;
     private Map<String, Boolean> connections;
 
@@ -32,6 +34,7 @@ public class Client implements MessageVisitor {
         this.clientView = clientView;
         this.ip = ClientMain.config.getIp();
         this.port = ClientMain.config.getPort();
+        this.connected = false;
         connections = new HashMap<>();
     }
 
@@ -45,6 +48,7 @@ public class Client implements MessageVisitor {
             switch (connection) {
                 case "socket":
                     network = new SocketClient(this.ip, this.port, this);
+                    connected = true;
                     break;
                 case "rmi":
                     break;
@@ -56,6 +60,7 @@ public class Client implements MessageVisitor {
         }
         catch (IOException e){
             System.out.println("Error while creating the network. Try again logging in");
+            connected = false;
             //clientView.askLogin();
         }
     }
@@ -99,6 +104,8 @@ public class Client implements MessageVisitor {
         System.out.println("Start match update received");
         match = new MatchView(name, startMatchUpdateMessage.getLayoutConfiguration(), startMatchUpdateMessage.getNames(), startMatchUpdateMessage.getColors(), connections);
         clientView.initialize(match);
+        ((Gui)clientView).startMatchUpdate(match);
+        //todo
     }
 
     @Override
@@ -440,4 +447,9 @@ public class Client implements MessageVisitor {
     public MatchView getMatch() {
         return match;
     }
+
+    public boolean isConnected(){
+        return connected;
+    }
+
 }
