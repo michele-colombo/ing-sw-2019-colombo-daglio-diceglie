@@ -31,6 +31,7 @@ public class Controller {
 
 
     public synchronized void login(String name, ServerView serverView){
+        System.out.println("Message received");
         LoginMessage message = new LoginMessage("Login successful!", true, false);
         try{
             Player newPlayer = new Player(name);
@@ -347,7 +348,7 @@ public class Controller {
         }
     }
 
-    public synchronized void startMatch(){
+    public void startMatch(){
         gameModel.startMatch();
         gameModel.getMatch().notifyStartMatchUpdate();
         //gameModel.getMatch().notifyFullUpdateAllPlayers();
@@ -357,7 +358,7 @@ public class Controller {
 
     private void checkStart(){
         if(!gameModel.tooFewPlayers() && gameModel.howManyActivePlayers() < 5 && !loginTimerStarted){
-            loginTimer.schedule(new LoginTimer(this), 15000);
+            loginTimer.schedule(new LoginTimer(this), 3000);
             loginTimerStarted = true;
         } else if(gameModel.howManyActivePlayers() == 5){
             startMatch();
@@ -376,7 +377,7 @@ public class Controller {
     }
 
     //todo: added by michele, check!
-    private void startTimers(){
+    private void startTimers(){ //era synchronized ma dava problemi
         while (gameModel.getActivePlayers().containsAll(gameModel.getWaitingFor())){
             List<Player> toFakeList = new ArrayList<>();
             for (Player p : gameModel.getWaitingFor()){

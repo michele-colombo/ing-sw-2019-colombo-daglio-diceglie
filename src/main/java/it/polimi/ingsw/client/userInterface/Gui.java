@@ -1,6 +1,10 @@
 package it.polimi.ingsw.client.userInterface;
 
 import it.polimi.ingsw.client.Client;
+import it.polimi.ingsw.client.MatchView;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
@@ -10,6 +14,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -20,11 +25,13 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class Gui extends Application implements ClientView {
     private static Client client;
@@ -37,6 +44,7 @@ public class Gui extends Application implements ClientView {
     private ComboBox comboBox;
     private LoginGui loginGui;
     private static Rectangle2D screenBounds;
+    public static Timeline timeline;
 
     public static void main(String[] args){
         launch(args);
@@ -52,6 +60,7 @@ public class Gui extends Application implements ClientView {
             public void run() {
                 disconnectionText.setFill(Color.GREEN);
                 disconnectionText.setText(text);
+                //timeline.play();
             }
         });
         //System.out.println(text);
@@ -70,8 +79,9 @@ public class Gui extends Application implements ClientView {
         //stage.setMinWidth(screenWidth/2);
         //stage.setMinHeight(screenHeight/2);
 
-
+        //Group group = new Group();
         grid = new GridPane();
+        //group.getChildren().add(grid);
         grid.setBackground(new Background(new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
         Text sceneTitle = new Text("Welcome to ADRENALINE");
         sceneTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
@@ -120,7 +130,12 @@ public class Gui extends Application implements ClientView {
             if(comboBox.getValue() != null && !comboBox.getValue().toString().isEmpty()){
                 client = new Client(this);
                 client.createConnection(comboBox.getValue().toString().toLowerCase());
-                changeToLogin();
+                if(client.isConnected()){
+                    changeToLogin();
+                } else{
+                    actionTarget.setFill(Color.RED);
+                    actionTarget.setText("Network not found!");
+                }
             }
         });
 
@@ -137,6 +152,10 @@ public class Gui extends Application implements ClientView {
                 grid.getScene().setRoot(newView);
             }
         });
+    }
+
+    public void startMatchUpdate(MatchView match){
+        loginGui.startMatchUpdate(match);
     }
 
     public static Client getClient(){

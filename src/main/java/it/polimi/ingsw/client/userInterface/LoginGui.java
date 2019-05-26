@@ -1,5 +1,9 @@
 package it.polimi.ingsw.client.userInterface;
 
+import it.polimi.ingsw.client.MatchView;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -10,14 +14,17 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 public class LoginGui {
     private final BorderPane view;
     private Text actionTarget;
     private Button loginButton;
+    private BoardGui boardGui;
 
 
     public LoginGui(){
@@ -67,22 +74,43 @@ public class LoginGui {
         loginButton.setOnAction(event -> {
             Gui.getClient().chooseName(userTextField.getText());
         });
+
+        /*final Rectangle rectBasicTimeline = new Rectangle(100, 50, 100, 50);
+        rectBasicTimeline.setFill(Color.RED);
+        Gui.timeline = new Timeline();
+        Gui.timeline.setCycleCount(Timeline.INDEFINITE);
+        Gui.timeline.setAutoReverse(true);
+        final KeyValue kv = new KeyValue(rectBasicTimeline.xProperty(), 300);
+        final KeyFrame kf = new KeyFrame(Duration.millis(5000), kv);
+        view.setLeft(rectBasicTimeline);
+        Gui.timeline.getKeyFrames().add(kf);*/
+
+
     }
 
     public void printLoginMessage(String text, boolean loginSuccessful){
-        actionTarget.setFill(Color.GREEN);
-        actionTarget.setText(text);
         if(loginSuccessful){
             loginButton.setDisable(true);
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    Parent newView = new BoardGui().getView();
-                    view.getScene().setRoot(newView);
-                }
-            });
+            actionTarget.setFill(Color.GREEN);
+        } else {
+            actionTarget.setFill(Color.RED);
         }
+        actionTarget.setText(text);
     }
+
+    public void startMatchUpdate(MatchView match){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                //Parent newView = new BoardGui(match.getLayout().getLayoutConfiguration()).getView();
+                boardGui = new BoardGui(0);
+                Parent newView = boardGui.getView();
+                view.getScene().setRoot(newView);
+            }
+        });
+    }
+
+    //todo qualcosa che faccia partire la board
 
     public Parent getView(){
         return view;
