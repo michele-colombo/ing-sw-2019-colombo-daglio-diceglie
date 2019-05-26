@@ -772,7 +772,14 @@ public class Match {
             selCommands.add(c.toString());
         }
 
-        SelectablesUpdateMessage message = new SelectablesUpdateMessage(selWeapons, selSquares, selModes, selCommands, selActions, selColors, selPlayers, selPowerUps);
+        String currWeapon;
+        if (player.getState() == PlayerState.CHOOSE_MODE){
+            currWeapon = getCurrentAction().getCurrWeapon().getName();
+        } else {
+            currWeapon = "";
+        }
+
+        SelectablesUpdateMessage message = new SelectablesUpdateMessage(selWeapons, selSquares, selModes, selCommands, selActions, selColors, selPlayers, selPowerUps, currWeapon);
         observers.get(player).update(message);
     }
 
@@ -792,6 +799,8 @@ public class Match {
             notifyWeaponsUpdate(p);
             notifyPowerUpUpdate(p);
             notifyDamageUpdate(p);
+        }
+        for (Player p : players){
             notifySelectableUpdate(p);
         }
     }

@@ -48,4 +48,13 @@ public class WeaponView {
 
         return result.toString();
     }
+
+    public ModeView getModeFromString(String str){
+        for (ModeView m : myModes){
+            if (m.getTitle().equals(str)){
+                return m;
+            }
+        }
+        return null;
+    }
 }

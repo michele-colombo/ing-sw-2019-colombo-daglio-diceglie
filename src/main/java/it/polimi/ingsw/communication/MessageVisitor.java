@@ -9,8 +9,6 @@ public interface MessageVisitor {
 
     void visit(GenericMessage genericMessage);
 
-    void visit(UpdateMessage updateMessage);
-
     void visit(LayoutUpdateMessage layoutUpdateMessage);
 
     void visit(KillshotTrackUpdateMessage killshotTrackUpdate);

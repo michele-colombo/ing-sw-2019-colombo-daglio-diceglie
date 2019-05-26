@@ -5,19 +5,13 @@ import it.polimi.ingsw.communication.EventVisitor;
 
 public class ModeSelectedEvent extends EventVisitable {
     private int selection;
-    private String nickname;
 
-    public ModeSelectedEvent(int selection, String nickname) {
+    public ModeSelectedEvent(int selection) {
         this.selection = selection;
-        this.nickname = nickname;
     }
 
     public int getSelection() {
         return selection;
-    }
-
-    public String getNickname() {
-        return nickname;
     }
 
     @Override

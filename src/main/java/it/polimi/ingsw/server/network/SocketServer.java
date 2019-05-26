@@ -77,12 +77,6 @@ public class SocketServer extends Thread implements NetworkInterfaceServer, Mess
     }
 
     @Override
-    public void visit(UpdateMessage updateMessage) {
-        messagePrefix= "#UPDATE#";
-
-    }
-
-    @Override
     public void visit(LayoutUpdateMessage layoutUpdateMessage) {
         messagePrefix= "#LAYOUTUPDATE#";
 

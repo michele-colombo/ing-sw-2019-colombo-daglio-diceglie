@@ -4,19 +4,13 @@ import it.polimi.ingsw.communication.EventVisitor;
 
 public class CommandSelectedEvent extends EventVisitable {
     private int selection;
-    private String nickname;
 
-    public CommandSelectedEvent(int selection, String nickname) {
+    public CommandSelectedEvent(int selection) {
         this.selection = selection;
-        this.nickname = nickname;
     }
 
     public int getSelection() {
         return selection;
-    }
-
-    public String getNickname() {
-        return nickname;
     }
 
     @Override

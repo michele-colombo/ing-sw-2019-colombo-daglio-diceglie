@@ -1,6 +1,8 @@
 package it.polimi.ingsw.client.userInterface;
 
 import it.polimi.ingsw.client.Client;
+import it.polimi.ingsw.client.MatchView;
+import it.polimi.ingsw.client.PlayerView;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
@@ -145,5 +147,63 @@ public class Gui extends Application implements ClientView {
 
     public static Rectangle2D getScreenBounds(){
         return screenBounds;
+    }
+
+
+    public void showAndAskSelection() {
+
+    }
+
+    public void initialize(MatchView match) {
+    }
+
+    @Override
+    public void updateConnection() {
+
+    }
+
+    @Override
+    public void updateLayout() {
+
+    }
+
+    @Override
+    public void updateKillshotTrack() {
+
+    }
+
+    @Override
+    public void updateCurrentPlayer() {
+
+    }
+
+    @Override
+    public void updatePlayer(PlayerView updated) {
+
+    }
+
+    @Override
+    public void updatePayment() {
+
+    }
+
+    @Override
+    public void updateWeapons(PlayerView player) {
+
+    }
+
+    @Override
+    public void updatePowerUp(PlayerView player) {
+
+    }
+
+    @Override
+    public void updateDamage(PlayerView player) {
+
+    }
+
+    @Override
+    public void updateSelectables() {
+
     }
 }

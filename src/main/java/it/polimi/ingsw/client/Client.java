@@ -4,12 +4,12 @@ import it.polimi.ingsw.client.network.NetworkInterfaceClient;
 import it.polimi.ingsw.client.network.SocketClient;
 import it.polimi.ingsw.client.userInterface.ClientView;
 import it.polimi.ingsw.communication.MessageVisitor;
-import it.polimi.ingsw.communication.events.EventVisitable;
-import it.polimi.ingsw.communication.events.LoginEvent;
+import it.polimi.ingsw.communication.events.*;
 import it.polimi.ingsw.communication.message.*;
 import it.polimi.ingsw.server.model.AmmoTile;
 import it.polimi.ingsw.server.model.enums.AmmoColor;
 import it.polimi.ingsw.server.model.enums.Command;
+import it.polimi.ingsw.server.model.enums.PlayerState;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,25 +25,14 @@ public class Client implements MessageVisitor {
     private String ip;
     private int port;
     private MatchView match;
-
+    private Map<String, Boolean> connections;
 
 
     public Client(ClientView clientView){
         this.clientView = clientView;
         this.ip = ClientMain.config.getIp();
         this.port = ClientMain.config.getPort();
-    }
-
-    public void visit(LoginMessage message){
-        clientView.printLoginMessage(message.toString(), message.getLoginSuccessful());
-    }
-
-    public void visit(DisconnectionMessage message){
-        clientView.printDisconnectionMessage(message.toString());
-    }
-
-    public void visit(GenericMessage message){
-        clientView.printDisconnectionMessage(message.toString());
+        connections = new HashMap<>();
     }
 
     public void login(String choice, String name){
@@ -84,15 +73,32 @@ public class Client implements MessageVisitor {
         }
     }
 
-    public void visit(UpdateMessage message){
+    @Override
+    public void visit(LoginMessage message){
+        clientView.printLoginMessage(message.toString(), message.getLoginSuccessful());
+    }
 
+    @Override
+    public void visit(DisconnectionMessage message){
+        clientView.printDisconnectionMessage(message.toString());
+    }
+
+    @Override
+    public void visit(GenericMessage message){
+        clientView.printDisconnectionMessage(message.toString());
+    }
+
+    @Override
+    public void visit(ConnectionUpdateMessage connectionUpdateMessage) {
+        System.out.println("Connection update received");
+        connections = new HashMap<>(connectionUpdateMessage.getConnectionStates());
     }
 
     @Override
     public void visit(StartMatchUpdateMessage startMatchUpdateMessage) {
         System.out.println("Start match update received");
-        match = new MatchView(name, startMatchUpdateMessage.getLayoutConfiguration(), startMatchUpdateMessage.getNames(), startMatchUpdateMessage.getColors());
-        //todo
+        match = new MatchView(name, startMatchUpdateMessage.getLayoutConfiguration(), startMatchUpdateMessage.getNames(), startMatchUpdateMessage.getColors(), connections);
+        clientView.initialize(match);
     }
 
     @Override
@@ -125,7 +131,7 @@ public class Client implements MessageVisitor {
             tempSquare = layout.getSquareFromString(entry.getKey());
             tempSquare.setAmmo(decks.getAmmoTileFromString(entry.getValue()));
         }
-        //todo
+        clientView.updateLayout();
     }
 
     @Override
@@ -144,14 +150,14 @@ public class Client implements MessageVisitor {
             tempTrack.add(temp);
         }
         match.setTrack(tempTrack);
-        //todo
+        clientView.updateKillshotTrack();
     }
 
     @Override
     public void visit(CurrentPlayerUpdateMessage currentPlayerUpdate) {
         System.out.println("current player update received");
         match.setCurrentPlayer(match.getPlayerFromName(currentPlayerUpdate.getCurrentPlayer()));
-        //todo
+        clientView.updateCurrentPlayer();
     }
 
     @Override
@@ -161,7 +167,7 @@ public class Client implements MessageVisitor {
         playerToUpdate.setState(playerUpdateMessage.getState());
         playerToUpdate.setSquarePosition(match.getLayout().getSquareFromString(playerUpdateMessage.getPosition()));
         playerToUpdate.setWallet(playerUpdateMessage.getWallet());
-        //todo
+        clientView.updatePlayer(playerToUpdate);
     }
 
     @Override
@@ -169,7 +175,7 @@ public class Client implements MessageVisitor {
         System.out.println("Payment update received");
         match.getMyPlayer().setPending(paymentUpdateMessage.getPending());
         match.getMyPlayer().setCredit(paymentUpdateMessage.getCredit());
-        //todo
+        clientView.updatePayment();
     }
 
     @Override
@@ -193,7 +199,7 @@ public class Client implements MessageVisitor {
             unloadedWeapons.add(match.getDecks().getWeaponFromName(s));
         }
         player.setUnloadedWeapons(unloadedWeapons);
-        //todo
+        clientView.updateWeapons(player);
     }
 
     @Override
@@ -207,54 +213,9 @@ public class Client implements MessageVisitor {
             }
             me.setPowerUps(powerUps);
         }
-        match.getPlayerFromName(powerUpUpdateMessage.getName()).setNumPowerUps(powerUpUpdateMessage.getNumPowerUps());
-        //todo
-    }
-
-    @Override
-    public void visit(SelectablesUpdateMessage selectablesUpdateMessage) {
-        System.out.println("Selectables update received");
-        MyPlayer me = match.getMyPlayer();
-
-        List<WeaponView> selWeapons = new ArrayList<>();
-        for (String s : selectablesUpdateMessage.getSelectableWeapons()){
-            selWeapons.add(match.getDecks().getWeaponFromName(s));
-        }
-        me.setSelectableWeapons(selWeapons);
-
-        List<SquareView> selSquares = new ArrayList<>();
-        for (String s : selectablesUpdateMessage.getSelectableSquares()){
-            selSquares.add(match.getLayout().getSquareFromString(s));
-        }
-        me.setSelectableSquares(selSquares);
-
-        //todo: sel modes
-
-        List<Command> selCommands = new ArrayList<>();
-        for (String s : selectablesUpdateMessage.getSelectableCommands()){
-            selCommands.add(Command.valueOf(s));
-        }
-        me.setSelectableCommands(selCommands);
-
-        me.setSelectableActions(selectablesUpdateMessage.getSelectableActions());
-
-        List<AmmoColor> selColors = new ArrayList<>();
-        for (String s : selectablesUpdateMessage.getSelectableColors()){
-            selColors.add(AmmoColor.valueOf(s));
-        }
-        me.setSelectableColors(selColors);
-
-        List<PlayerView> selPlayers = new ArrayList<>();
-        for (String s : selectablesUpdateMessage.getSelectablePlayers()){
-            selPlayers.add(match.getPlayerFromName(s));
-        }
-        me.setSelectablePlayers(selPlayers);
-
-        List<PowerUpView> selPowerUps = new ArrayList<>();
-        for (String s : selectablesUpdateMessage.getSelectablePowerUps()){
-            selPowerUps.add(match.getDecks().getPowerUpFromString(s));
-        }
-        me.setSelectablePowerUps(selPowerUps);
+        PlayerView player = match.getPlayerFromName(powerUpUpdateMessage.getName());
+        player.setNumPowerUps(powerUpUpdateMessage.getNumPowerUps());
+        clientView.updatePowerUp(player);
     }
 
     @Override
@@ -275,11 +236,208 @@ public class Client implements MessageVisitor {
             tempMarkMap.put(match.getPlayerFromName(entry.getKey()), entry.getValue());
         }
         playerToUpdate.setMarkMap(tempMarkMap);
+        clientView.updateDamage(playerToUpdate);
     }
 
     @Override
-    public void visit(ConnectionUpdateMessage connectionUpdateMessage) {
+    public void visit(SelectablesUpdateMessage selectablesUpdateMessage) {
+        System.out.println("Selectables update received");
+        MyPlayer me = match.getMyPlayer();
 
+        List<WeaponView> selWeapons = new ArrayList<>();
+        for (String s : selectablesUpdateMessage.getSelectableWeapons()){
+            WeaponView weapon = match.getDecks().getWeaponFromName(s);
+            if (weapon != null){
+                selWeapons.add(weapon);
+            }
+        }
+        me.setSelectableWeapons(selWeapons);
+
+        List<SquareView> selSquares = new ArrayList<>();
+        for (String s : selectablesUpdateMessage.getSelectableSquares()){
+            SquareView square = match.getLayout().getSquareFromString(s);
+            if (square!= null){
+                selSquares.add(square);
+            }
+        }
+        me.setSelectableSquares(selSquares);
+
+        List<ModeView> selModes = new ArrayList<>();
+        WeaponView currWeapon = match.getDecks().getWeaponFromName(selectablesUpdateMessage.getCurrWeapon());
+        if (currWeapon != null) {
+            for (String s : selectablesUpdateMessage.getSelectableModes()) {
+                ModeView mode = currWeapon.getModeFromString(s);
+                if (mode != null){
+                    selModes.add(mode);
+                }
+            }
+        }
+        me.setSelectableModes(selModes);
+
+        List<Command> selCommands = new ArrayList<>();
+        for (String s : selectablesUpdateMessage.getSelectableCommands()){
+            try {
+                selCommands.add(Command.valueOf(s));
+            } catch (IllegalArgumentException e){
+
+            }
+        }
+        me.setSelectableCommands(selCommands);
+
+        me.setSelectableActions(selectablesUpdateMessage.getSelectableActions());
+
+        List<AmmoColor> selColors = new ArrayList<>();
+        for (String s : selectablesUpdateMessage.getSelectableColors()){
+            try {
+                selColors.add(AmmoColor.valueOf(s));
+            } catch (IllegalArgumentException e){
+
+            }
+        }
+        me.setSelectableColors(selColors);
+
+        List<PlayerView> selPlayers = new ArrayList<>();
+        for (String s : selectablesUpdateMessage.getSelectablePlayers()){
+            PlayerView player = match.getPlayerFromName(s);
+            if (player != null){
+                selPlayers.add(player);
+            }
+        }
+        me.setSelectablePlayers(selPlayers);
+
+        List<PowerUpView> selPowerUps = new ArrayList<>();
+        for (String s : selectablesUpdateMessage.getSelectablePowerUps()){
+            PowerUpView powerUp = match.getDecks().getPowerUpFromString(s);
+            if (powerUp != null){
+                selPowerUps.add(powerUp);
+            }
+        }
+        me.setSelectablePowerUps(selPowerUps);
+
+        clientView.showAndAskSelection();
     }
 
+    private void sendEvent(EventVisitable event){
+        try {
+            network.forward(event);
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void selected(String selected) throws WrongSelectionException {
+        int indexSel;
+        EventVisitable event;
+        boolean found = false;
+
+        WeaponView weapon = match.getDecks().getWeaponFromName(selected);
+        if (weapon != null){
+            indexSel = match.getMyPlayer().getSelectableWeapons().indexOf(weapon);
+            if (indexSel<0) {
+                throw new WrongSelectionException();
+            }
+            else {
+                event = new WeaponSelectedEvent(indexSel);
+                found = true;
+                sendEvent(event);
+            }
+        }
+
+        SquareView square = match.getLayout().getSquareFromString(selected);
+        if (square != null){
+            indexSel = match.getMyPlayer().getSelectableSquares().indexOf(square);
+            if (indexSel<0) {
+                throw new WrongSelectionException();
+            }
+            else {
+                event = new SquareSelectedEvent(indexSel);
+                found = true;
+                sendEvent(event);
+            }
+        }
+
+        if (match.getMyPlayer().getState() == PlayerState.CHOOSE_MODE){
+            WeaponView currWeapon = match.getMyPlayer().getCurrWeapon();
+            if (currWeapon != null){
+                ModeView mode = currWeapon.getModeFromString(selected);
+                if (mode != null){
+                    indexSel = match.getMyPlayer().getSelectableModes().indexOf(mode);
+                    if (indexSel<0){
+                        throw new WrongSelectionException();
+                    } else {
+                        event = new ModeSelectedEvent(indexSel);
+                        found = true;
+                        sendEvent(event);
+                    }
+                }
+            }
+        }
+
+        try {
+            Command command = Command.valueOf(selected);
+            indexSel = match.getMyPlayer().getSelectableCommands().indexOf(command);
+            if (indexSel<0) {
+                throw new WrongSelectionException();
+            }
+            else {
+                event = new CommandSelectedEvent(indexSel);
+                found = true;
+                sendEvent(event);
+            }
+        } catch (IllegalArgumentException e ){}
+
+        indexSel = match.getMyPlayer().getSelectableActions().indexOf(selected);
+        if (indexSel >= 0) {
+            event = new ActionSelectedEvent(indexSel);
+            found = true;
+            sendEvent(event);
+        }
+
+        try {
+            AmmoColor color = AmmoColor.valueOf(selected);
+            indexSel = match.getMyPlayer().getSelectableColors().indexOf(color);
+            if (indexSel<0) {
+                throw new WrongSelectionException();
+            }
+            else {
+                event = new ColorSelectedEvent(indexSel);
+                found = true;
+                sendEvent(event);
+            }
+        } catch (IllegalArgumentException e ){}
+
+        PlayerView player = match.getPlayerFromName(selected);
+        if (player != null){
+            indexSel = match.getMyPlayer().getSelectablePlayers().indexOf(player);
+            if (indexSel<0) {
+                throw new WrongSelectionException();
+            }
+            else {
+                event = new PlayerSelectedEvent(indexSel);
+                found = true;
+                sendEvent(event);
+            }
+        }
+
+        PowerUpView powerUp = match.getDecks().getPowerUpFromString(selected);
+        if (powerUp != null){
+            indexSel = match.getMyPlayer().getSelectablePowerUps().indexOf(powerUp);
+            if (indexSel<0) {
+                throw new WrongSelectionException();
+            }
+            else {
+                event = new PowerUpSelectedEvent(indexSel);
+                found = true;
+                sendEvent(event);
+            }
+        }
+
+        if (!found){
+            throw new WrongSelectionException();
+        }
+    }
+
+    public MatchView getMatch() {
+        return match;
+    }
 }

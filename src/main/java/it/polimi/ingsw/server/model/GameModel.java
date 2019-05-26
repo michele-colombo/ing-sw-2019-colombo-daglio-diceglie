@@ -7,7 +7,6 @@ import it.polimi.ingsw.communication.message.ConnectionUpdateMessage;
 import it.polimi.ingsw.server.ServerMain;
 import it.polimi.ingsw.server.exceptions.*;
 import it.polimi.ingsw.communication.message.MessageVisitable;
-import it.polimi.ingsw.communication.message.UpdateMessage;
 import it.polimi.ingsw.server.model.enums.AmmoColor;
 import it.polimi.ingsw.server.model.enums.Command;
 import it.polimi.ingsw.server.model.enums.PlayerColor;
@@ -747,12 +746,14 @@ public class GameModel implements Observable {
         }
     }
 
-    public void notifyConnectionUpdate(Player player){
-        String name = player.getName();
-        boolean connected = activePlayers.contains(player);
+    public void notifyConnectionUpdate(){
+        Map<String, Boolean> connectionStates = new HashMap<>();
+        for (Player p : allPlayers()){
+            connectionStates.put(p.getName(), activePlayers.contains(p));
+        }
 
         for (Observer o : observers.values()){
-            ConnectionUpdateMessage message = new ConnectionUpdateMessage(name, connected);
+            ConnectionUpdateMessage message = new ConnectionUpdateMessage(connectionStates);
             o.update(message);
         }
     }

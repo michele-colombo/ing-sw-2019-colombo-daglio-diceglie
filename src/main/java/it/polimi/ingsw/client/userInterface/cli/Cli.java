@@ -1,20 +1,26 @@
-package it.polimi.ingsw.client.userInterface;
+package it.polimi.ingsw.client.userInterface.cli;
 
-import it.polimi.ingsw.client.Client;
-import it.polimi.ingsw.communication.message.UpdateMessage;
+import it.polimi.ingsw.client.*;
+import it.polimi.ingsw.client.userInterface.ClientView;
+import static it.polimi.ingsw.client.userInterface.cli.CliUtils.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
 public class Cli implements ClientView {
     private Client client;
+    private PlayingWindow playingWindow;
+    private MatchView match;
+    private List<String> selectableIds;
 
     public Cli(){
         this.client = null;
+        selectableIds = new ArrayList<>();
         askLogin();
     }
 
@@ -34,6 +40,84 @@ public class Cli implements ClientView {
         System.out.println(text);
     }
 
+    public void initialize(MatchView match){
+        this.match = match;
+        playingWindow = new PlayingWindow(150, 40, match, this);
+    }
+
+    public void showAndAskSelection(){
+        selectableIds.clear();
+        playingWindow.fullUpdate(match);
+        playingWindow.show();
+        Scanner scanner = new Scanner(System.in);
+        boolean accepted = false;
+        while (!accepted){
+            String input = scanner.nextLine();
+            try {
+                int sel = Integer.parseInt(input.trim());
+                client.selected(selectableIds.get(sel));
+                accepted = true;
+            } catch (NumberFormatException e){
+                System.out.println("please insert a number");
+            } catch (WrongSelectionException e){
+                playingWindow.show();
+                System.out.println("invalid selection, retry!");
+            } catch (IndexOutOfBoundsException e){
+                playingWindow.show();
+                System.out.println("invalid selection, retry!");
+            }
+        }
+    }
+
+    @Override
+    public void updateConnection() {
+
+    }
+
+    @Override
+    public void updateLayout() {
+
+    }
+
+    @Override
+    public void updateKillshotTrack() {
+
+    }
+
+    @Override
+    public void updateCurrentPlayer() {
+
+    }
+
+    @Override
+    public void updatePlayer(PlayerView updated) {
+
+    }
+
+    @Override
+    public void updatePayment() {
+
+    }
+
+    @Override
+    public void updateWeapons(PlayerView player) {
+
+    }
+
+    @Override
+    public void updatePowerUp(PlayerView player) {
+
+    }
+
+    @Override
+    public void updateDamage(PlayerView player) {
+
+    }
+
+    @Override
+    public void updateSelectables() {
+
+    }
 
     public void askLogin() {
 
@@ -74,66 +158,45 @@ public class Cli implements ClientView {
         return reader.readLine();
     }
 
-    public static <T> String listToString(List<T> list){
-        StringBuilder result = new StringBuilder();
-        for (T t : list){
-            if (t == null){
-                result.append("    null;");
-            } else {
-                result.append("    "+t+";");
-            }
+    public void addSelectableId(String id){
+        if (id != null){
+            selectableIds.add(id);
         }
-        return result.toString();
     }
 
-    public static <T> void printList(List<T> list){
-        System.out.println();
-        System.out.println(listToString(list));
+    public int indexOf(String id){
+        return selectableIds.indexOf(id);
     }
 
-    public static <K, V> String mapToString(Map<K, V> map){
-        StringBuilder result = new StringBuilder();
-        for (Map.Entry<K, V> entry : map.entrySet()){
-            if (entry.getKey() == null) result.append("    null: ");
-            else result.append("    "+entry.getKey()+": ");
-            if (entry.getValue() == null) result.append("null;");
-            else result.append(entry.getValue()+";");
-        }
-        return result.toString();
-    }
-
-    public static <K, V> void printMap(Map<K, V> map){
-        System.out.println();
-        System.out.println(mapToString(map));
-    }
 
     //TEST-ONLY METHOD
-    public static void showUpdate(UpdateMessage update){
-        for (UpdateMessage.OtherPlayerInfo otherPlayer : update.getOtherPlayers()){
-            System.out.println("OTHER PLAYERS:");
-            if (update.getCurrentPlayer().equals(otherPlayer.getName())) System.out.print("-> ");
+    public void showSituation(){
+        MatchView match = client.getMatch();
+        System.out.println("OTHER PLAYERS:");
+        for (PlayerView otherPlayer : match.getOtherPlayers()){
+            if (match.getCurrentPlayer() != null && match.getCurrentPlayer().equals(otherPlayer.getName())) System.out.print("-> ");
             else System.out.print("   ");
             System.out.println(otherPlayer.getName()+" in "+otherPlayer.getSquarePosition() + " with " + otherPlayer.getWallet() + " state: " + otherPlayer.getState());
             System.out.println("        powerups: "+otherPlayer.getNumPowerUps());
             System.out.print("        unloaded weapons:");
-            for (String wStr : otherPlayer.getUnloadedWeapons()){
-                System.out.print("    - "+wStr);
+            for (WeaponView w : otherPlayer.getUnloadedWeapons()){
+                System.out.print("    - "+w.getName());
             }
             System.out.println();
             System.out.println("        Damages: " + listToString(otherPlayer.getDamageList()));
             System.out.println("        Marks: "+ mapToString(otherPlayer.getMarkMap()));
         }
 
-        UpdateMessage.MyPlayerInfo me = update.getMyPlayerInfo();
+        MyPlayer me = match.getMyPlayer();
         System.out.println("\n\nME:");
-        if (update.getCurrentPlayer().equals(me.getName())) System.out.println("It's my turn!");
+        if (match.getCurrentPlayer() != null &&match.getCurrentPlayer().equals(me.getName())) System.out.println("It's my turn!");
         System.out.println(me.getName()+" in "+me.getSquarePosition() + " with " + me.getWallet() + " state: " + me.getState() + " points: " + me.getPoints());
         if (!me.getPending().toString().equals("b:0|r:0|y:0")) System.out.println("You have to pay "+me.getPending()+" (you have already paid "+me.getCredit()+")");
         System.out.println("        powerups: "+listToString(me.getPowerUps()));
         System.out.print("        weapons:");
-        for (Map.Entry<String, Boolean> entry : me.getWeapons().entrySet()){
-            if (entry.getValue() == true) System.out.print("\t- "+entry.getKey()+"(LOADED)");
-            else System.out.print("\t- "+entry.getKey()+"(UNLOADED)");
+        for (Map.Entry<WeaponView, Boolean> entry : me.getWeapons().entrySet()){
+            if (entry.getValue() == true) System.out.print("\t- "+entry.getKey().getName()+"(LOADED)");
+            else System.out.print("\t- "+entry.getKey().getName()+"(UNLOADED)");
         }
         System.out.println();
         System.out.println("        Damages: " + listToString(me.getDamageList()));
@@ -181,7 +244,5 @@ public class Cli implements ClientView {
             result.append("\n");
         }
         System.out.print(result.toString());
-
-
     }
 }

@@ -4,19 +4,13 @@ import it.polimi.ingsw.communication.EventVisitor;
 
 public class PowerUpSelectedEvent extends EventVisitable {
     private int selection;
-    private String nickname;
 
-    public PowerUpSelectedEvent(int selection, String nickname) {
+    public PowerUpSelectedEvent(int selection) {
         this.selection = selection;
-        this.nickname = nickname;
     }
 
     public int getSelection() {
         return selection;
-    }
-
-    public String getNickname() {
-        return nickname;
     }
 
     @Override

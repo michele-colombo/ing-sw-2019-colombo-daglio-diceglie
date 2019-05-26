@@ -2,21 +2,17 @@ package it.polimi.ingsw.communication.message;
 
 import it.polimi.ingsw.communication.MessageVisitor;
 
+import java.util.Map;
+
 public class ConnectionUpdateMessage extends MessageVisitable{
-    private String name;
-    private boolean connected;
+    private Map<String, Boolean> connectionStates;
 
-    public ConnectionUpdateMessage(String name, boolean connected) {
-        this.name = name;
-        this.connected = connected;
+    public ConnectionUpdateMessage(Map<String, Boolean> connectionStates) {
+        this.connectionStates = connectionStates;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public boolean isConnected() {
-        return connected;
+    public Map<String, Boolean> getConnectionStates() {
+        return connectionStates;
     }
 
     @Override

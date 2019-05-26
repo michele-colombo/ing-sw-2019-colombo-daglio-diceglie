@@ -161,4 +161,8 @@ public class LayoutView {
     public void setYellowWeapons(List<WeaponView> yellowWeapons) {
         this.yellowWeapons = yellowWeapons;
     }
+
+    public List<SquareView> getSquares() {
+        return new ArrayList<>(squares);
+    }
 }

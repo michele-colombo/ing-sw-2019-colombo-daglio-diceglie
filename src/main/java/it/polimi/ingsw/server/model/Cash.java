@@ -6,6 +6,8 @@ import it.polimi.ingsw.server.model.enums.AmmoColor;
 import java.util.ArrayList;
 import java.util.List;
 
+import static it.polimi.ingsw.server.model.enums.AmmoColor.BLUE;
+
 public class Cash {
     private int blue;
     private int red;
@@ -57,6 +59,19 @@ public class Cash {
 
     public int getYellow() {
         return yellow;
+    }
+
+    public int getAmountOf(AmmoColor color){
+        switch (color){
+            case BLUE:
+                return getBlue();
+            case RED:
+                return getRed();
+            case YELLOW:
+                return getYellow();
+            default:
+                return 0;
+        }
     }
 
     public boolean greaterEqual(Cash c){

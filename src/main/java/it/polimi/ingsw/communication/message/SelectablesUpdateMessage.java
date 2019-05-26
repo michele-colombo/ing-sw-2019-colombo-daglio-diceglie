@@ -13,8 +13,9 @@ public class SelectablesUpdateMessage extends MessageVisitable {
     private List<String> selectableColors;
     private List<String> selectablePlayers;
     private List<String> selectablePowerUps;
+    private String currWeapon;
 
-    public SelectablesUpdateMessage(List<String> selectableWeapons, List<String> selectableSquares, List<String> selectableModes, List<String> selectableCommands, List<String> selectableActions, List<String> selectableColors, List<String> selectablePlayers, List<String> selectablePowerUps) {
+    public SelectablesUpdateMessage(List<String> selectableWeapons, List<String> selectableSquares, List<String> selectableModes, List<String> selectableCommands, List<String> selectableActions, List<String> selectableColors, List<String> selectablePlayers, List<String> selectablePowerUps, String currWeapon) {
         this.selectableWeapons = selectableWeapons;
         this.selectableSquares = selectableSquares;
         this.selectableModes = selectableModes;
@@ -23,6 +24,7 @@ public class SelectablesUpdateMessage extends MessageVisitable {
         this.selectableColors = selectableColors;
         this.selectablePlayers = selectablePlayers;
         this.selectablePowerUps = selectablePowerUps;
+        this.currWeapon = currWeapon;
     }
 
     public List<String> getSelectableWeapons() {
@@ -55,6 +57,10 @@ public class SelectablesUpdateMessage extends MessageVisitable {
 
     public List<String> getSelectablePowerUps() {
         return selectablePowerUps;
+    }
+
+    public String getCurrWeapon() {
+        return currWeapon;
     }
 
     @Override

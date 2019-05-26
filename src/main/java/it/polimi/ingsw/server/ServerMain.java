@@ -20,10 +20,12 @@ public class ServerMain {
     private final GameModel gameModel;
     private final Controller controller;
 
-    public ServerMain(int port){
+    public ServerMain(int port, long loginTimerDuration, long inputTimerDuration){
         this.port = port;
         gameModel = new GameModel();
         controller = new Controller(gameModel);
+        controller.setLoginTimerDuration(loginTimerDuration);
+        controller.setInputTimerDuration(inputTimerDuration);
         start();
     }
 
@@ -61,7 +63,21 @@ public class ServerMain {
         JsonObject o= (JsonObject) new JsonParser().parse(sc.nextLine());
         JsonElement data=  o.get("port");
         int portNumber= data.getAsInt();
+        long loginTimerDuration;
+        long inputTimerDuration;
+        try {
+            data = o.get("loginTimer");
+            loginTimerDuration = data.getAsLong();
+        } catch (Exception e){
+            loginTimerDuration = -1;
+        }
+        try {
+            data = o.get("inputTimer");
+            inputTimerDuration = data.getAsLong();
+        } catch (Exception e){
+            inputTimerDuration = -1;
+        }
 
-        new ServerMain(portNumber);
+        new ServerMain(portNumber, loginTimerDuration, inputTimerDuration);
     }
 }

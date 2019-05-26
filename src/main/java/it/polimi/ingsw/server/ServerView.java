@@ -93,7 +93,7 @@ public class ServerView implements Observer, EventVisitor {
 
     @Override
     public void visit(ColorSelectedEvent colorSelectedEvent) {
-        controller.visit(colorSelectedEvent.getSelection(), this);
+        controller.colorSelected(colorSelectedEvent.getSelection(), this);
 
     }
 

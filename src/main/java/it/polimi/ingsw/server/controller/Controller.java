@@ -16,10 +16,12 @@ import java.util.*;
 
 public class Controller {
 
-   private final GameModel gameModel;
+    private final GameModel gameModel;
     private final Timer loginTimer;
     private boolean loginTimerStarted;
     private Map<Observer, Timer> timers;
+    private long loginTimerDuration = 15000;
+    private long inputTimerDuration = 10000;
 
 
     public Controller(GameModel gameModel){
@@ -29,6 +31,17 @@ public class Controller {
         this.timers = new HashMap<>();
     }
 
+    public void setLoginTimerDuration(long loginTimerDuration) {
+        if (loginTimerDuration > 0){
+            this.loginTimerDuration = loginTimerDuration;
+        }
+    }
+
+    public void setInputTimerDuration(long inputTimerDuration) {
+        if (inputTimerDuration > 0){
+            this.inputTimerDuration = inputTimerDuration;
+        }
+    }
 
     public synchronized void login(String name, ServerView serverView){
         LoginMessage message = new LoginMessage("Login successful!", true, false);
@@ -41,7 +54,7 @@ public class Controller {
             System.out.println("Player "+name+" has correctly logged in");
             //todo se ci sono 5 player e la partita non è ancora iniziata, allora deve iniziare
             //todo se ci sono 3 player attivi e partita non iniziata, starta il countdown
-
+            gameModel.notifyConnectionUpdate();
         } catch(NameAlreadyTakenException e){
             message = new LoginMessage("Name already taken!", false, false);
         } catch(GameFullException e){
@@ -91,7 +104,7 @@ public class Controller {
             //todo: what if there is no such serverView?
         }
         startTimers();
-        //todo: update all players
+        gameModel.getMatch().notifyFullUpdateAllPlayers();
     }
 
     public synchronized void actionSelected(int selection, ServerView serverView) {
@@ -117,6 +130,7 @@ public class Controller {
             //todo (should not occur)
         }
         startTimers();
+        gameModel.getMatch().notifyFullUpdateAllPlayers();
         //todo: update
     }
 
@@ -147,6 +161,7 @@ public class Controller {
             //todo
         }
         startTimers();
+        gameModel.getMatch().notifyFullUpdateAllPlayers();
         //todo: update
     }
 
@@ -182,6 +197,7 @@ public class Controller {
             //todo
         }
         startTimers();
+        gameModel.getMatch().notifyFullUpdateAllPlayers();
         //todo: update
     }
 
@@ -208,6 +224,7 @@ public class Controller {
             //todo
         }
         startTimers();
+        gameModel.getMatch().notifyFullUpdateAllPlayers();
         //todo: update
     }
 
@@ -250,10 +267,11 @@ public class Controller {
             //todo
         }
         startTimers();
+        gameModel.getMatch().notifyFullUpdateAllPlayers();
         //todo:  update
     }
 
-    public synchronized void visit(int selection, ServerView serverView) {
+    public synchronized void colorSelected(int selection, ServerView serverView) {
         removeObserverFromTimers(serverView);
         AmmoColor col;
         try {
@@ -277,6 +295,7 @@ public class Controller {
             //todo
         }
         startTimers();
+        gameModel.getMatch().notifyFullUpdateAllPlayers();
         //todo: update
     }
 
@@ -314,6 +333,7 @@ public class Controller {
             //todo (should not occur)
         }
         startTimers();
+        gameModel.getMatch().notifyFullUpdateAllPlayers();
         //todo: update
     }
 
@@ -333,6 +353,7 @@ public class Controller {
             checkStopMatch();
             removeObserverFromTimers(observer);
             startTimers();
+            gameModel.notifyConnectionUpdate();
         }
     }
 
@@ -350,14 +371,14 @@ public class Controller {
     public synchronized void startMatch(){
         gameModel.startMatch();
         gameModel.getMatch().notifyStartMatchUpdate();
-        //gameModel.getMatch().notifyFullUpdateAllPlayers();
+        gameModel.getMatch().notifyFullUpdateAllPlayers();
         startTimers();
         //todo notificare i player che la partita inizia
     }
 
     private void checkStart(){
         if(!gameModel.tooFewPlayers() && gameModel.howManyActivePlayers() < 5 && !loginTimerStarted){
-            loginTimer.schedule(new LoginTimer(this), 15000);
+            loginTimer.schedule(new LoginTimer(this), loginTimerDuration);
             loginTimerStarted = true;
         } else if(gameModel.howManyActivePlayers() == 5){
             startMatch();
@@ -397,7 +418,7 @@ public class Controller {
         if(timers.get(observer) == null){
             Timer timer = new Timer();
             timers.replace(observer, timer);
-            timers.get(observer).schedule(new InputTimer((ServerView)observer), 12000); //todo sistemare i cast
+            timers.get(observer).schedule(new InputTimer((ServerView)observer), inputTimerDuration); //todo sistemare i cast
         }
     }
 

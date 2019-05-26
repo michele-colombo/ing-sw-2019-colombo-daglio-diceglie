@@ -3,6 +3,7 @@ package it.polimi.ingsw.client;
 import it.polimi.ingsw.server.model.enums.PlayerColor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,12 +13,13 @@ public class MatchView {
     private MyPlayer myPlayer;
     private List<PlayerView> allPlayers;
     private PlayerView currentPlayer;
+    private Map<String, Boolean> connections;
 
     private int skulls;
     private List<Map<PlayerView, Integer>> track;
     private boolean frenzyOn;
 
-    public MatchView(String myName, int layoutConfig, List<String> players, List<PlayerColor> colors) {
+    public MatchView(String myName, int layoutConfig, List<String> players, List<PlayerColor> colors, Map<String, Boolean> connections) {
         decks = new DecksView();
         layout = new LayoutView();
         layout.initLayout(layoutConfig);
@@ -33,9 +35,10 @@ public class MatchView {
             i++;
         }
         track = new ArrayList<>();
+        this.connections = connections;
     }
 
-    public List<PlayerView> otherPlayers(){
+    public List<PlayerView> getOtherPlayers(){
         List<PlayerView> result = new ArrayList<>(allPlayers);
         result.remove(myPlayer);
         return result;
@@ -94,5 +97,19 @@ public class MatchView {
 
     public void setCurrentPlayer(PlayerView currentPlayer) {
         this.currentPlayer = currentPlayer;
+    }
+
+    public List<PlayerView> getPlayersOn(SquareView square){
+        List<PlayerView> result = new ArrayList<>();
+        for (PlayerView p : getAllPlayers()){
+            if (square.equals(p.getSquarePosition())){
+                result.add(p);
+            }
+        }
+        return result;
+    }
+
+    public Map<String, Boolean> readConnections() {
+        return new HashMap<>(connections);
     }
 }

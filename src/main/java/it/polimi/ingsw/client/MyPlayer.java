@@ -24,6 +24,7 @@ public class MyPlayer extends PlayerView {
     private List<AmmoColor> selectableColors;
     private List<PowerUpView> selectablePowerUps;
     private List<Command> selectableCommands;
+    private WeaponView currWeapon;
 
     public MyPlayer(String name, PlayerColor color) {
         super(name, color);
@@ -91,6 +92,10 @@ public class MyPlayer extends PlayerView {
         return selectableCommands;
     }
 
+    public WeaponView getCurrWeapon() {
+        return currWeapon;
+    }
+
     public void setPoints(int points) {
         this.points = points;
     }
@@ -141,5 +146,9 @@ public class MyPlayer extends PlayerView {
 
     public void setSelectableCommands(List<Command> selectableCommands) {
         this.selectableCommands = selectableCommands;
+    }
+
+    public void setCurrWeapon(WeaponView currWeapon) {
+        this.currWeapon = currWeapon;
     }
 }
