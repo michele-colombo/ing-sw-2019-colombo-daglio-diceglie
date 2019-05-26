@@ -104,7 +104,7 @@ public class Client implements MessageVisitor {
         System.out.println("Start match update received");
         match = new MatchView(name, startMatchUpdateMessage.getLayoutConfiguration(), startMatchUpdateMessage.getNames(), startMatchUpdateMessage.getColors(), connections);
         clientView.initialize(match);
-        ((Gui)clientView).startMatchUpdate(match);
+        //((Gui)clientView).startMatchUpdate(match);
         //todo
     }
 
