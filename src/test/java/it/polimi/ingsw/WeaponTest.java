@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import static it.polimi.ingsw.testUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.InputStream;
 import java.util.*;
 
 import static it.polimi.ingsw.server.model.enums.AmmoColor.*;
@@ -151,10 +152,16 @@ public class WeaponTest {
         assertEquals(z.getSelectableModes(alreadySelected), foundByHand);
     }
 
+
+    private InputStream searchInTestResources(String name){
+        InputStream result= getClass().getClassLoader().getResourceAsStream("savedGamesForTests/" + name + ".json");
+        return result;
+    }
+
     @Test
     public void testLockRifle1(){
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "lockRifleTestBefore");
+        gm.resumeMatchFromFile(searchInTestResources("lockRifleTestBefore"));
 
         Player p1 = gm.getPlayerByName("first");
         Player p2 = gm.getPlayerByName("second");
@@ -193,7 +200,7 @@ public class WeaponTest {
         printList(p4.getDamageTrack().getDamageList());
         printMap(p4.getDamageTrack().getMarkMap());
         printSel(p1);
-        Backup check = Backup.initFromFile(SAVED_GAMES_FOR_TESTS, "lockRifleTestAfter");
+        Backup check = Backup.initFromFile(searchInTestResources("lockRifleTestAfter"));
         Backup currentState = new Backup((gm.getMatch()));
         assertEquals(check, currentState);
         assertTrue(check != currentState);
@@ -202,7 +209,7 @@ public class WeaponTest {
     @Test
     public void testMachineGun() {
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "machineGunTestBefore");
+        gm.resumeMatchFromFile(searchInTestResources( "machineGunTestBefore"));
 
         Player gianni = gm.getPlayerByName("first");
         Player beppe = gm.getPlayerByName("second");
@@ -290,7 +297,7 @@ public class WeaponTest {
 
 
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "machineGunTestBefore");
+        gm.resumeMatchFromFile(searchInTestResources( "machineGunTestBefore"));
 
         Player gianni = gm.getPlayerByName("first");
         Player beppe = gm.getPlayerByName("second");
@@ -343,7 +350,7 @@ public class WeaponTest {
     @Test
     public void testTHOR(){
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS,"machineGunTestBefore");
+        gm.resumeMatchFromFile(searchInTestResources("machineGunTestBefore"));
         StackManager sm= gm.getMatch().getStackManager();
 
         Player gianni = gm.getPlayerByName("first");
@@ -429,7 +436,7 @@ public class WeaponTest {
     @Test
     public void testPlasmaGun(){
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS,"plasmaGunTestBefore");
+        gm.resumeMatchFromFile(searchInTestResources("plasmaGunTestBefore"));
         StackManager sm= gm.getMatch().getStackManager();
 
         //System.out.println(sm.getOriginalPowerUps());
@@ -523,7 +530,7 @@ public class WeaponTest {
     @Test
     public void testWhisper(){
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS,"plasmaGunTestBefore");
+        gm.resumeMatchFromFile(searchInTestResources("plasmaGunTestBefore"));
         StackManager sm= gm.getMatch().getStackManager();
 
         //System.out.println(sm.getOriginalPowerUps());
@@ -573,7 +580,7 @@ public class WeaponTest {
     @Test
     public void testElectroScythe(){
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS,"electroScytheTestBefore");
+        gm.resumeMatchFromFile(searchInTestResources("electroScytheTestBefore"));
         StackManager sm= gm.getMatch().getStackManager();
 
         //System.out.println(sm.getOriginalPowerUps());
@@ -625,7 +632,7 @@ public class WeaponTest {
         assertEquals(primo.getState(), PlayerState.CHOOSE_ACTION);
 
 
-        Backup check = Backup.initFromFile(SAVED_GAMES_FOR_TESTS, "electroScytheTestAfter");
+        Backup check = Backup.initFromFile(searchInTestResources("electroScytheTestAfter"));
         Backup currentState = new Backup((gm.getMatch()));
 
         assertTrue(check.equals(currentState));
@@ -640,7 +647,7 @@ public class WeaponTest {
     @Test
     public void testElectroScytheSecondMode(){
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS,"electroScytheTestBefore");
+        gm.resumeMatchFromFile(searchInTestResources("electroScytheTestBefore"));
         StackManager sm= gm.getMatch().getStackManager();
 
         //System.out.println(sm.getOriginalPowerUps());
@@ -692,7 +699,7 @@ public class WeaponTest {
         assertEquals(primo.getState(), PlayerState.CHOOSE_ACTION);
 
 
-        Backup check = Backup.initFromFile(SAVED_GAMES_FOR_TESTS, "electroScytheSecondModeTestAfter");
+        Backup check = Backup.initFromFile(searchInTestResources("electroScytheSecondModeTestAfter"));
         Backup currentState = new Backup((gm.getMatch()));
 
         assertTrue(check.equals(currentState));
@@ -707,7 +714,7 @@ public class WeaponTest {
     @Test
     public void testTractorBeam(){
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS,"tractorBeamTestBefore");
+        gm.resumeMatchFromFile(searchInTestResources("tractorBeamTestBefore"));
         StackManager sm= gm.getMatch().getStackManager();
 
         //System.out.println(sm.getOriginalPowerUps());
@@ -754,7 +761,7 @@ public class WeaponTest {
         assertEquals(quarto.getSquarePosition(), gm.getMatch().getLayout().getSquare(2, 0));
 
 
-        Backup check = Backup.initFromFile(SAVED_GAMES_FOR_TESTS, "tractorBeamTestAfter");
+        Backup check = Backup.initFromFile(searchInTestResources("tractorBeamTestAfter"));
         Backup currentState = new Backup((gm.getMatch()));
 
         //System.out.println(new Gson().toJson(currentState));
@@ -766,7 +773,7 @@ public class WeaponTest {
     public void testTractorBeamSecondMode(){
 
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS,"tractorBeamTestBefore");
+        gm.resumeMatchFromFile(searchInTestResources("tractorBeamTestBefore"));
         StackManager sm= gm.getMatch().getStackManager();
 
         //System.out.println(sm.getOriginalPowerUps());
@@ -811,7 +818,7 @@ public class WeaponTest {
         assertEquals(primo.getSquarePosition(), secondo.getSquarePosition());
 
 
-        Backup check = Backup.initFromFile(SAVED_GAMES_FOR_TESTS, "tractorBeamSecondModeTestAfter");
+        Backup check = Backup.initFromFile(searchInTestResources("tractorBeamSecondModeTestAfter"));
         Backup currentState = new Backup((gm.getMatch()));
 
         //System.out.println(new Gson().toJson(currentState));
@@ -824,7 +831,7 @@ public class WeaponTest {
     @Test
     public void testVortexCannon(){
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS,"tractorBeamTestBefore");
+        gm.resumeMatchFromFile(searchInTestResources("tractorBeamTestBefore"));
         StackManager sm= gm.getMatch().getStackManager();
 
         Player primo = gm.getPlayerByName("first");
@@ -886,7 +893,7 @@ public class WeaponTest {
 
         assertEquals(primo.getState(), PlayerState.CHOOSE_ACTION);
 
-        Backup check = Backup.initFromFile(SAVED_GAMES_FOR_TESTS, "vortexCannonTestAfter");
+        Backup check = Backup.initFromFile(searchInTestResources("vortexCannonTestAfter"));
         Backup currentState = new Backup((gm.getMatch()));
 
         //System.out.println(new Gson().toJson(currentState));
@@ -900,7 +907,7 @@ public class WeaponTest {
     @Test
     public void testFurnace(){
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS,"furnaceTestBefore");
+        gm.resumeMatchFromFile(searchInTestResources("furnaceTestBefore"));
         StackManager sm= gm.getMatch().getStackManager();
 
         Player primo = gm.getPlayerByName("first");
@@ -933,7 +940,7 @@ public class WeaponTest {
 
         assertEquals(primo.getState(), PlayerState.CHOOSE_ACTION);
 
-        Backup check = Backup.initFromFile(SAVED_GAMES_FOR_TESTS, "furnaceTestAfter");
+        Backup check = Backup.initFromFile(searchInTestResources("furnaceTestAfter"));
         Backup currentState = new Backup((gm.getMatch()));
 
         //System.out.println(new Gson().toJson(currentState));
@@ -946,7 +953,7 @@ public class WeaponTest {
     @Test
     public void testHeatSeeker() {
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "heatSeekerTestBefore");
+        gm.resumeMatchFromFile(searchInTestResources("heatSeekerTestBefore"));
         StackManager sm = gm.getMatch().getStackManager();
 
         Player primo = gm.getPlayerByName("first");
@@ -972,7 +979,7 @@ public class WeaponTest {
         printSel(primo);
         gm.shootTarget(primo, quinto, null);
 
-        Backup check = Backup.initFromFile(SAVED_GAMES_FOR_TESTS, "heatSeekerTestAfter");
+        Backup check = Backup.initFromFile(searchInTestResources("heatSeekerTestAfter"));
         Backup currentState = new Backup((gm.getMatch()));
 
         //System.out.println(new Gson().toJson(currentState));
@@ -986,7 +993,7 @@ public class WeaponTest {
     @Test
     public void testFlameThrower() {
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "flameThrowerTestBefore");
+        gm.resumeMatchFromFile(searchInTestResources( "flameThrowerTestBefore"));
         StackManager sm = gm.getMatch().getStackManager();
 
         Player primo = gm.getPlayerByName("first");
@@ -1020,7 +1027,7 @@ public class WeaponTest {
 
         assertEquals(primo.getState(), PlayerState.CHOOSE_ACTION);
 
-        Backup check = Backup.initFromFile(SAVED_GAMES_FOR_TESTS, "flameThrowerTestAfter");
+        Backup check = Backup.initFromFile(searchInTestResources("flameThrowerTestAfter"));
         Backup currentState = new Backup((gm.getMatch()));
 
         //System.out.println(new Gson().toJson(currentState));
@@ -1034,7 +1041,7 @@ public class WeaponTest {
     @Test
     public void testFlameThrowerSecondMode() {
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "flameThrowerTestBefore");
+        gm.resumeMatchFromFile(searchInTestResources( "flameThrowerTestBefore"));
         StackManager sm = gm.getMatch().getStackManager();
 
         Player primo = gm.getPlayerByName("first");
@@ -1076,7 +1083,7 @@ public class WeaponTest {
 
         assertEquals(primo.getState(), PlayerState.CHOOSE_ACTION);
 
-        Backup check = Backup.initFromFile(SAVED_GAMES_FOR_TESTS, "flameThrowerSecondModeTestAfter");
+        Backup check = Backup.initFromFile(searchInTestResources( "flameThrowerSecondModeTestAfter"));
         Backup currentState = new Backup((gm.getMatch()));
 
         //System.out.println(new Gson().toJson(currentState));
@@ -1089,7 +1096,7 @@ public class WeaponTest {
     @Test
     public void tesRocketLauncher() {
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "rocketLauncherTestBefore");
+        gm.resumeMatchFromFile(searchInTestResources( "rocketLauncherTestBefore"));
         StackManager sm = gm.getMatch().getStackManager();
 
         Player primo = gm.getPlayerByName("first");
@@ -1177,7 +1184,7 @@ public class WeaponTest {
         assertEquals(quarto.getDamageTrack().getDamageList().size(), 7);
 
 
-        Backup check = Backup.initFromFile(SAVED_GAMES_FOR_TESTS, "rocketLauncherTestAfter");
+        Backup check = Backup.initFromFile(searchInTestResources("rocketLauncherTestAfter"));
         Backup currentState = new Backup((gm.getMatch()));
 
         //System.out.println(new Gson().toJson(currentState));
@@ -1188,7 +1195,7 @@ public class WeaponTest {
     @Test
     public void tesRailGun() {
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "railGunTestBefore");
+        gm.resumeMatchFromFile(searchInTestResources( "railGunTestBefore"));
         StackManager sm = gm.getMatch().getStackManager();
 
         Player primo = gm.getPlayerByName("first");
@@ -1216,7 +1223,7 @@ public class WeaponTest {
 
         assertEquals(primo.getState(), PlayerState.CHOOSE_ACTION);
 
-        Backup check = Backup.initFromFile(SAVED_GAMES_FOR_TESTS, "railGunTestAfter");
+        Backup check = Backup.initFromFile(searchInTestResources( "railGunTestAfter"));
         Backup currentState = new Backup((gm.getMatch()));
 
         //System.out.println(new Gson().toJson(currentState));

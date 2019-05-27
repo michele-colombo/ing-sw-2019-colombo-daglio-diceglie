@@ -8,6 +8,9 @@ import it.polimi.ingsw.server.model.enums.PlayerState;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
 
 
@@ -472,7 +475,7 @@ public class Backup {
     private StackManagerBackup stackManagerBackup;
     private LayoutBackup layoutBackup;
     private MatchBackup matchBackup;
-    private static final String FILE_PATH = "./src/main/resources/backups/";
+    private static final String FILE_PATH = "backups/";
     private static final String EXTENSION = ".json";
 
     public Backup(Match match){
@@ -487,29 +490,38 @@ public class Backup {
     }
 
     public static Backup initFromFile(String name){
-        return initFromFile(FILE_PATH, name);
+        InputStream url= Backup.class.getClassLoader().getResourceAsStream(FILE_PATH + name + EXTENSION);
+        return initFromFile(url);
     }
 
-    public static Backup initFromFile(String path, String name){
+    public static Backup initFromFile(InputStream url){
         Gson gson = new Gson();
-        File file = new File(path+name+EXTENSION);
-        Backup temp = new Backup();
+        Backup temp;
 
-        try (Scanner sc = new Scanner(file)){
-
-            temp = gson.fromJson(sc.nextLine(), Backup.class);
-            sc.close();
+        try {
+        Scanner sc= new Scanner(url);
+        temp = gson.fromJson(sc.nextLine(), Backup.class);
+        sc.close();
+        url.close();
         }
-        catch (IOException e) {
-            e.printStackTrace();
-
+        catch (IOException e){
+            System.out.println("Error while processing file");
+            return null;
         }
+
         return temp;
     }
 
     public static boolean isBackupAvailable(String name){
-        File file = new File(FILE_PATH +name+EXTENSION);
-        return file.exists();
+
+
+        try {
+            File file = new File(Backup.class.getClassLoader().getResource("backups/" + name + EXTENSION).toURI());
+            return file.exists();
+        }
+        catch (URISyntaxException e){
+            return false;
+        }
     }
 
     public Backup (){}
@@ -520,17 +532,24 @@ public class Backup {
 
     public boolean saveOnFile(String path, String name) {
         Gson gson = new Gson();
-        File file = new File(path+name+EXTENSION);
-        //File file= new File(getClass().getClassLoader().getResource("backup" + name + EXTENSION).getFile());
-        FileWriter fw;
+        //File file = new File(path+name+EXTENSION);
+
         try {
-            fw = new FileWriter(file);
-            gson.toJson(this, fw);
-            fw.close();
-            return true;
-        } catch (IOException e){
+            File file = new File(getClass().getClassLoader().getResource("backups/" + name + EXTENSION).toURI());
+            FileWriter fw;
+            try {
+                fw = new FileWriter(file);
+                gson.toJson(this, fw);
+                fw.close();
+                return true;
+            } catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+        catch (URISyntaxException e){
             e.printStackTrace();
         }
+
         return false;
     }
 

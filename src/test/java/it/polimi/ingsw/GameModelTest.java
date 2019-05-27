@@ -8,6 +8,7 @@ import it.polimi.ingsw.server.model.enums.PlayerColor;
 import it.polimi.ingsw.server.model.enums.PlayerState;
 import org.junit.jupiter.api.Test;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -663,12 +664,17 @@ public class GameModelTest {
         assertEquals(2, p35.getSelectablePowerUps().size());
     }
 
+    private InputStream searchInTestResources(String name){
+        InputStream result= getClass().getClassLoader().getResourceAsStream("savedGamesForTests/" + name + ".json");
+        return result;
+    }
+
     @Test
     public void startMatchWithDifferentPlayers(){
         //players were: antonio, gianfranco, enrico, matteo, evila
         //enrico inserts a slightly different name, therefore a new game starts
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "currentBackupForTest");
+        gm.resumeMatchFromFile(searchInTestResources( "currentBackupForTest"));
 
         GameModel gm2 = new GameModel();
         Player p21, p22, p23, p24, p25;
@@ -690,7 +696,7 @@ public class GameModelTest {
         //players are recreated the same, in teh same order,
         // therefore the old match is resumed
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "currentBackupForTest");
+        gm.resumeMatchFromFile(searchInTestResources("currentBackupForTest"));
 
         GameModel gm2 = new GameModel();
         Player p21, p22, p23, p24, p25;
@@ -713,7 +719,7 @@ public class GameModelTest {
         //new players have the same names, but in a different order.
         //Nevertheless, the old match is resumed
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "currentBackupForTest");
+        gm.resumeMatchFromFile(searchInTestResources("currentBackupForTest"));
 
         GameModel gm2 = new GameModel();
         Player p21, p22, p23, p24, p25;
@@ -735,7 +741,7 @@ public class GameModelTest {
         //players were: antonio, gianfranco, enrico, matteo, evila
         //they are in a different order, but one of the new players has a different name
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "currentBackupForTest");
+        gm.resumeMatchFromFile(searchInTestResources("currentBackupForTest"));
 
         GameModel gm2 = new GameModel();
         Player p21, p22, p23, p24, p25;
@@ -756,7 +762,7 @@ public class GameModelTest {
         //players were: antonio, gianfranco, enrico, matteo, evila
         //one of the old players doesn't login again, therefore a new match is started
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "currentBackupForTest");
+        gm.resumeMatchFromFile(searchInTestResources("currentBackupForTest"));
 
         GameModel gm2 = new GameModel();
         Player p21, p22, p23, p24, p25;
@@ -780,7 +786,7 @@ public class GameModelTest {
         //He moves in the blue spawnpoint (2-1), grabs railgun and pays with a powerup (only railgun and shockwave selectable)
         //Then he grabs shockwave (doesn't pay anything)
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "grabWeaponTestBefore");
+        gm.resumeMatchFromFile(searchInTestResources("grabWeaponTestBefore"));
         Match match = gm.getMatch();
         Layout layout = gm.getMatch().getLayout();
         StackManager sm = gm.getMatch().getStackManager();
@@ -844,7 +850,7 @@ public class GameModelTest {
         //second has wallet: 220 without powerups and 3 weapons. In yellow spawnpoint there are: plasma gun (001), thor (010), rocket launcher(010).
         //He moves there (3-0), grabs thor,but has to discard one weapon. He discards cyberblade.
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "grabWeaponWithDiscardingBefore");
+        gm.resumeMatchFromFile(searchInTestResources("grabWeaponWithDiscardingBefore"));
         Match match = gm.getMatch();
         Layout layout = gm.getMatch().getLayout();
         StackManager sm = gm.getMatch().getStackManager();
@@ -900,7 +906,7 @@ public class GameModelTest {
         //third has wallet: 000 + yellow powerup. In redspawnpoin there are: zx-2 (010), furnace (100), power glove (100).
         //since he can't grab anything, he can only go back to action choice
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "cantGrabAnythingBefore");
+        gm.resumeMatchFromFile(searchInTestResources("cantGrabAnythingBefore"));
         Match match = gm.getMatch();
         Layout layout = gm.getMatch().getLayout();
         StackManager sm = gm.getMatch().getStackManager();
@@ -929,13 +935,13 @@ public class GameModelTest {
         gm.restore();
 
             //everything is brought back as it was
-            assertEquals(Backup.initFromFile(SAVED_GAMES_FOR_TESTS, "cantGrabAnythingBefore"), new Backup(gm.getMatch()));
+            assertEquals(Backup.initFromFile(searchInTestResources("cantGrabAnythingBefore")), new Backup(gm.getMatch()));
     }
 
     @Test
     public void currentPlayerDisconnectsDuringAction(){
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "genericState1");
+        gm.resumeMatchFromFile(searchInTestResources("genericState1"));
         Match match = gm.getMatch();
         Layout layout = gm.getMatch().getLayout();
         StackManager sm = gm.getMatch().getStackManager();
@@ -971,6 +977,6 @@ public class GameModelTest {
             assertEquals(second, match.getCurrentPlayer());
             assertEquals(IDLE, first.getState());
             printSituation(match);
-            boolean result = Backup.initFromFile(SAVED_GAMES_FOR_TESTS, "currentPlayerDisconnectsDuringActionAfter").equals(new Backup(gm.getMatch()));
+            boolean result = Backup.initFromFile(searchInTestResources("currentPlayerDisconnectsDuringActionAfter")).equals(new Backup(gm.getMatch()));
     }
 }

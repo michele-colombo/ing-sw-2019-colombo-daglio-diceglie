@@ -3,7 +3,7 @@ package it.polimi.ingsw.client.userInterface;
 import it.polimi.ingsw.client.MatchView;
 import it.polimi.ingsw.client.PlayerView;
 
-public interface ClientView{
+public interface UserInterface {
 
     void startMatchUpdate(MatchView matchView);
 

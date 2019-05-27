@@ -6,6 +6,7 @@ import it.polimi.ingsw.server.model.enums.Command;
 import it.polimi.ingsw.server.model.enums.PowerUpType;
 import org.junit.jupiter.api.Test;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,12 +16,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class PowerUpTest {
 
+    private InputStream searchInTestResources(String name){
+        InputStream result= getClass().getClassLoader().getResourceAsStream("savedGamesForTests/" + name + ".json");
+        return result;
+    }
+
 
     @Test
     public void tagbackGrenadeTest(){
         //first shoots to fourth (which has a tagback, but can't see first) and fifth (which has a tagback and sees first)
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "tagbackGrenadeTestBefore");
+        gm.resumeMatchFromFile(searchInTestResources( "tagbackGrenadeTestBefore"));
         Match match = gm.getMatch();
         StackManager sm = gm.getMatch().getStackManager();
         Layout layout = gm.getMatch().getLayout();
@@ -88,7 +94,7 @@ public class PowerUpTest {
     public void tagbackGrenadeTestWithDisconnection(){
         //first shoots to fourth (which has a tagback, but can't see first) and fifth (which has a tagback and sees first)
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "tagbackGrenadeTestBefore");
+        gm.resumeMatchFromFile(searchInTestResources("tagbackGrenadeTestBefore"));
         Match match = gm.getMatch();
         StackManager sm = gm.getMatch().getStackManager();
         Layout layout = gm.getMatch().getLayout();
@@ -160,7 +166,7 @@ public class PowerUpTest {
     public void testTwoPlayersUseTagback(){
         //first shoots to third (which has a tagback and sees first) and fifth (which has a tagback and sees first)
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "tagbackGrenadeTestBefore");
+        gm.resumeMatchFromFile(searchInTestResources("tagbackGrenadeTestBefore"));
         Match match = gm.getMatch();
         StackManager sm = gm.getMatch().getStackManager();
         Layout layout = gm.getMatch().getLayout();
@@ -240,7 +246,7 @@ public class PowerUpTest {
         //first shoots to third (which has a tagback and sees first) and fifth (which has a tagback and sees first)
         //but only third uses the tagback grenade
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "tagbackGrenadeTestBefore");
+        gm.resumeMatchFromFile(searchInTestResources("tagbackGrenadeTestBefore"));
         Match match = gm.getMatch();
         StackManager sm = gm.getMatch().getStackManager();
         Layout layout = gm.getMatch().getLayout();
@@ -301,7 +307,7 @@ public class PowerUpTest {
         //first shoots to third (which has a tagback and sees first) and fifth (which has a tagback and sees first)
         //but only third uses the tagback grenade
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "tagbackGrenadeTestBefore");
+        gm.resumeMatchFromFile(searchInTestResources("tagbackGrenadeTestBefore"));
         Match match = gm.getMatch();
         StackManager sm = gm.getMatch().getStackManager();
         Layout layout = gm.getMatch().getLayout();
@@ -360,7 +366,7 @@ public class PowerUpTest {
         //first shoots to third (which has a tagback and sees first) and fifth (which has a tagback and sees first)
         //but only third uses the tagback grenade
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "tagbackGrenadeTestBefore");
+        gm.resumeMatchFromFile(searchInTestResources("tagbackGrenadeTestBefore"));
         Match match = gm.getMatch();
         StackManager sm = gm.getMatch().getStackManager();
         Layout layout = gm.getMatch().getLayout();
@@ -426,7 +432,7 @@ public class PowerUpTest {
         //but only third uses the tagback grenade
         //while he is receiving tagback grenade, the current player disconnects
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "tagbackGrenadeTestBefore");
+        gm.resumeMatchFromFile(searchInTestResources("tagbackGrenadeTestBefore"));
         Match match = gm.getMatch();
         StackManager sm = gm.getMatch().getStackManager();
         Layout layout = gm.getMatch().getLayout();
@@ -491,7 +497,7 @@ public class PowerUpTest {
     public void tagbackAndTargeting(){
         //first shoots to third (which has a tagback and sees first) and fifth (which has a tagback and sees first)
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "tagbackAndTargetingBefore");
+        gm.resumeMatchFromFile(searchInTestResources("tagbackAndTargetingBefore"));
         Match match = gm.getMatch();
         StackManager sm = gm.getMatch().getStackManager();
         Layout layout = gm.getMatch().getLayout();
@@ -588,7 +594,7 @@ public class PowerUpTest {
             assertEquals(IDLE, third.getState());
             assertFalse(third.hasSelectables());
 
-            Backup b1 = Backup.initFromFile(SAVED_GAMES_FOR_TESTS, "tagbackAndTargetingAfter");
+            Backup b1 = Backup.initFromFile(searchInTestResources( "tagbackAndTargetingAfter"));
             Backup b2 = new Backup(gm.getMatch());
 
             assertTrue(b1.equals(b2));
@@ -598,7 +604,7 @@ public class PowerUpTest {
     public void tagbackButRefusingTargeting(){
         //first shoots to third (which has a tagback and sees first) and fifth (which has a tagback and sees first)
         GameModel gm = new GameModel();
-        gm.resumeMatchFromFile(SAVED_GAMES_FOR_TESTS, "tagbackAndTargetingBefore");
+        gm.resumeMatchFromFile(searchInTestResources("tagbackAndTargetingBefore"));
         Match match = gm.getMatch();
         StackManager sm = gm.getMatch().getStackManager();
         Layout layout = gm.getMatch().getLayout();
