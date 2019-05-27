@@ -99,7 +99,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     public synchronized void visit(ConnectionUpdateMessage connectionUpdateMessage) {
         System.out.println("Connection update received");
         connections = new HashMap<>(connectionUpdateMessage.getConnectionStates());
-        clientView.updateConnection(); //aggiunta per la Gui, potrebbe non funzionare per la Cli
+        userInterface.updateConnection(); //aggiunta per la Gui, potrebbe non funzionare per la Cli
     }
 
     @Override
