@@ -1,7 +1,8 @@
 package it.polimi.ingsw.client.userInterface.cli;
 
 import it.polimi.ingsw.client.*;
-import it.polimi.ingsw.client.userInterface.ClientView;
+import it.polimi.ingsw.client.userInterface.UserInterface;
+
 import static it.polimi.ingsw.client.userInterface.cli.CliUtils.*;
 
 import java.io.BufferedReader;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-public class Cli implements ClientView {
+public class Cli implements UserInterface {
     private Client client;
     private PlayingWindow playingWindow;
     private MatchView match;

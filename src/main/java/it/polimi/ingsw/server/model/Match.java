@@ -749,7 +749,7 @@ public class Match {
 
         List<String> selModes = new ArrayList<>();
         for (Mode m : player.getSelectableModes()){
-            selModes.add(m.toString());
+            selModes.add(m.getTitle());
         }
 
         List<String> selActions = new ArrayList<>();
