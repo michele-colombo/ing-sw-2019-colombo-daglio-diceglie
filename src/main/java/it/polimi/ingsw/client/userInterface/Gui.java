@@ -91,7 +91,7 @@ public class Gui extends Application implements ClientView {
         sceneTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
         grid.add(sceneTitle, 1, 0, 2, 1);
         GridPane.setHalignment(sceneTitle, HPos.CENTER);
-        grid.setGridLinesVisible(true);
+        grid.setGridLinesVisible(false);
 
 
         Label connection = new Label("Connection:");
@@ -186,7 +186,7 @@ public class Gui extends Application implements ClientView {
 
     @Override
     public void updateConnection() {
-
+        loginGui.updateConnection(client.getConnections());
     }
 
     @Override

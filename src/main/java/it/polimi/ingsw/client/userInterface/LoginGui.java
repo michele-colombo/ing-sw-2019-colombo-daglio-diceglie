@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.userInterface;
 
 import it.polimi.ingsw.client.MatchView;
+import it.polimi.ingsw.client.PlayerView;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -20,10 +21,13 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
+import java.util.Map;
+
 public class LoginGui {
     private final BorderPane view;
     private Text actionTarget;
     private Button loginButton;
+    private GridPane connectionPane;
     private BoardGui boardGui;
 
 
@@ -32,11 +36,14 @@ public class LoginGui {
 
         GridPane loginGrid = new GridPane();
         view.setCenter(loginGrid);
+
+        view.setBackground(new Background(new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
+        GridPane.setHalignment(loginGrid, HPos.CENTER);
         loginGrid.setAlignment(Pos.CENTER);
         loginGrid.setBackground(new Background(new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
         loginGrid.setHgap(10);
         loginGrid.setVgap(10);
-        loginGrid.setPadding(new Insets(25, 25, 25, 25));
+        //loginGrid.setPadding(new Insets(25, 25, 25, 25));
 
         Text sceneTitle = new Text("Login");
         sceneTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
@@ -44,6 +51,7 @@ public class LoginGui {
         GridPane.setHalignment(sceneTitle, HPos.CENTER);
 
         Label userName = new Label("User Name:");
+        userName.setMinWidth(80); //todo da riscalare
         loginGrid.add(userName, 0, 1);
 
         TextField userTextField = new TextField();
@@ -54,48 +62,43 @@ public class LoginGui {
         loginButton.prefWidthProperty().bind(loginGrid.widthProperty());
         loginButton.prefHeightProperty().bind(loginGrid.heightProperty());
         loginButton.setMaxHeight(Gui.getScreenBounds().getHeight()/25);
+        loginButton.setMinHeight(Gui.getScreenBounds().getHeight()/25);
         loginButton.setMaxWidth(Gui.getScreenBounds().getWidth()/5);
-        //loginButton.setMinHeight(Gui.getScreenHeight()/20);
+        loginButton.setMinWidth(Gui.getScreenBounds().getWidth()/5);
         HBox hbBtn = new HBox(10);
         hbBtn.setAlignment(Pos.CENTER);
         hbBtn.getChildren().add(loginButton);
-        HBox.setHgrow(loginButton, Priority.ALWAYS);
+        HBox.setHgrow(loginButton, Priority.NEVER);
         loginGrid.add(hbBtn, 1, 4);
         loginGrid.add(loginButton,1 ,4);
 
         actionTarget = new Text();
         loginGrid.add(actionTarget, 1, 6);
         GridPane.setHalignment(actionTarget, HPos.CENTER);
-        loginGrid.setGridLinesVisible(true);
+        loginGrid.setGridLinesVisible(false);
 
         Gui.disconnectionText = actionTarget;
-
+        connectionPane = new GridPane();
+        connectionPane.setHgap(10);
+        connectionPane.setVgap(25);
+        view.setRight(connectionPane);
+        GridPane.setHalignment(connectionPane, HPos.RIGHT);
 
         loginButton.setOnAction(event -> {
             Gui.getClient().chooseName(userTextField.getText());
         });
-
-        /*final Rectangle rectBasicTimeline = new Rectangle(100, 50, 100, 50);
-        rectBasicTimeline.setFill(Color.RED);
-        Gui.timeline = new Timeline();
-        Gui.timeline.setCycleCount(Timeline.INDEFINITE);
-        Gui.timeline.setAutoReverse(true);
-        final KeyValue kv = new KeyValue(rectBasicTimeline.xProperty(), 300);
-        final KeyFrame kf = new KeyFrame(Duration.millis(5000), kv);
-        view.setLeft(rectBasicTimeline);
-        Gui.timeline.getKeyFrames().add(kf);*/
-
-
     }
 
     public void printLoginMessage(String text, boolean loginSuccessful){
-        if(loginSuccessful){
-            loginButton.setDisable(true);
-            actionTarget.setFill(Color.GREEN);
-        } else {
-            actionTarget.setFill(Color.RED);
-        }
-        actionTarget.setText(text);
+        if(boardGui == null){
+            if(loginSuccessful){
+                loginButton.setDisable(true);
+                actionTarget.setFill(Color.GREEN);
+            } else {
+                actionTarget.setFill(Color.RED);
+            }
+            actionTarget.setText(text);
+        } //else
     }
 
     public void startMatchUpdate(MatchView match){
@@ -103,7 +106,7 @@ public class LoginGui {
             @Override
             public void run() {
                 //Parent newView = new BoardGui(match.getLayout().getLayoutConfiguration()).getView();
-                boardGui = new BoardGui(0);
+                boardGui = new BoardGui(match);
                 Parent newView = boardGui.getView();
                 view.getScene().setRoot(newView);
             }
@@ -111,6 +114,34 @@ public class LoginGui {
     }
 
     //todo qualcosa che faccia partire la board
+
+    public void updateConnection(Map<String, Boolean> connections){
+        if(boardGui == null){
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    connectionPane.getChildren().clear();
+                    Text text = new Text("OTHER PLAYERS");
+                    Text sceneTitle = new Text("Login");
+                    sceneTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 25));
+                    connectionPane.add(text, 0, 0);
+                    int i = 1;
+                    for(String string : connections.keySet()){
+                        Label playerLabel = new Label(string);
+                        playerLabel.setWrapText(true);
+                        playerLabel.setMaxWidth(Gui.getScreenBounds().getWidth()/20);
+                        //playerLabel.textProperty().bind()
+                        connectionPane.add(playerLabel, 0, i);
+                        GridPane.setHalignment(playerLabel, HPos.CENTER);
+                        i++;
+                    }
+                }
+            });
+        } else {
+            boardGui.updateConnection(connections);
+        }
+    }
+
 
     public Parent getView(){
         return view;

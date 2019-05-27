@@ -343,7 +343,8 @@ public class Controller {
             Player disconnected = gameModel.getPlayerByObserver(observer);
             if(gameModel.getActivePlayers().contains(disconnected)){    //should always be true, right?
                 gameModel.detach(observer);
-                gameModel.notifyAll(new DisconnectionMessage("Player " +disconnected.getName() + " has disconnected!"));
+                //gameModel.notifyAll(new DisconnectionMessage("Player " +disconnected.getName() + " has disconnected!"));
+                gameModel.notifyConnectionUpdate();
             }
             if(gameModel.isMatchInProgress()){
                 gameModel.fakeAction(disconnected);
@@ -393,7 +394,7 @@ public class Controller {
         return gameModel;
     }
 
-    public synchronized void setLoginTimerStarted(){
+    public void setLoginTimerStarted(){
         loginTimerStarted = false;
     }
 

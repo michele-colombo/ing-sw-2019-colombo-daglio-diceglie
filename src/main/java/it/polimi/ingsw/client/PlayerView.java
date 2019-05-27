@@ -3,6 +3,7 @@ package it.polimi.ingsw.client;
 import it.polimi.ingsw.server.model.Cash;
 import it.polimi.ingsw.server.model.enums.PlayerColor;
 import it.polimi.ingsw.server.model.enums.PlayerState;
+import javafx.beans.property.StringProperty;
 
 import java.util.ArrayList;
 import java.util.HashMap;

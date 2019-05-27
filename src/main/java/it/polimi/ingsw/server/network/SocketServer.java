@@ -42,15 +42,15 @@ public class SocketServer extends Thread implements NetworkInterfaceServer, Mess
                     received.accept(serverView);  //if everything went right
                 }
             }
-        } catch(final IOException e){
+        } catch(Exception e){
             serverView.disconnectPlayer(serverView);
             //todo passare al prossimo player ed eventualmente annullare l'azione(se match è iniziato)
         }
     }
 
     public void forwardMessage(MessageVisitable messageVisitable) throws IOException{
-        //ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        Gson gson= new Gson();
+        //PrintWriter out = new PrintWriter(socket.getOutputStream());
+        Gson gson = new Gson();
 
         messageVisitable.accept(this);
         out.println(messagePrefix + gson.toJson(messageVisitable));
