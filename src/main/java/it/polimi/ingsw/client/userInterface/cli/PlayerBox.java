@@ -7,6 +7,7 @@ import it.polimi.ingsw.client.WeaponView;
 import java.util.Map;
 
 import static it.polimi.ingsw.client.userInterface.cli.CliUtils.*;
+import static it.polimi.ingsw.server.model.enums.PlayerState.IDLE;
 
 public class PlayerBox extends MiniBox {
     private PlayerView player;
@@ -19,9 +20,13 @@ public class PlayerBox extends MiniBox {
     @Override
     public void update(MatchView match) {
         insertSubBox(prepareBorder(height, width-1, printColorOf(player.getColor())), 1, 0 );
-        if (player == match.getCurrentPlayer()){
+        if (player.getState() != IDLE){
             for (int i=0; i<height; i++){
                 stringBox[i][0] = printColorOf(player.getColor())+FULL_BLOCK+DEFAULT_COLOR;
+            }
+        } else {
+            for (int i=0; i<height; i++){
+                stringBox[i][0] = printColorOf(player.getColor())+" "+DEFAULT_COLOR;
             }
         }
         String firstLine = player.getName();

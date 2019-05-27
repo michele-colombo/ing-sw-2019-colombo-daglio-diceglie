@@ -16,12 +16,12 @@ public class SelectablesBox extends MiniBox {
     public SelectablesBox(int x, int y, int height, int width, Cli cli) {
         super(x, y, height, width);
         this.cli = cli;
-        nextBoxX = 0;
-        nextBoxY = 0;
+        reset();
     }
 
     @Override
     public void update(MatchView match) {
+        reset();
         MyPlayer me = match.getMyPlayer();
         for (WeaponView w : me.getSelectableWeapons()){
             insertSelectableBox(w.getName(), w.getName().toUpperCase(), DEFAULT_COLOR, null);
@@ -96,5 +96,15 @@ public class SelectablesBox extends MiniBox {
             }
         }
         return result;
+    }
+
+    private void reset(){
+        for (int i=0; i<height; i++){
+            for (int j=0; j<width; j++){
+                stringBox[i][j] = " ";
+            }
+        }
+        nextBoxX = 0;
+        nextBoxY = 0;
     }
 }

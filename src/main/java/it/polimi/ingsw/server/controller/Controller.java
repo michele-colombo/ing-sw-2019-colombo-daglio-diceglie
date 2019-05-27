@@ -21,7 +21,7 @@ public class Controller {
     private boolean loginTimerStarted;
     private Map<Observer, Timer> timers;
     private long loginTimerDuration = 15000;
-    private long inputTimerDuration = 10000;
+    private long inputTimerDuration = 1000000;
 
 
     public Controller(GameModel gameModel){
@@ -399,7 +399,7 @@ public class Controller {
 
     //todo: added by michele, check!
     private void startTimers(){ //era synchronized ma dava problemi
-        while (gameModel.getActivePlayers().containsAll(gameModel.getWaitingFor())){
+        while (!gameModel.getActivePlayers().containsAll(gameModel.getWaitingFor())){
             List<Player> toFakeList = new ArrayList<>();
             for (Player p : gameModel.getWaitingFor()){
                 if (!gameModel.getActivePlayers().contains(p)){
@@ -418,7 +418,7 @@ public class Controller {
     private void addTimer(Observer observer){
         if(timers.get(observer) == null){
             Timer timer = new Timer();
-            timers.replace(observer, timer);
+            timers.put(observer, timer);
             timers.get(observer).schedule(new InputTimer((ServerView)observer), inputTimerDuration); //todo sistemare i cast
         }
     }

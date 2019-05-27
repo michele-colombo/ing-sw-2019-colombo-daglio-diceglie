@@ -21,7 +21,10 @@ public class ServerView extends UnicastRemoteObject implements Observer, ServerV
     }
 /*
     public void receiveEvent(EventVisitable event){
+        //todo: remove next line
+        System.out.println("sto per fare la accept di un evento");
         event.accept(this);
+        System.out.println("ho appena finito la accept di un evento");
     }
     */
 

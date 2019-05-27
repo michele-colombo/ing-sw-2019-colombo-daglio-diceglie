@@ -207,6 +207,9 @@ public class LayoutBox extends MiniBox {
         }
 
         String[] temp = new String[3];
+        for (int i=0; i<temp.length; i++) {
+            temp[i] = " ";
+        }
         if (!square.isAmmo()){
             temp = createLineFromString("SPW", printColorOf(square.getColor()));
         } else if (square.getAmmo() != null){

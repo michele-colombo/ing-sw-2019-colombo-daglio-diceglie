@@ -149,6 +149,8 @@ public class SocketServer extends Thread implements NetworkInterfaceServer, Mess
     }
 
     private EventVisitable unwrap(String eventText){
+        //todo: remove next line
+        System.out.println(eventText);
         Gson gson= new Gson();
         String prefix= eventText.substring(eventText.indexOf('#'), eventText.lastIndexOf('#') + 1);
         eventText= eventText.substring(eventText.lastIndexOf('#') + 1);

@@ -18,11 +18,38 @@ public class Cli implements ClientView {
     private PlayingWindow playingWindow;
     private MatchView match;
     private List<String> selectableIds;
+    private Runnable reader;
+    private boolean isActive;
 
     public Cli(){
         this.client = null;
         selectableIds = new ArrayList<>();
         askLogin();
+        isActive = true;
+        reader = new Runnable() {
+            @Override
+            public void run() {
+                boolean accepted = false;
+                Scanner scanner = new Scanner(System.in);
+                while (isActive){
+                    String input = scanner.nextLine();
+                    try {
+                        int sel = Integer.parseInt(input.trim());
+                        client.selected(selectableIds.get(sel));
+                        accepted = true;
+                    } catch (NumberFormatException e){
+                        System.out.println("please insert a number");
+                    } catch (WrongSelectionException e){
+                        playingWindow.show();
+                        System.out.println("invalid selection, retry!");
+                    } catch (IndexOutOfBoundsException e){
+                        playingWindow.show();
+                        System.out.println("invalid selection, retry!");
+                    }
+                }
+            }
+        };
+        reader.run();
     }
 
     public void printLoginMessage(String text, boolean loginSuccessful){
@@ -43,31 +70,13 @@ public class Cli implements ClientView {
 
     public void initialize(MatchView match){
         this.match = match;
-        playingWindow = new PlayingWindow(150, 40, match, this);
+        playingWindow = new PlayingWindow(150, 37, match, this);
     }
 
     public void showAndAskSelection(){
         selectableIds.clear();
         playingWindow.fullUpdate(match);
         playingWindow.show();
-        Scanner scanner = new Scanner(System.in);
-        boolean accepted = false;
-        while (!accepted){
-            String input = scanner.nextLine();
-            try {
-                int sel = Integer.parseInt(input.trim());
-                client.selected(selectableIds.get(sel));
-                accepted = true;
-            } catch (NumberFormatException e){
-                System.out.println("please insert a number");
-            } catch (WrongSelectionException e){
-                playingWindow.show();
-                System.out.println("invalid selection, retry!");
-            } catch (IndexOutOfBoundsException e){
-                playingWindow.show();
-                System.out.println("invalid selection, retry!");
-            }
-        }
     }
 
     @Override

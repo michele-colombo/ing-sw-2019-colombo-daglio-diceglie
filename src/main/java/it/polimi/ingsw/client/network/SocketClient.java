@@ -61,6 +61,8 @@ public class SocketClient extends Thread implements NetworkInterfaceClient, Even
                 while(true) {
                     MessageVisitable received = unwrap( in.nextLine() );
                     received.accept(client);
+                    //todo: remove line below
+                    System.out.println("ho fatto la accept di un messaggio");
                 }
             }
             catch (NoSuchElementException nsee){
@@ -94,6 +96,8 @@ public class SocketClient extends Thread implements NetworkInterfaceClient, Even
     }
 
     private MessageVisitable unwrap(String messageText){
+        //todo: remove line below
+        System.out.println(messageText);
         Gson gson= new Gson();
 
         String prefix= messageText.substring(messageText.indexOf('#'), messageText.lastIndexOf('#') + 1);

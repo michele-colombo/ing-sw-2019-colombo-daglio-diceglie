@@ -85,28 +85,28 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     }
 
     @Override
-    public void visit(LoginMessage message){
+    public synchronized void visit(LoginMessage message){
         clientView.printLoginMessage(message.toString(), message.getLoginSuccessful());
     }
 
     @Override
-    public void visit(DisconnectionMessage message){
+    public synchronized void visit(DisconnectionMessage message){
         clientView.printDisconnectionMessage(message.toString());
     }
 
     @Override
-    public void visit(GenericMessage message){
+    public synchronized void visit(GenericMessage message){
         clientView.printDisconnectionMessage(message.toString());
     }
 
     @Override
-    public void visit(ConnectionUpdateMessage connectionUpdateMessage) {
+    public synchronized void visit(ConnectionUpdateMessage connectionUpdateMessage) {
         System.out.println("Connection update received");
         connections = new HashMap<>(connectionUpdateMessage.getConnectionStates());
     }
 
     @Override
-    public void visit(StartMatchUpdateMessage startMatchUpdateMessage) {
+    public synchronized void visit(StartMatchUpdateMessage startMatchUpdateMessage) {
         System.out.println("Start match update received");
         match = new MatchView(name, startMatchUpdateMessage.getLayoutConfiguration(), startMatchUpdateMessage.getNames(), startMatchUpdateMessage.getColors(), connections);
         clientView.initialize(match);
@@ -115,7 +115,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     }
 
     @Override
-    public void visit(LayoutUpdateMessage layoutUpdateMessage) {
+    public synchronized void visit(LayoutUpdateMessage layoutUpdateMessage) {
         System.out.println("Layout update received");
         LayoutView layout = match.getLayout();
         DecksView decks = match.getDecks();
@@ -148,7 +148,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     }
 
     @Override
-    public void visit(KillshotTrackUpdateMessage killshotTrackUpdate) {
+    public synchronized void visit(KillshotTrackUpdateMessage killshotTrackUpdate) {
         System.out.println("Killshot track update received");
         match.setSkulls(killshotTrackUpdate.getSkulls());
         match.setFrenzyOn(killshotTrackUpdate.isFrenzyOn());
@@ -167,14 +167,14 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     }
 
     @Override
-    public void visit(CurrentPlayerUpdateMessage currentPlayerUpdate) {
+    public synchronized void visit(CurrentPlayerUpdateMessage currentPlayerUpdate) {
         System.out.println("current player update received");
         match.setCurrentPlayer(match.getPlayerFromName(currentPlayerUpdate.getCurrentPlayer()));
         clientView.updateCurrentPlayer();
     }
 
     @Override
-    public void visit(PlayerUpdateMessage playerUpdateMessage) {
+    public synchronized void visit(PlayerUpdateMessage playerUpdateMessage) {
         System.out.println("Player update received");
         PlayerView playerToUpdate = match.getPlayerFromName(playerUpdateMessage.getName());
         playerToUpdate.setState(playerUpdateMessage.getState());
@@ -184,7 +184,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     }
 
     @Override
-    public void visit(PaymentUpdateMessage paymentUpdateMessage) {
+    public synchronized void visit(PaymentUpdateMessage paymentUpdateMessage) {
         System.out.println("Payment update received");
         match.getMyPlayer().setPending(paymentUpdateMessage.getPending());
         match.getMyPlayer().setCredit(paymentUpdateMessage.getCredit());
@@ -192,7 +192,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     }
 
     @Override
-    public void visit(WeaponsUpdateMessage weaponsUpdateMessage) {
+    public synchronized void visit(WeaponsUpdateMessage weaponsUpdateMessage) {
         System.out.println("Weapons update received");
         if (weaponsUpdateMessage.getName().equals(name)){
             MyPlayer me = match.getMyPlayer();
@@ -216,7 +216,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     }
 
     @Override
-    public void visit(PowerUpUpdateMessage powerUpUpdateMessage) {
+    public synchronized void visit(PowerUpUpdateMessage powerUpUpdateMessage) {
         System.out.println("PowerUp update received");
         if (powerUpUpdateMessage.getName().equals(name)){
             MyPlayer me = match.getMyPlayer();
@@ -232,7 +232,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     }
 
     @Override
-    public void visit(DamageUpdateMessage damageUpdateMessage) {
+    public synchronized void visit(DamageUpdateMessage damageUpdateMessage) {
         System.out.println("Damage update received");
         PlayerView playerToUpdate = match.getPlayerFromName(damageUpdateMessage.getName());
         playerToUpdate.setSkulls(damageUpdateMessage.getSkulls());
@@ -253,7 +253,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     }
 
     @Override
-    public void visit(SelectablesUpdateMessage selectablesUpdateMessage) {
+    public synchronized void visit(SelectablesUpdateMessage selectablesUpdateMessage) {
         System.out.println("Selectables update received");
         MyPlayer me = match.getMyPlayer();
 
@@ -338,7 +338,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
         }
     }
 
-    public void selected(String selected) throws WrongSelectionException {
+    public synchronized void selected(String selected) throws WrongSelectionException {
         int indexSel;
         EventVisitable event;
         boolean found = false;
