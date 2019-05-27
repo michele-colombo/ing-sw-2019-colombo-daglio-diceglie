@@ -3,12 +3,13 @@ package it.polimi.ingsw.server.model;
 
 import it.polimi.ingsw.server.model.enums.AmmoColor;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import static it.polimi.ingsw.server.model.enums.AmmoColor.BLUE;
 
-public class Cash {
+public class Cash implements Serializable {
     private int blue;
     private int red;
     private int yellow;

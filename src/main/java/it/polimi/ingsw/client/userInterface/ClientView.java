@@ -5,6 +5,8 @@ import it.polimi.ingsw.client.PlayerView;
 
 public interface ClientView{
 
+    void startMatchUpdate(MatchView matchView);
+
     void printLoginMessage(String text, boolean loginSuccessful);
 
     void printDisconnectionMessage(String text);

@@ -4,6 +4,8 @@ import it.polimi.ingsw.communication.MessageVisitor;
 import it.polimi.ingsw.server.model.Cash;
 import it.polimi.ingsw.server.model.enums.PlayerState;
 
+import java.rmi.RemoteException;
+
 public class PlayerUpdateMessage extends MessageVisitable {
     private String name;
     private PlayerState state;
@@ -34,7 +36,7 @@ public class PlayerUpdateMessage extends MessageVisitable {
     }
 
     @Override
-    public void accept(MessageVisitor messageVisitor) {
+    public void accept(MessageVisitor messageVisitor) throws RemoteException {
         messageVisitor.visit(this);
     }
 }

@@ -2,6 +2,7 @@ package it.polimi.ingsw.communication.message;
 
 import it.polimi.ingsw.communication.MessageVisitor;
 
+import java.rmi.RemoteException;
 import java.util.Map;
 
 public class ConnectionUpdateMessage extends MessageVisitable{
@@ -16,7 +17,7 @@ public class ConnectionUpdateMessage extends MessageVisitable{
     }
 
     @Override
-    public void accept(MessageVisitor messageVisitor) {
+    public void accept(MessageVisitor messageVisitor) throws RemoteException {
         messageVisitor.visit(this);
     }
 }

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client;
 
 import it.polimi.ingsw.client.network.NetworkInterfaceClient;
+import it.polimi.ingsw.client.network.RmiClient;
 import it.polimi.ingsw.client.network.SocketClient;
 import it.polimi.ingsw.client.userInterface.ClientView;
 import it.polimi.ingsw.client.userInterface.Gui;
@@ -13,12 +14,15 @@ import it.polimi.ingsw.server.model.enums.Command;
 import it.polimi.ingsw.server.model.enums.PlayerState;
 
 import java.io.IOException;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Client implements MessageVisitor {
+public class Client extends UnicastRemoteObject implements ClientInterface {
 
     private NetworkInterfaceClient network;
     private ClientView clientView;
@@ -30,7 +34,7 @@ public class Client implements MessageVisitor {
     private Map<String, Boolean> connections;
 
 
-    public Client(ClientView clientView){
+    public Client(ClientView clientView) throws RemoteException {
         this.clientView = clientView;
         this.ip = ClientMain.config.getIp();
         this.port = ClientMain.config.getPort();
@@ -51,12 +55,14 @@ public class Client implements MessageVisitor {
                     connected = true;
                     break;
                 case "rmi":
+                    network = new RmiClient(this.ip, this.port, this);
+                    connected = true;
                     break;
                 default: //non deve succedere
                     break;
             }
 
-            network.startNetwork();
+            //network.startNetwork();
         }
         catch (IOException e){
             System.out.println("Error while creating the network. Try again logging in");
@@ -104,7 +110,7 @@ public class Client implements MessageVisitor {
         System.out.println("Start match update received");
         match = new MatchView(name, startMatchUpdateMessage.getLayoutConfiguration(), startMatchUpdateMessage.getNames(), startMatchUpdateMessage.getColors(), connections);
         clientView.initialize(match);
-        //((Gui)clientView).startMatchUpdate(match);
+        clientView.startMatchUpdate(match);
         //todo
     }
 
@@ -450,6 +456,10 @@ public class Client implements MessageVisitor {
 
     public boolean isConnected(){
         return connected;
+    }
+
+    public void restart(){
+        //todo whan restarting
     }
 
 }

@@ -2,6 +2,8 @@ package it.polimi.ingsw.communication.events;
 
 import it.polimi.ingsw.communication.EventVisitor;
 
+import java.rmi.RemoteException;
+
 public class LoginEvent extends EventVisitable {
     private String name;
 
@@ -9,7 +11,7 @@ public class LoginEvent extends EventVisitable {
         this.name = name;
     }
 
-    public void accept(EventVisitor eventVisitor){
+    public void accept(EventVisitor eventVisitor) throws RemoteException {
         eventVisitor.visit(this);
     }
 

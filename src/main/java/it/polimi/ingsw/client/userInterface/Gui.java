@@ -35,6 +35,8 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.rmi.RemoteException;
+
 public class Gui extends Application implements ClientView {
     private static Client client;
     private Text actionTarget;
@@ -130,11 +132,17 @@ public class Gui extends Application implements ClientView {
 
         btn.setOnAction(event -> {
             if(comboBox.getValue() != null && !comboBox.getValue().toString().isEmpty()){
-                client = new Client(this);
-                client.createConnection(comboBox.getValue().toString().toLowerCase());
-                if(client.isConnected()){
-                    changeToLogin();
-                } else{
+                try {
+                    client = new Client(this);
+                    client.createConnection(comboBox.getValue().toString().toLowerCase());
+                    if (client.isConnected()) {
+                        changeToLogin();
+                    } else {
+                        actionTarget.setFill(Color.RED);
+                        actionTarget.setText("Network not found!");
+                    }
+                }
+                catch (RemoteException e){
                     actionTarget.setFill(Color.RED);
                     actionTarget.setText("Network not found!");
                 }

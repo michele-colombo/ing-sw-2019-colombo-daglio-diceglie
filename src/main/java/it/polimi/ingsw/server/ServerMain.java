@@ -5,11 +5,16 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.controller.Controller;
+import it.polimi.ingsw.server.network.RmiServerAcceptor;
 import it.polimi.ingsw.server.network.SocketServer;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.rmi.AlreadyBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -38,6 +43,27 @@ public class ServerMain {
             System.out.println("Error while initializing the server");
             e.printStackTrace();
         }
+
+        try {
+
+            int rmiPort= port + 1;
+
+            RmiServerAcceptor acceptor = new RmiServerAcceptor(controller);
+            Registry registry = LocateRegistry.createRegistry(rmiPort);
+
+            registry.bind("Acceptor", acceptor);
+        }
+        catch (RemoteException re){
+            //impossible to create RmiServerAcceptor
+            System.out.println("impossible to create RmiServerAcceptor");
+            re.printStackTrace();
+        }
+        catch (AlreadyBoundException E){
+            System.out.println("Already Bound item!");
+        }
+
+
+
         System.out.println("Server ready!");
         while(true){  //sara' finche'  i giocatori sono meno di cinque o piu' di tre ed e' scattato il timer
             try{

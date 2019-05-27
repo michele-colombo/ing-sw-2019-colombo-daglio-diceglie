@@ -2,6 +2,7 @@ package it.polimi.ingsw.communication.message;
 
 import it.polimi.ingsw.communication.MessageVisitor;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class PowerUpUpdateMessage extends MessageVisitable {
     }
 
     @Override
-    public void accept(MessageVisitor messageVisitor) {
+    public void accept(MessageVisitor messageVisitor) throws RemoteException {
         messageVisitor.visit(this);
     }
 }

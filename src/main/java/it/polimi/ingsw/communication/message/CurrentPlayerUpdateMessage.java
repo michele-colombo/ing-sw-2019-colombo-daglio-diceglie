@@ -2,6 +2,8 @@ package it.polimi.ingsw.communication.message;
 
 import it.polimi.ingsw.communication.MessageVisitor;
 
+import java.rmi.RemoteException;
+
 public class CurrentPlayerUpdateMessage extends MessageVisitable{
     private String currentPlayer;
 
@@ -14,7 +16,7 @@ public class CurrentPlayerUpdateMessage extends MessageVisitable{
     }
 
     @Override
-    public void accept(MessageVisitor messageVisitor) {
+    public void accept(MessageVisitor messageVisitor) throws RemoteException {
         messageVisitor.visit(this);
     }
 }

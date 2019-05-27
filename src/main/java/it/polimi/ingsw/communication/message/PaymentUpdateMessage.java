@@ -3,6 +3,8 @@ package it.polimi.ingsw.communication.message;
 import it.polimi.ingsw.communication.MessageVisitor;
 import it.polimi.ingsw.server.model.Cash;
 
+import java.rmi.RemoteException;
+
 public class PaymentUpdateMessage extends MessageVisitable {
 
     private Cash pending;
@@ -22,7 +24,7 @@ public class PaymentUpdateMessage extends MessageVisitable {
     }
 
     @Override
-    public void accept(MessageVisitor messageVisitor) {
+    public void accept(MessageVisitor messageVisitor) throws RemoteException {
         messageVisitor.visit(this);
     }
 }

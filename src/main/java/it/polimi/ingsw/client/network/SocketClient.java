@@ -11,6 +11,7 @@ import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class SocketClient extends Thread implements NetworkInterfaceClient, EventVisitor {
@@ -42,6 +43,8 @@ public class SocketClient extends Thread implements NetworkInterfaceClient, Even
 
             out= new PrintWriter(sock.getOutputStream());
             out.flush();
+
+            start();
         }
         catch (IOException e){
             throw new IOException();
@@ -59,7 +62,22 @@ public class SocketClient extends Thread implements NetworkInterfaceClient, Even
                     MessageVisitable received = unwrap( in.nextLine() );
                     received.accept(client);
                 }
-            } catch (IOException e) {
+            }
+            catch (NoSuchElementException nsee){
+                //when server is unreachable this is what to do
+                //client.restart();
+                System.out.println("Server has stopped. Relogin");
+
+                try {
+                    socket.close();
+                    client.restart();
+                }
+                catch (IOException e){
+                    System.out.println("Impossible to close socket");
+                }
+
+            }
+            catch (IOException e) {
                 System.out.println("Error while receiving messages!");
                 // qui mi sa che e' meglio spegnere tutto
             }

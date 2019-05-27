@@ -32,7 +32,7 @@ public class BoardGui {
         board.setAlignment(Pos.TOP_LEFT);
         board.setPadding(new Insets(0,0,0,0));
 
-        Image image = new Image("layoutPNG\\layout" + layout + ".png");
+        Image image = new Image("layoutPNG/layout" + layout + ".png");
         ImageView imageView = new ImageView(image);
         imageView.setFitHeight(Gui.getScreenBounds().getHeight());
         imageView.setFitWidth(Gui.getScreenBounds().getHeight());
@@ -92,7 +92,7 @@ public class BoardGui {
         damageTracks.add(imageView, 0, 4);*/
 
         for(int i = 1; i <= players; i++){
-            Image image = new Image("damageTracks\\dmg" + i + ".png");
+            Image image = new Image("damageTracks/dmg" + i + ".png");
             ImageView imageView = new ImageView(image);
             imageView.setFitHeight(Gui.getScreenBounds().getHeight());
             imageView.setFitWidth(Gui.getScreenBounds().getWidth()/4);

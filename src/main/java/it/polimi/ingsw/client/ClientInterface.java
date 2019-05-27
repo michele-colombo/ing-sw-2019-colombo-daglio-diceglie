@@ -1,15 +1,20 @@
-package it.polimi.ingsw.communication;
+package it.polimi.ingsw.client;
 
+import it.polimi.ingsw.communication.MessageVisitor;
 import it.polimi.ingsw.communication.message.*;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-public interface MessageVisitor {
+public interface ClientInterface extends MessageVisitor, Remote {
+
     void visit(LoginMessage loginMessage) throws RemoteException;
 
     void visit(DisconnectionMessage disconnectionMessage) throws RemoteException;
 
     void visit(GenericMessage genericMessage) throws RemoteException;
+
+    //void visit(UpdateMessage updateMessage) throws RemoteException;
 
     void visit(LayoutUpdateMessage layoutUpdateMessage) throws RemoteException;
 
@@ -32,4 +37,5 @@ public interface MessageVisitor {
     void visit(DamageUpdateMessage damageUpdateMessage) throws RemoteException;
 
     void visit(ConnectionUpdateMessage connectionUpdateMessage) throws RemoteException;
+
 }

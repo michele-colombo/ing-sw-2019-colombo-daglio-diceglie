@@ -8,20 +8,22 @@ import it.polimi.ingsw.server.network.NetworkInterfaceServer;
 import it.polimi.ingsw.server.observer.Observer;
 
 import java.io.IOException;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 
-public class ServerView implements Observer, EventVisitor {
+public class ServerView extends UnicastRemoteObject implements Observer, ServerViewInterface {
     private NetworkInterfaceServer network;
     private Controller controller;
 
-    public ServerView(NetworkInterfaceServer network, Controller controller){
+    public ServerView(NetworkInterfaceServer network, Controller controller) throws RemoteException {
         this.network = network;
         this.controller = controller;
     }
-
+/*
     public void receiveEvent(EventVisitable event){
-
         event.accept(this);
     }
+    */
 
     public void update(MessageVisitable messageVisitable){
         try{
@@ -50,9 +52,8 @@ public class ServerView implements Observer, EventVisitor {
     }
 
     @Override
-    public void visit(LoginEvent loginEvent) {
+    public void visit(LoginEvent loginEvent){
         controller.login(loginEvent.getName(), this);
-
     }
 
     @Override

@@ -7,6 +7,7 @@ import static it.polimi.ingsw.client.userInterface.cli.CliUtils.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -148,8 +149,15 @@ public class Cli implements ClientView {
             System.out.println("Something went wrong IOException");
         }
 
-        this.client = new Client(this);
-        client.login(choice, name);
+        try {
+
+            this.client = new Client(this);
+            client.login(choice, name);
+        }
+        catch (RemoteException e){
+            System.out.println("Impossible to create client");
+            e.printStackTrace();
+        }
     }
 
 
@@ -168,6 +176,11 @@ public class Cli implements ClientView {
         return selectableIds.indexOf(id);
     }
 
+    @Override
+    public void startMatchUpdate(MatchView matchView) {
+        //todo what to do when match starts
+
+    }
 
     //TEST-ONLY METHOD
     public void showSituation(){

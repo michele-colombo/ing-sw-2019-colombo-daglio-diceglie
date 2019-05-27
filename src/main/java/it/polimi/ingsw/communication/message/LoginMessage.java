@@ -2,6 +2,8 @@ package it.polimi.ingsw.communication.message;
 
 import it.polimi.ingsw.communication.MessageVisitor;
 
+import java.rmi.RemoteException;
+
 public class LoginMessage extends MessageVisitable {
     private boolean loginSuccessful;
 
@@ -11,7 +13,7 @@ public class LoginMessage extends MessageVisitable {
         this.closeSocket = closeSocket;
     }
 
-    public void accept(MessageVisitor messageVisitor){
+    public void accept(MessageVisitor messageVisitor) throws RemoteException {
         messageVisitor.visit(this);
     }
 

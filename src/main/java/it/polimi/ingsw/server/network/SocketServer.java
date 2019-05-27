@@ -10,6 +10,7 @@ import it.polimi.ingsw.server.controller.Controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.rmi.RemoteException;
 import java.util.Scanner;
 
 public class SocketServer extends Thread implements NetworkInterfaceServer, MessageVisitor {
@@ -21,7 +22,12 @@ public class SocketServer extends Thread implements NetworkInterfaceServer, Mess
     public SocketServer(Socket socket, Controller controller){
         this.socket = socket;
         //todo: non crea la serverView
-        serverView = new ServerView(this, controller);
+        try {
+            serverView = new ServerView(this, controller);
+        }
+        catch (RemoteException e){
+            System.out.println("Remote exception cannot start");
+        }
     }
 
     @Override
@@ -33,7 +39,7 @@ public class SocketServer extends Thread implements NetworkInterfaceServer, Mess
             while(true){
                 EventVisitable received= unwrap( in.nextLine() );
                 if(received!=null) {
-                    serverView.receiveEvent(received);  //if everything went right
+                    received.accept(serverView);  //if everything went right
                 }
             }
         } catch(final IOException e){
