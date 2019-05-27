@@ -9,8 +9,8 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class PlayingTest {
-    private static final String backupPath = "./src/main/resources/backups/";
-    private static final String testBackupPath = "./src/test/resources/backupTest/";
+    private static final String backupPath = "backups/";
+    private static final String testBackupPath = "backupTest/";
     public static void main(String[] args){
 
         GameModel gm = new GameModel();
@@ -36,7 +36,7 @@ public class PlayingTest {
         } else if(choice.toLowerCase().equals("resume")) {
             System.out.println("Insert name of file (without .json):");
             String name = new Scanner(System.in).nextLine();
-            gm.resumeMatchFromFile(backupPath, name);
+            gm.resumeMatchFromFile(GameModel.class.getClassLoader().getResourceAsStream(backupPath + name + ".json"));
         }
 
         Match match = gm.getMatch();

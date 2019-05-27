@@ -133,8 +133,10 @@ public class GameModel implements Observable {
     }
 
     //test-only method!
-    public void resumeMatchFromFile(String path, String name){
-        Backup savedBackup = Backup.initFromFile(path, name);
+    public void resumeMatchFromFile(InputStream url){
+
+
+        Backup savedBackup = Backup.initFromFile(url);
         int layoutConfig = savedBackup.getLayoutConfig();
         match = new Match(layoutConfig);
         for (String playerName : savedBackup.getPlayerNames()){
