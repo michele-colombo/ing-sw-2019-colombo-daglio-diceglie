@@ -70,8 +70,8 @@ public class Gui extends Application implements UserInterface {
         stage = primaryStage;
         stage.setTitle("Welcome to Adrenaline!");
         stage.setFullScreen(true);
-        //stage.setMinWidth(screenWidth/2);
-        //stage.setMinHeight(screenHeight/2);
+        stage.setMinWidth(screenBounds.getWidth()/2);
+        stage.setMinHeight(screenBounds.getHeight()/2);
 
         //Group group = new Group();
         grid = new GridPane();

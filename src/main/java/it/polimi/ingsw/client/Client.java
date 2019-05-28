@@ -81,7 +81,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     }
 
     @Override
-    public synchronized void visit(LoginMessage message){
+    public  void visit(LoginMessage message){
         userInterface.printLoginMessage(message.toString(), message.getLoginSuccessful());
     }
 
@@ -91,19 +91,19 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     }
 
     @Override
-    public synchronized void visit(GenericMessage message){
+    public  void visit(GenericMessage message){
         userInterface.printDisconnectionMessage(message.toString());
     }
 
     @Override
-    public synchronized void visit(ConnectionUpdateMessage connectionUpdateMessage) {
+    public  void visit(ConnectionUpdateMessage connectionUpdateMessage) {
         System.out.println("Connection update received");
         connections = new HashMap<>(connectionUpdateMessage.getConnectionStates());
         userInterface.updateConnection(); //aggiunta per la Gui, potrebbe non funzionare per la Cli
     }
 
     @Override
-    public synchronized void visit(StartMatchUpdateMessage startMatchUpdateMessage) {
+    public void visit(StartMatchUpdateMessage startMatchUpdateMessage) {
         System.out.println("Start match update received");
         match = new MatchView(name, startMatchUpdateMessage.getLayoutConfiguration(), startMatchUpdateMessage.getNames(), startMatchUpdateMessage.getColors(), connections);
         userInterface.UpdateStartMatch(match);
@@ -144,7 +144,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     }
 
     @Override
-    public synchronized void visit(KillshotTrackUpdateMessage killshotTrackUpdate) {
+    public void visit(KillshotTrackUpdateMessage killshotTrackUpdate) {
         System.out.println("Killshot track update received");
         match.setSkulls(killshotTrackUpdate.getSkulls());
         match.setFrenzyOn(killshotTrackUpdate.isFrenzyOn());
@@ -163,14 +163,14 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     }
 
     @Override
-    public synchronized void visit(CurrentPlayerUpdateMessage currentPlayerUpdate) {
+    public void visit(CurrentPlayerUpdateMessage currentPlayerUpdate) {
         System.out.println("current player update received");
         match.setCurrentPlayer(match.getPlayerFromName(currentPlayerUpdate.getCurrentPlayer()));
         userInterface.updateCurrentPlayer();
     }
 
     @Override
-    public synchronized void visit(PlayerUpdateMessage playerUpdateMessage) {
+    public void visit(PlayerUpdateMessage playerUpdateMessage) {
         System.out.println("Player update received");
         PlayerView playerToUpdate = match.getPlayerFromName(playerUpdateMessage.getName());
         playerToUpdate.setState(playerUpdateMessage.getState());
@@ -180,7 +180,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     }
 
     @Override
-    public synchronized void visit(PaymentUpdateMessage paymentUpdateMessage) {
+    public void visit(PaymentUpdateMessage paymentUpdateMessage) {
         System.out.println("Payment update received");
         match.getMyPlayer().setPending(paymentUpdateMessage.getPending());
         match.getMyPlayer().setCredit(paymentUpdateMessage.getCredit());
@@ -188,7 +188,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     }
 
     @Override
-    public synchronized void visit(WeaponsUpdateMessage weaponsUpdateMessage) {
+    public void visit(WeaponsUpdateMessage weaponsUpdateMessage) {
         System.out.println("Weapons update received");
         if (weaponsUpdateMessage.getName().equals(name)){
             MyPlayer me = match.getMyPlayer();
@@ -212,7 +212,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     }
 
     @Override
-    public synchronized void visit(PowerUpUpdateMessage powerUpUpdateMessage) {
+    public void visit(PowerUpUpdateMessage powerUpUpdateMessage) {
         System.out.println("PowerUp update received");
         if (powerUpUpdateMessage.getName().equals(name)){
             MyPlayer me = match.getMyPlayer();
@@ -228,7 +228,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     }
 
     @Override
-    public synchronized void visit(DamageUpdateMessage damageUpdateMessage) {
+    public void visit(DamageUpdateMessage damageUpdateMessage) {
         System.out.println("Damage update received");
         PlayerView playerToUpdate = match.getPlayerFromName(damageUpdateMessage.getName());
         playerToUpdate.setSkulls(damageUpdateMessage.getSkulls());
@@ -249,7 +249,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     }
 
     @Override
-    public synchronized void visit(SelectablesUpdateMessage selectablesUpdateMessage) {
+    public void visit(SelectablesUpdateMessage selectablesUpdateMessage) {
         System.out.println("Selectables update received");
         MyPlayer me = match.getMyPlayer();
 

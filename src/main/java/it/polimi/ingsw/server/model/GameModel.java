@@ -83,8 +83,6 @@ public class GameModel implements Observable {
      * @return true if a new match begins, false if a saved one is restored
      */
     public boolean startMatch(){
-        startNewMatch();
-        /*
         if (Backup.isBackupAvailable(BACKUP_NAME)){
             Backup tempBackup = Backup.initFromFile(BACKUP_NAME);
             if (tempBackup.getPlayerNames().containsAll(getAllPlayerNames()) && getAllPlayerNames().containsAll(tempBackup.getPlayerNames())){
@@ -107,7 +105,6 @@ public class GameModel implements Observable {
             //there is no backup available
             startNewMatch();
         }
-        */
         return true;
     }
 

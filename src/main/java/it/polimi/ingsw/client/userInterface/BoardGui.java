@@ -119,7 +119,7 @@ public class BoardGui {
     public void addConnectionState(List<PlayerView> players ){
         connectionLabels = new ArrayList<>();
         connectionState = new GridPane();
-        Label connectionLabel = new Label("PLAYERS CONNECTIONS");
+        Label connectionLabel = new Label("PLAYERS");
         connectionLabel.setTextFill(Color.GHOSTWHITE);
         connectionState.add(connectionLabel, 0, 0);
         connectionState.setVgap(10);
@@ -133,10 +133,10 @@ public class BoardGui {
             Label onlineLabel = new Label("online");
             onlineLabel.setTextFill(Color.GREEN);
             playerLabel.setWrapText(true);
-            playerLabel.setMaxWidth(Gui.getScreenBounds().getWidth()/20);
+            playerLabel.setMaxWidth(Gui.getScreenBounds().getWidth()/24);
             //playerLabel.textProperty().bind()
             onlineLabel.setWrapText(true);
-            onlineLabel.setMaxWidth(Gui.getScreenBounds().getWidth()/20);
+            onlineLabel.setMinWidth(Gui.getScreenBounds().getWidth()/17);
             connectionState.add(playerLabel, 0, i);
             connectionState.add(onlineLabel, 1, i);
             connectionLabels.add(playerLabel);

@@ -49,7 +49,7 @@ public class ServerMain {
             int rmiPort= port + 1;
 
 
-            System.setProperty("java.rmi.server.hostname", "10.0.0.1");
+            System.setProperty("java.rmi.server.hostname", "127.0.0.1");
 
 
 

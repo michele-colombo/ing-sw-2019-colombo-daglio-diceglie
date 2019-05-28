@@ -531,7 +531,6 @@ public class Backup {
     }
 
     public boolean saveOnFile(String path, String name) {
-        /*
         Gson gson = new Gson();
         //File file = new File(path+name+EXTENSION);
 
@@ -550,7 +549,6 @@ public class Backup {
         catch (URISyntaxException e){
             e.printStackTrace();
         }
-        */
         return false;
     }
 

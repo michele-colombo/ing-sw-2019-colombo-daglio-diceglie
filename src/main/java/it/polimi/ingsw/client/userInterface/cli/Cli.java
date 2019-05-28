@@ -184,7 +184,7 @@ public class Cli implements UserInterface {
 
     @Override
     public void UpdateStartMatch(MatchView matchView) {
-        this.match = match;
+        this.match = matchView;
         playingWindow = new PlayingWindow(150, 37, match, this);
 
     }

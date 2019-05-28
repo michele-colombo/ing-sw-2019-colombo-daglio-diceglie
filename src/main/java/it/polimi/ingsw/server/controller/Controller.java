@@ -341,7 +341,7 @@ public class Controller {
     public synchronized void disconnectPlayer(Observer observer){
         try{
             Player disconnected = gameModel.getPlayerByObserver(observer);
-            if(gameModel.getActivePlayers().contains(disconnected)){    //should always be true, right?
+            if(gameModel.getActivePlayers().contains(disconnected)) {    //should always be true, right?
                 gameModel.detach(observer);
                 //gameModel.notifyAll(new DisconnectionMessage("Player " +disconnected.getName() + " has disconnected!"));
             }
