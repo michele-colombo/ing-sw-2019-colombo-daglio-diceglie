@@ -48,6 +48,11 @@ public class ServerMain {
 
             int rmiPort= port + 1;
 
+
+            System.setProperty("java.rmi.server.hostname", "10.0.0.1");
+
+
+
             RmiServerAcceptor acceptor = new RmiServerAcceptor(controller);
             Registry registry = LocateRegistry.createRegistry(rmiPort);
 
@@ -81,6 +86,7 @@ public class ServerMain {
     }
 
     public static void main(String[] args){
+
 
         InputStream url= ServerMain.class.getClassLoader().getResourceAsStream("serverConfig.json");
         Scanner sc= new Scanner(url);

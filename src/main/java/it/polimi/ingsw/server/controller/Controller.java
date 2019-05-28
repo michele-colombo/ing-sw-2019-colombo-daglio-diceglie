@@ -398,7 +398,10 @@ public class Controller {
     }
 
     //todo: added by michele, check!
-    private void startTimers(){ //era synchronized ma dava problemi
+    private void startTimers(){//era synchronized ma dava problemi
+        if(!gameModel.isMatchInProgress()){
+            return;
+        }
         while (!gameModel.getActivePlayers().containsAll(gameModel.getWaitingFor())){
             List<Player> toFakeList = new ArrayList<>();
             for (Player p : gameModel.getWaitingFor()){
