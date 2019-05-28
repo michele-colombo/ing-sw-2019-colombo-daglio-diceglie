@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.rmi.RemoteException;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class SocketServer extends Thread implements NetworkInterfaceServer, MessageVisitor {
@@ -42,9 +43,13 @@ public class SocketServer extends Thread implements NetworkInterfaceServer, Mess
                     received.accept(serverView);  //if everything went right
                 }
             }
-        } catch(Exception e){
+        } catch(NoSuchElementException e){
+            System.out.println("Client disconnesso");
             serverView.disconnectPlayer(serverView);
             //todo passare al prossimo player ed eventualmente annullare l'azione(se match è iniziato)
+        }
+        catch (IOException e){
+            System.out.println("Eccezione sull'input");
         }
     }
 
