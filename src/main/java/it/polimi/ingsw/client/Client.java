@@ -106,13 +106,12 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     public synchronized void visit(StartMatchUpdateMessage startMatchUpdateMessage) {
         System.out.println("Start match update received");
         match = new MatchView(name, startMatchUpdateMessage.getLayoutConfiguration(), startMatchUpdateMessage.getNames(), startMatchUpdateMessage.getColors(), connections);
-        userInterface.initialize(match);
-        userInterface.startMatchUpdate(match);
+        userInterface.UpdateStartMatch(match);
         //todo
     }
 
     @Override
-    public synchronized void visit(LayoutUpdateMessage layoutUpdateMessage) {
+    public void visit(LayoutUpdateMessage layoutUpdateMessage) {
         System.out.println("Layout update received");
         LayoutView layout = match.getLayout();
         DecksView decks = match.getDecks();
@@ -336,7 +335,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
         }
     }
 
-    public synchronized void selected(String selected) throws WrongSelectionException {
+    public void selected(String selected) throws WrongSelectionException {
         int indexSel;
         EventVisitable event;
         boolean found = false;

@@ -3,6 +3,7 @@ package it.polimi.ingsw.server.model;
 import com.google.gson.Gson;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -46,18 +47,11 @@ public class StackManager {
     private List<AmmoTile> loadOriginalAmmoTiles(){
         Gson gson = new Gson();
         List<AmmoTile> result = new ArrayList<>();
-        File file= new File(getClass().getClassLoader().getResource("ammoTiles.json").getFile());
-        try (Scanner sc = new Scanner(file)){
-            AmmoTile[] tempAmmo;
-            tempAmmo = gson.fromJson(sc.nextLine(), AmmoTile[].class);
-            result.addAll(Arrays.asList(tempAmmo));
-
-            sc.close();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-
-        }
+        InputStream url= getClass().getClassLoader().getResourceAsStream("ammoTiles.json");
+        Scanner sc= new Scanner(url);
+        AmmoTile[] tempAmmo;
+        tempAmmo = gson.fromJson(sc.nextLine(), AmmoTile[].class);
+        result.addAll(Arrays.asList(tempAmmo));
         return result;
     }
 

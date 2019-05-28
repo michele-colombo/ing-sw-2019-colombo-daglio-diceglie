@@ -60,7 +60,7 @@ public class Gui extends Application implements UserInterface {
         //System.out.println(text);
     }
 
-    //public void startMatchUpdate()
+    //public void UpdateStartMatch()
 
     @Override
     public void start(Stage primaryStage) {
@@ -154,7 +154,7 @@ public class Gui extends Application implements UserInterface {
         });
     }
 
-    public void startMatchUpdate(MatchView match){
+    public void UpdateStartMatch(MatchView match){
         loginGui.startMatchUpdate(match);
     }
 
@@ -169,9 +169,6 @@ public class Gui extends Application implements UserInterface {
 
     public void showAndAskSelection() {
 
-    }
-
-    public void initialize(MatchView match) {
     }
 
     @Override

@@ -69,11 +69,6 @@ public class Cli implements UserInterface {
         System.out.println(text);
     }
 
-    public void initialize(MatchView match){
-        this.match = match;
-        playingWindow = new PlayingWindow(150, 37, match, this);
-    }
-
     public void showAndAskSelection(){
         selectableIds.clear();
         playingWindow.fullUpdate(match);
@@ -163,6 +158,7 @@ public class Cli implements UserInterface {
 
             this.client = new Client(this);
             client.login(choice, name);
+            //todo: eliminate lgoin method
         }
         catch (RemoteException e){
             System.out.println("Impossible to create client");
@@ -187,8 +183,9 @@ public class Cli implements UserInterface {
     }
 
     @Override
-    public void startMatchUpdate(MatchView matchView) {
-        //todo what to do when match starts
+    public void UpdateStartMatch(MatchView matchView) {
+        this.match = match;
+        playingWindow = new PlayingWindow(150, 37, match, this);
 
     }
 

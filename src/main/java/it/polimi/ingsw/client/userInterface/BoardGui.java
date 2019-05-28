@@ -21,6 +21,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +47,8 @@ public class BoardGui {
 
         final ImageView ivTarget = new ImageView();
         //board.add(ivTarget, 0,0);
-        Image image = new Image("layoutPNG/layout" + match.getLayout().getLayoutConfiguration() + ".png");
+        InputStream boardUrl = getClass().getClassLoader().getResourceAsStream("layoutPNG/layout" + match.getLayout().getLayoutConfiguration() + ".png");
+        Image image = new Image(boardUrl);
         ImageView imageView = new ImageView(image);
         imageView.setFitHeight(Gui.getScreenBounds().getHeight());
         imageView.setFitWidth(Gui.getScreenBounds().getHeight());
@@ -75,7 +77,7 @@ public class BoardGui {
         GridPane.setHalignment(imageView, HPos.LEFT);
         view.add(board, 0,0);
         view.add(ivTarget,0,0);
-        addDamageTrack(match); //todo utilizzare il messaggio di startMatchUpdate
+        addDamageTrack(match); //todo utilizzare il messaggio di UpdateStartMatch
         addConnectionState(match.getAllPlayers());
     }
 
@@ -90,7 +92,8 @@ public class BoardGui {
         damageTracks.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         damageTracks.setAlignment(Pos.TOP_CENTER);
 
-        Image image = new Image("damageTracks/dmg" + match.getMyPlayer().getColor().toString().toLowerCase() + ".png");
+        InputStream myDmgUrl = getClass().getClassLoader().getResourceAsStream("damageTracks/dmg" + match.getMyPlayer().getColor().toString().toLowerCase() + ".png");
+        Image image = new Image(myDmgUrl);
         ImageView imageView = new ImageView(image);
         imageView.setFitHeight(Gui.getScreenBounds().getHeight());
         imageView.setFitWidth(Gui.getScreenBounds().getWidth()/4);
@@ -100,7 +103,8 @@ public class BoardGui {
         int i = 1;
         for(PlayerView pv : match.getAllPlayers()){
             if(pv.getColor() != match.getMyPlayer().getColor()){
-                image = new Image("damageTracks/dmg" + pv.getColor().toString().toLowerCase() + ".png");
+                InputStream dmgUrl = getClass().getClassLoader().getResourceAsStream("damageTracks/dmg" + pv.getColor().toString().toLowerCase() + ".png");
+                image = new Image(dmgUrl);
                 imageView = new ImageView(image);
                 imageView.setFitHeight(Gui.getScreenBounds().getHeight());
                 imageView.setFitWidth(Gui.getScreenBounds().getWidth()/4);

@@ -49,7 +49,10 @@ public class RmiClient implements  NetworkInterfaceClient{
 
     @Override
     public void forward(EventVisitable eventVisitable) throws IOException {
+        //todo: remove
+        System.out.println("Sto per mandare un messaggio");
         eventVisitable.accept(serverViewInterface);
+        System.out.println("ho mandato un messaggio");
     }
 
     @Override

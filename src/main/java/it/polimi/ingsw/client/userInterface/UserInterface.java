@@ -5,7 +5,7 @@ import it.polimi.ingsw.client.PlayerView;
 
 public interface UserInterface {
 
-    void startMatchUpdate(MatchView matchView);
+    void UpdateStartMatch(MatchView matchView);
 
     void printLoginMessage(String text, boolean loginSuccessful);
 
@@ -14,9 +14,6 @@ public interface UserInterface {
     //sets everything up, so that the user can make a selection
     // (renders the complete view of match, display selectables, activates user interaction, ...)
     void showAndAskSelection();
-
-    //initialize the 'match window' (both gui and cli)
-    void initialize(MatchView match);
 
     void updateConnection();
 

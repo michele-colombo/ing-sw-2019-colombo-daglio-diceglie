@@ -446,31 +446,16 @@ public class Layout {
         layoutConfiguration = config;
 
 
-        File file= new File(getClass().getClassLoader().getResource("layoutConfig/layoutConfig" + config + ".json").getFile());
-
-
-
-
-        try (Scanner sc = new Scanner(file)){
+        InputStream url = getClass().getClassLoader().getResourceAsStream("layoutConfig/layoutConfig"+layoutConfiguration+".json");
+        Scanner sc = new Scanner(url);
             Square[] tempAmmo;
             Square[] tempSpawn;
-
-
 
             tempAmmo = gson.fromJson(sc.nextLine(), AmmoSquare[].class);
             ammoSquares.addAll(Arrays.asList(tempAmmo));
 
             tempSpawn = gson.fromJson(sc.nextLine(), SpawnSquare[].class);
             spawnSquares.addAll(Arrays.asList(tempSpawn));
-
-            sc.close();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-
-        }
-
-
 
         this.squares.clear();
         for(int i=0; i< this.existingSquare.length; i++){
