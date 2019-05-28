@@ -2,6 +2,7 @@ package it.polimi.ingsw.client.userInterface;
 
 import it.polimi.ingsw.client.MatchView;
 import it.polimi.ingsw.client.PlayerView;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -20,6 +21,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +30,7 @@ public class BoardGui {
     private final GridPane view;
     private GridPane connectionState;
     private GridPane damageTracks;
-    private Map<PlayerView, Boolean> connectionText;
+    private List<Label> connectionLabels;
 
     public BoardGui(MatchView match){
         view = new GridPane();
@@ -111,9 +113,9 @@ public class BoardGui {
     }
 
     public void addConnectionState(List<PlayerView> players ){
-        this.connectionText = new HashMap<>();
+        connectionLabels = new ArrayList<>();
         connectionState = new GridPane();
-        Label connectionLabel = new Label("PLAYERS CONNECTION");
+        Label connectionLabel = new Label("PLAYERS CONNECTIONS");
         connectionLabel.setTextFill(Color.GHOSTWHITE);
         connectionState.add(connectionLabel, 0, 0);
         connectionState.setVgap(10);
@@ -133,13 +135,40 @@ public class BoardGui {
             onlineLabel.setMaxWidth(Gui.getScreenBounds().getWidth()/20);
             connectionState.add(playerLabel, 0, i);
             connectionState.add(onlineLabel, 1, i);
-            this.connectionText.put(pv, true);
+            connectionLabels.add(playerLabel);
+            connectionLabels.add(onlineLabel);
             i++;
         }
     }
 
     public void updateConnection(Map<String, Boolean> connections){
-
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                connectionState.getChildren().removeAll(connectionLabels);
+                int i = 1;
+                for(String string : connections.keySet()){
+                    Label playerLabel = new Label(string);
+                    playerLabel.setWrapText(true);
+                    playerLabel.setTextFill(Color.WHITE);
+                    playerLabel.setMaxWidth(Gui.getScreenBounds().getWidth()/20);
+                    Label onlineLabel;
+                    if(connections.get(string)){
+                        onlineLabel = new Label("online");
+                        onlineLabel.setTextFill(Color.GREEN);
+                        onlineLabel.setWrapText(true);
+                    } else {
+                        onlineLabel = new Label("offline");
+                        onlineLabel.setTextFill(Color.RED);
+                        onlineLabel.setWrapText(true);
+                    }
+                    onlineLabel.setMaxWidth(Gui.getScreenBounds().getWidth()/20);
+                    connectionState.add(playerLabel, 0, i);
+                    connectionState.add(onlineLabel, 1, i);
+                    i++;
+                }
+            }
+        });
     }
 
 }

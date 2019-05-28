@@ -344,7 +344,6 @@ public class Controller {
             if(gameModel.getActivePlayers().contains(disconnected)){    //should always be true, right?
                 gameModel.detach(observer);
                 //gameModel.notifyAll(new DisconnectionMessage("Player " +disconnected.getName() + " has disconnected!"));
-                gameModel.notifyConnectionUpdate();
             }
             if(gameModel.isMatchInProgress()){
                 gameModel.fakeAction(disconnected);
@@ -379,7 +378,7 @@ public class Controller {
     }
 
     private void checkStart(){
-        if(!gameModel.tooFewPlayers() && gameModel.howManyActivePlayers() < 5 && !loginTimerStarted){
+        if(!gameModel.tooFewPlayers() && gameModel.howManyActivePlayers() < 5 && !loginTimerStarted && !gameModel.isMatchInProgress()){
             loginTimer.schedule(new LoginTimer(this), loginTimerDuration);
             loginTimerStarted = true;
         } else if(gameModel.howManyActivePlayers() == 5){

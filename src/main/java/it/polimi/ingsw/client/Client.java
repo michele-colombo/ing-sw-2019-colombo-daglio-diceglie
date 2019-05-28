@@ -86,7 +86,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     }
 
     @Override
-    public synchronized void visit(DisconnectionMessage message){
+    public void visit(DisconnectionMessage message){
         userInterface.printDisconnectionMessage(message.toString());
     }
 
