@@ -26,7 +26,7 @@ public class ServerMain {
     private final GameModel gameModel;
     private final Controller controller;
 
-    public ServerMain(int port, long loginTimerDuration, long inputTimerDuration){
+    public ServerMain(int port, int loginTimerDuration, int inputTimerDuration){
         this.port = port;
         gameModel = new GameModel();
         controller = new Controller(gameModel);
@@ -96,17 +96,17 @@ public class ServerMain {
         JsonObject o= (JsonObject) new JsonParser().parse(sc.nextLine());
         JsonElement data=  o.get("port");
         int portNumber= data.getAsInt();
-        long loginTimerDuration;
-        long inputTimerDuration;
+        int loginTimerDuration;
+        int inputTimerDuration;
         try {
             data = o.get("loginTimer");
-            loginTimerDuration = data.getAsLong();
+            loginTimerDuration = data.getAsInt();
         } catch (Exception e){
             loginTimerDuration = -1;
         }
         try {
             data = o.get("inputTimer");
-            inputTimerDuration = data.getAsLong();
+            inputTimerDuration = data.getAsInt();
         } catch (Exception e){
             inputTimerDuration = -1;
         }
