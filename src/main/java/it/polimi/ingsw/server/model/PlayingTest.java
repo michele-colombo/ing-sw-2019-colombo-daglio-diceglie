@@ -20,17 +20,13 @@ public class PlayingTest {
         System.out.println("type new or resume");
         String choice = new Scanner(System.in).nextLine();
         if(choice.toLowerCase().equals("new")){
-
-            Player p1 = new Player("first");
-            Player p2 = new Player("second");
-            Player p3 = new Player("third");
-            Player p4 = new Player("fourth");
             try{
-                gm.addPlayer(p1);
-                gm.addPlayer(p2);
-                gm.addPlayer(p3);
-                gm.addPlayer(p4);
+                Player p1 = gm.addPlayer("first");
+                Player p2 = gm.addPlayer("second");
+                Player p3 = gm.addPlayer("third");
+                Player p4 = gm.addPlayer("fourth");
             } catch(NameAlreadyTakenException | AlreadyLoggedException | GameFullException | NameNotFoundException e){
+                return;
             }
             gm.startMatch();
         } else if(choice.toLowerCase().equals("resume")) {

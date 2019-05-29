@@ -47,8 +47,7 @@ public class Controller {
         System.out.println("Message received");
         LoginMessage message = new LoginMessage("Login successful!", true, false);
         try{
-            Player newPlayer = new Player(name);
-            gameModel.addPlayer(newPlayer);
+            Player newPlayer = gameModel.addPlayer(name);
             gameModel.attach(newPlayer, serverView);
             timers.put(serverView, null);
             checkStart();
@@ -343,7 +342,6 @@ public class Controller {
             Player disconnected = gameModel.getPlayerByObserver(observer);
             if(gameModel.getActivePlayers().contains(disconnected)) {    //should always be true, right?
                 gameModel.detach(observer);
-                //gameModel.notifyAll(new DisconnectionMessage("Player " +disconnected.getName() + " has disconnected!"));
             }
             if(gameModel.isMatchInProgress()){
                 gameModel.fakeAction(disconnected);
@@ -351,14 +349,17 @@ public class Controller {
         } catch(NoSuchObserverException e){
             System.out.println("Player already disconnected!");
         } finally {
-            checkStopMatch();
-            removeObserverFromTimers(observer);
-            startTimers();
-            gameModel.notifyConnectionUpdate();
+            if (checkStopMatch()){
+
+            } else {
+                removeObserverFromTimers(observer);
+                startTimers();
+                gameModel.notifyConnectionUpdate();
+            }
         }
     }
 
-    private void checkStopMatch(){
+    private boolean checkStopMatch(){
         if(gameModel.tooFewPlayers() && gameModel.isMatchInProgress()){
             //todo stop match and print scores
             //todo gamemodel.gameOver()
@@ -367,6 +368,7 @@ public class Controller {
             //todo creare un messaggio di disconnessione e un altro che incapsula la classifica finale
             //todo fermare tutti i timer
         }
+        return false;
     }
 
     public void startMatch(){
@@ -427,6 +429,7 @@ public class Controller {
     }
 
     private void removeTimer(Observer observer){
+        //todo: check
         if(timers.get(observer) != null){
             timers.get(observer).cancel();
         }
@@ -435,6 +438,6 @@ public class Controller {
 
     private void removeObserverFromTimers(Observer observer){
         removeTimer(observer);
-        timers.remove(observer);
+        timers.remove(observer);        //when disconnecting the map entry MUST be completely removed
     }
 }

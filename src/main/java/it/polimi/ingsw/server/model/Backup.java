@@ -5,12 +5,10 @@ import it.polimi.ingsw.server.model.enums.AmmoColor;
 import it.polimi.ingsw.server.model.enums.PlayerColor;
 import it.polimi.ingsw.server.model.enums.PlayerState;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLDecoder;
 import java.util.*;
 
 
@@ -513,13 +511,14 @@ public class Backup {
     }
 
     public static boolean isBackupAvailable(String name){
-
-
+        //return Backup.class.getClassLoader().getResource("backup/" + name + EXTENSION) != null;
         try {
-            File file = new File(Backup.class.getClassLoader().getResource("backups/" + name + EXTENSION).toURI());
+            String jarPath = URLDecoder.decode(Backup.class.getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
+            String filePath = jarPath.substring(0, jarPath.lastIndexOf("/")) + File.separator + "backups"+ File.separator + name + EXTENSION;
+            File file = new File(filePath);
             return file.exists();
-        }
-        catch (URISyntaxException e){
+        } catch (UnsupportedEncodingException e){
+            System.out.println("[WARNING] Cannot check if there's a backup");
             return false;
         }
     }
@@ -532,8 +531,36 @@ public class Backup {
 
     public boolean saveOnFile(String path, String name) {
         Gson gson = new Gson();
-        //File file = new File(path+name+EXTENSION);
 
+        String jarPath = "";
+        System.out.println("Writing data...");
+        try {
+            jarPath = URLDecoder.decode(getClass().getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
+            System.out.println(jarPath);
+        } catch (UnsupportedEncodingException e1) {
+            e1.printStackTrace();
+        }
+        // construct a File within the same folder of this jar, or of this class.
+        String dirPath = jarPath.substring(0, jarPath.lastIndexOf("/")) + File.separator + "backups";
+        File dir = new File(dirPath);
+        if (!dir.exists()){
+            dir.mkdir();
+        }
+        String completePath = dirPath + File.separator + name + EXTENSION;
+        File file = new File(completePath);
+        try {
+            FileWriter fw = new FileWriter(file);
+            gson.toJson(this, fw);
+            fw.close();
+            return true;
+        } catch (IOException e){
+            System.out.println("Cannot write backup file");
+        }
+        System.out.println("backup file writte [OK]");
+
+        /*
+        //File file = new File(path+name+EXTENSION);
+        System.out.println("Sto per scrivere su file");
         try {
             File file = new File(getClass().getClassLoader().getResource("backups/" + name + EXTENSION).toURI());
             FileWriter fw;
@@ -545,10 +572,12 @@ public class Backup {
             } catch (IOException e){
                 e.printStackTrace();
             }
+            System.out.println("Ho finito di scrivere su file");
         }
         catch (URISyntaxException e){
             e.printStackTrace();
         }
+        */
         return false;
     }
 

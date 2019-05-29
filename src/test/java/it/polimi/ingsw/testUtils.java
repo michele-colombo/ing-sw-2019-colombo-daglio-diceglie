@@ -56,14 +56,16 @@ public class testUtils {
         System.out.println(mapToString(map));
     }
 
-    public static void addPlayers(GameModel gm, List<Player> players){
-        for (Player p : players){
+    public static List<Player> addPlayers(GameModel gm, List<String> names){
+        List<Player> newPlayers = new ArrayList<>();
+        for (String name : names){
             try {
-                gm.addPlayer(p);
+                 newPlayers.add(gm.addPlayer(name));
             } catch (NameAlreadyTakenException | GameFullException | AlreadyLoggedException | NameNotFoundException e){
 
             }
         }
+        return newPlayers;
     }
 
     //this is a fake method to emulete what the real controller does

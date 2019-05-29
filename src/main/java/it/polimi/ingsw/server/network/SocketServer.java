@@ -68,6 +68,7 @@ public class SocketServer extends Thread implements NetworkInterfaceServer, Mess
 
    public void closeNetwork() throws  IOException{
             this.socket.close();
+            //todo: manage IOException
    }
 
     @Override

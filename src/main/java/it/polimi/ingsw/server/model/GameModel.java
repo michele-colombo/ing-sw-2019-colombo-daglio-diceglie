@@ -13,7 +13,8 @@ import it.polimi.ingsw.server.model.enums.PlayerColor;
 import it.polimi.ingsw.server.observer.Observable;
 import it.polimi.ingsw.server.observer.Observer;
 
-import java.io.InputStream;
+import java.io.*;
+import java.net.URLDecoder;
 import java.util.*;
 
 
@@ -70,11 +71,11 @@ public class GameModel implements Observable {
         return matchInProgress;
     }
 
-    public void addPlayer (Player p) throws NameAlreadyTakenException, GameFullException, NameNotFoundException, AlreadyLoggedException {
+    public Player addPlayer (String name) throws NameAlreadyTakenException, GameFullException, NameNotFoundException, AlreadyLoggedException {
         if(!matchInProgress){
-            login(p);
+            return login(name);
         } else{
-            relogin(p);
+            return relogin(name);
         }
     }
 
@@ -84,22 +85,31 @@ public class GameModel implements Observable {
      */
     public boolean startMatch(){
         if (Backup.isBackupAvailable(BACKUP_NAME)){
-            Backup tempBackup = Backup.initFromFile(BACKUP_NAME);
-            if (tempBackup.getPlayerNames().containsAll(getAllPlayerNames()) && getAllPlayerNames().containsAll(tempBackup.getPlayerNames())){
-                //all names match
-                int layoutConfig = tempBackup.getLayoutConfig();
-                match = new Match(layoutConfig);
-                for (String name : tempBackup.getPlayerNames()){
-                    match.addPlayer(getPlayerByName(name));
+            try {
+                String jarPath = URLDecoder.decode(Backup.class.getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
+                String filePath = jarPath.substring(0, jarPath.lastIndexOf("/")) + File.separator + "backups"+ File.separator + BACKUP_NAME + ".json";
+                InputStream url = new FileInputStream(filePath);
+                Backup tempBackup = Backup.initFromFile(url);
+                if (tempBackup.getPlayerNames().containsAll(getAllPlayerNames()) && getAllPlayerNames().containsAll(tempBackup.getPlayerNames())){
+                    //all names match
+                    int layoutConfig = tempBackup.getLayoutConfig();
+                    match = new Match(layoutConfig);
+                    for (String name : tempBackup.getPlayerNames()){
+                        match.addPlayer(getPlayerByName(name));
+                    }
+                    tempBackup.restore(match);
+                    match.setObservers(observers);
+                    matchInProgress = true;
+                    actionCompleted();
+                    return false;
+                } else {
+                    //saved backup has at least one different name
+                    startNewMatch();
                 }
-                tempBackup.restore(match);
-                match.setObservers(observers);
-                matchInProgress = true;
-                actionCompleted();
-                return false;
-            } else {
-                //saved backup has at least one different name
+            } catch (IOException | NullPointerException e){
+                System.out.println("[WARNING] Cannot open saved backup");
                 startNewMatch();
+                return true;
             }
         } else {
             //there is no backup available
@@ -141,8 +151,7 @@ public class GameModel implements Observable {
         match = new Match(layoutConfig);
         for (String playerName : savedBackup.getPlayerNames()){
             try {
-                Player newPlayer = new Player(playerName);
-                addPlayer(newPlayer);
+                Player newPlayer = addPlayer(playerName);
                 match.addPlayer(newPlayer);
             } catch(NameAlreadyTakenException | AlreadyLoggedException | GameFullException | NameNotFoundException e){
             }
@@ -504,6 +513,8 @@ public class GameModel implements Observable {
         Player p = match.getCurrentPlayer();
         List<Action> selectableActions = match.createSelectableActions(match.getCurrentPlayer());
         if (selectableActions.isEmpty() || !activePlayers.contains(p)){
+            //anche rimuovendo il controllo sui giocatori attivi
+            //il turno verrebbe comunque terminato nel 'finalCleaning'
             endTurn();
         } else {
             match.addWaitingFor(match.getCurrentPlayer());
@@ -578,6 +589,8 @@ public class GameModel implements Observable {
     }
 
     public void attach(Player player, Observer observer){
+        observers.put(player, observer);
+        /*
         if(observers.containsKey(player)){
             observers.replace(player, observer);
             activePlayers.add(player);
@@ -585,6 +598,7 @@ public class GameModel implements Observable {
         } else {
             observers.put(player, observer);
         }
+        */
     }
 
     public void detach(Observer observer){
@@ -592,7 +606,7 @@ public class GameModel implements Observable {
             Player tempPlayer = getPlayerByObserver(observer);
             activePlayers.remove(tempPlayer);
             if(!matchInProgress){
-                observers.keySet().remove(tempPlayer);
+                observers.remove(tempPlayer);
             } else{
                 observers.replace(tempPlayer, null);
                 inactivePlayers.add(tempPlayer);
@@ -632,10 +646,13 @@ public class GameModel implements Observable {
         return allPlayers;
     }
 
-    public void login(Player p) throws NameAlreadyTakenException, GameFullException{
+    public Player login(String name) throws NameAlreadyTakenException, GameFullException{
+        Player newPlayer;
         if((activePlayers.size() < 5)){
-            if(!nameTaken(p.getName())){
-                activePlayers.add(p);
+            if(!nameTaken(name)){
+                newPlayer = new Player(name);
+                activePlayers.add(newPlayer);
+                return newPlayer;
             } else{
                 throw new NameAlreadyTakenException();
             }
@@ -644,16 +661,22 @@ public class GameModel implements Observable {
         }
     }
 
-    public void relogin(Player p) throws NameNotFoundException, AlreadyLoggedException, GameFullException{
+    public Player relogin(String name) throws NameNotFoundException, AlreadyLoggedException, GameFullException{
+        Player oldPlayer;
         if(inactivePlayers.isEmpty()){
             throw new GameFullException();
         } else {
-            if (!nameTaken(p.getName())) {
+            if (!nameTaken(name)) {
                 throw new NameNotFoundException();
-            } else if (alreadyActive(p.getName())) {
+            } else if (alreadyActive(name)) {
                 throw new AlreadyLoggedException(); //todo tirare eccezione non puoi loggarti se active.size() == player in match
+            } else {
+                oldPlayer = getPlayerByName(name);
+                inactivePlayers.remove(oldPlayer);
+                activePlayers.add(oldPlayer);
             }
         }
+        return oldPlayer;
     }
 
     public Player getPlayerByName(String name){
@@ -754,6 +777,7 @@ public class GameModel implements Observable {
             connectionStates.put(p.getName(), activePlayers.contains(p));
         }
 
+        //todo: check if o is null
         for (Observer o : observers.values()){
             ConnectionUpdateMessage message = new ConnectionUpdateMessage(connectionStates);
             o.update(message);
