@@ -20,8 +20,8 @@ public class Controller {
     private final Timer loginTimer;
     private boolean loginTimerStarted;
     private Map<Observer, Timer> timers;
-    private long loginTimerDuration = 15000;
-    private long inputTimerDuration = 1000000;
+    private int loginTimerDuration = 15000;
+    private int inputTimerDuration = 20000;
     private List<ServerView> toDisconnectList;
 
 
@@ -39,13 +39,13 @@ public class Controller {
         }
     }
 
-    public void setLoginTimerDuration(long loginTimerDuration) {
+    public void setLoginTimerDuration(int loginTimerDuration) {
         if (loginTimerDuration > 0){
             this.loginTimerDuration = loginTimerDuration;
         }
     }
 
-    public void setInputTimerDuration(long inputTimerDuration) {
+    public void setInputTimerDuration(int inputTimerDuration) {
         if (inputTimerDuration > 0){
             this.inputTimerDuration = inputTimerDuration;
         }
@@ -57,7 +57,6 @@ public class Controller {
         try{
             Player newPlayer = gameModel.addPlayer(name);
             gameModel.attach(newPlayer, serverView);
-            timers.put(serverView, null);
             checkStart();
             System.out.println("Player "+name+" has correctly logged in");
             //todo se ci sono 5 player e la partita non è ancora iniziata, allora deve iniziare
@@ -83,7 +82,7 @@ public class Controller {
 
 
     public synchronized void squareSelected(int selection, ServerView serverView) {
-        removeObserverFromTimers(serverView);
+        removeTimer(serverView);
         Square sq;
         try {
             Player p = gameModel.getPlayerByObserver(serverView);
@@ -119,7 +118,7 @@ public class Controller {
     }
 
     public synchronized void actionSelected(int selection, ServerView serverView) {
-        removeObserverFromTimers(serverView);
+        removeTimer(serverView);
         Action act;
         try {
             Player p = gameModel.getPlayerByObserver(serverView);
@@ -144,7 +143,7 @@ public class Controller {
     }
 
     public synchronized void playerSelected(int selection, ServerView serverView) {
-    removeObserverFromTimers(serverView);
+    removeTimer(serverView);
         Player pl;
         try {
             Player p = gameModel.getPlayerByObserver(serverView);
@@ -173,7 +172,7 @@ public class Controller {
     }
 
     public synchronized void weaponSelected(int selection, ServerView serverView) {
-        removeObserverFromTimers(serverView);
+        removeTimer(serverView);
         Weapon wp;
         try {
             Player p = gameModel.getPlayerByObserver(serverView);
@@ -207,7 +206,7 @@ public class Controller {
     }
 
     public synchronized void modeSelected(int selection, ServerView serverView) {
-        removeObserverFromTimers(serverView);
+        removeTimer(serverView);
         Mode mod;
         try {
             Player p = gameModel.getPlayerByObserver(serverView);
@@ -232,7 +231,7 @@ public class Controller {
     }
 
     public synchronized void commandSelected(int selection, ServerView serverView) {
-        removeObserverFromTimers(serverView);
+        removeTimer(serverView);
         Command cmd;
         try {
             Player p = gameModel.getPlayerByObserver(serverView);
@@ -274,7 +273,7 @@ public class Controller {
     }
 
     public synchronized void colorSelected(int selection, ServerView serverView) {
-        removeObserverFromTimers(serverView);
+        removeTimer(serverView);
         AmmoColor col;
         try {
             Player p = gameModel.getPlayerByObserver(serverView);
@@ -301,7 +300,7 @@ public class Controller {
     }
 
     public synchronized void powerUpSelected(int selection, ServerView serverView) {
-        removeObserverFromTimers(serverView);
+        removeTimer(serverView);
         PowerUp po;
         try {
             Player p = gameModel.getPlayerByObserver(serverView);
@@ -345,7 +344,7 @@ public class Controller {
         } catch(NoSuchObserverException e){
             System.out.println("Player already disconnected!");
         } finally {
-            removeObserverFromTimers(serverView);
+            removeTimer(serverView);
             checkStopMatch();
 
             System.out.println("I'm in controller.disconnectPlayer");
@@ -434,20 +433,14 @@ public class Controller {
         if(timers.get(observer) == null){
             Timer timer = new Timer();
             timers.put(observer, timer);
-            timers.get(observer).schedule(new InputTimer((ServerView)observer), inputTimerDuration); //todo sistemare i cast
+            timer.schedule(new InputTimer((ServerView)observer), inputTimerDuration);
         }
     }
 
     private void removeTimer(Observer observer){
-        //todo: check
         if(timers.get(observer) != null){
             timers.get(observer).cancel();
         }
-        timers.replace(observer, null);
-    }
-
-    private void removeObserverFromTimers(Observer observer){
-        removeTimer(observer);
-        timers.remove(observer);        //when disconnecting the map entry MUST be completely removed
+        timers.remove(observer);
     }
 }
