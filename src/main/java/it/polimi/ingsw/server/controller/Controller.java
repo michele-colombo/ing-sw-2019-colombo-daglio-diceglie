@@ -53,7 +53,7 @@ public class Controller {
 
     public synchronized void login(String name, ServerView serverView){
         System.out.println("Message received");
-        LoginMessage message = new LoginMessage("Login successful!", true, false);
+        LoginMessage message = new LoginMessage("Login successful!", true);
         try{
             Player newPlayer = gameModel.addPlayer(name);
             gameModel.attach(newPlayer, serverView);
@@ -64,13 +64,13 @@ public class Controller {
             //todo se ci sono 3 player attivi e partita non iniziata, starta il countdown
             gameModel.notifyConnectionUpdate();
         } catch(NameAlreadyTakenException e){
-            message = new LoginMessage("Name already taken!", false, false);
+            message = new LoginMessage("Name already taken!", false);
         } catch(GameFullException e){
-            message = new LoginMessage("Game full!", false, true);
+            message = new LoginMessage("Game full!", false);
         } catch(NameNotFoundException e){
-            message = new LoginMessage("Name not found!", false, false);
+            message = new LoginMessage("Name not found!", false);
         } catch(AlreadyLoggedException e){
-            message = new LoginMessage("Player already logged", false, true);
+            message = new LoginMessage("Player already logged", false);
         }
         finally {
             serverView.update(message);
@@ -116,7 +116,6 @@ public class Controller {
             //todo: what if there is no such serverView?
         }
         finalCleaning();
-        gameModel.getMatch().notifyFullUpdateAllPlayers();
     }
 
     public synchronized void actionSelected(int selection, ServerView serverView) {
@@ -142,8 +141,6 @@ public class Controller {
             //todo (should not occur)
         }
         finalCleaning();
-        gameModel.getMatch().notifyFullUpdateAllPlayers();
-        //todo: update
     }
 
     public synchronized void playerSelected(int selection, ServerView serverView) {
@@ -173,8 +170,6 @@ public class Controller {
             //todo
         }
         finalCleaning();
-        gameModel.getMatch().notifyFullUpdateAllPlayers();
-        //todo: update
     }
 
     public synchronized void weaponSelected(int selection, ServerView serverView) {
@@ -209,8 +204,6 @@ public class Controller {
             //todo
         }
         finalCleaning();
-        gameModel.getMatch().notifyFullUpdateAllPlayers();
-        //todo: update
     }
 
     public synchronized void modeSelected(int selection, ServerView serverView) {
@@ -236,8 +229,6 @@ public class Controller {
             //todo
         }
         finalCleaning();
-        gameModel.getMatch().notifyFullUpdateAllPlayers();
-        //todo: update
     }
 
     public synchronized void commandSelected(int selection, ServerView serverView) {
@@ -279,7 +270,6 @@ public class Controller {
             //todo
         }
         finalCleaning();
-        gameModel.getMatch().notifyFullUpdateAllPlayers();
         //todo:  update
     }
 
@@ -307,7 +297,6 @@ public class Controller {
             //todo
         }
         finalCleaning();
-        gameModel.getMatch().notifyFullUpdateAllPlayers();
         //todo: update
     }
 
@@ -345,7 +334,6 @@ public class Controller {
             //todo (should not occur)
         }
         finalCleaning();
-        gameModel.getMatch().notifyFullUpdateAllPlayers();
         //todo: update
     }
 
@@ -354,29 +342,18 @@ public class Controller {
             Player playerToDisconnect = gameModel.getPlayerByObserver(serverView);
             gameModel.deactivate(playerToDisconnect);
             gameModel.detach(serverView);
-            /*
-            if(gameModel.isMatchInProgress()){
-                gameModel.fakeAction(playerToDisconnect);
-            }//todo controllo se devo togliere il timer (michele: "looks like this 'todo' has already been satisfied (look below)")
-            */
         } catch(NoSuchObserverException e){
             System.out.println("Player already disconnected!");
         } finally {
-            if (checkStopMatch()){
+            removeObserverFromTimers(serverView);
+            checkStopMatch();
 
-            } else {
-                removeObserverFromTimers(serverView);
-                //finalCleaning();
-                /*
-                gameModel.notifyConnectionUpdate();
-                gameModel.getMatch().notifyFullUpdateAllPlayers();
-                */
-                System.out.println("I'm in controller.disconnectPlayer");
-                System.out.println("active players:"+listToString(gameModel.getActivePlayers()));
-                System.out.println("inactive players"+listToString(gameModel.getInactivePlayers()));
-                System.out.println("to disconnect"+listToString(toDisconnectList));
-                System.out.println("waitingFor"+listToString(gameModel.getMatch().getWaitingFor()));
-            }
+            System.out.println("I'm in controller.disconnectPlayer");
+            System.out.println("active players:"+listToString(gameModel.getActivePlayers()));
+            System.out.println("inactive players"+listToString(gameModel.getInactivePlayers()));
+            System.out.println("to disconnect"+listToString(toDisconnectList));
+            System.out.println("waitingFor"+listToString(gameModel.getMatch().getWaitingFor()));
+
         }
     }
 

@@ -1,7 +1,6 @@
 package it.polimi.ingsw.server.controller.timer;
 
 import it.polimi.ingsw.server.ServerView;
-import java.io.IOException;
 import java.util.TimerTask;
 
 public class InputTimer extends TimerTask {
@@ -12,10 +11,6 @@ public class InputTimer extends TimerTask {
     }
 
     public void run(){
-        try{
-            serverView.closeNetwork();
-        } catch(IOException e){
-            System.out.println("Timer: player already disconnected!");
-        }
+        serverView.disconnectPlayer();
     }
 }

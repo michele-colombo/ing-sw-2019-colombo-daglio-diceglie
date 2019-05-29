@@ -32,14 +32,6 @@ public class ServerView extends UnicastRemoteObject implements Observer, ServerV
         try{
             network.forwardMessage(messageVisitable);
             System.out.println("Messaggio mandato!");
-            try{
-                if(messageVisitable.getCloseSocket()){ //close socket connection
-                    closeNetwork();
-                }
-            } catch(IOException e){
-                System.out.println("Error while closing the socket!");
-                e.printStackTrace();
-            }
         } catch(IOException e){
             System.out.println("Error while updating view!");
             controller.setToDisconnect(this);
@@ -49,13 +41,13 @@ public class ServerView extends UnicastRemoteObject implements Observer, ServerV
     }
 
     public void disconnectPlayer(){
-        //controller.disconnectPlayer(this);
+        network.closeNetwork();
         //todo: perde il lock su controller. Fare un metodo setToDisconnectAndClean(this) ?
         controller.setToDisconnect(this);
         controller.finalCleaning();
     }
 
-    public void closeNetwork() throws IOException{
+    public void closeNetwork(){
         network.closeNetwork();
     }
 

@@ -7,8 +7,6 @@ import java.rmi.RemoteException;
 public interface MessageVisitor {
     void visit(LoginMessage loginMessage) throws RemoteException;
 
-    void visit(DisconnectionMessage disconnectionMessage) throws RemoteException;
-
     void visit(GenericMessage genericMessage) throws RemoteException;
 
     void visit(LayoutUpdateMessage layoutUpdateMessage) throws RemoteException;

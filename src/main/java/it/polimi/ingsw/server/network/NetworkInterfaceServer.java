@@ -6,5 +6,5 @@ import java.io.IOException;
 
 public interface NetworkInterfaceServer {
     void forwardMessage(MessageVisitable messageVisitable) throws IOException;
-    void closeNetwork() throws IOException;
+    void closeNetwork();
 }

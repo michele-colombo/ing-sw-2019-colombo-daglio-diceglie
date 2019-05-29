@@ -67,20 +67,17 @@ public class SocketServer extends Thread implements NetworkInterfaceServer, Mess
         return socket;
    }
 
-   public void closeNetwork() throws  IOException{
-            this.socket.close();
-            //todo: manage IOException
+   public void closeNetwork(){
+       try {
+           this.socket.close();
+       } catch (IOException e) {
+           System.out.println("Socket already closed");
+       }
    }
 
     @Override
     public void visit(LoginMessage loginMessage) {
         messagePrefix= "#LOGIN#";
-    }
-
-    @Override
-    public void visit(DisconnectionMessage disconnectionMessage) {
-        messagePrefix= "#DISCONNECTION#";
-
     }
 
     @Override

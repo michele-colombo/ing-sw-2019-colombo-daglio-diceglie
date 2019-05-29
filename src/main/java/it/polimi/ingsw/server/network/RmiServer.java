@@ -24,7 +24,7 @@ public class RmiServer implements NetworkInterfaceServer{
     }
 
     @Override
-    public void closeNetwork() throws IOException {
+    public void closeNetwork() {
 
     }
 }

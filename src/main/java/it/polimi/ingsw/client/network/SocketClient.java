@@ -106,7 +106,6 @@ public class SocketClient extends Thread implements NetworkInterfaceClient, Even
 
         switch (prefix){
             case "#LOGIN#": result= gson.fromJson(messageText, LoginMessage.class); break;
-            case "#DISCONNECTION#": result= gson.fromJson(messageText, DisconnectionMessage.class); break;
             case "#GENERIC#": result= gson.fromJson(messageText, GenericMessage.class); break;
             case "#LAYOUTUPDATE#": result= gson.fromJson(messageText, LayoutUpdateMessage.class); break;
             case "#KILLSHOTUPDATE#": result= gson.fromJson(messageText, KillshotTrackUpdateMessage.class); break;

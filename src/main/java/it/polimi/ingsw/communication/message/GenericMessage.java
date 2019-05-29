@@ -7,7 +7,6 @@ import java.rmi.RemoteException;
 public class GenericMessage extends MessageVisitable {
     public GenericMessage(String string){
         this.string = string;
-        this.closeSocket = false;
     }
 
     public void accept(MessageVisitor messageVisitor) throws RemoteException {

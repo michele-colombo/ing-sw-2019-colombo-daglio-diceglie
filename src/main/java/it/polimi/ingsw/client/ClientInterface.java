@@ -10,8 +10,6 @@ public interface ClientInterface extends MessageVisitor, Remote {
 
     void visit(LoginMessage loginMessage) throws RemoteException;
 
-    void visit(DisconnectionMessage disconnectionMessage) throws RemoteException;
-
     void visit(GenericMessage genericMessage) throws RemoteException;
 
     //void visit(UpdateMessage updateMessage) throws RemoteException;

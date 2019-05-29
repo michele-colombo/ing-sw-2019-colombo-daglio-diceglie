@@ -7,10 +7,9 @@ import java.rmi.RemoteException;
 public class LoginMessage extends MessageVisitable {
     private boolean loginSuccessful;
 
-    public LoginMessage(String string, boolean loginSuccessful, boolean closeSocket){
+    public LoginMessage(String string, boolean loginSuccessful){
         this.string = string;
         this.loginSuccessful = loginSuccessful;
-        this.closeSocket = closeSocket;
     }
 
     public void accept(MessageVisitor messageVisitor) throws RemoteException {
