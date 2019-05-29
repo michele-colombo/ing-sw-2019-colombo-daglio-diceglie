@@ -7,9 +7,11 @@ public interface UserInterface {
 
     void UpdateStartMatch(MatchView matchView);
 
-    void printLoginMessage(String text, boolean loginSuccessful);
+    void showConnectionSelection();
 
-    void printDisconnectionMessage(String text);
+    void showLogin();
+
+    void printLoginMessage(String text, boolean loginSuccessful);
 
     //sets everything up, so that the user can make a selection
     // (renders the complete view of match, display selectables, activates user interaction, ...)
@@ -34,6 +36,4 @@ public interface UserInterface {
     void updateDamage(PlayerView player);
 
     void updateSelectables();
-
-    //void askLogin();
 }

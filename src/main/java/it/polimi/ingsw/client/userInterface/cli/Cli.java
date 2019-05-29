@@ -53,6 +53,16 @@ public class Cli implements UserInterface {
         reader.run();
     }
 
+    @Override
+    public void showConnectionSelection() {
+
+    }
+
+    @Override
+    public void showLogin() {
+
+    }
+
     public void printLoginMessage(String text, boolean loginSuccessful){
         System.out.println(text);
         if(!loginSuccessful){

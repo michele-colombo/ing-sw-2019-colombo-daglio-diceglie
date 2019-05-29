@@ -44,6 +44,16 @@ public class Gui extends Application implements UserInterface {
         launch(args);
     }
 
+    @Override
+    public void showConnectionSelection() {
+
+    }
+
+    @Override
+    public void showLogin() {
+
+    }
+
     public void printLoginMessage(String text, boolean loginSuccessful){
         loginGui.printLoginMessage(text, loginSuccessful);
     }
