@@ -75,6 +75,10 @@ public class Controller {
         finally {
             serverView.update(message);
         }
+        if (gameModel.isMatchInProgress()){
+            gameModel.getMatch().notifyStartMatchUpdate();
+        }
+        finalCleaning();
     }
 
 
@@ -350,9 +354,11 @@ public class Controller {
             Player playerToDisconnect = gameModel.getPlayerByObserver(serverView);
             gameModel.deactivate(playerToDisconnect);
             gameModel.detach(serverView);
+            /*
             if(gameModel.isMatchInProgress()){
                 gameModel.fakeAction(playerToDisconnect);
             }//todo controllo se devo togliere il timer (michele: "looks like this 'todo' has already been satisfied (look below)")
+            */
         } catch(NoSuchObserverException e){
             System.out.println("Player already disconnected!");
         } finally {
@@ -361,10 +367,15 @@ public class Controller {
             } else {
                 removeObserverFromTimers(serverView);
                 //finalCleaning();
+                /*
                 gameModel.notifyConnectionUpdate();
                 gameModel.getMatch().notifyFullUpdateAllPlayers();
-                System.out.println(listToString(gameModel.getActivePlayers()));
-                System.out.println(listToString(gameModel.getInactivePlayers()));
+                */
+                System.out.println("I'm in controller.disconnectPlayer");
+                System.out.println("active players:"+listToString(gameModel.getActivePlayers()));
+                System.out.println("inactive players"+listToString(gameModel.getInactivePlayers()));
+                System.out.println("to disconnect"+listToString(toDisconnectList));
+                System.out.println("waitingFor"+listToString(gameModel.getMatch().getWaitingFor()));
             }
         }
     }
@@ -410,11 +421,12 @@ public class Controller {
     }
 
     //todo: added by michele, check!
-    public void finalCleaning(){//era synchronized ma dava problemi
+    public synchronized void finalCleaning(){//era synchronized ma dava problemi
         for (ServerView serverView : toDisconnectList){
             disconnectPlayer(serverView);
         }
-        if(!gameModel.isMatchInProgress()) {
+        toDisconnectList.clear();
+        if(gameModel.isMatchInProgress()) {
             while (!gameModel.getActivePlayers().containsAll(gameModel.getWaitingFor())) {
                 List<Player> toFakeList = new ArrayList<>();
                 for (Player p : gameModel.getWaitingFor()) {
@@ -429,7 +441,16 @@ public class Controller {
             for (Player p : gameModel.getWaitingFor()) {
                 addTimer(gameModel.getObserver(p)); //addTimer checks if there is no timer active for the corresponding observer
             }
+            System.out.println("I'm at the end of controller.finalClening");
+            System.out.println("active players:"+listToString(gameModel.getActivePlayers()));
+            System.out.println("inactive players"+listToString(gameModel.getInactivePlayers()));
+            System.out.println("to disconnect"+listToString(toDisconnectList));
+            System.out.println("waitingFor"+listToString(gameModel.getMatch().getWaitingFor()));
+            gameModel.notifyConnectionUpdate();
+            gameModel.getMatch().notifyFullUpdateAllPlayers();
         }
+
+
     }
 
     private void addTimer(Observer observer){

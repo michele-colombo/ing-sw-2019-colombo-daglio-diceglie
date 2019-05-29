@@ -677,7 +677,6 @@ public class GameModel implements Observable {
                 activePlayers.add(oldPlayer);
             }
         }
-        match.notifyStartMatchUpdate();
         return oldPlayer;
     }
 

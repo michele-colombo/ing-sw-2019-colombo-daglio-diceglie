@@ -50,6 +50,7 @@ public class ServerView extends UnicastRemoteObject implements Observer, ServerV
 
     public void disconnectPlayer(){
         //controller.disconnectPlayer(this);
+        //todo: perde il lock su controller. Fare un metodo setToDisconnectAndClean(this) ?
         controller.setToDisconnect(this);
         controller.finalCleaning();
     }
