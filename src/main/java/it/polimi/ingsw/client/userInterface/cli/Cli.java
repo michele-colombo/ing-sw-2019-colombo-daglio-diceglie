@@ -77,7 +77,11 @@ public class Cli implements UserInterface {
 
     @Override
     public void updateConnection() {
-
+        if (match != null){
+            showAndAskSelection();
+        } else {
+            System.out.println(mapToString(client.getConnections()));
+        }
     }
 
     @Override

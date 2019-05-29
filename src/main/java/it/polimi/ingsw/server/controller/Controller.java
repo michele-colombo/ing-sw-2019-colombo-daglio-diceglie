@@ -2,8 +2,6 @@ package it.polimi.ingsw.server.controller;
 
 import it.polimi.ingsw.server.ServerView;
 import it.polimi.ingsw.server.exceptions.*;
-import it.polimi.ingsw.communication.message.DisconnectionMessage;
-import it.polimi.ingsw.communication.message.GenericMessage;
 import it.polimi.ingsw.communication.message.LoginMessage;
 import it.polimi.ingsw.server.model.*;
 import it.polimi.ingsw.server.model.enums.AmmoColor;
@@ -12,6 +10,8 @@ import it.polimi.ingsw.server.observer.Observer;
 import it.polimi.ingsw.server.controller.timer.InputTimer;
 import it.polimi.ingsw.server.controller.timer.LoginTimer;
 import java.util.*;
+
+import static it.polimi.ingsw.server.ServerMain.*;
 
 
 public class Controller {
@@ -22,6 +22,7 @@ public class Controller {
     private Map<Observer, Timer> timers;
     private long loginTimerDuration = 15000;
     private long inputTimerDuration = 1000000;
+    private List<ServerView> toDisconnectList;
 
 
     public Controller(GameModel gameModel){
@@ -29,6 +30,13 @@ public class Controller {
         this.loginTimer = new Timer();
         this.loginTimerStarted = false;
         this.timers = new HashMap<>();
+        toDisconnectList = new ArrayList<>();
+    }
+
+    public void setToDisconnect(ServerView serverView){
+        if (!toDisconnectList.contains(serverView)){
+            toDisconnectList.add(serverView);
+        }
     }
 
     public void setLoginTimerDuration(long loginTimerDuration) {
@@ -103,7 +111,7 @@ public class Controller {
         } catch (NoSuchObserverException e) {
             //todo: what if there is no such serverView?
         }
-        startTimers();
+        finalCleaning();
         gameModel.getMatch().notifyFullUpdateAllPlayers();
     }
 
@@ -129,7 +137,7 @@ public class Controller {
         } catch (NoSuchObserverException e){
             //todo (should not occur)
         }
-        startTimers();
+        finalCleaning();
         gameModel.getMatch().notifyFullUpdateAllPlayers();
         //todo: update
     }
@@ -160,7 +168,7 @@ public class Controller {
         } catch (NoSuchObserverException e){
             //todo
         }
-        startTimers();
+        finalCleaning();
         gameModel.getMatch().notifyFullUpdateAllPlayers();
         //todo: update
     }
@@ -196,7 +204,7 @@ public class Controller {
         } catch (NoSuchObserverException e){
             //todo
         }
-        startTimers();
+        finalCleaning();
         gameModel.getMatch().notifyFullUpdateAllPlayers();
         //todo: update
     }
@@ -223,7 +231,7 @@ public class Controller {
         } catch (NoSuchObserverException e){
             //todo
         }
-        startTimers();
+        finalCleaning();
         gameModel.getMatch().notifyFullUpdateAllPlayers();
         //todo: update
     }
@@ -266,7 +274,7 @@ public class Controller {
         } catch (NoSuchObserverException e){
             //todo
         }
-        startTimers();
+        finalCleaning();
         gameModel.getMatch().notifyFullUpdateAllPlayers();
         //todo:  update
     }
@@ -294,7 +302,7 @@ public class Controller {
         } catch (NoSuchObserverException e){
             //todo
         }
-        startTimers();
+        finalCleaning();
         gameModel.getMatch().notifyFullUpdateAllPlayers();
         //todo: update
     }
@@ -332,19 +340,18 @@ public class Controller {
         } catch (NoSuchObserverException e){
             //todo (should not occur)
         }
-        startTimers();
+        finalCleaning();
         gameModel.getMatch().notifyFullUpdateAllPlayers();
         //todo: update
     }
 
-    public synchronized void disconnectPlayer(Observer observer){
+    public synchronized void disconnectPlayer(ServerView serverView){
         try{
-            Player disconnected = gameModel.getPlayerByObserver(observer);
-            if(gameModel.getActivePlayers().contains(disconnected)) {    //should always be true, right?
-                gameModel.detach(observer);
-            }
+            Player playerToDisconnect = gameModel.getPlayerByObserver(serverView);
+            gameModel.deactivate(playerToDisconnect);
+            gameModel.detach(serverView);
             if(gameModel.isMatchInProgress()){
-                gameModel.fakeAction(disconnected);
+                gameModel.fakeAction(playerToDisconnect);
             }//todo controllo se devo togliere il timer (michele: "looks like this 'todo' has already been satisfied (look below)")
         } catch(NoSuchObserverException e){
             System.out.println("Player already disconnected!");
@@ -352,9 +359,12 @@ public class Controller {
             if (checkStopMatch()){
 
             } else {
-                removeObserverFromTimers(observer);
-                startTimers();
+                removeObserverFromTimers(serverView);
+                //finalCleaning();
                 gameModel.notifyConnectionUpdate();
+                gameModel.getMatch().notifyFullUpdateAllPlayers();
+                System.out.println(listToString(gameModel.getActivePlayers()));
+                System.out.println(listToString(gameModel.getInactivePlayers()));
             }
         }
     }
@@ -375,7 +385,7 @@ public class Controller {
         gameModel.startMatch();
         gameModel.getMatch().notifyStartMatchUpdate();
         gameModel.getMatch().notifyFullUpdateAllPlayers();
-        startTimers();
+        finalCleaning();
         //todo notificare i player che la partita inizia
     }
 
@@ -400,23 +410,25 @@ public class Controller {
     }
 
     //todo: added by michele, check!
-    private void startTimers(){//era synchronized ma dava problemi
-        if(!gameModel.isMatchInProgress()){
-            return;
+    public void finalCleaning(){//era synchronized ma dava problemi
+        for (ServerView serverView : toDisconnectList){
+            disconnectPlayer(serverView);
         }
-        while (!gameModel.getActivePlayers().containsAll(gameModel.getWaitingFor())){
-            List<Player> toFakeList = new ArrayList<>();
-            for (Player p : gameModel.getWaitingFor()){
-                if (!gameModel.getActivePlayers().contains(p)){
-                    toFakeList.add(p);
+        if(!gameModel.isMatchInProgress()) {
+            while (!gameModel.getActivePlayers().containsAll(gameModel.getWaitingFor())) {
+                List<Player> toFakeList = new ArrayList<>();
+                for (Player p : gameModel.getWaitingFor()) {
+                    if (!gameModel.getActivePlayers().contains(p)) {
+                        toFakeList.add(p);
+                    }
+                }
+                for (Player p : toFakeList) {
+                    gameModel.fakeAction(p);
                 }
             }
-            for (Player p : toFakeList){
-                gameModel.fakeAction(p);
+            for (Player p : gameModel.getWaitingFor()) {
+                addTimer(gameModel.getObserver(p)); //addTimer checks if there is no timer active for the corresponding observer
             }
-        }
-        for (Player p : gameModel.getWaitingFor()){
-            addTimer(gameModel.getObserver(p)); //addTimer checks if there is no timer active for the corresponding observer
         }
     }
 

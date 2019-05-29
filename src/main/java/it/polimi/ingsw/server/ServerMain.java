@@ -15,6 +15,7 @@ import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -111,5 +112,17 @@ public class ServerMain {
         }
 
         new ServerMain(portNumber, loginTimerDuration, inputTimerDuration);
+    }
+
+    public static <T> String listToString(List<T> list){
+        StringBuilder result = new StringBuilder();
+        for (T t : list){
+            if (t == null){
+                result.append("    null;");
+            } else {
+                result.append("    "+t.toString()+";");
+            }
+        }
+        return result.toString();
     }
 }

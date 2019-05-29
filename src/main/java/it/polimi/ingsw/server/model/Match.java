@@ -666,7 +666,12 @@ public class Match {
         Cash credit = receiver.getCredit();
 
         PaymentUpdateMessage message = new PaymentUpdateMessage(pending, credit);
-        observers.get(receiver).update(message);
+
+
+        Observer o = observers.get(receiver);
+        if (o != null){
+            o.update(message);
+        }
     }
 
     public void notifyWeaponsUpdate(Player player){
@@ -780,7 +785,10 @@ public class Match {
         }
 
         SelectablesUpdateMessage message = new SelectablesUpdateMessage(selWeapons, selSquares, selModes, selCommands, selActions, selColors, selPlayers, selPowerUps, currWeapon);
-        observers.get(player).update(message);
+        Observer o = observers.get(player);
+        if (o != null){
+            o.update(message);
+        }
     }
 
     public void notifyAllSelectablesUpdate(){

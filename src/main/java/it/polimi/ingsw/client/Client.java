@@ -105,7 +105,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     @Override
     public void visit(StartMatchUpdateMessage startMatchUpdateMessage) {
         System.out.println("Start match update received");
-        match = new MatchView(name, startMatchUpdateMessage.getLayoutConfiguration(), startMatchUpdateMessage.getNames(), startMatchUpdateMessage.getColors(), connections);
+        if (match == null) match = new MatchView(name, startMatchUpdateMessage.getLayoutConfiguration(), startMatchUpdateMessage.getNames(), startMatchUpdateMessage.getColors(), connections);
         userInterface.UpdateStartMatch(match);
         //todo
     }

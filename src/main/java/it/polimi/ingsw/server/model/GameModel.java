@@ -604,15 +604,9 @@ public class GameModel implements Observable {
     public void detach(Observer observer){
         try{
             Player tempPlayer = getPlayerByObserver(observer);
-            activePlayers.remove(tempPlayer);
-            if(!matchInProgress){
-                observers.remove(tempPlayer);
-            } else{
-                observers.replace(tempPlayer, null);
-                inactivePlayers.add(tempPlayer);
-            }
+            observers.remove(tempPlayer);
         } catch(NoSuchObserverException e){
-            e.printStackTrace();
+            System.out.println("Trying to remove an absent observer");
         }
         //todo: add check players.size and throw exception
     }
@@ -628,6 +622,13 @@ public class GameModel implements Observable {
 
     public Observer getObserver(Player p){
         return observers.get(p);
+    }
+
+    public void deactivate(Player player){
+        activePlayers.remove(player);
+        if (isMatchInProgress()){
+            inactivePlayers.add(player);
+        }
     }
 
     public boolean alreadyActive(String name){
@@ -676,6 +677,7 @@ public class GameModel implements Observable {
                 activePlayers.add(oldPlayer);
             }
         }
+        match.notifyStartMatchUpdate();
         return oldPlayer;
     }
 

@@ -42,12 +42,16 @@ public class ServerView extends UnicastRemoteObject implements Observer, ServerV
             }
         } catch(IOException e){
             System.out.println("Error while updating view!");
+            controller.setToDisconnect(this);
+            System.out.println("Server view "+this+" set to disconnect");
             e.printStackTrace();
         }
     }
 
-    public void disconnectPlayer(Observer observer){
-        controller.disconnectPlayer(observer);
+    public void disconnectPlayer(){
+        //controller.disconnectPlayer(this);
+        controller.setToDisconnect(this);
+        controller.finalCleaning();
     }
 
     public void closeNetwork() throws IOException{
