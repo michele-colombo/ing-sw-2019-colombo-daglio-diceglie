@@ -4,6 +4,7 @@ import it.polimi.ingsw.client.network.NetworkInterfaceClient;
 import it.polimi.ingsw.client.network.RmiClient;
 import it.polimi.ingsw.client.network.SocketClient;
 import it.polimi.ingsw.client.userInterface.UserInterface;
+import it.polimi.ingsw.communication.MessageVisitor;
 import it.polimi.ingsw.communication.events.*;
 import it.polimi.ingsw.communication.message.*;
 import it.polimi.ingsw.server.model.enums.AmmoColor;
@@ -11,47 +12,37 @@ import it.polimi.ingsw.server.model.enums.Command;
 import it.polimi.ingsw.server.model.enums.PlayerState;
 
 import java.io.IOException;
-import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Client extends UnicastRemoteObject implements ClientInterface {
+public class Client implements MessageVisitor {
 
     private NetworkInterfaceClient network;
     private UserInterface userInterface;
     private String name;
-    private String ip;
-    private int port;
+
     private boolean connected;
     private MatchView match;
     private Map<String, Boolean> connections;
 
 
-    public Client(UserInterface userInterface) throws RemoteException {
+    public Client(UserInterface userInterface){
         this.userInterface = userInterface;
-        this.ip = ClientMain.config.getIp();
-        this.port = ClientMain.config.getPort();
         this.connected = false;
         connections = new HashMap<>();
-    }
-
-    public void login(String choice, String name){
-        createConnection(choice);
-        chooseName(name);
     }
 
     public void createConnection(String connection){
         try {
             switch (connection) {
                 case "socket":
-                    network = new SocketClient(this.ip, this.port, this);
+                    network = new SocketClient(this);
                     connected = true;
                     break;
                 case "rmi":
-                    network = new RmiClient(this.ip, this.port, this);
+                    network = new RmiClient(this);
                     connected = true;
                     break;
                 default: //non deve succedere
@@ -60,8 +51,9 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
             userInterface.showLogin(); //todo: insert by michele, check
             //network.startNetwork();
         }
-        catch (IOException e){
-            System.out.println("Error while creating the network. Try again logging in");
+        catch (Exception e){
+            //System.out.println("Error while creating the network. Try again logging in");
+            userInterface.printError(e.toString());
             connected = false;
             userInterface.showConnectionSelection();    //todo: insert by michele, check
         }
@@ -72,7 +64,6 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     public void chooseName(String name){
         this.name = name;
         try{
-
             EventVisitable loginEvent = new LoginEvent(name);
             network.forward(loginEvent);
 
@@ -82,17 +73,15 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
         }
     }
 
-    @Override
+
     public synchronized void visit(LoginMessage message){
         userInterface.printLoginMessage(message.toString(), message.getLoginSuccessful());
     }
 
-    @Override
     public  synchronized void visit(GenericMessage message){
         //userInterface.printDisconnectionMessage(message.toString());
     }
 
-    @Override
     public  synchronized void visit(ConnectionUpdateMessage connectionUpdateMessage) {
         System.out.println("Connection update received");
         connections.clear();
@@ -102,7 +91,6 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
         userInterface.updateConnection(); //aggiunta per la Gui, potrebbe non funzionare per la Cli
     }
 
-    @Override
     public synchronized void visit(StartMatchUpdateMessage startMatchUpdateMessage) {
         System.out.println("Start match update received");
         if (match == null) match = new MatchView(name, startMatchUpdateMessage.getLayoutConfiguration(), startMatchUpdateMessage.getNames(), startMatchUpdateMessage.getColors(), connections);
@@ -110,7 +98,6 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
         //todo
     }
 
-    @Override
     public synchronized void visit(LayoutUpdateMessage layoutUpdateMessage) {
         System.out.println("Layout update received");
         LayoutView layout = match.getLayout();
@@ -143,7 +130,6 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
         userInterface.updateLayout();
     }
 
-    @Override
     public synchronized void visit(KillshotTrackUpdateMessage killshotTrackUpdate) {
         System.out.println("Killshot track update received");
         match.setSkulls(killshotTrackUpdate.getSkulls());
@@ -162,14 +148,13 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
         userInterface.updateKillshotTrack();
     }
 
-    @Override
+
     public synchronized void visit(CurrentPlayerUpdateMessage currentPlayerUpdate) {
         System.out.println("current player update received");
         match.setCurrentPlayer(match.getPlayerFromName(currentPlayerUpdate.getCurrentPlayer()));
         userInterface.updateCurrentPlayer();
     }
 
-    @Override
     public synchronized void visit(PlayerUpdateMessage playerUpdateMessage) {
         System.out.println("Player update received");
         PlayerView playerToUpdate = match.getPlayerFromName(playerUpdateMessage.getName());
@@ -179,7 +164,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
         userInterface.updatePlayer(playerToUpdate);
     }
 
-    @Override
+
     public synchronized void visit(PaymentUpdateMessage paymentUpdateMessage) {
         System.out.println("Payment update received");
         match.getMyPlayer().setPending(paymentUpdateMessage.getPending());
@@ -187,7 +172,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
         userInterface.updatePayment();
     }
 
-    @Override
+
     public synchronized void visit(WeaponsUpdateMessage weaponsUpdateMessage) {
         System.out.println("Weapons update received");
         if (weaponsUpdateMessage.getName().equals(name)){
@@ -211,7 +196,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
         userInterface.updateWeapons(player);
     }
 
-    @Override
+
     public synchronized void visit(PowerUpUpdateMessage powerUpUpdateMessage) {
         System.out.println("PowerUp update received");
         if (powerUpUpdateMessage.getName().equals(name)){
@@ -227,7 +212,6 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
         userInterface.updatePowerUp(player);
     }
 
-    @Override
     public synchronized void visit(DamageUpdateMessage damageUpdateMessage) {
         System.out.println("Damage update received");
         PlayerView playerToUpdate = match.getPlayerFromName(damageUpdateMessage.getName());
@@ -248,7 +232,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
         userInterface.updateDamage(playerToUpdate);
     }
 
-    @Override
+
     public synchronized void visit(SelectablesUpdateMessage selectablesUpdateMessage) {
         System.out.println("Selectables update received");
         MyPlayer me = match.getMyPlayer();
@@ -459,8 +443,15 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
         return connections;
     }
 
+
+
     public void restart(){
-        //todo whan restarting
+        userInterface.showConnectionSelection();
+    }
+
+    public void shutDown(){
+        network.closeConnection();
+        network= null;
     }
 
 }

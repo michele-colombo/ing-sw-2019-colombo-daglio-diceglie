@@ -7,4 +7,5 @@ import java.io.IOException;
 public interface NetworkInterfaceClient{
     void forward(EventVisitable eventVisitable) throws IOException;
     void startNetwork();
+    void closeConnection();
 }

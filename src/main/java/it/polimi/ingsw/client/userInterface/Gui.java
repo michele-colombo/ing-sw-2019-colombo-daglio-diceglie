@@ -8,6 +8,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -24,6 +25,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.rmi.RemoteException;
 
@@ -132,26 +134,31 @@ public class Gui extends Application implements UserInterface {
 
         btn.setOnAction(event -> {
             if(comboBox.getValue() != null && !comboBox.getValue().toString().isEmpty()){
-                try {
-                    Gui.client = new Client(this);
-                    client.createConnection(comboBox.getValue().toString().toLowerCase());
-                    if (client.isConnected()) {
-                        changeToLogin();
-                    } else {
-                        actionTarget.setFill(Color.RED);
-                        actionTarget.setText("Network not found!");
-                    }
-                }
-                catch (RemoteException e){
+
+                Gui.client = new Client(this);
+                client.createConnection(comboBox.getValue().toString().toLowerCase());
+                if (client.isConnected()) {
+                    changeToLogin();
+                } else {
                     actionTarget.setFill(Color.RED);
                     actionTarget.setText("Network not found!");
                 }
+
             }
         });
 
         scene = new Scene(grid);
         stage.setScene(scene);
         stage.show();
+
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            public void handle(WindowEvent we) {
+                System.out.println("Stage is closing");
+                client.restart();
+
+                stage.close();
+            }
+        });
     }
 
     public void changeToLogin(){
@@ -228,6 +235,11 @@ public class Gui extends Application implements UserInterface {
 
     @Override
     public void updateSelectables() {
+
+    }
+
+    @Override
+    public void printError(String message) {
 
     }
 }

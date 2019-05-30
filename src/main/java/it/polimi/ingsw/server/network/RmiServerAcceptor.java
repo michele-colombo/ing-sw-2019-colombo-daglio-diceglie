@@ -1,8 +1,7 @@
 package it.polimi.ingsw.server.network;
 
-import it.polimi.ingsw.client.ClientInterface;
+import it.polimi.ingsw.client.network.RmiClientRemoteInterface;
 import it.polimi.ingsw.server.ServerView;
-import it.polimi.ingsw.server.ServerViewInterface;
 import it.polimi.ingsw.server.controller.Controller;
 
 
@@ -27,10 +26,8 @@ public class RmiServerAcceptor extends UnicastRemoteObject implements RmiServerA
     }
 
     @Override
-    public ServerViewInterface addMe (ClientInterface clientInterface) throws RemoteException {
-
-        ServerView created= new ServerView(new RmiServer(clientInterface), controller);
-        serverViewList.add(created);
-        return created;
+    public RmiServerRemoteInterface addMe (RmiClientRemoteInterface rmiClientRemoteInterface) throws RemoteException {
+        return new RmiServer(rmiClientRemoteInterface, controller);
     }
+
 }

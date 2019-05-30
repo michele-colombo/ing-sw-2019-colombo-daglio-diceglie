@@ -16,7 +16,7 @@ public class PlayerSelectedEvent extends EventVisitable {
     }
 
     @Override
-    public void accept(EventVisitor eventVisitor) throws RemoteException {
+    public void accept(EventVisitor eventVisitor) {
         eventVisitor.visit(this);
     }
 }

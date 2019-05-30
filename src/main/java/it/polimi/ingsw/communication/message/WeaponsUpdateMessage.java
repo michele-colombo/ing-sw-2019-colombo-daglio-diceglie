@@ -43,7 +43,7 @@ public class WeaponsUpdateMessage extends MessageVisitable {
     }
 
     @Override
-    public void accept(MessageVisitor messageVisitor) throws RemoteException {
+    public void accept(MessageVisitor messageVisitor) {
         messageVisitor.visit(this);
     }
  }

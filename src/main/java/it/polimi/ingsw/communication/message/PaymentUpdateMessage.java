@@ -24,7 +24,7 @@ public class PaymentUpdateMessage extends MessageVisitable {
     }
 
     @Override
-    public void accept(MessageVisitor messageVisitor) throws RemoteException {
+    public void accept(MessageVisitor messageVisitor) {
         messageVisitor.visit(this);
     }
 }

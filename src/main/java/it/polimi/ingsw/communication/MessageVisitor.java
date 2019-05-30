@@ -5,29 +5,29 @@ import it.polimi.ingsw.communication.message.*;
 import java.rmi.RemoteException;
 
 public interface MessageVisitor {
-    void visit(LoginMessage loginMessage) throws RemoteException;
+    void visit(LoginMessage loginMessage);
 
-    void visit(GenericMessage genericMessage) throws RemoteException;
+    void visit(GenericMessage genericMessage);
 
-    void visit(LayoutUpdateMessage layoutUpdateMessage) throws RemoteException;
+    void visit(LayoutUpdateMessage layoutUpdateMessage);
 
-    void visit(KillshotTrackUpdateMessage killshotTrackUpdate) throws RemoteException;
+    void visit(KillshotTrackUpdateMessage killshotTrackUpdate);
 
-    void visit(CurrentPlayerUpdateMessage currentPlayerUpdate) throws RemoteException;
+    void visit(CurrentPlayerUpdateMessage currentPlayerUpdate);
 
-    void visit(StartMatchUpdateMessage startMatchUpdateMessage) throws RemoteException;
+    void visit(StartMatchUpdateMessage startMatchUpdateMessage);
 
-    void visit(PlayerUpdateMessage playerUpdateMessage) throws RemoteException;
+    void visit(PlayerUpdateMessage playerUpdateMessage);
 
-    void visit(PaymentUpdateMessage paymentUpdateMessage) throws RemoteException;
+    void visit(PaymentUpdateMessage paymentUpdateMessage);
 
-    void visit(WeaponsUpdateMessage weaponsUpdateMessage) throws RemoteException;
+    void visit(WeaponsUpdateMessage weaponsUpdateMessage);
 
-    void visit(PowerUpUpdateMessage powerUpUpdateMessage) throws RemoteException;
+    void visit(PowerUpUpdateMessage powerUpUpdateMessage);
 
-    void visit(SelectablesUpdateMessage selectablesUpdateMessage) throws RemoteException;
+    void visit(SelectablesUpdateMessage selectablesUpdateMessage);
 
-    void visit(DamageUpdateMessage damageUpdateMessage) throws RemoteException;
+    void visit(DamageUpdateMessage damageUpdateMessage);
 
-    void visit(ConnectionUpdateMessage connectionUpdateMessage) throws RemoteException;
+    void visit(ConnectionUpdateMessage connectionUpdateMessage);
 }

@@ -4,33 +4,32 @@ package it.polimi.ingsw.client;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
+
+
+
 import it.polimi.ingsw.client.userInterface.cli.Cli;
 import it.polimi.ingsw.client.userInterface.Gui;
+import javafx.application.Application;
 
 import java.io.*;
 import java.util.Scanner;
 
 public class ClientMain{
 
-    static ClientConfig config;
-
-
-
+    public static ClientConfig config;
 
     public static void main(String[] args) throws IOException {
         config = new ClientConfig();
 
-        if(args.length == 0) {
-            loadFromConfigurationFile();
+        loadFromConfigurationFile();
+
+
+        if (args[0].equals("-h") || args[0].equals("--help")) {
+            printHelpScreen();
+            return;
         }
         else {
-            if (args[0].equals("-h") || args[0].equals("--help")) {
-                printHelpScreen();
-                return;
-            }
-            else {
-                getFromCmdArguments(args);
-            }
+            getFromCmdArguments(args);
         }
 
         askUserInput();
@@ -38,14 +37,8 @@ public class ClientMain{
         if(config.getUserInterface().equals("cli")){
             new Cli();
         } else {
-            Gui.main(null);
+            Application.launch(Gui.class);
         }
-
-
-        //Client client = new Client(config.getIp(), config.getPort(), config.getUserInterface());
-        //client.startClient();
-
-
     }
 
     private static void askUserInput(){
@@ -111,11 +104,8 @@ public class ClientMain{
                     config.setUserInterface(nextArgument);
 
                     break;
-                case "-h":
-                    printHelpScreen();
-                    return;
-
                 default:
+                    printHelpScreen();
                     break;
 
             }
@@ -140,7 +130,10 @@ public class ClientMain{
     }
 
     public static void printHelpScreen(){
-        System.out.println("Qui ci metto l'aiuto");
+        System.out.println("-ui [gui|cli]\n" +
+                           "-ip [x.x.x.x]\n" +
+                           "-port [int from 1024 to 65536");
+        return;
     }
 
     public static boolean isValidIp(String ip){

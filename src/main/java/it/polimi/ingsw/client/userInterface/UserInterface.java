@@ -36,4 +36,6 @@ public interface UserInterface {
     void updateDamage(PlayerView player);
 
     void updateSelectables();
+
+    void printError(String message);
 }

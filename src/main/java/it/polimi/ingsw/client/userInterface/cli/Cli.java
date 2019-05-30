@@ -28,12 +28,10 @@ public class Cli implements UserInterface {
 
     public Cli(){
         state = CliState.IDLE;
-        try {
-            this.client = new Client(this);
-            showConnectionSelection();
-        } catch (RemoteException e){
-            System.out.println(RED+"[ERROR]"+ DEFAULT_COLOR +"Impossible to create the client");
-        }
+
+        this.client = new Client(this);
+        showConnectionSelection();
+
         selectableIds = new ArrayList<>();
         isActive = true;
         reader = new Runnable() {
@@ -44,7 +42,8 @@ public class Cli implements UserInterface {
                 while (isActive){
                     String input = scanner.nextLine();
                     if ("quit".equalsIgnoreCase(input)){
-                        //todo: close everything
+                        client.shutDown();
+                        isActive= false;
                     } else if ("disconnect".equalsIgnoreCase(input)){
                         //todo
                     }
@@ -199,6 +198,12 @@ public class Cli implements UserInterface {
 
     }
 
+    @Override
+    public void printError(String message) {
+        System.out.println(RED + message);
+
+    }
+
     public void askLogin() {
 
         System.out.println("Choose: socket or rmi?");
@@ -228,16 +233,11 @@ public class Cli implements UserInterface {
             System.out.println("Something went wrong IOException");
         }
 
-        try {
 
-            this.client = new Client(this);
-            client.login(choice, name);
-            //todo: eliminate lgoin method
-        }
-        catch (RemoteException e){
-            System.out.println("Impossible to create client");
-            e.printStackTrace();
-        }
+        //this.client = new Client(this);
+        client.chooseName(name);
+        //todo: eliminate lgoin method
+
     }
 
 

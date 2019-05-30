@@ -12,7 +12,7 @@ public class LoginMessage extends MessageVisitable {
         this.loginSuccessful = loginSuccessful;
     }
 
-    public void accept(MessageVisitor messageVisitor) throws RemoteException {
+    public void accept(MessageVisitor messageVisitor) {
         messageVisitor.visit(this);
     }
 

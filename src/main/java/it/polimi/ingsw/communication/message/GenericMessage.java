@@ -9,7 +9,7 @@ public class GenericMessage extends MessageVisitable {
         this.string = string;
     }
 
-    public void accept(MessageVisitor messageVisitor) throws RemoteException {
+    public void accept(MessageVisitor messageVisitor) {
         messageVisitor.visit(this);
     }
 }

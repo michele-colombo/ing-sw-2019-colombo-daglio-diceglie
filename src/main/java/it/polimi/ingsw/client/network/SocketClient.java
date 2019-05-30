@@ -2,6 +2,7 @@ package it.polimi.ingsw.client.network;
 
 import com.google.gson.Gson;
 import it.polimi.ingsw.client.Client;
+import it.polimi.ingsw.client.ClientMain;
 import it.polimi.ingsw.communication.events.*;
 import it.polimi.ingsw.communication.message.*;
 import it.polimi.ingsw.communication.EventVisitor;
@@ -21,25 +22,21 @@ public class SocketClient extends Thread implements NetworkInterfaceClient, Even
 
     private PrintWriter out;
 
-    public SocketClient(Socket socket, Client client){
-        this.socket = socket;
-        this.client= client;
-        try{
-            out = new PrintWriter(socket.getOutputStream());
-            out.flush();
-        } catch(IOException e){
-            System.out.println("Error while creating stream!");
-            e.printStackTrace();
-        }
-    }
+    private boolean active;
 
-    public SocketClient(String ip, int port, Client client) throws IOException{
+
+    public SocketClient(Client client) throws Exception{
         try{
+            String ip= ClientMain.config.getIp();
+            int port= ClientMain.config.getPort();
+
             SocketAddress address= new InetSocketAddress(ip, port);
             Socket sock= new Socket();
             this.socket= sock;
             this.socket.connect(address, 10000);
             this.client= client;
+
+            active= true;
 
             out= new PrintWriter(sock.getOutputStream());
             out.flush();
@@ -47,7 +44,7 @@ public class SocketClient extends Thread implements NetworkInterfaceClient, Even
             start();
         }
         catch (IOException e){
-            throw new IOException();
+            throw new Exception("Impossible to start socket network");
         }
     }
 
@@ -58,7 +55,7 @@ public class SocketClient extends Thread implements NetworkInterfaceClient, Even
     public void run() {
             try {
                 Scanner in = new Scanner(socket.getInputStream());
-                while(true) {
+                while(active) {
                     MessageVisitable received = unwrap( in.nextLine() );
                     received.accept(client);
                     //todo: remove line below
@@ -66,22 +63,22 @@ public class SocketClient extends Thread implements NetworkInterfaceClient, Even
                 }
             }
             catch (NoSuchElementException nsee){
-                //when server is unreachable this is what to do
+                //it is very important because i get to this exception in every case i want to disconnect
                 //client.restart();
-                System.out.println("Server has stopped. Relogin");
 
-                try {
-                    socket.close();
-                    client.restart();
-                }
-                catch (IOException e){
-                    System.out.println("Impossible to close socket");
-                }
+                System.out.println("Server has stopped. Relogin");
+                closeConnection();
 
             }
             catch (IOException e) {
                 System.out.println("Error while receiving messages!");
                 // qui mi sa che e' meglio spegnere tutto
+            }
+            try {
+                socket.close();
+            }
+            catch (IOException e){
+
             }
     }
 
@@ -122,6 +119,16 @@ public class SocketClient extends Thread implements NetworkInterfaceClient, Even
         }
 
         return result;
+    }
+
+    public void closeConnection(){
+        active= false;
+        try {
+            socket.close();
+        }
+        catch (IOException e){
+            //non serve fare niente
+        }
     }
 
 

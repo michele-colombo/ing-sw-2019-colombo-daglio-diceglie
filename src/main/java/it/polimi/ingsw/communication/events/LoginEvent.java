@@ -11,7 +11,7 @@ public class LoginEvent extends EventVisitable {
         this.name = name;
     }
 
-    public void accept(EventVisitor eventVisitor) throws RemoteException {
+    public void accept(EventVisitor eventVisitor) {
         eventVisitor.visit(this);
     }
 

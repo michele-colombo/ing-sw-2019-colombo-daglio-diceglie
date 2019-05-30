@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-public class ServerView extends UnicastRemoteObject implements Observer, ServerViewInterface {
+public class ServerView implements Observer, EventVisitor {
     private NetworkInterfaceServer network;
     private Controller controller;
 
