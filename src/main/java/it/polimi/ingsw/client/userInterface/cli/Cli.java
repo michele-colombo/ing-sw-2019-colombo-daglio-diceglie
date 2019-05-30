@@ -15,17 +15,26 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class Cli implements UserInterface {
+    private enum CliState{
+        ASK_CONNECTION, ASK_LOGIN, LOGGED, IDLE, PLAY
+    }
     private Client client;
     private PlayingWindow playingWindow;
     private MatchView match;
     private List<String> selectableIds;
     private Runnable reader;
     private boolean isActive;
+    private CliState state;
 
     public Cli(){
-        this.client = null;
+        state = CliState.IDLE;
+        try {
+            this.client = new Client(this);
+            showConnectionSelection();
+        } catch (RemoteException e){
+            System.out.println(RED+"[ERROR]"+ DEFAULT_COLOR +"Impossible to create the client");
+        }
         selectableIds = new ArrayList<>();
-        askLogin();
         isActive = true;
         reader = new Runnable() {
             @Override
@@ -34,18 +43,42 @@ public class Cli implements UserInterface {
                 Scanner scanner = new Scanner(System.in);
                 while (isActive){
                     String input = scanner.nextLine();
-                    try {
-                        int sel = Integer.parseInt(input.trim());
-                        client.selected(selectableIds.get(sel));
-                        accepted = true;
-                    } catch (NumberFormatException e){
-                        System.out.println("please insert a number");
-                    } catch (WrongSelectionException e){
-                        playingWindow.show();
-                        System.out.println("invalid selection, retry!");
-                    } catch (IndexOutOfBoundsException e){
-                        playingWindow.show();
-                        System.out.println("invalid selection, retry!");
+                    if ("quit".equalsIgnoreCase(input)){
+                        //todo: close everything
+                    } else if ("disconnect".equalsIgnoreCase(input)){
+                        //todo
+                    }
+                    switch (state){
+                        case ASK_CONNECTION:
+                            if(input.equalsIgnoreCase("socket") || input.equalsIgnoreCase("rmi")){
+                                client.createConnection(input);
+                            } else {
+                                System.out.println("Please insert either 'socket' or 'rmi'");
+                            }
+                            break;
+                        case ASK_LOGIN:
+                            //input = input.trim();
+                            client.chooseName(input);
+                            state = CliState.IDLE;    //in order to prevent a player sends a login event twice
+                            break;
+                        case LOGGED:
+                            break;
+                        case IDLE:
+                            break;
+                        case PLAY:
+                            try {
+                                int sel = Integer.parseInt(input.trim());
+                                client.selected(selectableIds.get(sel));
+                                accepted = true;
+                            } catch (NumberFormatException e){
+                                System.out.println("please insert a number");
+                            } catch (WrongSelectionException e){
+                                playingWindow.show();
+                                System.out.println("invalid selection, retry!");
+                            } catch (IndexOutOfBoundsException e){
+                                playingWindow.show();
+                                System.out.println("invalid selection, retry!");
+                            }
                     }
                 }
             }
@@ -55,28 +88,50 @@ public class Cli implements UserInterface {
 
     @Override
     public void showConnectionSelection() {
-
+        Window window = new TitleAndTextWindow(30, 10,
+                "welcome to Adrenaline", BLUE,
+                "please insert the type of connection: socket or rmi");
+        window.show();
+        state = CliState.ASK_CONNECTION;
     }
 
     @Override
     public void showLogin() {
+        Window window = new TitleAndTextWindow(30, 10,
+                "login", BLUE,
+                "Please insert your nickname. If you want to reconnect, make sure you insert the previous nickname.");
+        window.show();
+        state = CliState.ASK_LOGIN;
+    }
 
+    public void printConnectedPlayers(){
+        String connectedPlayers = "These are the players currently online:";
+        for (Map.Entry<String, Boolean> entry : client.getConnections().entrySet()){
+            connectedPlayers = connectedPlayers+" "+entry.getKey()+",";
+        }
+        connectedPlayers = connectedPlayers.substring(0, connectedPlayers.length()-1);
+        Window window = new TitleAndTextWindow(30, 10,
+                "PLAYERS ONLINE", BLUE,
+                connectedPlayers);
+        window.show();
     }
 
     public void printLoginMessage(String text, boolean loginSuccessful){
-        System.out.println(text);
-        if(!loginSuccessful){
-            System.out.println("Insert a new name: ");
-            try{
-                client.chooseName(readStringFromUser());
-            } catch(IOException e){
-                System.out.println("Error while reading input from user!");
-            }
+        if (loginSuccessful){
+            Window window = new TitleAndTextWindow(30, 10,
+                    "LOGIN SUCCESSFUL!", OK_COLOR,
+                    text+" Please wait for the game to start. If you disconnect now, you will be completely removed from game.");
+            window.show();
+            state = CliState.LOGGED;
+            printConnectedPlayers();
+        } else {
+            Window window = new TitleAndTextWindow(30, 10,
+                    "LOGIN FAILED!", WRONG_COLOR,
+                    text+" Please insert a new name or disconnect.");
+            window.show();
+            showLogin();
+            state = CliState.ASK_LOGIN;
         }
-    }
-
-    public void printDisconnectionMessage(String text){
-        System.out.println(text);
     }
 
     public void showAndAskSelection(){
@@ -88,9 +143,14 @@ public class Cli implements UserInterface {
     @Override
     public void updateConnection() {
         if (match != null){
-            //showAndAskSelection();
+            List<PlayerBox> playerBoxes = playingWindow.getAllPlayers();
+            for (PlayerBox pb : playerBoxes){
+                pb.update(match);
+            }
+            playingWindow.build();
+            playingWindow.show();
         } else {
-            System.out.println(mapToString(client.getConnections()));
+            printConnectedPlayers();
         }
     }
 
@@ -200,7 +260,7 @@ public class Cli implements UserInterface {
     public void UpdateStartMatch(MatchView matchView) {
         this.match = matchView;
         playingWindow = new PlayingWindow(150, 37, match, this);
-
+        state = CliState.PLAY;
     }
 
     //TEST-ONLY METHOD

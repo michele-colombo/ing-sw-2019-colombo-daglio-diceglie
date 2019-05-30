@@ -57,15 +57,17 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
                 default: //non deve succedere
                     break;
             }
-
+            userInterface.showLogin(); //todo: insert by michele, check
             //network.startNetwork();
         }
         catch (IOException e){
             System.out.println("Error while creating the network. Try again logging in");
             connected = false;
-            //userInterface.askLogin();
+            userInterface.showConnectionSelection();    //todo: insert by michele, check
         }
     }
+
+
 
     public void chooseName(String name){
         this.name = name;
@@ -93,7 +95,10 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     @Override
     public  synchronized void visit(ConnectionUpdateMessage connectionUpdateMessage) {
         System.out.println("Connection update received");
-        connections = new HashMap<>(connectionUpdateMessage.getConnectionStates());
+        connections.clear();
+        for (Map.Entry<String, Boolean> entry : connectionUpdateMessage.getConnectionStates().entrySet()){
+            connections.put(entry.getKey(), entry.getValue());
+        }
         userInterface.updateConnection(); //aggiunta per la Gui, potrebbe non funzionare per la Cli
     }
 

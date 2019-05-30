@@ -4,7 +4,7 @@ import it.polimi.ingsw.client.MatchView;
 
 import static it.polimi.ingsw.client.userInterface.cli.CliUtils.*;
 
-public abstract class MiniBox {
+public class MiniBox {
     protected int x;
     protected int y;
     protected int width;
@@ -24,10 +24,12 @@ public abstract class MiniBox {
         }
     }
 
-    public abstract void update(MatchView match);
+    public void update(MatchView match){
+
+    }
 
     public void insertText(String str, int x, int y, String color){
-        if (y<0 || y>height || x<0) return;
+        if (y<0 || y>=height || x<0) return;
         char[] tempArray =  str.toCharArray();
         for (int i=0; i<tempArray.length && i+x<width; i++){
             stringBox[y][x+i] = color + tempArray[i] +  DEFAULT_COLOR;
@@ -36,6 +38,14 @@ public abstract class MiniBox {
 
     public void insertText(String str, int x, int y){
         insertText(str, x, y, DEFAULT_COLOR);
+    }
+
+    public void insertCenteredText(String text, int width, int y, String color){
+        insertText(text, (width-text.length())/2, y, color);
+    }
+
+    public void insertCenteredText(String text, int width, int y){
+        insertText(text, (width-text.length())/2, y, DEFAULT_COLOR);
     }
 
     public void insertSubBox(String[][] matrix, int x, int y){
@@ -88,9 +98,9 @@ public abstract class MiniBox {
         insertText(new String(rule), 0, y, color);
     }
 
-    public void insertTextMultiline(String text, int x, int y, int width){
-        if (x<0 || x>this.width) return;
-        if (y<0 || y>this.height) return;
+    public int insertTextMultiline(String text, int x, int y, int width){
+        if (x<0 || x>=this.width) return 0;
+        if (y<0 || y>=this.height) return 0;
         if (x+width > this.width){
             width = this.width-x;
         }
@@ -111,6 +121,7 @@ public abstract class MiniBox {
             }
         }
         insertText(line, x, y+r);
+        return r+1;
     }
 
     //TEST-ONLY

@@ -51,6 +51,9 @@ public class SocketServer extends Thread implements NetworkInterfaceServer, Mess
         }
         catch (IOException e){
             System.out.println("Eccezione sull'input");
+        } catch (Exception e){
+            System.out.println("there's another exception");
+            e.printStackTrace();
         }
     }
 
@@ -60,6 +63,7 @@ public class SocketServer extends Thread implements NetworkInterfaceServer, Mess
 
         messageVisitable.accept(this);
         out.println(messagePrefix + gson.toJson(messageVisitable));
+        System.out.println(messagePrefix + gson.toJson(messageVisitable));
         out.flush();
     }
 

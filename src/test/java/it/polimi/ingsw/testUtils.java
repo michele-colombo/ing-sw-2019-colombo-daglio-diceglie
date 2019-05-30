@@ -61,7 +61,7 @@ public class testUtils {
         for (String name : names){
             try {
                  newPlayers.add(gm.addPlayer(name));
-            } catch (NameAlreadyTakenException | GameFullException | AlreadyLoggedException | NameNotFoundException e){
+            } catch (Exception  e){
 
             }
         }

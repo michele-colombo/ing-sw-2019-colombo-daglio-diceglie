@@ -7,11 +7,9 @@ import it.polimi.ingsw.server.model.enums.AmmoColor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlayingWindow {
-    private int width;
-    private int height;
-    private MatchView match;
-    private Cli cli;
+public class PlayingWindow extends Window{
+    protected MatchView match;
+    protected Cli cli;
     private int firstColumnWidth;
     private int secondColumnWidth;
     private int thirdColumnWidth;
@@ -24,8 +22,6 @@ public class PlayingWindow {
     private int myWeaponBoxWidth;
     private int lastRowHeight;
     private int lastRowY;
-    private String[][] stringBox;
-    private List<MiniBox> miniBoxes;
     KillShotTrackBox killShotTrackBox;
     WeaponsInLayoutBox blueWeapons;
     WeaponsInLayoutBox redWeapons;
@@ -40,16 +36,9 @@ public class PlayingWindow {
 
 
     public PlayingWindow(int width, int height, MatchView match, Cli cli) {
-        this.width = width;
-        this.height = height;
+        super(width, height);
         this.match = match;
         this.cli = cli;
-        stringBox = new String[height][width];
-        for (int i=0; i<height; i++){
-            for (int j=0; j<width; j++){
-                stringBox[i][j] = " ";
-            }
-        }
         this.firstColumnWidth = width/6;
         this.secondColumnWidth = (width*3)/7;
         this.thirdColumnWidth = width - (firstColumnWidth + secondColumnWidth);
@@ -61,7 +50,6 @@ public class PlayingWindow {
         this.myPowerUpBoxWidth = firstColumnWidth;
         this.myWeaponBoxWidth = firstColumnWidth + 4;
         this.lastRowHeight = 6;
-        this.miniBoxes = new ArrayList<>();
         killShotTrackBox = new KillShotTrackBox(0,0, firstRowHeight, firstColumnWidth);
         miniBoxes.add(killShotTrackBox);
         int layoutBoxHeight = 2+squareHeight*3;
@@ -93,34 +81,54 @@ public class PlayingWindow {
         miniBoxes.add(selectablesBox);
     }
 
-    public void show(){
-        for (int i=0; i<height; i++){
-            for (int j=0; j<width; j++){
-                System.out.print(stringBox[i][j]);
-            }
-            System.out.println();
-        }
-    }
-
-    private void renderPlayingWindow(){
-        for (MiniBox mb : miniBoxes){
-            insertSubBox(mb.getStringBox(), mb.getX(), mb.getY());
-        }
-    }
-
     public void fullUpdate(MatchView match){
         for (MiniBox mb : miniBoxes){
             mb.update(match);
         }
-        renderPlayingWindow();
+        build();
     }
 
-    public void insertSubBox(String[][] matrix, int x, int y){
-        for(int i=0; i<matrix.length && i+y<height; i++){
-            for (int j=0; j<matrix[0].length && j+x<width; j++){
-                stringBox[i+y][j+x] = matrix[i][j];
-            }
-        }
+    public KillShotTrackBox getKillShotTrackBox() {
+        return killShotTrackBox;
     }
 
+    public WeaponsInLayoutBox getBlueWeapons() {
+        return blueWeapons;
+    }
+
+    public WeaponsInLayoutBox getRedWeapons() {
+        return redWeapons;
+    }
+
+    public WeaponsInLayoutBox getYellowWeapons() {
+        return yellowWeapons;
+    }
+
+    public GeneralInfoBox getGeneralInfoBox() {
+        return generalInfoBox;
+    }
+
+    public LayoutBox getLayoutBox() {
+        return layoutBox;
+    }
+
+    public List<PlayerBox> getAllPlayers() {
+        return allPlayers;
+    }
+
+    public MyWeaponBox getMyWeaponBox() {
+        return myWeaponBox;
+    }
+
+    public MyPowerUpBox getMyPowerUpBox() {
+        return myPowerUpBox;
+    }
+
+    public MyInfoBox getMyInfoBox() {
+        return myInfoBox;
+    }
+
+    public SelectablesBox getSelectablesBox() {
+        return selectablesBox;
+    }
 }

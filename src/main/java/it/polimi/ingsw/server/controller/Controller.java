@@ -350,10 +350,6 @@ public class Controller {
             checkStopMatch();
 
             System.out.println("I'm in controller.disconnectPlayer");
-            System.out.println("active players:"+listToString(gameModel.getActivePlayers()));
-            System.out.println("inactive players"+listToString(gameModel.getInactivePlayers()));
-            System.out.println("to disconnect"+listToString(toDisconnectList));
-            System.out.println("waitingFor"+listToString(gameModel.getMatch().getWaitingFor()));
 
         }
     }
@@ -419,14 +415,14 @@ public class Controller {
             for (Player p : gameModel.getWaitingFor()) {
                 addTimer(gameModel.getObserver(p)); //addTimer checks if there is no timer active for the corresponding observer
             }
-            System.out.println("I'm at the end of controller.finalClening");
+            gameModel.getMatch().notifyFullUpdateAllPlayers();
             System.out.println("active players:"+listToString(gameModel.getActivePlayers()));
             System.out.println("inactive players"+listToString(gameModel.getInactivePlayers()));
             System.out.println("to disconnect"+listToString(toDisconnectList));
             System.out.println("waitingFor"+listToString(gameModel.getMatch().getWaitingFor()));
-            gameModel.notifyConnectionUpdate();
-            gameModel.getMatch().notifyFullUpdateAllPlayers();
         }
+        System.out.println("I'm at the end of controller.finalClening");
+        gameModel.notifyConnectionUpdate();
 
 
     }

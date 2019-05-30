@@ -11,6 +11,15 @@ import java.util.Map;
 
 public class CliUtils {
     public static final String DEFAULT_COLOR = "\u001B[0m";
+    public static final String BLACK = "\u001B[30m";
+    public static final String RED = "\u001B[31m";
+    public static final String GREEN = "\u001B[32m";
+    public static final String YELLOW = "\u001B[33m";
+    public static final String BLUE = "\u001B[34m";
+    public static final String PURPLE = "\u001B[35m";
+    public static final String CYAN = "\u001B[36m";
+    public static final String WHITE = "\u001B[37m";
+
     public static final String DROP = "\u25cf";
     public static final String SKULL = "\u2620";
     public static final String AMMO = "\u25a0";
@@ -98,17 +107,17 @@ public class CliUtils {
     public static String printColorOf(AmmoColor ammoColor){
         switch (ammoColor){
             case BLUE:
-                return "\u001b[34m";
+                return BLUE;
             case RED:
-                return "\u001b[31m";
+                return RED;
             case YELLOW:
-                return "\u001b[33m";
+                return YELLOW;
             case GREEN:
-                return "\u001b[32m";
+                return GREEN;
             case PURPLE:
-                return "\u001b[35m";
+                return PURPLE;
             case WHITE:
-                return "\u001b[0m";
+                return DEFAULT_COLOR;
         }
         return DEFAULT_COLOR;
     }
@@ -116,15 +125,15 @@ public class CliUtils {
     public static String printColorOf(PlayerColor playerColor){
         switch (playerColor) {
             case YELLOW:
-                return "\u001b[33m";
+                return YELLOW;
             case GREY:
-                return "\u001b[34m";
+                return BLUE;
             case GREEN:
-                return "\u001b[32m";
+                return GREEN;
             case BLUE:
-                return "\u001b[36m";
+                return CYAN;
             case VIOLET:
-                return "\u001b[35m";
+                return PURPLE;
         }
         return DEFAULT_COLOR;
     }
