@@ -25,7 +25,7 @@ public class PlayingTest {
                 Player p2 = gm.addPlayer("second");
                 Player p3 = gm.addPlayer("third");
                 Player p4 = gm.addPlayer("fourth");
-            } catch(NameAlreadyTakenException | AlreadyLoggedException | GameFullException | NameNotFoundException e){
+            } catch(NameAlreadyTakenException | AlreadyLoggedException | GameFullException | NameNotFoundException | NameEmptyException e){
                 return;
             }
             gm.startMatch();
