@@ -33,6 +33,7 @@ public class LoginGui {
 
     public LoginGui(){
         view = new BorderPane();
+        boardGui = null;
 
         GridPane loginGrid = new GridPane();
         view.setCenter(loginGrid);
@@ -106,9 +107,11 @@ public class LoginGui {
             @Override
             public void run() {
                 //Parent newView = new BoardGui(match.getLayout().getLayoutConfiguration()).getView();
-                boardGui = new BoardGui(match);
-                Parent newView = boardGui.getView();
-                view.getScene().setRoot(newView);
+                if(boardGui == null){
+                    boardGui = new BoardGui(match);
+                    Parent newView = boardGui.getView();
+                    view.getScene().setRoot(newView);
+                }
             }
         });
     }

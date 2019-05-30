@@ -150,6 +150,7 @@ public class BoardGui {
             @Override
             public void run() {
                 connectionState.getChildren().removeAll(connectionLabels);
+                connectionLabels.clear();
                 int i = 1;
                 for(String string : connections.keySet()){
                     Label playerLabel = new Label(string);
@@ -169,6 +170,8 @@ public class BoardGui {
                     onlineLabel.setMaxWidth(Gui.getScreenBounds().getWidth()/20);
                     connectionState.add(playerLabel, 0, i);
                     connectionState.add(onlineLabel, 1, i);
+                    connectionLabels.add(playerLabel);
+                    connectionLabels.add(onlineLabel);
                     i++;
                 }
             }

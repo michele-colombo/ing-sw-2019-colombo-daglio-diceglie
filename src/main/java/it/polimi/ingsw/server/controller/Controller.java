@@ -70,6 +70,8 @@ public class Controller {
             message = new LoginMessage("Name not found!", false);
         } catch(AlreadyLoggedException e){
             message = new LoginMessage("Player already logged", false);
+        } catch(NameEmptyException e){
+            message = new LoginMessage("Empty name not allowed!", false);
         }
         finally {
             serverView.update(message);

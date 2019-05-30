@@ -71,7 +71,7 @@ public class GameModel implements Observable {
         return matchInProgress;
     }
 
-    public Player addPlayer (String name) throws NameAlreadyTakenException, GameFullException, NameNotFoundException, AlreadyLoggedException {
+    public Player addPlayer (String name) throws NameAlreadyTakenException, GameFullException, NameNotFoundException, AlreadyLoggedException, NameEmptyException {
         if(!matchInProgress){
             return login(name);
         } else{
@@ -153,7 +153,7 @@ public class GameModel implements Observable {
             try {
                 Player newPlayer = addPlayer(playerName);
                 match.addPlayer(newPlayer);
-            } catch(NameAlreadyTakenException | AlreadyLoggedException | GameFullException | NameNotFoundException e){
+            } catch(NameAlreadyTakenException | AlreadyLoggedException | GameFullException | NameNotFoundException | NameEmptyException e){
             }
         }
         savedBackup.restore(match);
@@ -647,10 +647,12 @@ public class GameModel implements Observable {
         return allPlayers;
     }
 
-    public Player login(String name) throws NameAlreadyTakenException, GameFullException{
+    public Player login(String name) throws NameAlreadyTakenException, GameFullException, NameEmptyException{
         Player newPlayer;
         if((activePlayers.size() < 5)){
-            if(!nameTaken(name)){
+            if(name.length() == 0){
+                throw  new NameEmptyException();
+            } else if(!nameTaken(name)){
                 newPlayer = new Player(name);
                 activePlayers.add(newPlayer);
                 return newPlayer;

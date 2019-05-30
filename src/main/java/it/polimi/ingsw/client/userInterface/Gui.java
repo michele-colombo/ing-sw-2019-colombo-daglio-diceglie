@@ -133,7 +133,7 @@ public class Gui extends Application implements UserInterface {
         btn.setOnAction(event -> {
             if(comboBox.getValue() != null && !comboBox.getValue().toString().isEmpty()){
                 try {
-                    client = new Client(this);
+                    Gui.client = new Client(this);
                     client.createConnection(comboBox.getValue().toString().toLowerCase());
                     if (client.isConnected()) {
                         changeToLogin();
