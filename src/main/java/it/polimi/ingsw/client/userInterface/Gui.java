@@ -154,7 +154,7 @@ public class Gui extends Application implements UserInterface {
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             public void handle(WindowEvent we) {
                 System.out.println("Stage is closing");
-                client.restart();
+                client.shutDown();
 
                 stage.close();
             }

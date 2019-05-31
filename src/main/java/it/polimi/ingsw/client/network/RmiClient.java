@@ -8,6 +8,7 @@ import it.polimi.ingsw.server.network.RmiServerAcceptorInterface;
 import it.polimi.ingsw.server.network.RmiServerRemoteInterface;
 
 import java.io.IOException;
+import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -16,15 +17,13 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RmiClient extends UnicastRemoteObject implements  NetworkInterfaceClient, RmiClientRemoteInterface{
     private RmiServerRemoteInterface server;
     private Client client;
 
-    private Thread messageEater;
-
-    private boolean active;
-    private List<MessageVisitable> messageQueue;
+    private MessageTrafficManager messageEater;
 
     public RmiClient(Client cl) throws RemoteException{
 
@@ -34,8 +33,6 @@ public class RmiClient extends UnicastRemoteObject implements  NetworkInterfaceC
         int rmiPort= port + 1;
 
         this.client= cl;
-        active= true;
-        messageQueue= Collections.synchronizedList(new ArrayList<>());
 
         try {
             //System.out.println("Getting registry");
@@ -59,17 +56,12 @@ public class RmiClient extends UnicastRemoteObject implements  NetworkInterfaceC
             nbe.printStackTrace();
         }
 
-        messageEater= new Thread( new Runnable() {
-            @Override
-            public void run() {
-                while(active){
-                    if(!messageQueue.isEmpty()){
-                        messageQueue.remove(0).accept(client);
-                    }
-                }
-            }
-        });
+        messageEater= new MessageTrafficManager();
         messageEater.start();
+
+        System.out.println("finito tutto");
+
+
 
     }
 
@@ -88,11 +80,60 @@ public class RmiClient extends UnicastRemoteObject implements  NetworkInterfaceC
 
     @Override
     public void closeConnection() {
-        active= false;
+        messageEater.close();
+        try {
+            UnicastRemoteObject.unexportObject(this, true);
+        }
+        catch (NoSuchObjectException e){  }
     }
 
     @Override
     public void receive(MessageVisitable message)throws RemoteException {
-        messageQueue.add(message);
+        messageEater.put(message);
+    }
+
+
+
+    private class MessageTrafficManager extends Thread{
+        private List<MessageVisitable> queue;
+        private AtomicBoolean active;
+
+        public MessageTrafficManager(){
+            queue= Collections.synchronizedList(new ArrayList<>());
+            active= new AtomicBoolean(true);
+        }
+
+        public synchronized void eat(){
+            if(queue.isEmpty()){
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    //nothing
+                }
+            }
+            else {
+                notifyAll();
+                queue.remove(0).accept(client);
+            }
+        }
+
+        public synchronized void put(MessageVisitable message){
+            queue.add(message);
+            notifyAll();
+        }
+
+
+        public synchronized void run(){
+            while(active.get()) {
+                eat();
+            }
+            System.out.println("run finished");
+
+        }
+
+        public synchronized void close(){
+            active.set(false);
+            notifyAll();
+        }
     }
 }

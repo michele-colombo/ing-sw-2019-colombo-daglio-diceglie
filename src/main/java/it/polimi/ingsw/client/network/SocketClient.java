@@ -55,7 +55,7 @@ public class SocketClient extends Thread implements NetworkInterfaceClient, Even
     public void run() {
             try {
                 Scanner in = new Scanner(socket.getInputStream());
-                while(active) {
+                while(active && in.hasNext()) {
                     MessageVisitable received = unwrap( in.nextLine() );
                     received.accept(client);
                     //todo: remove line below
@@ -122,13 +122,10 @@ public class SocketClient extends Thread implements NetworkInterfaceClient, Even
     }
 
     public void closeConnection(){
-        active= false;
-        try {
+        try{
             socket.close();
         }
-        catch (IOException e){
-            //non serve fare niente
-        }
+        catch (IOException e){}
     }
 
 
