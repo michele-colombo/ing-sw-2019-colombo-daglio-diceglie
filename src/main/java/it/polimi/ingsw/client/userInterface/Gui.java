@@ -39,8 +39,8 @@ public class Gui extends Application implements UserInterface {
     private Scene scene;
     private ComboBox comboBox;
     private LoginGui loginGui;
+    private BoardGui boardGui;
     private static Rectangle2D screenBounds;
-    public static Timeline timeline;
 
     public static void main(String[] args){
         launch(args);
@@ -60,25 +60,14 @@ public class Gui extends Application implements UserInterface {
         loginGui.printLoginMessage(text, loginSuccessful);
     }
 
-    public void printDisconnectionMessage(String text){
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                disconnectionText.setFill(Color.GREEN);
-                disconnectionText.setText(text);
-                //timeline.play();
-            }
-        });
-        //System.out.println(text);
-    }
-
     //public void UpdateStartMatch()
 
     @Override
     public void start(Stage primaryStage) {
 
-        screenBounds = Screen.getPrimary().getBounds();
-        loginGui = new LoginGui();
+        Gui.screenBounds = Screen.getPrimary().getBounds();
+        loginGui = null;
+        boardGui = null;
         stage = primaryStage;
         stage.setTitle("Welcome to Adrenaline!");
         stage.setFullScreen(true);
@@ -165,14 +154,23 @@ public class Gui extends Application implements UserInterface {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                Parent newView = loginGui.getView();
-                grid.getScene().setRoot(newView);
+                loginGui = new LoginGui();
+                changeScene(loginGui.getView());
             }
         });
     }
 
     public void UpdateStartMatch(MatchView match){
-        loginGui.startMatchUpdate(match);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                //Parent newView = new BoardGui(match.getLayout().getLayoutConfiguration()).getView();
+                if(boardGui == null){
+                    boardGui = new BoardGui(match);
+                    changeScene(boardGui.getView());
+                }
+            }
+        });
     }
 
     public static Client getClient(){
@@ -185,57 +183,65 @@ public class Gui extends Application implements UserInterface {
 
 
     public void showAndAskSelection() {
-
+        return;
     }
 
     @Override
     public void updateConnection() {
-        loginGui.updateConnection(client.getConnections());
+        if(boardGui == null){
+            loginGui.updateConnection(client.getConnections());
+        } else {
+            boardGui.updateConnection(client.getConnections());
+        }
     }
 
     @Override
     public void updateLayout() {
-
+        return;
     }
 
     @Override
     public void updateKillshotTrack() {
-
+        return;
     }
 
     @Override
     public void updateCurrentPlayer() {
-
+        return;
     }
 
     @Override
     public void updatePlayer(PlayerView updated) {
-
+        return;
     }
 
     @Override
     public void updatePayment() {
-
+        return;
     }
 
     @Override
     public void updateWeapons(PlayerView player) {
-
+        return;
     }
 
     @Override
     public void updatePowerUp(PlayerView player) {
-
+        return;
     }
 
     @Override
     public void updateDamage(PlayerView player) {
-
+        return;
     }
 
     @Override
     public void updateSelectables() {
+        return;
+    }
 
+    private void changeScene(Parent newView){
+        scene.setRoot(newView);
     }
 
     @Override

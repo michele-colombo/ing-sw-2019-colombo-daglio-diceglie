@@ -3,27 +3,24 @@ package it.polimi.ingsw.client.userInterface;
 import it.polimi.ingsw.client.MatchView;
 import it.polimi.ingsw.client.PlayerView;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.PixelReader;
-import javafx.scene.image.WritableImage;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,30 +47,12 @@ public class BoardGui {
         InputStream boardUrl = getClass().getClassLoader().getResourceAsStream("layoutPNG/layout" + match.getLayout().getLayoutConfiguration() + ".png");
         Image image = new Image(boardUrl);
         ImageView imageView = new ImageView(image);
-        imageView.setFitHeight(Gui.getScreenBounds().getHeight());
-        imageView.setFitWidth(Gui.getScreenBounds().getHeight());
+        imageView.setFitHeight(Gui.getScreenBounds().getHeight()/1.2);
+        imageView.setFitWidth(Gui.getScreenBounds().getHeight()/1.2);
         imageView.setPreserveRatio(true);
         imageView.setSmooth(true);
-        /*imageView.addEventHandler(MouseEvent.MOUSE_ENTERED_TARGET, new EventHandler<MouseEvent>() {
 
-            @Override
-            public void handle(MouseEvent event) {
-                System.out.println("deh");
-                event.consume();
-            }
-        });
-        imageView.setOnMouseMoved(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                System.out.println("yes");
-                int x = (int) mouseEvent.getX();
-                int y = (int) mouseEvent.getY();
-                PixelReader reader = image.getPixelReader();
-                Image currentFrame = new WritableImage(reader, x, y, 200, 200);
-                ivTarget.setImage(image);
-            }
-        });*/
-        board.getChildren().add(imageView);
+        //board.getChildren().addAll(imageView, createKillButton());
         GridPane.setHalignment(imageView, HPos.LEFT);
         view.add(board, 0,0);
         view.add(ivTarget,0,0);
@@ -85,7 +64,6 @@ public class BoardGui {
         return view;
     }
 
-    //todo la prima damagetrack è quella del player corrente
     public void addDamageTrack(MatchView match){
         damageTracks = new GridPane();
         damageTracks.setVgap(5);
@@ -177,5 +155,31 @@ public class BoardGui {
             }
         });
     }
+
+    /*private Button createKillButton() {
+
+        final Button killButton = new Button("Kill the evil witch");
+
+        killButton.setStyle("-fx-base: firebrick;");
+
+        killButton.setTranslateX(500);
+
+        killButton.setTranslateY(-250);
+
+        killButton.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override public void handle(ActionEvent t) {
+
+                killButton.setStyle("-fx-base: forestgreen;");
+
+                killButton.setText("Ding-Dong! The Witch is Dead");
+
+            }
+
+        });
+
+        return killButton;
+
+    }*/
 
 }

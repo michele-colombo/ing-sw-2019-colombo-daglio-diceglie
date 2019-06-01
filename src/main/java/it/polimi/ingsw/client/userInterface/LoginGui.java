@@ -1,10 +1,5 @@
 package it.polimi.ingsw.client.userInterface;
 
-import it.polimi.ingsw.client.MatchView;
-import it.polimi.ingsw.client.PlayerView;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -15,11 +10,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.util.Duration;
 
 import java.util.Map;
 
@@ -28,12 +21,10 @@ public class LoginGui {
     private Text actionTarget;
     private Button loginButton;
     private GridPane connectionPane;
-    private BoardGui boardGui;
 
 
     public LoginGui(){
         view = new BorderPane();
-        boardGui = null;
 
         GridPane loginGrid = new GridPane();
         view.setCenter(loginGrid);
@@ -91,7 +82,6 @@ public class LoginGui {
     }
 
     public void printLoginMessage(String text, boolean loginSuccessful){
-        if(boardGui == null){
             if(loginSuccessful){
                 loginButton.setDisable(true);
                 actionTarget.setFill(Color.GREEN);
@@ -99,27 +89,9 @@ public class LoginGui {
                 actionTarget.setFill(Color.RED);
             }
             actionTarget.setText(text);
-        } //else
     }
-
-    public void startMatchUpdate(MatchView match){
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                //Parent newView = new BoardGui(match.getLayout().getLayoutConfiguration()).getView();
-                if(boardGui == null){
-                    boardGui = new BoardGui(match);
-                    Parent newView = boardGui.getView();
-                    view.getScene().setRoot(newView);
-                }
-            }
-        });
-    }
-
-    //todo qualcosa che faccia partire la board
 
     public void updateConnection(Map<String, Boolean> connections){
-        if(boardGui == null){
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
@@ -140,11 +112,7 @@ public class LoginGui {
                     }
                 }
             });
-        } else {
-            boardGui.updateConnection(connections);
-        }
     }
-
 
     public Parent getView(){
         return view;

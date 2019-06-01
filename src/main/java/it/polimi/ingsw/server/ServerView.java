@@ -31,7 +31,6 @@ public class ServerView implements Observer, EventVisitor {
     public void update(MessageVisitable messageVisitable){
         try{
             network.forwardMessage(messageVisitable);
-            System.out.println("Messaggio mandato!");
         } catch(IOException e){
             System.out.println("Error while updating view!");
             controller.setToDisconnect(this);
