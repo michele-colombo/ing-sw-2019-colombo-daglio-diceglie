@@ -36,6 +36,7 @@ public class MatchView {
         }
         track = new ArrayList<>();
         this.connections = connections;
+        frenzyOn = false;
     }
 
     public List<PlayerView> getOtherPlayers(){
@@ -102,7 +103,7 @@ public class MatchView {
     public List<PlayerView> getPlayersOn(SquareView square){
         List<PlayerView> result = new ArrayList<>();
         for (PlayerView p : getAllPlayers()){
-            if (square.equals(p.getSquarePosition())){
+            if (square.equals(p.getSquarePosition())){  //if squarePosition si null it returns false, no problem
                 result.add(p);
             }
         }

@@ -48,7 +48,7 @@ public class Backup {
             state = p.getState();
             nextState = p.getNextState();
             isFirstPlayer = p.isFirstPlayer();
-            if (isBorn) squarePosition = p.getSquarePosition().toString();
+            if (isBorn && p.getSquarePosition()!=null) squarePosition = p.getSquarePosition().toString();
             skullsNumber = p.getDamageTrack().getSkullsNumber();
             isFrenzy = p.getDamageTrack().isFrenzy();
 
@@ -167,7 +167,6 @@ public class Backup {
                     color.toString().hashCode() +
                     points * 127 +
                     state.toString().hashCode() +
-                    squarePosition.hashCode() +
                     skullsNumber * 63 +
                     wallet.hashCode();
         }

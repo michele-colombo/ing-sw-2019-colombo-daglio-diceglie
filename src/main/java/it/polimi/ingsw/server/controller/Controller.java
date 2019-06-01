@@ -52,13 +52,13 @@ public class Controller {
     }
 
     public synchronized void login(String name, ServerView serverView){
-        System.out.println("Message received");
         LoginMessage message = new LoginMessage("Login successful!", true);
         try{
-            Player newPlayer = gameModel.addPlayer(name);
+            String newName = name.trim();
+            Player newPlayer = gameModel.addPlayer(newName);
             gameModel.attach(newPlayer, serverView);
             checkStart();
-            System.out.println("Player "+name+" has correctly logged in");
+            System.out.println("[OK] player "+newName+" has correctly logged in");
             //todo se ci sono 5 player e la partita non è ancora iniziata, allora deve iniziare
             //todo se ci sono 3 player attivi e partita non iniziata, starta il countdown
         } catch(NameAlreadyTakenException e){
@@ -368,7 +368,6 @@ public class Controller {
     public void startMatch(){
         gameModel.startMatch();
         gameModel.getMatch().notifyStartMatchUpdate();
-        gameModel.getMatch().notifyFullUpdateAllPlayers();
         finalCleaning();
         //todo notificare i player che la partita inizia
     }

@@ -39,6 +39,9 @@ public class LayoutView {
                 existingSquare[row][column] = 0;
             }
         }
+        blueWeapons = new ArrayList<>();
+        redWeapons = new ArrayList<>();
+        yellowWeapons = new ArrayList<>();
     }
 
     /**

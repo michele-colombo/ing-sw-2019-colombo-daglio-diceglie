@@ -3,7 +3,6 @@ package it.polimi.ingsw.client;
 import it.polimi.ingsw.server.model.Cash;
 import it.polimi.ingsw.server.model.enums.PlayerColor;
 import it.polimi.ingsw.server.model.enums.PlayerState;
-import javafx.beans.property.StringProperty;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,9 +27,16 @@ public class PlayerView {
     public PlayerView(String name, PlayerColor color) {
         this.name = name;
         this.color = color;
+        this.state = PlayerState.IDLE;
+        numLoadedWeapons = 0;
         unloadedWeapons = new ArrayList<>();
+        numPowerUps = 0;
+        squarePosition = null;
+        wallet = new Cash(0,0,0);
+        skulls = 0;
         damageList = new ArrayList<>();
         markMap = new HashMap<>();
+        isFrenzy = false;
     }
 
     public String getName() {

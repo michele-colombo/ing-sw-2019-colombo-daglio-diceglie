@@ -28,8 +28,11 @@ public class MyPlayer extends PlayerView {
 
     public MyPlayer(String name, PlayerColor color) {
         super(name, color);
+        points = 0;
         weapons = new HashMap<>();
         powerUps = new ArrayList<>();
+        pending = new Cash(0,0,0);
+        credit = new Cash(0,0,0);
         selectableWeapons = new ArrayList<>();
         selectableSquares = new ArrayList<>();
         selectablePlayers = new ArrayList<>();
@@ -38,6 +41,7 @@ public class MyPlayer extends PlayerView {
         selectableColors = new ArrayList<>();
         selectablePowerUps = new ArrayList<>();
         selectableCommands = new ArrayList<>();
+        currWeapon = null;
     }
 
     public int getPoints() {
