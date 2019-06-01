@@ -61,7 +61,6 @@ public class Controller {
             System.out.println("Player "+name+" has correctly logged in");
             //todo se ci sono 5 player e la partita non è ancora iniziata, allora deve iniziare
             //todo se ci sono 3 player attivi e partita non iniziata, starta il countdown
-            gameModel.notifyConnectionUpdate();
         } catch(NameAlreadyTakenException e){
             message = new LoginMessage("Name already taken!", false);
         } catch(GameFullException e){
@@ -400,6 +399,7 @@ public class Controller {
             disconnectPlayer(serverView);
         }
         toDisconnectList.clear();
+        gameModel.notifyConnectionUpdate();
         if(gameModel.isMatchInProgress()) {
             while (!gameModel.getActivePlayers().containsAll(gameModel.getWaitingFor())) {
                 List<Player> toFakeList = new ArrayList<>();
@@ -416,13 +416,14 @@ public class Controller {
                 addTimer(gameModel.getObserver(p)); //addTimer checks if there is no timer active for the corresponding observer
             }
             gameModel.getMatch().notifyFullUpdateAllPlayers();
+            /*
             System.out.println("active players:"+listToString(gameModel.getActivePlayers()));
             System.out.println("inactive players"+listToString(gameModel.getInactivePlayers()));
             System.out.println("to disconnect"+listToString(toDisconnectList));
             System.out.println("waitingFor"+listToString(gameModel.getMatch().getWaitingFor()));
+            */
         }
-        System.out.println("I'm at the end of controller.finalClening");
-        gameModel.notifyConnectionUpdate();
+        System.out.println("[OK] final cleaning done");
 
 
     }

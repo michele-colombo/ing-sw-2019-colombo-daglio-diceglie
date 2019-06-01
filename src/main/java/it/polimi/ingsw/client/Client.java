@@ -309,7 +309,7 @@ public class Client implements MessageVisitor {
             }
         }
         me.setSelectablePowerUps(selPowerUps);
-
+        userInterface.updateSelectables();
         userInterface.showAndAskSelection();
     }
 

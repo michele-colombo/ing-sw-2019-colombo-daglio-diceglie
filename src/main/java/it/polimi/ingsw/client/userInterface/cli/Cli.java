@@ -5,10 +5,6 @@ import it.polimi.ingsw.client.userInterface.UserInterface;
 
 import static it.polimi.ingsw.client.userInterface.cli.CliUtils.*;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -46,38 +42,49 @@ public class Cli implements UserInterface {
                         isActive= false;
                     } else if ("disconnect".equalsIgnoreCase(input)){
                         //todo
-                    }
-                    switch (state){
-                        case ASK_CONNECTION:
-                            if(input.equalsIgnoreCase("socket") || input.equalsIgnoreCase("rmi")){
-                                client.createConnection(input);
-                            } else {
-                                System.out.println("Please insert either 'socket' or 'rmi'");
-                            }
-                            break;
-                        case ASK_LOGIN:
-                            //input = input.trim();
-                            client.chooseName(input);
-                            state = CliState.IDLE;    //in order to prevent a player sends a login event twice
-                            break;
-                        case LOGGED:
-                            break;
-                        case IDLE:
-                            break;
-                        case PLAY:
-                            try {
-                                int sel = Integer.parseInt(input.trim());
-                                client.selected(selectableIds.get(sel));
-                                accepted = true;
-                            } catch (NumberFormatException e){
-                                System.out.println("please insert a number");
-                            } catch (WrongSelectionException e){
-                                playingWindow.show();
-                                System.out.println("invalid selection, retry!");
-                            } catch (IndexOutOfBoundsException e){
-                                playingWindow.show();
-                                System.out.println("invalid selection, retry!");
-                            }
+                    } else {
+                        switch (state) {
+                            case ASK_CONNECTION:
+                                if (input.equalsIgnoreCase("socket") || input.equalsIgnoreCase("rmi")) {
+                                    client.createConnection(input);
+                                } else {
+                                    System.out.println("Please insert either 'socket' or 'rmi'");
+                                }
+                                break;
+                            case ASK_LOGIN:
+                                input = input.trim();
+                                client.chooseName(input);
+                                state = CliState.IDLE;    //in order to prevent a player sends a login event twice
+                                break;
+                            case LOGGED:
+                                break;
+                            case IDLE:
+                                break;
+                            case PLAY:
+                                try {
+                                    int sel = Integer.parseInt(input.trim());
+                                    client.selected(selectableIds.get(sel));
+                                    state = CliState.IDLE;
+                                } catch (NumberFormatException e) {
+                                    try {
+                                        String[] coordinates = input.split("[^\\d^\\w]+");
+                                        int x = Integer.parseInt(coordinates[0].trim());
+                                        int y = Integer.parseInt(coordinates[1].trim());
+                                        SquareView square = match.getLayout().getSquare(x, y);
+                                        if (square != null) {
+                                            client.selected(square.toString());
+                                        }
+                                    } catch (WrongSelectionException e2){
+                                        System.out.println("invalid selection, retry!");
+                                    } catch (NumberFormatException | IndexOutOfBoundsException e2){
+                                        System.out.println("You can select a square specifying coordinates to separate integers or");
+                                    }
+                                    System.out.println("insert the selection number");
+                                } catch (WrongSelectionException | IndexOutOfBoundsException e) {
+                                    playingWindow.show();
+                                    System.out.println("invalid selection, retry!");
+                                }
+                        }
                     }
                 }
             }
@@ -122,7 +129,6 @@ public class Cli implements UserInterface {
                     text+" Please wait for the game to start. If you disconnect now, you will be completely removed from game.");
             window.show();
             state = CliState.LOGGED;
-            printConnectedPlayers();
         } else {
             Window window = new TitleAndTextWindow(30, 10,
                     "LOGIN FAILED!", WRONG_COLOR,
@@ -137,17 +143,12 @@ public class Cli implements UserInterface {
         selectableIds.clear();
         playingWindow.fullUpdate(match);
         playingWindow.show();
+        state = CliState.PLAY;
     }
 
     @Override
     public void updateConnection() {
         if (match != null){
-            List<PlayerBox> playerBoxes = playingWindow.getAllPlayers();
-            for (PlayerBox pb : playerBoxes){
-                pb.update(match);
-            }
-            playingWindow.build();
-            playingWindow.show();
         } else {
             printConnectedPlayers();
         }
@@ -200,50 +201,8 @@ public class Cli implements UserInterface {
 
     @Override
     public void printError(String message) {
-        System.out.println(RED + message);
+        System.out.println(RED + message + DEFAULT_COLOR);
 
-    }
-
-    public void askLogin() {
-
-        System.out.println("Choose: socket or rmi?");
-        boolean ok = false;
-
-        String choice = "";
-        String name = "";
-
-        while(!ok){
-            choice  = new Scanner(System.in).nextLine();
-
-            if(choice.equalsIgnoreCase("socket") || choice.equalsIgnoreCase("rmi")){
-                ok = true;
-            }
-            else{
-                System.out.println("Illegal answer. Please insert only socket or rmi");
-            }
-        }
-
-
-
-        System.out.println("Insert your name");
-        try{
-            name = readStringFromUser();
-        }
-        catch (IOException e){
-            System.out.println("Something went wrong IOException");
-        }
-
-
-        //this.client = new Client(this);
-        client.chooseName(name);
-        //todo: eliminate lgoin method
-
-    }
-
-
-    private String readStringFromUser() throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        return reader.readLine();
     }
 
     public void addSelectableId(String id){
@@ -268,7 +227,7 @@ public class Cli implements UserInterface {
         MatchView match = client.getMatch();
         System.out.println("OTHER PLAYERS:");
         for (PlayerView otherPlayer : match.getOtherPlayers()){
-            if (match.getCurrentPlayer() != null && match.getCurrentPlayer().equals(otherPlayer.getName())) System.out.print("-> ");
+            if (match.getCurrentPlayer() != null && match.getCurrentPlayer().getName().equals(otherPlayer.getName())) System.out.print("-> ");
             else System.out.print("   ");
             System.out.println(otherPlayer.getName()+" in "+otherPlayer.getSquarePosition() + " with " + otherPlayer.getWallet() + " state: " + otherPlayer.getState());
             System.out.println("        powerups: "+otherPlayer.getNumPowerUps());
@@ -283,7 +242,7 @@ public class Cli implements UserInterface {
 
         MyPlayer me = match.getMyPlayer();
         System.out.println("\n\nME:");
-        if (match.getCurrentPlayer() != null &&match.getCurrentPlayer().equals(me.getName())) System.out.println("It's my turn!");
+        if (match.getCurrentPlayer() != null &&match.getCurrentPlayer().getName().equals(me.getName())) System.out.println("It's my turn!");
         System.out.println(me.getName()+" in "+me.getSquarePosition() + " with " + me.getWallet() + " state: " + me.getState() + " points: " + me.getPoints());
         if (!me.getPending().toString().equals("b:0|r:0|y:0")) System.out.println("You have to pay "+me.getPending()+" (you have already paid "+me.getCredit()+")");
         System.out.println("        powerups: "+listToString(me.getPowerUps()));

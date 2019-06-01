@@ -46,7 +46,6 @@ public class SocketServer extends Thread implements NetworkInterfaceServer, Mess
         } catch(NoSuchElementException e){
             System.out.println("Client disconnected");
             serverView.disconnectPlayer();
-            System.out.println("[OK] I've compeletly disconnected a player");
             //todo passare al prossimo player ed eventualmente annullare l'azione(se match è iniziato)
         }
         catch (IOException e){

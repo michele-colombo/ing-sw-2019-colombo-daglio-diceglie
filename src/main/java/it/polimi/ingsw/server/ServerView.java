@@ -44,6 +44,7 @@ public class ServerView implements Observer, EventVisitor {
         //todo: perde il lock su controller. Fare un metodo setToDisconnectAndClean(this) ?
         controller.setToDisconnect(this);
         controller.finalCleaning();
+        System.out.println("[OK] I've completely disconnected a player");
     }
 
     public void closeNetwork(){
