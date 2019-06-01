@@ -12,12 +12,12 @@ import it.polimi.ingsw.server.model.enums.Command;
 import it.polimi.ingsw.server.model.enums.PlayerState;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.rmi.RemoteException;
+import java.util.*;
 
 public class Client implements MessageVisitor {
+    private static final int LOGIN_MAX_WAITING= 60000;
+    private static final int GAME_MAX_WAITING= 60000;
 
     private NetworkInterfaceClient network;
     private UserInterface userInterface;
@@ -27,6 +27,9 @@ public class Client implements MessageVisitor {
     private MatchView match;
     private Map<String, Boolean> connections;
 
+    private Timer timer;
+    private long currentWaiting;
+
 
     public Client(UserInterface userInterface){
         this.userInterface = userInterface;
@@ -35,41 +38,50 @@ public class Client implements MessageVisitor {
     }
 
     public void createConnection(String connection){
-        try {
-            switch (connection) {
-                case "socket":
+
+        switch (connection) {
+            case "socket":
+                try {
                     network = new SocketClient(this);
                     connected = true;
-                    break;
-                case "rmi":
+                    userInterface.showLogin();
+                } catch (IOException e) {
+                    userInterface.printError("Impossible to initiate connection");
+                    userInterface.showConnectionSelection();
+                }
+                break;
+            case "rmi":
+                try {
                     network = new RmiClient(this);
                     connected = true;
-                    break;
-                default: //non deve succedere
-                    break;
-            }
-            userInterface.showLogin(); //todo: insert by michele, check
-            //network.startNetwork();
+                    userInterface.showLogin();
+                }
+                catch (RemoteException e){
+                    userInterface.printError("Impossible to initiate connection");
+                    userInterface.showConnectionSelection();
+                }
+
+                break;
+            default: //non deve succedere
+                break;
         }
-        catch (Exception e){
-            //System.out.println("Error while creating the network. Try again logging in");
-            userInterface.printError(e.toString());
-            connected = false;
-            userInterface.showConnectionSelection();    //todo: insert by michele, check
-        }
+
     }
 
 
 
     public void chooseName(String name){
+        currentWaiting= LOGIN_MAX_WAITING;
         this.name = name;
         try{
             EventVisitable loginEvent = new LoginEvent(name);
             network.forward(loginEvent);
-
+            timer= new Timer();
+            timer.schedule(new MyTimerTask(), currentWaiting);
         } catch(IOException e){
-            System.out.println("Error while forwarding the login event!");
-            e.printStackTrace();
+            userInterface.printError(e.getMessage());
+            shutDown();
+            userInterface.showConnectionSelection();
         }
     }
 
@@ -83,6 +95,8 @@ public class Client implements MessageVisitor {
     }
 
     public  synchronized void visit(ConnectionUpdateMessage connectionUpdateMessage) {
+        resetTimer(currentWaiting);
+
         System.out.println("Connection update received");
         connections.clear();
         for (Map.Entry<String, Boolean> entry : connectionUpdateMessage.getConnectionStates().entrySet()){
@@ -92,6 +106,7 @@ public class Client implements MessageVisitor {
     }
 
     public synchronized void visit(StartMatchUpdateMessage startMatchUpdateMessage) {
+        currentWaiting= GAME_MAX_WAITING;
         System.out.println("Start match update received");
         if (match == null){
             match = new MatchView(name, startMatchUpdateMessage.getLayoutConfiguration(), startMatchUpdateMessage.getNames(), startMatchUpdateMessage.getColors(), connections);
@@ -317,7 +332,9 @@ public class Client implements MessageVisitor {
         try {
             network.forward(event);
         } catch (IOException e){
-            e.printStackTrace();
+            userInterface.printError(e.getMessage());
+            shutDown();
+            userInterface.showConnectionSelection();
         }
     }
 
@@ -446,14 +463,30 @@ public class Client implements MessageVisitor {
     }
 
 
-
-    public void restart(){
-        userInterface.showConnectionSelection();
+    public void shutDown(){
+        timer.cancel();
+        timer.purge();
+        if(network != null) {
+            network.closeConnection();
+        }
     }
 
-    public void shutDown(){
-        network.closeConnection();
-        network= null;
+    public void resetTimer(long waiting){
+
+        timer.cancel();
+        timer.purge();
+        timer= new Timer();
+        timer.schedule(new MyTimerTask(), waiting);
+
+    }
+
+    private class MyTimerTask extends TimerTask{
+
+        @Override
+        public void run() {
+            shutDown();
+            userInterface.showConnectionSelection();
+        }
     }
 
 }

@@ -174,6 +174,7 @@ public class SocketServer extends Thread implements NetworkInterfaceServer, Mess
             case "#COMMANDSELECTED#": result= gson.fromJson(eventText, CommandSelectedEvent.class); break;
             case "#COLORSELECTED#": result= gson.fromJson(eventText, ColorSelectedEvent.class); break;
             case "#POWERUPSELECTED#": result= gson.fromJson(eventText, PowerUpSelectedEvent.class); break;
+            case "#PONG#": result= new PongEvent();
 
 
 

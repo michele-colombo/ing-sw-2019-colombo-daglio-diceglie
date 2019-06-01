@@ -45,7 +45,8 @@ public class Cli implements UserInterface {
                         client.shutDown();
                         isActive= false;
                     } else if ("disconnect".equalsIgnoreCase(input)){
-                        //todo
+                        client.shutDown();
+                        showConnectionSelection();
                     }
                     switch (state){
                         case ASK_CONNECTION:
@@ -57,8 +58,9 @@ public class Cli implements UserInterface {
                             break;
                         case ASK_LOGIN:
                             //input = input.trim();
+                            state = CliState.IDLE;
                             client.chooseName(input);
-                            state = CliState.IDLE;    //in order to prevent a player sends a login event twice
+                                //there's a problem here //in order to prevent a player sends a login event twice
                             break;
                         case LOGGED:
                             break;

@@ -9,11 +9,15 @@ import it.polimi.ingsw.server.observer.Observer;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class ServerView implements Observer, EventVisitor {
+    private static final long CABLE_CHECK_TIME= 5000;
+
     private NetworkInterfaceServer network;
     private Controller controller;
+    private Timer cableCheckTimer;
 
     public ServerView(NetworkInterfaceServer network, Controller controller) throws RemoteException {
         this.network = network;
@@ -101,5 +105,32 @@ public class ServerView implements Observer, EventVisitor {
     public void visit(PowerUpSelectedEvent powerUpSelectedEvent) {
         controller.powerUpSelected(powerUpSelectedEvent.getSelection(), this);
 
+    }
+
+    @Override
+    public void visit(PongEvent pongEvent) {
+        //todo stoppare il timer
+    }
+
+
+    private void resetTimer(){
+        cableCheckTimer.cancel();
+        cableCheckTimer.purge();
+        cableCheckTimer= new Timer();
+        cableCheckTimer.schedule(new MyTimerTask(), CABLE_CHECK_TIME);
+    }
+
+    private void stopTimer(){
+        cableCheckTimer.cancel();
+        cableCheckTimer.purge();
+    }
+
+
+
+    private class MyTimerTask extends TimerTask{
+        @Override
+        public void run() {
+            disconnectPlayer();
+        }
     }
 }
