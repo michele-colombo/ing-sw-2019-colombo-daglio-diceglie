@@ -13,6 +13,7 @@ public interface EventVisitor{
     void visit(CommandSelectedEvent commandSelectedEvent);
     void visit(ColorSelectedEvent colorSelectedEvent);
     void visit(PowerUpSelectedEvent powerUpSelectedEvent);
+    void visit(PongEvent pongEvent);
 }
 
 

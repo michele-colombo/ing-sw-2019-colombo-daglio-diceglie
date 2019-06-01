@@ -82,6 +82,7 @@ public class ClientMain{
             String nextArgument;
             if(i< args.length - 1){
                 nextArgument= args[i+1];
+                i++;
             }
             else{
                 nextArgument= "";

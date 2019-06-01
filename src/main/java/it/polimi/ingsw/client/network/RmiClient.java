@@ -8,6 +8,7 @@ import it.polimi.ingsw.server.network.RmiServerAcceptorInterface;
 import it.polimi.ingsw.server.network.RmiServerRemoteInterface;
 
 import java.io.IOException;
+import java.rmi.ConnectException;
 import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -43,34 +44,33 @@ public class RmiClient extends UnicastRemoteObject implements  NetworkInterfaceC
             RmiServerAcceptorInterface acceptor = (RmiServerAcceptorInterface) registry.lookup("Acceptor");
 
 
-
             System.out.println("Attaching server");
-            RmiClientRemoteInterface myFace= this;
+            RmiClientRemoteInterface myFace = this;
             RmiServerRemoteInterface server = acceptor.addMe(myFace);
             this.server = server;
-        }
-        catch (RemoteException e){
-            e.printStackTrace();
+
+
+            messageEater= new MessageTrafficManager();
+            messageEater.start();
         }
         catch (NotBoundException nbe){
+            //it cannot happen
             nbe.printStackTrace();
         }
-
-        messageEater= new MessageTrafficManager();
-        messageEater.start();
-
-        System.out.println("finito tutto");
-
-
 
     }
 
     @Override
     public void forward(EventVisitable eventVisitable) throws IOException {
         //todo: remove
-        System.out.println("Sto per mandare un messaggio");
-        server.receive(eventVisitable);
-        System.out.println("ho mandato un messaggio");
+        try {
+            System.out.println("Sto per mandare un messaggio");
+            server.receive(eventVisitable);
+            System.out.println("ho mandato un messaggio");
+        }
+        catch (ConnectException e){
+            throw new IOException("Connection down");
+        }
     }
 
     @Override

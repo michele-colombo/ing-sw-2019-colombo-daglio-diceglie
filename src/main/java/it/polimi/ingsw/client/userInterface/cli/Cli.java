@@ -41,7 +41,8 @@ public class Cli implements UserInterface {
                         client.shutDown();
                         isActive= false;
                     } else if ("disconnect".equalsIgnoreCase(input)){
-                        //todo
+                        client.shutDown();
+                        showConnectionSelection();
                     } else {
                         switch (state) {
                             case ASK_CONNECTION:

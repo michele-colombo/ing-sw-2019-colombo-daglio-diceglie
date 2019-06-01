@@ -14,19 +14,22 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class SocketClient extends Thread implements NetworkInterfaceClient, EventVisitor {
     private final Socket socket;
     private Client client;
     private String eventPrefix;
 
+
     private PrintWriter out;
 
     private boolean active;
 
 
-    public SocketClient(Client client) throws Exception{
-        try{
+    public SocketClient(Client client) throws IOException{
+
             String ip= ClientMain.config.getIp();
             int port= ClientMain.config.getPort();
 
@@ -36,16 +39,14 @@ public class SocketClient extends Thread implements NetworkInterfaceClient, Even
             this.socket.connect(address, 10000);
             this.client= client;
 
+
             active= true;
 
             out= new PrintWriter(sock.getOutputStream());
             out.flush();
 
             start();
-        }
-        catch (IOException e){
-            throw new Exception("Impossible to start socket network");
-        }
+
     }
 
     public void startNetwork(){
@@ -88,7 +89,8 @@ public class SocketClient extends Thread implements NetworkInterfaceClient, Even
     public void forward(EventVisitable event) throws IOException{
         Gson gson= new Gson();
         event.accept(this);
-        out.println(eventPrefix+gson.toJson(event));
+
+        out.println(eventPrefix + gson.toJson(event));
         out.flush();
     }
 
@@ -182,4 +184,7 @@ public class SocketClient extends Thread implements NetworkInterfaceClient, Even
     public void visit(PowerUpSelectedEvent powerUpSelectedEvent) {
         eventPrefix= "#POWERUPSELECTED#";
     }
+
+    @Override
+    public void visit(PongEvent pongEvent) { eventPrefix= "#PONG#"; }
 }
