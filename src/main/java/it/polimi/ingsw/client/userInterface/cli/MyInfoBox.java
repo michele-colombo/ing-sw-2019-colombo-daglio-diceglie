@@ -23,7 +23,7 @@ public class MyInfoBox extends MiniBox {
             insertLine(printCash(me.getPending()), payString.length(), 2 );
             String creditString = "paid: ";
             insertText(creditString, 16, 2);
-            insertLine(printCash(me.getCredit()), creditString.length(), 3 );
+            insertLine(printCash(me.getCredit()), creditString.length()+16, 2 );
             insertTextMultiline(getStateDescription(me.getState()), 1, 3, width-2);
         } else {
             insertTextMultiline(getStateDescription(me.getState()), 1, 2, width-2);

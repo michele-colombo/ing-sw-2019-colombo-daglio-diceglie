@@ -2,6 +2,7 @@ package it.polimi.ingsw.client;
 
 import it.polimi.ingsw.server.model.Cash;
 import it.polimi.ingsw.server.model.enums.AmmoColor;
+import static it.polimi.ingsw.client.userInterface.cli.CliUtils.*;
 
 import java.util.List;
 

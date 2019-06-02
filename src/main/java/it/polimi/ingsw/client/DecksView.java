@@ -82,7 +82,7 @@ public class DecksView {
 
     public PowerUpView getPowerUpFromString(String string){
         for (PowerUpView po : originalPowerUps){
-            if (po.toString().equals(string)){
+            if (po.toString().equalsIgnoreCase(string)){
                 return po;
             }
         }
@@ -93,7 +93,7 @@ public class DecksView {
         if (string == null ) return null;
         if (string.equals("")) return null;
         for (AmmoTile at : originalAmmoTiles){
-            if (at.toString().equals(string)){
+            if (at.toString().equalsIgnoreCase(string)){
                 return at;
             }
         }
@@ -102,7 +102,7 @@ public class DecksView {
 
     public WeaponView getWeaponFromName(String name){
         for (WeaponView w : originalWeaponArsenal){
-            if (w.getName().equals(name)){
+            if (w.getName().equalsIgnoreCase(name)){
                 return w;
             }
         }

@@ -2,7 +2,6 @@ package it.polimi.ingsw.client.userInterface.cli;
 
 import it.polimi.ingsw.client.*;
 import it.polimi.ingsw.client.userInterface.UserInterface;
-
 import static it.polimi.ingsw.client.userInterface.cli.CliUtils.*;
 
 import java.util.ArrayList;
@@ -62,28 +61,36 @@ public class Cli implements UserInterface {
                             case IDLE:
                                 break;
                             case PLAY:
-                                try {
-                                    int sel = Integer.parseInt(input.trim());
-                                    client.selected(selectableIds.get(sel));
-                                    state = CliState.IDLE;
-                                } catch (NumberFormatException e) {
-                                    try {
-                                        String[] coordinates = input.split("[^\\d^\\w]+");
-                                        int x = Integer.parseInt(coordinates[0].trim());
-                                        int y = Integer.parseInt(coordinates[1].trim());
-                                        SquareView square = match.getLayout().getSquare(x, y);
-                                        if (square != null) {
-                                            client.selected(square.toString());
-                                        }
-                                    } catch (WrongSelectionException e2){
-                                        System.out.println("invalid selection, retry!");
-                                    } catch (NumberFormatException | IndexOutOfBoundsException e2){
-                                        System.out.println("You can select a square specifying coordinates to separate integers or");
+                                input = input.trim();
+                                if (input.matches("man [\\w\\d-. ]+")){
+                                    WeaponView w = match.getDecks().getWeaponFromName(input.substring(4).trim());
+                                    if (w != null){
+                                        System.out.println(getPrettyManWeapon(w));
                                     }
-                                    System.out.println("insert the selection number");
-                                } catch (WrongSelectionException | IndexOutOfBoundsException e) {
-                                    playingWindow.show();
-                                    System.out.println("invalid selection, retry!");
+                                } else {
+                                    try {
+                                        int sel = Integer.parseInt(input);
+                                        client.selected(selectableIds.get(sel));
+                                        state = CliState.IDLE;
+                                    } catch (NumberFormatException e) {
+                                        try {
+                                            String[] coordinates = input.split("[^\\d^\\w]+");
+                                            int x = Integer.parseInt(coordinates[0].trim());
+                                            int y = Integer.parseInt(coordinates[1].trim());
+                                            SquareView square = match.getLayout().getSquare(x, y);
+                                            if (square != null) {
+                                                client.selected(square.toString());
+                                            }
+                                        } catch (WrongSelectionException e2) {
+                                            System.out.println("invalid selection, retry!");
+                                        } catch (NumberFormatException | IndexOutOfBoundsException e2) {
+                                            System.out.println("You can select a square specifying coordinates to separate integers or");
+                                        }
+                                        System.out.println("insert the selection number");
+                                    } catch (WrongSelectionException | IndexOutOfBoundsException e) {
+                                        playingWindow.show();
+                                        System.out.println("invalid selection, retry!");
+                                    }
                                 }
                         }
                     }

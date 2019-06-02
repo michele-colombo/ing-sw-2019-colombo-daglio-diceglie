@@ -436,6 +436,8 @@ public class Effect {
 
         if(movingPlayer!= null && destination!= null){
             movingPlayer.setSquarePosition(destination);
+
+            m.notifyPlayerUpdate(movingPlayer);
         }
 
         switch (whoToDamage){
@@ -504,12 +506,16 @@ public class Effect {
             for(Player toShoot: playersToShoot) {
                 toShoot.getDamageTrack().addDamage(source, damageNumber);
                 m.getCurrentAction().addDamaged(toShoot);
+
+                m.notifyDamageUpdate(toShoot);
             }
         }
 
         if(markNumber>0){
             for(Player toShoot: playersToShoot){
                 toShoot.getDamageTrack().addMark(source, markNumber);
+
+                m.notifyDamageUpdate(toShoot);
             }
         }
 

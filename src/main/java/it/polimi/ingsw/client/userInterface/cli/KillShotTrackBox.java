@@ -29,7 +29,7 @@ public class KillShotTrackBox extends MiniBox {
             if (nDrops > 1) this.insertText(DROP+" ", 2+i*2, 2, printColorOf(player.getColor()));
         }
         for (int i=0; i<match.getSkulls(); i++){
-            this.insertText(SKULL+" ", 2+i*2, 3);
+            this.insertText(SKULL+" ", match.getTrack().size()*2 + 2+i*2, 3);
         }
     }
 }

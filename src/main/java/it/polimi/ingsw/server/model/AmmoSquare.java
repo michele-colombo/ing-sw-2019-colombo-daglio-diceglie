@@ -35,11 +35,13 @@ public class AmmoSquare extends Square{
         if (ammo.hasPowerUp()){
             if (p.getPowerUps().size() < 3){
                 p.addPowerUp(m.getStackManager().drawPowerUp());
+                m.notifyPowerUpUpdate(p);
             }
         }
         m.getStackManager().trashAmmoTile(ammo);
         assert(ammo.getAmmos().getTotal()<4);
         ammo = null;
+        m.notifyLayotUpdate();
         return true;
     }
 

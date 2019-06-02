@@ -18,6 +18,7 @@ public class WeaponsInLayoutBox extends MiniBox {
 
     @Override
     public void update(MatchView match) {
+        clear();
         List<WeaponView> myWeapons;
         switch (color){
             case BLUE:

@@ -96,6 +96,7 @@ public class Match {
         stackManager = new StackManager();
         currentAction = null;
         currentPlayer = null;
+        observers = new HashMap<>();
     }
 
     public Match(int layoutConfig){
@@ -303,46 +304,56 @@ public class Match {
                         case 0:
                             result.add(new Action(true, false, new Move(3)));
                             result.add(new Action(true, false, new Grab(1)));
-                            temp = new Action(true, false, new Shoot());
-                            if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UsePowerUp(TARGETING_SCOPE));
-                            temp.add(new UsePowerUp(TAGBACK_GRENADE));
-                            result.add(temp);
+                            if (!p.getLoadedWeapons().isEmpty()){
+                                temp = new Action(true, false, new Shoot());
+                                if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UsePowerUp(TARGETING_SCOPE));
+                                temp.add(new UsePowerUp(TAGBACK_GRENADE));
+                                result.add(temp);
+                            }
                             break;
                         case 1:
                             result.add(new Action(true, false, new Move(3)));
                             result.add(new Action(true, false, new Grab(2)));
-                            temp = new Action(true, false, new Shoot());
-                            if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UsePowerUp(TARGETING_SCOPE));
-                            temp.add(new UsePowerUp(TAGBACK_GRENADE));
-                            result.add(temp);
+                            if (!p.getLoadedWeapons().isEmpty()){
+                                temp = new Action(true, false, new Shoot());
+                                if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UsePowerUp(TARGETING_SCOPE));
+                                temp.add(new UsePowerUp(TAGBACK_GRENADE));
+                                result.add(temp);
+                            }
                             break;
                         case 2:
                             result.add(new Action(true, false, new Move(3)));
                             result.add(new Action(true, false, new Grab(2)));
-                            temp = new Action(true, false, new Move(1));
-                            temp.add(new Shoot());
-                            if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UsePowerUp(TARGETING_SCOPE));
-                            temp.add(new UsePowerUp(TAGBACK_GRENADE));
-                            result.add(temp);
+                            if (!p.getLoadedWeapons().isEmpty()) {
+                                temp = new Action(true, false, new Move(1));
+                                temp.add(new Shoot());
+                                if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UsePowerUp(TARGETING_SCOPE));
+                                temp.add(new UsePowerUp(TAGBACK_GRENADE));
+                                result.add(temp);
+                            }
                             break;
                     }
                 } else {
                     if (p.isBeforeFirst()) {
-                        temp = new Action(true, false, new Move(1));
-                        temp.add(new Reload());
-                        temp.add(new Shoot());
-                        if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UsePowerUp(TARGETING_SCOPE));
-                        temp.add(new UsePowerUp(TAGBACK_GRENADE));
-                        result.add(temp);
+                        if (!p.getLoadedWeapons().isEmpty()) {
+                            temp = new Action(true, false, new Move(1));
+                            temp.add(new Reload());
+                            temp.add(new Shoot());
+                            if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UsePowerUp(TARGETING_SCOPE));
+                            temp.add(new UsePowerUp(TAGBACK_GRENADE));
+                            result.add(temp);
+                        }
                         result.add(new Action(true, false, new Move(4)));
                         result.add(new Action(true, false, new Grab(2)));
                     } else {
-                        temp = new Action(true, false, new Move(2));
-                        temp.add(new Reload());
-                        temp.add(new Shoot());
-                        if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UsePowerUp(TARGETING_SCOPE));
-                        temp.add(new UsePowerUp(TAGBACK_GRENADE));
-                        result.add(temp);
+                        if (!p.getLoadedWeapons().isEmpty()) {
+                            temp = new Action(true, false, new Move(2));
+                            temp.add(new Reload());
+                            temp.add(new Shoot());
+                            if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UsePowerUp(TARGETING_SCOPE));
+                            temp.add(new UsePowerUp(TAGBACK_GRENADE));
+                            result.add(temp);
+                        }
                         result.add(new Action(true, false, new Grab(3)));
                     }
                 }
@@ -434,6 +445,8 @@ public class Match {
     private void resetAfterDeathAll(List<Player> deadPlayers){
         for(Player p : deadPlayers){
             p.getDamageTrack().resetAfterDeath();
+            notifyPlayerUpdate(p);
+            notifyDamageUpdate(p);
         }
     }
 
@@ -683,6 +696,9 @@ public class Match {
             loadedWeapons.add(w.getName());
         }
         numLoadedWeapons = loadedWeapons.size();
+        for (Weapon w : player.getUnloadedWeapons()){
+            unloadedWeapons.add(w.getName());
+        }
 
         WeaponsUpdateMessage message;
         for (Map.Entry<Player, Observer> o : observers.entrySet()){
@@ -791,7 +807,7 @@ public class Match {
         }
     }
 
-    public void notifyAllSelectablesUpdate(){
+    public void notifySelectablesUpdateAllPlayers(){
         for (Player p : players){
             notifySelectableUpdate(p);
         }
@@ -808,9 +824,11 @@ public class Match {
             notifyPowerUpUpdate(p);
             notifyDamageUpdate(p);
         }
+        /*
         for (Player p : players){
             notifySelectableUpdate(p);
         }
+        */
     }
 }
 

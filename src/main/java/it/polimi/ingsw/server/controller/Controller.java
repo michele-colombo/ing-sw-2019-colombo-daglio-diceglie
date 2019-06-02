@@ -77,6 +77,7 @@ public class Controller {
         }
         if (gameModel.isMatchInProgress()){
             gameModel.getMatch().notifyStartMatchUpdate();
+            gameModel.getMatch().notifyFullUpdateAllPlayers();  //could be refined
         }
         finalCleaning();
     }
@@ -259,6 +260,9 @@ public class Controller {
                     case SHOOT_TARGET:
                         gameModel.shootTarget(p, null, null);
                         break;
+                    case RELOAD:
+                        gameModel.nextMicroAction();
+                        break;
                     default:
                         System.out.println("selected OK in the wrong state");
                         return; //todo
@@ -367,9 +371,9 @@ public class Controller {
 
     public void startMatch(){
         gameModel.startMatch();
-        gameModel.getMatch().notifyStartMatchUpdate();
+        //gameModel.getMatch().notifyStartMatchUpdate();
+        //gameModel.getMatch().notifyFullUpdateAllPlayers();
         finalCleaning();
-        //todo notificare i player che la partita inizia
     }
 
     private void checkStart(){
@@ -414,13 +418,8 @@ public class Controller {
             for (Player p : gameModel.getWaitingFor()) {
                 addTimer(gameModel.getObserver(p)); //addTimer checks if there is no timer active for the corresponding observer
             }
-            gameModel.getMatch().notifyFullUpdateAllPlayers();
-            /*
-            System.out.println("active players:"+listToString(gameModel.getActivePlayers()));
-            System.out.println("inactive players"+listToString(gameModel.getInactivePlayers()));
-            System.out.println("to disconnect"+listToString(toDisconnectList));
-            System.out.println("waitingFor"+listToString(gameModel.getMatch().getWaitingFor()));
-            */
+            //gameModel.getMatch().notifyFullUpdateAllPlayers();
+            gameModel.getMatch().notifySelectablesUpdateAllPlayers();
         }
         System.out.println("[OK] final cleaning done");
 

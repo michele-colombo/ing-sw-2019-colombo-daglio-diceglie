@@ -40,9 +40,10 @@ public class UsePowerUp implements MicroAction {
                         player.resetSelectables();
                         player.setSelectablePowerUps(player.getPowerUpsOfType(type));
                         player.setSelectableCommands(Command.OK);
+
+                        match.notifyPlayerUpdate(player);
                     }
                 }
-                //each player in the toFakeList has the action faked
                 p.setState(PlayerState.USE_POWERUP);
                 p.resetSelectables();
                 if (match.getWaitingFor().isEmpty()) {    //if there isn't any player which can use tagback, go on with the next microAction

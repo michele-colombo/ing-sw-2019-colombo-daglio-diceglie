@@ -17,6 +17,10 @@ public class MiniBox {
         this.width = width;
         this.height = height;
         stringBox = new String[height][width];
+        clear();
+    }
+
+    public void clear(){
         for (int i=0; i<height; i++){
             for (int j=0; j<width; j++){
                 stringBox[i][j] = " ";

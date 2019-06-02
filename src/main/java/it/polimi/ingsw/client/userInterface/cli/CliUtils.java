@@ -1,5 +1,7 @@
 package it.polimi.ingsw.client.userInterface.cli;
 
+import it.polimi.ingsw.client.ModeView;
+import it.polimi.ingsw.client.WeaponView;
 import it.polimi.ingsw.server.model.AmmoTile;
 import it.polimi.ingsw.server.model.Cash;
 import it.polimi.ingsw.server.model.enums.AmmoColor;
@@ -138,6 +140,14 @@ public class CliUtils {
         return DEFAULT_COLOR;
     }
 
+    public static String stringifyArrayOfStrings(String[] array){
+        StringBuilder string = new StringBuilder();
+        for (int i=0; i<array.length; i++){
+            string.append(array[i]);
+        }
+        return string.toString();
+    }
+
     public static String[] printCash(Cash cash){
         String[] result = new String[cash.getTotal()];
         int i=0;
@@ -187,33 +197,43 @@ public class CliUtils {
                 result = "You must discard one of your weapon: choose one";
                 break;
             case RELOAD:
-                result = "Choose a weapons to reload";
+                result = "Choose a weapon to reload";
                 break;
             case PAYING:
-                result = "You have to pay for something. You can use your powerups.";
+                result = "You have to pay for something. You can use a powerup, if you have. Select OK to use ammos.";
                 break;
             case PAYING_ANY:
-                result = "Choose which color (or powerup) to pay";
+                result = "Choose an ammo (or powerup) to pay";
                 break;
             case SHOOT_WEAPON:
                 result = "Choose a weapon to shoot with";
                 break;
             case CHOOSE_MODE:
-                result = "Select a mode to build the shoot";
+                result = "Select a mode to build the shoot. When you have done, select OK.";
                 break;
             case SHOOT_TARGET:
-                result = "Choose a target (either a player or a square)";
+                result = "Choose a target (either a player or a square) to shoot";
                 break;
             case SPAWN:
                 result = "Choose a powerup to discard (and spawn onto)";
                 break;
             case USE_POWERUP:
-                result = "Choose a powerup to use";
+                result = "Choose a powerup to use or select OK to not use any";
                 break;
             default:
                 result = "";
         }
         return result;
+    }
+
+    public static String getPrettyManWeapon(WeaponView weapon){
+        StringBuilder man = new StringBuilder();
+        man.append(BLUE + weapon.getName().toUpperCase()+" "+stringifyArrayOfStrings(printCash(weapon.getDiscountedCost()))+"\n");
+        for (ModeView mode : weapon.getMyModes()){
+            man.append("   "+stringifyArrayOfStrings(printCash(mode.getCost()))+" "+mode.getTitle().toUpperCase()+": ");
+            man.append(mode.getDescription()+"\n");
+        }
+        return man.toString();
     }
 
     public static String[] createLineFromString(String str, String color){

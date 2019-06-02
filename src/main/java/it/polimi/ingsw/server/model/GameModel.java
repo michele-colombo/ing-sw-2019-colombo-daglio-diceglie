@@ -97,8 +97,10 @@ public class GameModel implements Observable {
                     for (String name : tempBackup.getPlayerNames()){
                         match.addPlayer(getPlayerByName(name));
                     }
-                    tempBackup.restore(match);
                     match.setObservers(observers);
+                    tempBackup.restore(match);
+                    match.notifyStartMatchUpdate();
+                    match.notifyFullUpdateAllPlayers();
                     matchInProgress = true;
                     actionCompleted();
                     return false;
@@ -139,6 +141,8 @@ public class GameModel implements Observable {
         }
         match.getFirstPlayer().setFirstPlayer(true);
         matchInProgress = true;
+        match.notifyStartMatchUpdate();
+        match.notifyFullUpdateAllPlayers();
         beginNextTurn();
     }
 
@@ -177,6 +181,9 @@ public class GameModel implements Observable {
         p.setState(SPAWN);
         p.resetSelectables();
         p.setSelectablePowerUps(p.getPowerUps());
+
+        match.notifyPlayerUpdate(p);
+        match.notifyPowerUpUpdate(p);
     }
 
     public void spawn(Player p, PowerUp po){
@@ -191,6 +198,9 @@ public class GameModel implements Observable {
         if (spawningPlayers.isEmpty()) {      //if there are no other player still (re)spawning
             beginNextTurn();
         }
+
+        match.notifyPlayerUpdate(p);
+        match.notifyPowerUpUpdate(p);
     }
 
     private void beginNextTurn(){
@@ -207,6 +217,9 @@ public class GameModel implements Observable {
                 nextP.resetSelectables();
                 nextP.setSelectableActions(match.initSelectableActions(nextP));
                 saveSnapshot(match);
+
+                match.notifyCurrentPlayerUpdate();
+                match.notifyPlayerUpdate(nextP);
             }
         } catch (GameOverException e){
             e.printStackTrace();
@@ -247,6 +260,8 @@ public class GameModel implements Observable {
         } catch (NextMicroActionException nmae){
             nextMicroAction();
         }
+
+        match.notifyPlayerUpdate(p);
     }
 
     public void grabThere (Player p, Square s){
@@ -254,6 +269,8 @@ public class GameModel implements Observable {
         if (s.collect(p, match)){     //collect sets player state, if necessary
             nextMicroAction();
         }
+
+        match.notifyPlayerUpdate(p);
     }
 
     public void grabWeapon(Player p, Weapon w){
@@ -271,6 +288,9 @@ public class GameModel implements Observable {
             } else {
                 nextMicroAction();
             }
+            match.notifyPlayerUpdate(p);
+            match.notifyWeaponsUpdate(p);
+            match.notifyLayotUpdate();
         } else {
             p.setNextState(GRAB_WEAPON);
             setupForPaying(p);
@@ -282,18 +302,32 @@ public class GameModel implements Observable {
         p.removeWeapon(w);
         //unload
         nextMicroAction();
+
+        match.notifyLayotUpdate();
+        match.notifyWeaponsUpdate(p);
+
     }
 
     public void moveMeThere(Player p, Square s){
         p.setSquarePosition(s);
         nextMicroAction();
+
+        match.notifyPlayerUpdate(p);
     }
 
     public void shootWeapon(Player p, Weapon w){
         match.getCurrentAction().setCurrWeapon(w);
         p.setState(CHOOSE_MODE);
         p.resetSelectables();
-        p.setSelectableModes(w.getSelectableModes(match.getCurrentAction().getSelectedModes()));
+        List<Mode> tempModes = new ArrayList<>();
+        for (Mode m : w.getSelectableModes(match.getCurrentAction().getSelectedModes())){
+            if (p.canAfford(m.getCost())){
+                tempModes.add(m);
+            }
+        }
+        p.setSelectableModes(tempModes);
+
+        match.notifyPlayerUpdate(p);
     }
 
     public void addMode(Player p, Mode m){
@@ -305,8 +339,23 @@ public class GameModel implements Observable {
             match.getCurrentAction().getCurrEffects().addAll(m.getEffects());
             p.setState(CHOOSE_MODE);
             p.resetSelectables();
-            p.setSelectableModes(match.getCurrentAction().getCurrWeapon().getSelectableModes(match.getCurrentAction().getSelectedModes()));
-            p.setSelectableCommands(Command.OK);
+            List<Mode> tempModes = new ArrayList<>();
+            for (Mode mode : match.getCurrentAction().getCurrWeapon().getSelectableModes(match.getCurrentAction().getSelectedModes())){
+                if (p.canAfford(mode.getCost())){
+                    tempModes.add(mode);
+                }
+            }
+            boolean hasMandatoryToSelect = false;
+            for (Mode mode : tempModes) {
+                if (mode.isMandatory) hasMandatoryToSelect = true;
+            }
+            p.setSelectableModes(tempModes);
+            if (!hasMandatoryToSelect){
+                p.setSelectableCommands(Command.OK);
+            }
+
+
+            match.notifyPlayerUpdate(p);
         } else {
             p.setNextState(CHOOSE_MODE);
             match.getCurrentAction().setCurrMode(m);
@@ -323,6 +372,9 @@ public class GameModel implements Observable {
         } catch (ApplyEffectImmediatelyException e){
             shootTarget(p, null, null); //todo: check
         }
+
+        match.notifyWeaponsUpdate(p);
+        match.notifyPlayerUpdate(p);
     }
 
     public void shootTarget(Player p, Player targetP, Square targetS){
@@ -358,6 +410,9 @@ public class GameModel implements Observable {
         } else {
             p.setSelectablePowerUps(p.getPowerUpsOfColors(p.getPending().subtract(p.getCredit())));
         }
+
+        match.notifyPlayerUpdate(p);
+        match.notifyPaymentUpdate(p);
     }
 
     public void payWith(Player p, PowerUp po){
@@ -365,6 +420,8 @@ public class GameModel implements Observable {
         p.removePowerUp(po);
         match.getStackManager().discardPowerUp(po);
         setupForPaying(p);
+
+        match.notifyPowerUpUpdate(p);
     }
 
     public void completePayment(Player p){
@@ -383,6 +440,10 @@ public class GameModel implements Observable {
                 addMode(p, match.getCurrentAction().getCurrMode());
                 break;
         }
+
+        match.notifyPaymentUpdate(p);
+        match.notifyPlayerUpdate(p);
+
     }
 
     public void reloadWeapon(Player p, Weapon w){
@@ -392,6 +453,8 @@ public class GameModel implements Observable {
             p.getCredit().setZero();
             p.setLoad(w, true);
             nextMicroAction();
+            match.notifyWeaponsUpdate(p);
+            match.notifyPlayerUpdate(p);
         } else {
             p.setNextState(RELOAD);
             match.getCurrentAction().setCurrWeapon(w);
@@ -434,6 +497,9 @@ public class GameModel implements Observable {
                 useCurrentPowerUp(p);
                 break;
         }
+
+        match.notifyPlayerUpdate(p);
+        match.notifyPowerUpUpdate(p);
     }
 
     public void payAny(Player p, PowerUp po){
@@ -442,6 +508,9 @@ public class GameModel implements Observable {
         p.setState(USE_POWERUP);
         p.resetSelectables();
         useCurrentPowerUp(p);
+
+        match.notifyPlayerUpdate(p);
+        match.notifyPowerUpUpdate(p);
     }
 
     public void payAny(Player p, AmmoColor c){
@@ -449,6 +518,8 @@ public class GameModel implements Observable {
         p.setState(USE_POWERUP);
         p.resetSelectables();
         useCurrentPowerUp(p);
+
+        match.notifyPlayerUpdate(p);
     }
 
     public void useCurrentPowerUp(Player p){
@@ -493,6 +564,8 @@ public class GameModel implements Observable {
             match.addWaitingFor(match.getCurrentPlayer());
             nextMicroAction();
         }
+
+        match.notifyPlayerUpdate(p);
     }
 
     public void nextMicroAction(){
@@ -507,6 +580,8 @@ public class GameModel implements Observable {
                 nextMicroAction();
             }
         }
+
+        //todo: update player state
     }
 
     public void actionCompleted(){
@@ -525,6 +600,8 @@ public class GameModel implements Observable {
             if (match.isTurnCompletable()){
                 p.setSelectableCommands(Command.OK);
             }
+
+            match.notifyPlayerUpdate(p);
         }
     }
 
@@ -540,6 +617,8 @@ public class GameModel implements Observable {
     public void restore(){
         currBackup.restore(match);
         actionCompleted();
+
+        match.notifyFullUpdateAllPlayers();
     }
 
     public void endTurn(){
@@ -547,9 +626,12 @@ public class GameModel implements Observable {
         saveSnapshot(match);
         match.removeWaitingFor(match.getCurrentPlayer());
         match.getCurrentPlayer().setState(IDLE);
+        match.notifyPlayerUpdate(match.getCurrentPlayer());
         match.getCurrentPlayer().resetSelectables();
         match.getLayout().refillAll(match.getStackManager());
+        match.notifyLayotUpdate();
         List<Player> deadPlayers = match.endTurnCheck();
+        match.notifyKillShotTrackUpdate();
         if (deadPlayers.isEmpty()){
             beginNextTurn();
         } else {
