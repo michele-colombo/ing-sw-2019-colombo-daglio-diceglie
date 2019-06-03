@@ -1,6 +1,8 @@
 package it.polimi.ingsw.client.network;
 
 import it.polimi.ingsw.client.Client;
+import it.polimi.ingsw.client.ClientExceptions.ConnectionInitializationException;
+import it.polimi.ingsw.client.ClientExceptions.ForwardingException;
 import it.polimi.ingsw.client.ClientMain;
 import it.polimi.ingsw.communication.events.EventVisitable;
 import it.polimi.ingsw.communication.message.MessageVisitable;
@@ -8,16 +10,17 @@ import it.polimi.ingsw.server.network.RmiServerAcceptorInterface;
 import it.polimi.ingsw.server.network.RmiServerRemoteInterface;
 
 import java.io.IOException;
-import java.rmi.ConnectException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.SocketAddress;
 import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RmiClient extends UnicastRemoteObject implements  NetworkInterfaceClient, RmiClientRemoteInterface{
@@ -26,7 +29,7 @@ public class RmiClient extends UnicastRemoteObject implements  NetworkInterfaceC
 
     private MessageTrafficManager messageEater;
 
-    public RmiClient(Client cl) throws RemoteException{
+    public RmiClient(Client cl) throws RemoteException, ConnectionInitializationException{
 
         String ip= ClientMain.config.getIp();
         int port= ClientMain.config.getPort();
@@ -37,7 +40,7 @@ public class RmiClient extends UnicastRemoteObject implements  NetworkInterfaceC
 
         try {
             //System.out.println("Getting registry");
-            Registry registry = LocateRegistry.getRegistry(ip, rmiPort);
+            Registry registry = LocateRegistry.getRegistry(ip, rmiPort, new MyRMIClientSocketFactory());
 
 
             System.out.println("Connecting to server");
@@ -53,6 +56,9 @@ public class RmiClient extends UnicastRemoteObject implements  NetworkInterfaceC
             messageEater= new MessageTrafficManager();
             messageEater.start();
         }
+        catch (RemoteException e){
+            throw new ConnectionInitializationException();
+        }
         catch (NotBoundException nbe){
             //it cannot happen
             nbe.printStackTrace();
@@ -61,15 +67,13 @@ public class RmiClient extends UnicastRemoteObject implements  NetworkInterfaceC
     }
 
     @Override
-    public void forward(EventVisitable eventVisitable) throws IOException {
+    public void forward(EventVisitable eventVisitable) throws ForwardingException {
         //todo: remove
         try {
-            System.out.println("Sto per mandare un messaggio");
             server.receive(eventVisitable);
-            System.out.println("ho mandato un messaggio");
         }
-        catch (ConnectException e){
-            throw new IOException("Connection down");
+        catch (RemoteException e){
+            throw new ForwardingException();
         }
     }
 
@@ -83,8 +87,12 @@ public class RmiClient extends UnicastRemoteObject implements  NetworkInterfaceC
         messageEater.close();
         try {
             UnicastRemoteObject.unexportObject(this, true);
+            System.out.println("Sono nel ramo try del unexport");
         }
-        catch (NoSuchObjectException e){  }
+        catch (NoSuchObjectException e){
+            System.out.println("Sono nel ramo NoSuchObjectException");
+            System.out.println(this);
+        }
     }
 
     @Override
@@ -136,4 +144,16 @@ public class RmiClient extends UnicastRemoteObject implements  NetworkInterfaceC
             notifyAll();
         }
     }
+
+    private class MyRMIClientSocketFactory implements RMIClientSocketFactory {
+
+        @Override
+        public Socket createSocket(String host, int port) throws IOException {
+            SocketAddress address = new InetSocketAddress(host, port);
+            Socket sock = new Socket();
+            sock.connect(address, 10000);
+            return sock;
+        }
+    }
+
 }

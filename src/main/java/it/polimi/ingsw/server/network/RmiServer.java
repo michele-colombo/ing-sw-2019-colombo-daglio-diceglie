@@ -6,6 +6,8 @@ import it.polimi.ingsw.communication.message.MessageVisitable;
 import it.polimi.ingsw.server.ServerView;
 import it.polimi.ingsw.server.controller.Controller;
 
+import java.io.IOException;
+import java.rmi.ConnectException;
 import java.rmi.NoSuchObjectException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -34,13 +36,12 @@ public class RmiServer extends UnicastRemoteObject implements NetworkInterfaceSe
 
 
     @Override
-    public void forwardMessage(MessageVisitable messaggio){
+    public void forwardMessage(MessageVisitable messaggio) throws IOException{
         try {
             client.receive(messaggio);
         }
         catch (RemoteException e){
-            serverView.disconnectPlayer();
-            e.printStackTrace();
+            throw new IOException();
         }
     }
 

@@ -23,13 +23,13 @@ public class ClientMain{
 
         loadFromConfigurationFile();
 
-
-        if (args[0].equals("-h") || args[0].equals("--help")) {
-            printHelpScreen();
-            return;
-        }
-        else {
-            getFromCmdArguments(args);
+        if(args.length > 0) {
+            if (args[0].equals("-h") || args[0].equals("--help")) {
+                printHelpScreen();
+                return;
+            } else {
+                getFromCmdArguments(args);
+            }
         }
 
         askUserInput();

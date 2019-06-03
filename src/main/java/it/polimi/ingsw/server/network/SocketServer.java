@@ -23,12 +23,8 @@ public class SocketServer extends Thread implements NetworkInterfaceServer, Mess
     public SocketServer(Socket socket, Controller controller){
         this.socket = socket;
         //todo: non crea la serverView
-        try {
-            serverView = new ServerView(this, controller);
-        }
-        catch (RemoteException e){
-            System.out.println("Remote exception cannot start");
-        }
+        serverView = new ServerView(this, controller);
+
     }
 
     @Override
@@ -62,7 +58,7 @@ public class SocketServer extends Thread implements NetworkInterfaceServer, Mess
 
         messageVisitable.accept(this);
         out.println(messagePrefix + gson.toJson(messageVisitable));
-        System.out.println(messagePrefix + gson.toJson(messageVisitable));
+        //System.out.println(messagePrefix + gson.toJson(messageVisitable));
         out.flush();
     }
 
@@ -155,9 +151,14 @@ public class SocketServer extends Thread implements NetworkInterfaceServer, Mess
 
     }
 
+    @Override
+    public void visit(PingMessage pingMessage) {
+        messagePrefix= "#PING#";
+    }
+
     private EventVisitable unwrap(String eventText){
         //todo: remove next line
-        System.out.println(eventText);
+        //System.out.println(eventText);
         Gson gson= new Gson();
         String prefix= eventText.substring(eventText.indexOf('#'), eventText.lastIndexOf('#') + 1);
         eventText= eventText.substring(eventText.lastIndexOf('#') + 1);

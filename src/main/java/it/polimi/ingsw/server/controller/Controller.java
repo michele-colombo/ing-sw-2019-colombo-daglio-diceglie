@@ -349,6 +349,8 @@ public class Controller {
         } catch(NoSuchObserverException e){
             System.out.println("Player already disconnected!");
         } finally {
+            serverView.shutDown();
+
             removeTimer(serverView);
             checkStopMatch();
 
@@ -399,6 +401,7 @@ public class Controller {
     //todo: added by michele, check!
     public synchronized void finalCleaning(){//era synchronized ma dava problemi
         for (ServerView serverView : toDisconnectList){
+            System.out.println("questa serverview " + serverView.toString() + "e' nella disconnectList");
             disconnectPlayer(serverView);
         }
         toDisconnectList.clear();

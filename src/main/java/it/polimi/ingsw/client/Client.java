@@ -1,5 +1,7 @@
 package it.polimi.ingsw.client;
 
+import it.polimi.ingsw.client.ClientExceptions.ConnectionInitializationException;
+import it.polimi.ingsw.client.ClientExceptions.ForwardingException;
 import it.polimi.ingsw.client.network.NetworkInterfaceClient;
 import it.polimi.ingsw.client.network.RmiClient;
 import it.polimi.ingsw.client.network.SocketClient;
@@ -11,13 +13,12 @@ import it.polimi.ingsw.server.model.enums.AmmoColor;
 import it.polimi.ingsw.server.model.enums.Command;
 import it.polimi.ingsw.server.model.enums.PlayerState;
 
-import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Client implements MessageVisitor {
-    private static final int LOGIN_MAX_WAITING= 60000;
-    private static final int GAME_MAX_WAITING= 60000;
+    private static final long PING_PONG_DELAY= 1000;
 
     private NetworkInterfaceClient network;
     private UserInterface userInterface;
@@ -27,8 +28,10 @@ public class Client implements MessageVisitor {
     private MatchView match;
     private Map<String, Boolean> connections;
 
-    private Timer timer;
-    private long currentWaiting;
+    private PongSource ponging;
+    private Timer connectionTimer;
+
+
 
 
     public Client(UserInterface userInterface){
@@ -38,32 +41,41 @@ public class Client implements MessageVisitor {
     }
 
     public void createConnection(String connection){
+        try {
+            switch (connection) {
 
-        switch (connection) {
-            case "socket":
-                try {
+                case "socket":
+
                     network = new SocketClient(this);
-                    connected = true;
-                    userInterface.showLogin();
-                } catch (IOException e) {
-                    userInterface.printError("Impossible to initiate connection");
-                    userInterface.showConnectionSelection();
-                }
-                break;
-            case "rmi":
-                try {
-                    network = new RmiClient(this);
-                    connected = true;
-                    userInterface.showLogin();
-                }
-                catch (RemoteException e){
-                    userInterface.printError("Impossible to initiate connection");
-                    userInterface.showConnectionSelection();
-                }
+
+                    break;
+                case "rmi":
+                    try {
+                        network = new RmiClient(this);
+                    }
+                    catch (RemoteException e){
+                        throw new ConnectionInitializationException();
+                    }
+
 
                 break;
-            default: //non deve succedere
-                break;
+                default: //non deve succedere
+                    break;
+            }
+            connected = true;
+
+
+            ponging = new PongSource();
+            ponging.start();
+
+            startTimer();
+
+            userInterface.showLogin();
+
+        }
+        catch (ConnectionInitializationException e){
+            userInterface.printError("Impossible to initiate connection");
+            userInterface.showConnectionSelection();
         }
 
     }
@@ -71,31 +83,28 @@ public class Client implements MessageVisitor {
 
 
     public void chooseName(String name){
-        currentWaiting= LOGIN_MAX_WAITING;
         this.name = name;
         try{
             EventVisitable loginEvent = new LoginEvent(name);
             network.forward(loginEvent);
-            timer= new Timer();
-            timer.schedule(new MyTimerTask(), currentWaiting);
-        } catch(IOException e){
+        } catch(ForwardingException e){
             userInterface.printError(e.getMessage());
-            shutDown();
-            userInterface.showConnectionSelection();
+            restart();
         }
     }
 
-
+    @Override
     public synchronized void visit(LoginMessage message){
         userInterface.printLoginMessage(message.toString(), message.getLoginSuccessful());
     }
 
+    @Override
     public  synchronized void visit(GenericMessage message){
         //userInterface.printDisconnectionMessage(message.toString());
     }
 
+    @Override
     public  synchronized void visit(ConnectionUpdateMessage connectionUpdateMessage) {
-        resetTimer(currentWaiting);
 
         System.out.println("Connection update received");
         connections.clear();
@@ -105,8 +114,13 @@ public class Client implements MessageVisitor {
         userInterface.updateConnection(); //aggiunta per la Gui, potrebbe non funzionare per la Cli
     }
 
+    @Override
+    public synchronized void visit(PingMessage pingMessage) {
+        resetTimer();
+    }
+
+
     public synchronized void visit(StartMatchUpdateMessage startMatchUpdateMessage) {
-        currentWaiting= GAME_MAX_WAITING;
         System.out.println("Start match update received");
         if (match == null){
             match = new MatchView(name, startMatchUpdateMessage.getLayoutConfiguration(), startMatchUpdateMessage.getNames(), startMatchUpdateMessage.getColors(), connections);
@@ -331,10 +345,9 @@ public class Client implements MessageVisitor {
     private void sendEvent(EventVisitable event){
         try {
             network.forward(event);
-        } catch (IOException e){
+        } catch (ForwardingException e){
             userInterface.printError(e.getMessage());
-            shutDown();
-            userInterface.showConnectionSelection();
+            restart();
         }
     }
 
@@ -462,31 +475,66 @@ public class Client implements MessageVisitor {
         return connections;
     }
 
+    public void restart(){
+        shutDown();
+        userInterface.showConnectionSelection();
+    }
+
 
     public void shutDown(){
-        timer.cancel();
-        timer.purge();
+        ponging.close();
+        connectionTimer.cancel();
+
         if(network != null) {
             network.closeConnection();
         }
     }
 
-    public void resetTimer(long waiting){
-
-        timer.cancel();
-        timer.purge();
-        timer= new Timer();
-        timer.schedule(new MyTimerTask(), waiting);
-
+    private void startTimer() {
+        connectionTimer= new Timer();
+        connectionTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                restart();
+            }
+        }, PING_PONG_DELAY*2);
     }
 
-    private class MyTimerTask extends TimerTask{
+    public void resetTimer(){
+        connectionTimer.cancel();
+        connectionTimer.purge();
+        startTimer();
+    }
+
+    private class PongSource extends Thread{
+        private AtomicBoolean active;
+
+        public PongSource(){
+            active= new AtomicBoolean(true);
+        }
 
         @Override
-        public void run() {
-            shutDown();
-            userInterface.showConnectionSelection();
+        public synchronized void run(){
+            try {
+                while(active.get()) {
+                    network.forward(new PongEvent());
+                    wait(PING_PONG_DELAY);
+                }
+            }
+            catch (ForwardingException e){
+                restart();
+            }
+            catch (InterruptedException e){
+                restart();
+            }
+
+        }
+
+        public synchronized void close(){
+            active.set(false);
         }
     }
+
+
 
 }

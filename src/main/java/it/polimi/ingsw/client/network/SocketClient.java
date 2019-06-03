@@ -2,6 +2,8 @@ package it.polimi.ingsw.client.network;
 
 import com.google.gson.Gson;
 import it.polimi.ingsw.client.Client;
+import it.polimi.ingsw.client.ClientExceptions.ConnectionInitializationException;
+import it.polimi.ingsw.client.ClientExceptions.ForwardingException;
 import it.polimi.ingsw.client.ClientMain;
 import it.polimi.ingsw.communication.events.*;
 import it.polimi.ingsw.communication.message.*;
@@ -14,8 +16,6 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class SocketClient extends Thread implements NetworkInterfaceClient, EventVisitor {
     private final Socket socket;
@@ -28,24 +28,30 @@ public class SocketClient extends Thread implements NetworkInterfaceClient, Even
     private boolean active;
 
 
-    public SocketClient(Client client) throws IOException{
+    public SocketClient(Client client) throws ConnectionInitializationException{
 
             String ip= ClientMain.config.getIp();
             int port= ClientMain.config.getPort();
 
-            SocketAddress address= new InetSocketAddress(ip, port);
-            Socket sock= new Socket();
-            this.socket= sock;
-            this.socket.connect(address, 10000);
-            this.client= client;
+            try {
+
+                SocketAddress address = new InetSocketAddress(ip, port);
+                Socket sock = new Socket();
+                this.socket = sock;
+                this.socket.connect(address, 10000);
+                this.client = client;
 
 
-            active= true;
+                active = true;
 
-            out= new PrintWriter(sock.getOutputStream());
-            out.flush();
+                out = new PrintWriter(sock.getOutputStream());
+                out.flush();
 
-            start();
+                start();
+            }
+            catch (IOException e){
+                throw new ConnectionInitializationException();
+            }
 
     }
 
@@ -60,7 +66,7 @@ public class SocketClient extends Thread implements NetworkInterfaceClient, Even
                     MessageVisitable received = unwrap( in.nextLine() );
                     received.accept(client);
                     //todo: remove line below
-                    System.out.println("ho fatto la accept di un messaggio");
+                    //System.out.println("ho fatto la accept di un messaggio");
                 }
             }
             catch (NoSuchElementException nsee){
@@ -75,6 +81,12 @@ public class SocketClient extends Thread implements NetworkInterfaceClient, Even
                 System.out.println("Error while receiving messages!");
                 // qui mi sa che e' meglio spegnere tutto
             }
+            catch (Exception e){
+                System.out.println("eccezione sconosciuta");
+                e.printStackTrace();
+            }
+
+
             try {
                 socket.close();
             }
@@ -86,17 +98,17 @@ public class SocketClient extends Thread implements NetworkInterfaceClient, Even
 
 
 
-    public void forward(EventVisitable event) throws IOException{
+    public void forward(EventVisitable event) throws ForwardingException {
         Gson gson= new Gson();
         event.accept(this);
-
         out.println(eventPrefix + gson.toJson(event));
         out.flush();
+
     }
 
     private MessageVisitable unwrap(String messageText){
         //todo: remove line below
-        System.out.println(messageText);
+        //System.out.println(messageText);
         Gson gson= new Gson();
 
         String prefix= messageText.substring(messageText.indexOf('#'), messageText.lastIndexOf('#') + 1);
@@ -117,6 +129,7 @@ public class SocketClient extends Thread implements NetworkInterfaceClient, Even
             case "#SELECTABLESUPDATE#": result= gson.fromJson(messageText, SelectablesUpdateMessage.class); break;
             case "#DAMAGEUPDATE#": result= gson.fromJson(messageText, DamageUpdateMessage.class); break;
             case "#CONNECTIONUPDATE#": result= gson.fromJson(messageText, ConnectionUpdateMessage.class); break;
+            case "#PING#": result= new PingMessage(); break;
             default: break;
         }
 
