@@ -83,7 +83,7 @@ public class RmiClient extends UnicastRemoteObject implements  NetworkInterfaceC
     }
 
     @Override
-    public void closeConnection() {
+    public synchronized void closeConnection() {
         messageEater.close();
         try {
             UnicastRemoteObject.unexportObject(this, true);
@@ -116,7 +116,7 @@ public class RmiClient extends UnicastRemoteObject implements  NetworkInterfaceC
                 try {
                     wait();
                 } catch (InterruptedException e) {
-                    //nothing
+                    close();
                 }
             }
             else {

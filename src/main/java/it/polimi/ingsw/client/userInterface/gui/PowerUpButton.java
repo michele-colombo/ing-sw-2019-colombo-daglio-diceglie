@@ -20,7 +20,7 @@ public class PowerUpButton extends Parent {
 
 
     public PowerUpButton(PowerUpView powerUpView){
-        InputStream powerUpUrl = getClass().getClassLoader().getResourceAsStream("powerUp/" + powerUpView.getName().toLowerCase() + " " + powerUpView.getColor().toString().toLowerCase() + ".png");
+        InputStream powerUpUrl = getClass().getClassLoader().getResourceAsStream("powerUp/" + powerUpView.getName() + " " + powerUpView.getColor().toString().toLowerCase() + ".png");
         this.powerUpImage = new Image(powerUpUrl);
         this.powerUpImageView = new ImageView(powerUpImage);
         this.powerUpView = powerUpView;

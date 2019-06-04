@@ -22,11 +22,13 @@ import java.util.concurrent.Executors;
 
 public class ServerMain {
     //SERVE PER FAR PARTIRE IL SERVER
+    private String acceptedIp;
     private int port;
     private final GameModel gameModel;
     private final Controller controller;
 
-    public ServerMain(int port, int loginTimerDuration, int inputTimerDuration){
+    public ServerMain(String acceptedIp, int port, int loginTimerDuration, int inputTimerDuration){
+        this.acceptedIp= acceptedIp;
         this.port = port;
         gameModel = new GameModel();
         controller = new Controller(gameModel);
@@ -50,7 +52,7 @@ public class ServerMain {
             int rmiPort= port + 1;
 
 
-            System.setProperty("java.rmi.server.hostname", "127.0.0.1");
+            System.setProperty("java.rmi.server.hostname", acceptedIp);
 
 
 
@@ -87,31 +89,44 @@ public class ServerMain {
     }
 
     public static void main(String[] args){
+        String acceptedIp;
+        if(args.length == 0){
+            acceptedIp= "127.0.0.1";
+        }
+        else{
+            acceptedIp= args[0];
+        }
 
 
         InputStream url= ServerMain.class.getClassLoader().getResourceAsStream("serverConfig.json");
         Scanner sc= new Scanner(url);
 
         //getting port number
-        JsonObject o= (JsonObject) new JsonParser().parse(sc.nextLine());
-        JsonElement data=  o.get("port");
-        int portNumber= data.getAsInt();
-        int loginTimerDuration;
-        int inputTimerDuration;
         try {
-            data = o.get("loginTimer");
-            loginTimerDuration = data.getAsInt();
-        } catch (Exception e){
-            loginTimerDuration = -1;
-        }
-        try {
-            data = o.get("inputTimer");
-            inputTimerDuration = data.getAsInt();
-        } catch (Exception e){
-            inputTimerDuration = -1;
-        }
+            JsonObject o = (JsonObject) new JsonParser().parse(sc.nextLine());
+            JsonElement data = o.get("port");
+            int portNumber = data.getAsInt();
+            int loginTimerDuration;
+            int inputTimerDuration;
+            try {
+                data = o.get("loginTimer");
+                loginTimerDuration = data.getAsInt();
+            } catch (Exception e) {
+                loginTimerDuration = -1;
+            }
+            try {
+                data = o.get("inputTimer");
+                inputTimerDuration = data.getAsInt();
+            } catch (Exception e) {
+                inputTimerDuration = -1;
+            }
 
-        new ServerMain(portNumber, loginTimerDuration, inputTimerDuration);
+
+            new ServerMain(acceptedIp, portNumber, loginTimerDuration, inputTimerDuration);
+        }
+        catch (NullPointerException e){
+            System.out.println("Configuration file not found");
+        }
     }
 
     public static <T> String listToString(List<T> list){

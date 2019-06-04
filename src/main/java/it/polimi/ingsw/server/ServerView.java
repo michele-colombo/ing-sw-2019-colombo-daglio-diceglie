@@ -1,6 +1,5 @@
 package it.polimi.ingsw.server;
 
-import it.polimi.ingsw.client.ClientExceptions.ForwardingException;
 import it.polimi.ingsw.communication.events.*;
 import it.polimi.ingsw.communication.message.MessageVisitable;
 import it.polimi.ingsw.communication.message.PingMessage;

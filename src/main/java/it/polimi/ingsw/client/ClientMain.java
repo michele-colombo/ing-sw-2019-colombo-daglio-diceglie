@@ -8,7 +8,7 @@ import com.google.gson.JsonParser;
 
 
 import it.polimi.ingsw.client.userInterface.cli.Cli;
-import it.polimi.ingsw.client.userInterface.Gui;
+import it.polimi.ingsw.client.userInterface.gui.Gui;
 import javafx.application.Application;
 
 import java.io.*;

@@ -91,6 +91,10 @@ public class Client implements MessageVisitor {
             userInterface.printError(e.getMessage());
             restart();
         }
+        catch (NullPointerException e){
+            userInterface.printError("Connection lost");
+            restart();
+        }
     }
 
     @Override
@@ -125,7 +129,9 @@ public class Client implements MessageVisitor {
         if (match == null){
             match = new MatchView(name, startMatchUpdateMessage.getLayoutConfiguration(), startMatchUpdateMessage.getNames(), startMatchUpdateMessage.getColors(), connections);
         }
+        stopTimer();
         userInterface.UpdateStartMatch(match);
+        startTimer();
         //todo
     }
 
@@ -482,12 +488,17 @@ public class Client implements MessageVisitor {
 
 
     public void shutDown(){
+
         ponging.close();
-        connectionTimer.cancel();
+        stopTimer();
 
         if(network != null) {
             network.closeConnection();
+            network= null;
         }
+
+
+
     }
 
     private void startTimer() {
@@ -500,12 +511,40 @@ public class Client implements MessageVisitor {
         }, PING_PONG_DELAY*2);
     }
 
-    public void resetTimer(){
+    public void stopTimer(){
         connectionTimer.cancel();
         connectionTimer.purge();
+    }
+
+    public void resetTimer(){
+        stopTimer();
         startTimer();
     }
 
+    private class PongSource{
+        Timer timer;
+
+        public void close(){
+            timer.cancel();
+            timer.purge();
+        }
+
+        public void start(){
+            timer= new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    try {
+                        network.forward(new PongEvent());
+                    }
+                    catch (ForwardingException e){
+                        cancel();
+                    }
+                }
+            }, PING_PONG_DELAY, PING_PONG_DELAY);
+        }
+    }
+/*
     private class PongSource extends Thread{
         private AtomicBoolean active;
 
@@ -517,8 +556,8 @@ public class Client implements MessageVisitor {
         public synchronized void run(){
             try {
                 while(active.get()) {
-                    network.forward(new PongEvent());
                     wait(PING_PONG_DELAY);
+                    network.forward(new PongEvent());
                 }
             }
             catch (ForwardingException e){
@@ -534,6 +573,7 @@ public class Client implements MessageVisitor {
             active.set(false);
         }
     }
+    */
 
 
 

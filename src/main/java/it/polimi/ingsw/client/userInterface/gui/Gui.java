@@ -164,15 +164,18 @@ public class Gui extends Application implements UserInterface {
         });
     }
 
-    public void UpdateStartMatch(MatchView match){
+    public synchronized void UpdateStartMatch(MatchView match){
+        boardGui = new BoardGui(match);
+
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
                 //Parent newView = new BoardGui(match.getLayout().getLayoutConfiguration()).getView();
-                    boardGui = new BoardGui(match);
                     changeScene(boardGui.getView());
             }
         });
+
+        notify();
     }
 
     public static Client getClient(){
@@ -229,8 +232,14 @@ public class Gui extends Application implements UserInterface {
     }
 
     @Override
-    public void updatePowerUp(PlayerView player) {
-        sleepGui();
+    public synchronized void updatePowerUp(PlayerView player) {
+        while(boardGui == null){
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         boardGui.updatePowerUp(player);
     }
 
