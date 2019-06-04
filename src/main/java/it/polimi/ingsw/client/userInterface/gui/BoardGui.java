@@ -1,22 +1,23 @@
-package it.polimi.ingsw.client.userInterface;
+package it.polimi.ingsw.client.userInterface.gui;
 
 import it.polimi.ingsw.client.MatchView;
 import it.polimi.ingsw.client.PlayerView;
+import it.polimi.ingsw.client.PowerUpView;
+import it.polimi.ingsw.client.WrongSelectionException;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.GridPane;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
 import java.io.InputStream;
@@ -26,12 +27,20 @@ import java.util.Map;
 
 public class BoardGui {
     private final GridPane view;
+    private HBox weaponBox;
+    private HBox powerUpBox;
     private GridPane connectionState;
     private GridPane damageTracks;
     private List<Label> connectionLabels;
+    private ComboBox selectables;
 
     public BoardGui(MatchView match){
         view = new GridPane();
+        weaponBox = new HBox();
+        powerUpBox = new HBox();
+        selectables = new ComboBox();
+        //selectables.setDisable(true);
+
         view.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         //view.setAlignment(Pos.CENTER);
         view.setHgap(15);
@@ -47,17 +56,21 @@ public class BoardGui {
         InputStream boardUrl = getClass().getClassLoader().getResourceAsStream("layoutPNG/layout" + match.getLayout().getLayoutConfiguration() + ".png");
         Image image = new Image(boardUrl);
         ImageView imageView = new ImageView(image);
-        imageView.setFitHeight(Gui.getScreenBounds().getHeight()/1.2);
-        imageView.setFitWidth(Gui.getScreenBounds().getHeight()/1.2);
+        imageView.setFitHeight(Gui.getScreenBounds().getHeight()/1.5);
+        imageView.setFitWidth(Gui.getScreenBounds().getWidth()/1.5);
         imageView.setPreserveRatio(true);
         imageView.setSmooth(true);
 
-        //board.getChildren().addAll(imageView, createKillButton());
+        board.getChildren().addAll(imageView);
         GridPane.setHalignment(imageView, HPos.LEFT);
         view.add(board, 0,0);
-        view.add(ivTarget,0,0);
+        //view.add(ivTarget,0,0);
+        view.add(weaponBox, 0,1);
+        view.add(powerUpBox, 1, 1);
         addDamageTrack(match); //todo utilizzare il messaggio di UpdateStartMatch
         addConnectionState(match.getAllPlayers());
+        addSelectables();
+        updateConnection(match.readConnections());
     }
 
     public Parent getView(){
@@ -104,23 +117,24 @@ public class BoardGui {
         connectionState.setHgap(10);
         connectionState.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         view.add(connectionState, 4,0);
-        int i = 1;
-        for(PlayerView pv : players){
-            Label playerLabel = new Label(pv.getName());
-            playerLabel.setTextFill(Color.WHITE);
-            Label onlineLabel = new Label("online");
-            onlineLabel.setTextFill(Color.GREEN);
-            playerLabel.setWrapText(true);
-            playerLabel.setMaxWidth(Gui.getScreenBounds().getWidth()/24);
-            //playerLabel.textProperty().bind()
-            onlineLabel.setWrapText(true);
-            onlineLabel.setMinWidth(Gui.getScreenBounds().getWidth()/17);
-            connectionState.add(playerLabel, 0, i);
-            connectionState.add(onlineLabel, 1, i);
-            connectionLabels.add(playerLabel);
-            connectionLabels.add(onlineLabel);
-            i++;
-        }
+    }
+
+    public void addSelectables(){
+        selectables = new ComboBox();
+        view.add(selectables,4,0);
+
+        selectables.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if(selectables.getValue() != null && !selectables.getValue().toString().isEmpty()){
+                    try{
+                        Gui.getClient().selected(selectables.getValue().toString());
+                    } catch(WrongSelectionException e){
+                        System.out.println("Action ComboBox error!");
+                    }
+                }
+            }
+        });
     }
 
     public void updateConnection(Map<String, Boolean> connections){
@@ -152,34 +166,36 @@ public class BoardGui {
                     connectionLabels.add(onlineLabel);
                     i++;
                 }
+                //sleepGui(750);
             }
         });
     }
 
-    /*private Button createKillButton() {
-
-        final Button killButton = new Button("Kill the evil witch");
-
-        killButton.setStyle("-fx-base: firebrick;");
-
-        killButton.setTranslateX(500);
-
-        killButton.setTranslateY(-250);
-
-        killButton.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override public void handle(ActionEvent t) {
-
-                killButton.setStyle("-fx-base: forestgreen;");
-
-                killButton.setText("Ding-Dong! The Witch is Dead");
-
+    public void updatePowerUp(PlayerView player){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                if(player.getName().equals(Gui.getClient().getMatch().getMyPlayer().getName())){
+                    powerUpBox.getChildren().clear();
+                    for(PowerUpView powerUpView : Gui.getClient().getMatch().getMyPlayer().getPowerUps()){
+                        powerUpBox.getChildren().add(new PowerUpButton(powerUpView));
+                    }
+                }
+                //sleepGui(750);
             }
-
         });
+    }
 
-        return killButton;
+    public void updateSelectables(){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                ObservableList<String> comboItems = FXCollections.observableList(Gui.getClient().getMatch().getMyPlayer().getSelectableActions());
+                selectables.getItems().clear();
+                selectables.getItems().addAll(comboItems);
+            }
+        });
+    }
 
-    }*/
 
 }

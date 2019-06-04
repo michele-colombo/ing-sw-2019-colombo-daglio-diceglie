@@ -1,5 +1,6 @@
-package it.polimi.ingsw.client.userInterface;
+package it.polimi.ingsw.client.userInterface.gui;
 
+import it.polimi.ingsw.client.userInterface.gui.Gui;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;

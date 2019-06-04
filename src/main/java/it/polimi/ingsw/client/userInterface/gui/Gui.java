@@ -1,8 +1,9 @@
-package it.polimi.ingsw.client.userInterface;
+package it.polimi.ingsw.client.userInterface.gui;
 
 import it.polimi.ingsw.client.Client;
+import it.polimi.ingsw.client.LayoutView;
 import it.polimi.ingsw.client.MatchView;
-import javafx.animation.Timeline;
+import it.polimi.ingsw.client.userInterface.UserInterface;
 import it.polimi.ingsw.client.PlayerView;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -26,8 +27,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-
-import java.rmi.RemoteException;
 
 public class Gui extends Application implements UserInterface {
     private static Client client;
@@ -60,11 +59,12 @@ public class Gui extends Application implements UserInterface {
         loginGui.printLoginMessage(text, loginSuccessful);
     }
 
-    //public void UpdateStartMatch()
-
     @Override
-    public void start(Stage primaryStage) {
+    public synchronized void start(Stage primaryStage) {
+        initialize(primaryStage);
+    }
 
+    public void initialize(Stage primaryStage){
         Gui.screenBounds = Screen.getPrimary().getBounds();
         loginGui = null;
         boardGui = null;
@@ -138,6 +138,10 @@ public class Gui extends Application implements UserInterface {
 
         scene = new Scene(grid);
         stage.setScene(scene);
+
+        //stage.minWidthProperty().bind(scene.heightProperty().multiply(1.5));
+        //stage.minHeightProperty().bind(scene.widthProperty().divide(1.5));
+
         stage.show();
 
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -165,10 +169,8 @@ public class Gui extends Application implements UserInterface {
             @Override
             public void run() {
                 //Parent newView = new BoardGui(match.getLayout().getLayoutConfiguration()).getView();
-                if(boardGui == null){
                     boardGui = new BoardGui(match);
                     changeScene(boardGui.getView());
-                }
             }
         });
     }
@@ -183,7 +185,7 @@ public class Gui extends Application implements UserInterface {
 
 
     public void showAndAskSelection() {
-        return;
+        boardGui.updateSelectables();
     }
 
     @Override
@@ -191,13 +193,14 @@ public class Gui extends Application implements UserInterface {
         if(boardGui == null){
             loginGui.updateConnection(client.getConnections());
         } else {
+            //sleepGui();
             boardGui.updateConnection(client.getConnections());
         }
     }
 
     @Override
     public void updateLayout() {
-        return;
+        LayoutView layoutView = client.getMatch().getLayout();
     }
 
     @Override
@@ -227,7 +230,8 @@ public class Gui extends Application implements UserInterface {
 
     @Override
     public void updatePowerUp(PlayerView player) {
-        return;
+        sleepGui();
+        boardGui.updatePowerUp(player);
     }
 
     @Override
@@ -237,7 +241,7 @@ public class Gui extends Application implements UserInterface {
 
     @Override
     public void updateSelectables() {
-        return;
+        boardGui.updateSelectables();
     }
 
     private void changeScene(Parent newView){
@@ -247,5 +251,13 @@ public class Gui extends Application implements UserInterface {
     @Override
     public void printError(String message) {
 
+    }
+
+    public void sleepGui(){
+        try{
+            Thread.sleep(750);
+        } catch(InterruptedException e){
+            ;
+        }
     }
 }
