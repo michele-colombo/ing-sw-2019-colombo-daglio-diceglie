@@ -4,6 +4,7 @@ import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.client.ClientExceptions.ConnectionInitializationException;
 import it.polimi.ingsw.client.ClientExceptions.ForwardingException;
 import it.polimi.ingsw.client.ClientMain;
+import it.polimi.ingsw.communication.CommonProperties;
 import it.polimi.ingsw.communication.events.EventVisitable;
 import it.polimi.ingsw.communication.message.MessageVisitable;
 import it.polimi.ingsw.server.network.RmiServerAcceptorInterface;
@@ -11,6 +12,7 @@ import it.polimi.ingsw.server.network.RmiServerRemoteInterface;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.rmi.NoSuchObjectException;
@@ -19,28 +21,47 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.RMIClientSocketFactory;
+import java.rmi.server.RMISocketFactory;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class RmiClient extends UnicastRemoteObject implements  NetworkInterfaceClient, RmiClientRemoteInterface{
+public class RmiClient extends NetworkInterfaceClient{
     private RmiServerRemoteInterface server;
-    private Client client;
+    private Asker asker;
 
-    private MessageTrafficManager messageEater;
+   // private MessageTrafficManager messageEater;
 
-    public RmiClient(Client cl) throws RemoteException, ConnectionInitializationException{
+    public RmiClient(Client cl) throws ConnectionInitializationException{
+        super(cl);
 
         String ip= ClientMain.config.getIp();
         int port= ClientMain.config.getPort();
-
         int rmiPort= port + 1;
 
-        this.client= cl;
-
         try {
+
+            RMISocketFactory.setSocketFactory(new RMISocketFactory() {
+                public Socket createSocket( String host, int port )
+                        throws IOException
+                {
+                    Socket socket = new Socket();
+                    socket.setSoTimeout((int) CommonProperties.PING_PONG_DELAY*2);
+                    socket.setSoLinger( false, 0 );
+                    socket.connect( new InetSocketAddress( host, port ), REACHING_TIME );
+                    return socket;
+                }
+
+                public ServerSocket createServerSocket(int port )
+                        throws IOException
+                {
+                    return new ServerSocket( port );
+                }
+            } );
+
+
             //System.out.println("Getting registry");
-            Registry registry = LocateRegistry.getRegistry(ip, rmiPort, new MyRMIClientSocketFactory());
+            Registry registry = LocateRegistry.getRegistry(ip, rmiPort);
 
 
             System.out.println("Connecting to server");
@@ -48,21 +69,29 @@ public class RmiClient extends UnicastRemoteObject implements  NetworkInterfaceC
 
 
             System.out.println("Attaching server");
-            RmiClientRemoteInterface myFace = this;
-            RmiServerRemoteInterface server = acceptor.addMe(myFace);
+            RmiServerRemoteInterface server = acceptor.addMe();
             this.server = server;
 
+            ponging.start();
 
+            asker= new Asker();
+            asker.start();
+
+/*
             messageEater= new MessageTrafficManager();
             messageEater.start();
+            */
+
+
         }
-        catch (RemoteException e){
+        catch (IOException e){
             throw new ConnectionInitializationException();
         }
         catch (NotBoundException nbe){
             //it cannot happen
             nbe.printStackTrace();
         }
+
 
     }
 
@@ -73,32 +102,29 @@ public class RmiClient extends UnicastRemoteObject implements  NetworkInterfaceC
             server.receive(eventVisitable);
         }
         catch (RemoteException e){
+            System.out.println("Merdoccia");
             throw new ForwardingException();
         }
     }
 
-    @Override
-    public void startNetwork() {
-        //this method is useless
-    }
 
     @Override
     public synchronized void closeConnection() {
-        messageEater.close();
-        try {
-            UnicastRemoteObject.unexportObject(this, true);
-            System.out.println("Sono nel ramo try del unexport");
-        }
-        catch (NoSuchObjectException e){
-            System.out.println("Sono nel ramo NoSuchObjectException");
-            System.out.println(this);
-        }
+        ponging.interrupt();
+        ponging.close();
+        asker.close();
     }
 
     @Override
-    public void receive(MessageVisitable message)throws RemoteException {
-        messageEater.put(message);
+    void pong() {
+        try {
+            server.pong();
+        }
+        catch (RemoteException e){
+
+        }
     }
+
 
 
 
@@ -145,14 +171,32 @@ public class RmiClient extends UnicastRemoteObject implements  NetworkInterfaceC
         }
     }
 
-    private class MyRMIClientSocketFactory implements RMIClientSocketFactory {
+    private class Asker extends Thread{
+        private AtomicBoolean active;
+
+        private Asker(){
+            active= new AtomicBoolean(true);
+        }
 
         @Override
-        public Socket createSocket(String host, int port) throws IOException {
-            SocketAddress address = new InetSocketAddress(host, port);
-            Socket sock = new Socket();
-            sock.connect(address, 10000);
-            return sock;
+        public synchronized void run(){
+            try{
+                while(active.get()){
+                    MessageVisitable message= server.ask();
+                    if(message!= null) {
+                        Thread resend = new Thread(() -> message.accept(client));
+                        resend.start();
+                    }
+                }
+            }
+            catch (RemoteException e){
+                System.out.println("Connection down");
+                client.restart();
+            }
+        }
+
+        public void close(){
+            active.set(false);
         }
     }
 

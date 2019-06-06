@@ -3,6 +3,7 @@ package it.polimi.ingsw.server;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import it.polimi.ingsw.communication.CommonProperties;
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.controller.Controller;
 import it.polimi.ingsw.server.network.RmiServerAcceptor;
@@ -76,9 +77,12 @@ public class ServerMain {
         while(true){  //sara' finche'  i giocatori sono meno di cinque o piu' di tre ed e' scattato il timer
             try{
                 Socket socket = serverSocket.accept();
+
+                socket.setSoTimeout((int) CommonProperties.PING_PONG_DELAY*2);
+
                 System.out.println("A new client has connected");
                 SocketServer socketServer = new SocketServer(socket, controller);
-                executor.submit(socketServer);
+                //executor.submit(socketServer);
                 //todo: viene chiamato un metodo createServerView(NetworkInterfaceServer socketServer)
                 //CREARE IL THREAD
             } catch (IOException e){

@@ -11,23 +11,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RmiServerAcceptor extends UnicastRemoteObject implements RmiServerAcceptorInterface {
-
-    private List<ServerView> serverViewList;
     private Controller controller;
 
 
     public RmiServerAcceptor(Controller controller) throws RemoteException {
-        serverViewList= new ArrayList<>();
         this.controller= controller;
     }
 
-    public List<ServerView> getServerViewList() {
-        return serverViewList;
-    }
-
     @Override
-    public RmiServerRemoteInterface addMe (RmiClientRemoteInterface rmiClientRemoteInterface) throws RemoteException {
-        return new RmiServer(rmiClientRemoteInterface, controller);
+    public RmiServerRemoteInterface addMe () throws RemoteException {
+        return new RmiServer(controller);
     }
 
 }

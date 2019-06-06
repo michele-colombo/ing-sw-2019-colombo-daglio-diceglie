@@ -6,6 +6,7 @@ import it.polimi.ingsw.client.network.NetworkInterfaceClient;
 import it.polimi.ingsw.client.network.RmiClient;
 import it.polimi.ingsw.client.network.SocketClient;
 import it.polimi.ingsw.client.userInterface.UserInterface;
+import it.polimi.ingsw.communication.CommonProperties;
 import it.polimi.ingsw.communication.MessageVisitor;
 import it.polimi.ingsw.communication.events.*;
 import it.polimi.ingsw.communication.message.*;
@@ -15,10 +16,8 @@ import it.polimi.ingsw.server.model.enums.PlayerState;
 
 import java.rmi.RemoteException;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Client implements MessageVisitor {
-    private static final long PING_PONG_DELAY= 1000;
 
     private NetworkInterfaceClient network;
     private UserInterface userInterface;
@@ -27,9 +26,6 @@ public class Client implements MessageVisitor {
     private boolean connected;
     private MatchView match;
     private Map<String, Boolean> connections;
-
-    private PongSource ponging;
-    private Timer connectionTimer;
 
 
 
@@ -45,31 +41,18 @@ public class Client implements MessageVisitor {
             switch (connection) {
 
                 case "socket":
-
                     network = new SocketClient(this);
 
                     break;
                 case "rmi":
-                    try {
-                        network = new RmiClient(this);
-                    }
-                    catch (RemoteException e){
-                        throw new ConnectionInitializationException();
-                    }
-
-
+                    network = new RmiClient(this);
                 break;
+
+
                 default: //non deve succedere
                     break;
             }
             connected = true;
-
-
-            ponging = new PongSource();
-            ponging.start();
-
-            startTimer();
-
             userInterface.showLogin();
 
         }
@@ -118,20 +101,12 @@ public class Client implements MessageVisitor {
         userInterface.updateConnection(); //aggiunta per la Gui, potrebbe non funzionare per la Cli
     }
 
-    @Override
-    public synchronized void visit(PingMessage pingMessage) {
-        resetTimer();
-    }
-
-
     public synchronized void visit(StartMatchUpdateMessage startMatchUpdateMessage) {
         System.out.println("Start match update received");
         if (match == null){
             match = new MatchView(name, startMatchUpdateMessage.getLayoutConfiguration(), startMatchUpdateMessage.getNames(), startMatchUpdateMessage.getColors(), connections);
         }
-        stopTimer();
         userInterface.UpdateStartMatch(match);
-        startTimer();
         //todo
     }
 
@@ -488,93 +463,11 @@ public class Client implements MessageVisitor {
 
 
     public void shutDown(){
-
-        ponging.close();
-        stopTimer();
-
         if(network != null) {
             network.closeConnection();
             network= null;
         }
-
-
-
     }
-
-    private void startTimer() {
-        connectionTimer= new Timer();
-        connectionTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                restart();
-            }
-        }, PING_PONG_DELAY*2);
-    }
-
-    public void stopTimer(){
-        connectionTimer.cancel();
-        connectionTimer.purge();
-    }
-
-    public void resetTimer(){
-        stopTimer();
-        startTimer();
-    }
-
-    private class PongSource{
-        Timer timer;
-
-        public void close(){
-            timer.cancel();
-            timer.purge();
-        }
-
-        public void start(){
-            timer= new Timer();
-            timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    try {
-                        network.forward(new PongEvent());
-                    }
-                    catch (ForwardingException e){
-                        cancel();
-                    }
-                }
-            }, PING_PONG_DELAY, PING_PONG_DELAY);
-        }
-    }
-/*
-    private class PongSource extends Thread{
-        private AtomicBoolean active;
-
-        public PongSource(){
-            active= new AtomicBoolean(true);
-        }
-
-        @Override
-        public synchronized void run(){
-            try {
-                while(active.get()) {
-                    wait(PING_PONG_DELAY);
-                    network.forward(new PongEvent());
-                }
-            }
-            catch (ForwardingException e){
-                restart();
-            }
-            catch (InterruptedException e){
-                restart();
-            }
-
-        }
-
-        public synchronized void close(){
-            active.set(false);
-        }
-    }
-    */
-
 
 
 }

@@ -5,6 +5,7 @@ import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.client.ClientExceptions.ConnectionInitializationException;
 import it.polimi.ingsw.client.ClientExceptions.ForwardingException;
 import it.polimi.ingsw.client.ClientMain;
+import it.polimi.ingsw.communication.CommonProperties;
 import it.polimi.ingsw.communication.events.*;
 import it.polimi.ingsw.communication.message.*;
 import it.polimi.ingsw.communication.EventVisitor;
@@ -14,85 +15,50 @@ import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.rmi.RemoteException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-public class SocketClient extends Thread implements NetworkInterfaceClient, EventVisitor {
+public class SocketClient extends NetworkInterfaceClient implements EventVisitor {
     private final Socket socket;
     private Client client;
     private String eventPrefix;
 
+    private Asker asker;
+
 
     private PrintWriter out;
 
-    private boolean active;
-
 
     public SocketClient(Client client) throws ConnectionInitializationException{
+        super(client);
 
-            String ip= ClientMain.config.getIp();
-            int port= ClientMain.config.getPort();
+        String ip= ClientMain.config.getIp();
+        int port= ClientMain.config.getPort();
 
-            try {
+        try {
 
-                SocketAddress address = new InetSocketAddress(ip, port);
-                Socket sock = new Socket();
-                this.socket = sock;
-                this.socket.connect(address, 10000);
-                this.client = client;
+            SocketAddress address = new InetSocketAddress(ip, port);
+            Socket sock = new Socket();
+            this.socket = sock;
+            this.socket.connect(address, REACHING_TIME);
+            this.socket.setSoTimeout((int) CommonProperties.PING_PONG_DELAY*2);
+            this.client = client;
 
+            out = new PrintWriter(sock.getOutputStream());
+            out.flush();
 
-                active = true;
+            asker= new Asker();
+            asker.start();
 
-                out = new PrintWriter(sock.getOutputStream());
-                out.flush();
+            ponging.start();
 
-                start();
-            }
-            catch (IOException e){
-                throw new ConnectionInitializationException();
-            }
+        }
+        catch (IOException e){
+            throw new ConnectionInitializationException();
+        }
 
-    }
-
-    public void startNetwork(){
-        this.start();
-    }
-
-    public void run() {
-            try {
-                Scanner in = new Scanner(socket.getInputStream());
-                while(active && in.hasNext()) {
-                    MessageVisitable received = unwrap( in.nextLine() );
-                    received.accept(client);
-                    //todo: remove line below
-                    //System.out.println("ho fatto la accept di un messaggio");
-                }
-            }
-            catch (NoSuchElementException nsee){
-                //it is very important because i get to this exception in every case i want to disconnect
-                //client.restart();
-
-                System.out.println("Server has stopped. Relogin");
-                closeConnection();
-
-            }
-            catch (IOException e) {
-                System.out.println("Error while receiving messages!");
-                // qui mi sa che e' meglio spegnere tutto
-            }
-            catch (Exception e){
-                System.out.println("eccezione sconosciuta");
-                e.printStackTrace();
-            }
-
-
-            try {
-                socket.close();
-            }
-            catch (IOException e){
-
-            }
     }
 
 
@@ -129,7 +95,6 @@ public class SocketClient extends Thread implements NetworkInterfaceClient, Even
             case "#SELECTABLESUPDATE#": result= gson.fromJson(messageText, SelectablesUpdateMessage.class); break;
             case "#DAMAGEUPDATE#": result= gson.fromJson(messageText, DamageUpdateMessage.class); break;
             case "#CONNECTIONUPDATE#": result= gson.fromJson(messageText, ConnectionUpdateMessage.class); break;
-            case "#PING#": result= new PingMessage(); break;
             default: break;
         }
 
@@ -138,11 +103,19 @@ public class SocketClient extends Thread implements NetworkInterfaceClient, Even
 
     public void closeConnection(){
         try{
+            ponging.interrupt();
+            ponging.close();
+            asker.close();
             socket.close();
         }
         catch (IOException e){}
     }
 
+    @Override
+    void pong() {
+        out.println(CommonProperties.PONG_NAME);
+        out.flush();
+    }
 
 
     @Override
@@ -198,6 +171,51 @@ public class SocketClient extends Thread implements NetworkInterfaceClient, Even
         eventPrefix= "#POWERUPSELECTED#";
     }
 
-    @Override
-    public void visit(PongEvent pongEvent) { eventPrefix= "#PONG#"; }
+
+    private class Asker extends Thread{
+        private AtomicBoolean active;
+
+        private Asker(){
+            active= new AtomicBoolean(true);
+        }
+
+        @Override
+        public synchronized void run(){
+            try {
+                Scanner in = new Scanner(socket.getInputStream());
+                while(active.get()) {
+                    String strcv= in.nextLine();
+                    if(!strcv.equalsIgnoreCase(CommonProperties.PING_NAME)) {
+                        MessageVisitable received = unwrap(strcv);
+                        try {
+                            received.accept(client);
+                        }
+                        catch (NullPointerException e){
+                            System.out.println("NULL MESSAGE RECEIVED!!");
+                        }
+                    }
+                }
+            }
+            catch (NoSuchElementException nsee){
+                //it is very important because i get to this exception in every case i want to disconnect
+                //client.restart();
+
+                System.out.println("Server has stopped. Relogin");
+                client.restart();
+
+            }
+            catch (IOException e) {
+                System.out.println("Error while receiving messages!");
+                // qui mi sa che e' meglio spegnere tutto
+            }
+            catch (Exception e){
+                System.out.println("eccezione sconosciuta");
+                e.printStackTrace();
+            }
+        }
+
+        public void close(){
+            active.set(false);
+        }
+    }
 }

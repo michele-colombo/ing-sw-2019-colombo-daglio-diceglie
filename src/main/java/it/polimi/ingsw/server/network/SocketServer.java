@@ -1,6 +1,7 @@
 package it.polimi.ingsw.server.network;
 
 import com.google.gson.Gson;
+import it.polimi.ingsw.communication.CommonProperties;
 import it.polimi.ingsw.communication.MessageVisitor;
 import it.polimi.ingsw.communication.events.*;
 import it.polimi.ingsw.communication.message.*;
@@ -10,47 +11,41 @@ import it.polimi.ingsw.server.controller.Controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.rmi.RemoteException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-public class SocketServer extends Thread implements NetworkInterfaceServer, MessageVisitor {
+public class SocketServer implements NetworkInterfaceServer, MessageVisitor {
     private Socket socket;
     private ServerView serverView;
     private PrintWriter out;
     private String messagePrefix;
 
+    private Asker asker;
+    private PingSource pinging;
+
     public SocketServer(Socket socket, Controller controller){
-        this.socket = socket;
-        //todo: non crea la serverView
-        serverView = new ServerView(this, controller);
+        try {
+            this.socket = socket;
 
-    }
-
-    @Override
-    public void run(){
-        try{
             out = new PrintWriter(socket.getOutputStream());
             out.flush();
-            final Scanner in = new Scanner(socket.getInputStream());
-            while(true){
-                EventVisitable received= unwrap( in.nextLine() );
-                if(received!=null) {
-                    received.accept(serverView);  //if everything went right
-                }
-            }
-        } catch(NoSuchElementException e){
-            System.out.println("Client disconnected");
-            serverView.disconnectPlayer();
-            //todo passare al prossimo player ed eventualmente annullare l'azione(se match è iniziato)
+
+            //todo: non crea la serverView
+            serverView = new ServerView(this, controller);
+
+            pinging = new PingSource();
+            pinging.start();
+
+            asker = new Asker();
+            asker.start();
         }
         catch (IOException e){
-            System.out.println("Eccezione sull'input");
-        } catch (Exception e){
-            System.out.println("there's another exception");
-            e.printStackTrace();
+            System.out.println("Impossible to start connection");
         }
+
     }
+
 
     public void forwardMessage(MessageVisitable messageVisitable) throws IOException{
         //PrintWriter out = new PrintWriter(socket.getOutputStream());
@@ -62,11 +57,9 @@ public class SocketServer extends Thread implements NetworkInterfaceServer, Mess
         out.flush();
     }
 
-   public Socket getSocket(){
-        return socket;
-   }
-
    public void closeNetwork(){
+        asker.close();
+
        try {
            this.socket.close();
        } catch (IOException e) {
@@ -151,11 +144,6 @@ public class SocketServer extends Thread implements NetworkInterfaceServer, Mess
 
     }
 
-    @Override
-    public void visit(PingMessage pingMessage) {
-        messagePrefix= "#PING#";
-    }
-
     private EventVisitable unwrap(String eventText){
         //todo: remove next line
         //System.out.println(eventText);
@@ -174,11 +162,81 @@ public class SocketServer extends Thread implements NetworkInterfaceServer, Mess
             case "#COMMANDSELECTED#": result= gson.fromJson(eventText, CommandSelectedEvent.class); break;
             case "#COLORSELECTED#": result= gson.fromJson(eventText, ColorSelectedEvent.class); break;
             case "#POWERUPSELECTED#": result= gson.fromJson(eventText, PowerUpSelectedEvent.class); break;
-            case "#PONG#": result= new PongEvent();
+        }
+        return result;
+    }
 
+
+    private void pong(){
+        out.println(CommonProperties.PING_NAME);
+        out.flush();
+    }
+
+
+
+    private class Asker extends Thread{
+        private AtomicBoolean active;
+
+        private Asker(){
+            active= new AtomicBoolean(true);
+        }
+
+        @Override
+        public synchronized void run(){
+            try{
+                final Scanner in = new Scanner(socket.getInputStream());
+                while(true){
+                    String strcv= in.nextLine();
+                    if(!strcv.equalsIgnoreCase(CommonProperties.PONG_NAME)) {
+                        EventVisitable received = unwrap(strcv);
+                        if (received != null) {
+                            received.accept(serverView);  //if everything went right
+                        }
+                    }
+                }
+            } catch(NoSuchElementException e){
+                System.out.println("Client disconnected");
+                serverView.disconnectPlayer();
+                //todo passare al prossimo player ed eventualmente annullare l'azione(se match è iniziato)
+            }
+            catch (IOException e){
+                System.out.println("Eccezione sull'input");
+            } catch (Exception e){
+                System.out.println("there's another exception");
+                e.printStackTrace();
+            }
+        }
+
+        public void close(){
+            active.set(false);
+        }
+    }
+
+
+
+    protected class PingSource extends Thread{
+        private AtomicBoolean active;
+
+        protected PingSource(){
+            active= new AtomicBoolean(true);
+        }
+
+        public synchronized void run() {
+            try {
+                while (active.get()) {
+                    pong();
+                    wait(CommonProperties.PING_PONG_DELAY);
+                }
+            }
+            catch (InterruptedException e){
+                interrupt();
+            }
 
 
         }
-        return result;
+
+        protected void close(){
+            active.set(false);
+        }
     }
 }

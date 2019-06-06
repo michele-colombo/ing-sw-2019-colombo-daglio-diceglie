@@ -6,7 +6,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface RmiServerAcceptorInterface extends Remote{
-    RmiServerRemoteInterface addMe (RmiClientRemoteInterface rmiClientRemoteInterface) throws RemoteException;
+    RmiServerRemoteInterface addMe () throws RemoteException;
 }
 
 

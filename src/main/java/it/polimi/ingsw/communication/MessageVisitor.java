@@ -2,8 +2,6 @@ package it.polimi.ingsw.communication;
 
 import it.polimi.ingsw.communication.message.*;
 
-import java.rmi.RemoteException;
-
 public interface MessageVisitor {
     void visit(LoginMessage loginMessage);
 
@@ -30,6 +28,4 @@ public interface MessageVisitor {
     void visit(DamageUpdateMessage damageUpdateMessage);
 
     void visit(ConnectionUpdateMessage connectionUpdateMessage);
-
-    void visit(PingMessage pingMessage);
 }
