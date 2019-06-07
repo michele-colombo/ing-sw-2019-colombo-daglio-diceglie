@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class NetworkInterfaceClient{
 
-    protected static final int REACHING_TIME = 2000;
+    public static final int REACHING_TIME = 2000;
     protected Client client;
 
     protected PongSource ponging;

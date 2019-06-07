@@ -223,10 +223,16 @@ public class RmiServer extends UnicastRemoteObject implements NetworkInterfaceSe
     @Override
     public void closeNetwork() {
         eventEater.close();
+        disconnectionTimer.cancel();
+        disconnectionTimer.purge();
+
         try {
             UnicastRemoteObject.unexportObject(this, true);
+            System.out.println("object unexported");
         }
-        catch (NoSuchObjectException e){  }
+        catch (NoSuchObjectException e){
+            System.out.println("Unable to unexport object. NoSuchObjectException");
+        }
     }
 
     @Override
@@ -301,10 +307,10 @@ public class RmiServer extends UnicastRemoteObject implements NetworkInterfaceSe
 
 
     private class ResponseQueue extends Thread{
-        List<MessageVisitable> coda;
+        private List<MessageVisitable> coda;
 
         public ResponseQueue() {
-            coda= Collections.synchronizedList(new ArrayList<>());
+            coda= new ArrayList<>();
         }
 
         public synchronized void metti(MessageVisitable daMettere){

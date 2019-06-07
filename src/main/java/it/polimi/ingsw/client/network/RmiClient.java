@@ -41,24 +41,6 @@ public class RmiClient extends NetworkInterfaceClient{
 
         try {
 
-            RMISocketFactory.setSocketFactory(new RMISocketFactory() {
-                public Socket createSocket( String host, int port )
-                        throws IOException
-                {
-                    Socket socket = new Socket();
-                    socket.setSoTimeout((int) CommonProperties.PING_PONG_DELAY*2);
-                    socket.setSoLinger( false, 0 );
-                    socket.connect( new InetSocketAddress( host, port ), REACHING_TIME );
-                    return socket;
-                }
-
-                public ServerSocket createServerSocket(int port )
-                        throws IOException
-                {
-                    return new ServerSocket( port );
-                }
-            } );
-
 
             //System.out.println("Getting registry");
             Registry registry = LocateRegistry.getRegistry(ip, rmiPort);
@@ -74,7 +56,7 @@ public class RmiClient extends NetworkInterfaceClient{
 
             ponging.start();
 
-            asker= new Asker();
+            asker = new Asker();
             asker.start();
 
 /*
@@ -82,9 +64,8 @@ public class RmiClient extends NetworkInterfaceClient{
             messageEater.start();
             */
 
-
         }
-        catch (IOException e){
+        catch (RemoteException e){
             throw new ConnectionInitializationException();
         }
         catch (NotBoundException nbe){

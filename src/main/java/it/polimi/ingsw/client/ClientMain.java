@@ -6,12 +6,17 @@ import com.google.gson.Gson;
 import com.google.gson.JsonParser;
 
 
-
+import it.polimi.ingsw.client.network.NetworkInterfaceClient;
 import it.polimi.ingsw.client.userInterface.cli.Cli;
 import it.polimi.ingsw.client.userInterface.gui.Gui;
+import it.polimi.ingsw.communication.CommonProperties;
 import javafx.application.Application;
 
 import java.io.*;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.rmi.server.RMISocketFactory;
 import java.util.Scanner;
 
 public class ClientMain{
@@ -23,7 +28,29 @@ public class ClientMain{
 
         loadFromConfigurationFile();
 
-        System.setProperty("java.rmi.server.hostname", "10.0.0.2");
+        try {
+
+            RMISocketFactory.setSocketFactory(new RMISocketFactory() {
+                public Socket createSocket(String host, int port )
+                        throws IOException
+                {
+                    Socket socket = new Socket();
+                    socket.setSoTimeout((int) CommonProperties.PING_PONG_DELAY*2);
+                    socket.setSoLinger( false, 0 );
+                    socket.connect( new InetSocketAddress( host, port ), NetworkInterfaceClient.REACHING_TIME);
+                    return socket;
+                }
+
+                public ServerSocket createServerSocket(int port )
+                        throws IOException
+                {
+                    return new ServerSocket( port );
+                }
+            } );
+        }
+        catch (IOException e){
+            System.out.println("parte che catcha");
+        }
 
         if(args.length > 0) {
             if (args[0].equals("-h") || args[0].equals("--help")) {
