@@ -151,77 +151,10 @@ public class Match {
     }
 
     /**
-     * Return the winner or the winners of the match
-     * @return An ArrayList containing the winning player/players (in case of tie)
-     */
-    public List<Player> getWinners(){
-        List<Player> almostWinners = getMaxPoints();
-        if(almostWinners.size() == 1){
-            return almostWinners;
-        }
-        else{
-            int max = -1;
-            List<Player> winners = null;
-            for(Player p : killShotTrack.score().keySet()){
-                if(almostWinners.contains(p)){
-                    if(killShotTrack.score().get(p) > max){
-                        winners = new ArrayList<>();
-                        winners.add(p);
-                        max = killShotTrack.score().get(p);
-                    }
-                    else if(killShotTrack.score().get(p) == max){
-                        winners.add(p);
-                    }
-                }
-            }
-            if(winners == null){
-                return  almostWinners;
-            }
-            return winners;
-        }
-    }
-
-    /**
-     * Return all the players with highest number of points (considering both player's point and KillShotTrack)
-     * @return An ArrayList containing players
-     */
-    private List<Player> getMaxPoints(){
-        List<Player> maxPoints = null;
-        Map<Player, Integer> finalPoints = getFinalPoints();
-        int max = -1;
-        for(Player p : finalPoints.keySet()){
-            if(finalPoints.get(p) > max){
-                maxPoints = new ArrayList<>();
-                maxPoints.add(p);
-                max = finalPoints.get(p);
-            }
-            else if(finalPoints.get(p) == max){
-                maxPoints.add(p);
-            }
-        }
-        return maxPoints;
-    }
-
-    public String getRank(){
-        int rankIndex = 1;
-        StringBuilder rank = new StringBuilder();
-        List<Player> winners = getWinners();
-        for(Player p : winners){
-            rank.append(rankIndex + " " + p.getName() + " has won the game with " + p.getPoints() + " points");
-        }
-        rankIndex = winners.size() + 1;
-        for(Player p : players){
-            rank.append(rankIndex + " " + p.getName() + " has lost the game with " + p.getPoints() + " points");
-            rankIndex++;
-        }
-        return rank.toString();
-    }
-
-    /**
      * Returns a map containing each player and his own points
      * @return An HashMap
      */
-    private Map<Player, Integer> getAllPoints(){
+    public Map<Player, Integer> getAllPoints(){
         Map<Player, Integer> points = new HashMap<>();
         for(Player p : players){
             points.put(p, p.getPoints());
@@ -229,17 +162,65 @@ public class Match {
         return points;
     }
 
-    /**
-     * Returns a map containing all the players who has killed anyone and how many points they get from the killShotTrack
-     * @return Ah HashMap
-     */
-    private Map<Player, Integer> getFinalPoints(){
-        Map<Player, Integer> finalPoints = getAllPoints();
-        Map<Player, Integer> killShotTrackPoints = killShotTrack.score();
-        for(Player p : killShotTrackPoints.keySet()){
-            finalPoints.replace(p, finalPoints.get(p), finalPoints.get(p) + killShotTrackPoints.get(p));
+    public Map<Player, Integer> getRank(){
+        Map<Player, Integer> result = new HashMap<>();
+        int rank = 1;
+        Map<Player, Integer> tempPoints = getAllPoints();
+        while (tempPoints.size()>0) {
+            int max = -1;
+            List<Player> maxPlayers = new ArrayList<>();
+            for (Map.Entry<Player, Integer> playerPoints : tempPoints.entrySet()){
+                if (playerPoints.getValue() > max){
+                    max = playerPoints.getValue();
+                    maxPlayers.clear();
+                    maxPlayers.add(playerPoints.getKey());
+                } else if (playerPoints.getValue() == max){
+                    if (compare(playerPoints.getKey(), maxPlayers.get(0)) > 0){
+                        maxPlayers.clear();
+                        maxPlayers.add(playerPoints.getKey());
+                    } else if (compare(playerPoints.getKey(), maxPlayers.get(0)) == 0){
+                        maxPlayers.add(playerPoints.getKey());
+                    }
+                }
+            }
+            for (Player p : maxPlayers){
+                result.put(p, rank);
+                tempPoints.remove(p);
+            }
+            rank += maxPlayers.size();
         }
-        return finalPoints;
+        return result;
+    }
+
+    /**
+     * Return an integer < 0 if p2 has killed more than p1
+     * @param p1
+     * @param p2
+     * @return
+     */
+    private int compare(Player p1, Player p2){
+        int p1Points;
+        int p2Points;
+        if (killShotTrack.score().get(p1) != null){
+            p1Points = killShotTrack.score().get(p1);
+        } else {
+            p1Points = 0;
+        }
+        if (killShotTrack.score().get(p2) != null){
+            p2Points = killShotTrack.score().get(p2);
+        } else {
+            p2Points = 0;
+        }
+        return p1Points - p2Points;
+    }
+
+    /**
+     * Adds the points from killshot track to each player
+     */
+    public void scoreFinalPoints(){
+        for (Map.Entry<Player, Integer> entry : killShotTrack.score().entrySet()){
+            entry.getKey().addPoints(entry.getValue());
+        }
     }
 
     /**
@@ -468,7 +449,7 @@ public class Match {
      * At the end of the turn, if a player is dead, each other player gets his own points
      * @param points A map containing how many points will be added to each other player
      */
-    private void scoreDamageTrack(Map<Player, Integer> points){
+    public void scoreDamageTrack(Map<Player, Integer> points){
         for(Player p : players){
             if(points.containsKey(p)){
                 p.addPoints(points.get(p));
@@ -829,6 +810,23 @@ public class Match {
             notifySelectableUpdate(p);
         }
         */
+    }
+
+    public void notifyGameOver(){
+        Map<String, Integer> rank = new HashMap<>();
+        for (Map.Entry<Player, Integer> entry : getRank().entrySet()){
+            rank.put(entry.getKey().getName(), entry.getValue());
+        }
+        Map<String, Integer> points = new HashMap<>();
+        for (Map.Entry<Player, Integer> entry : getAllPoints().entrySet()){
+            points.put(entry.getKey().getName(), entry.getValue());
+        }
+
+        for (Observer o : observers.values()){
+            GameOverMessage message = new GameOverMessage(rank, points);
+            o.update(message);
+        }
+
     }
 }
 

@@ -43,6 +43,7 @@ public class GameModel implements Observable {
     private boolean matchInProgress;
     private Backup currBackup;
     private Map<Player, Observer> observers;
+    private boolean gameOver;
     private static final String BACKUP_NAME = "currentBackup";
 
 
@@ -57,6 +58,7 @@ public class GameModel implements Observable {
         matchInProgress = false;
         currBackup = null;
         observers = new HashMap<>();
+        gameOver = false;
     }
 
     /**
@@ -222,9 +224,7 @@ public class GameModel implements Observable {
                 match.notifyPlayerUpdate(nextP);
             }
         } catch (GameOverException e){
-            e.printStackTrace();
-            //todo: score killshotTrack points, end game, notify
-            //todo: DELETE BACKUP
+            endGame();
         }
     }
 
@@ -814,9 +814,28 @@ public class GameModel implements Observable {
         return activePlayers.size() < 3;
     }
 
-    public List<Player> endGame(){
-        //todo qualcosa che effettivament blocchi il game
-        return match.getWinners();
+    public void endGame(){
+        gameOver = true;
+        matchInProgress = false;
+        for (Player p: allPlayers()){
+            match.scoreDamageTrack(p.getDamageTrack().score());
+        }
+        match.scoreFinalPoints();
+        match.notifyGameOver();
+
+        try{
+            String jarPath = URLDecoder.decode(Backup.class.getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
+            String filePath = jarPath.substring(0, jarPath.lastIndexOf("/")) + File.separator + "backups"+ File.separator + BACKUP_NAME + ".json";
+            File backupFile = new File(filePath);
+            backupFile.delete();
+        } catch (IOException e) {
+            System.out.println("[WARNING] Couldn't delete backup file");
+            e.printStackTrace();
+        }
+    }
+
+    public boolean isGameOver() {
+        return gameOver;
     }
 
     public int howManyActivePlayers(){

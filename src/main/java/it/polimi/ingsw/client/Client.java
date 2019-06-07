@@ -7,6 +7,7 @@ import it.polimi.ingsw.client.network.RmiClient;
 import it.polimi.ingsw.client.network.SocketClient;
 import it.polimi.ingsw.client.userInterface.UserInterface;
 import it.polimi.ingsw.communication.CommonProperties;
+import it.polimi.ingsw.client.userInterface.cli.CliUtils;
 import it.polimi.ingsw.communication.MessageVisitor;
 import it.polimi.ingsw.communication.events.*;
 import it.polimi.ingsw.communication.message.*;
@@ -321,6 +322,23 @@ public class Client implements MessageVisitor {
         me.setSelectablePowerUps(selPowerUps);
         userInterface.updateSelectables();
         userInterface.showAndAskSelection();
+    }
+
+    @Override
+    public void visit(GameOverMessage gameOverMessage) {
+        Map<PlayerView, Integer> rank = new HashMap<>();
+        Map<PlayerView, Integer> points = new HashMap<>();
+        if (match != null){
+            for (Map.Entry<String, Integer> entry : gameOverMessage.getRank().entrySet()){
+                rank.put(match.getPlayerFromName(entry.getKey()), entry.getValue());
+            }
+            for (Map.Entry<String, Integer> entry : gameOverMessage.getPoints().entrySet()){
+                points.put(match.getPlayerFromName(entry.getKey()), entry.getValue());
+            }
+            userInterface.showGameOver(rank, points);
+        } else {
+            System.out.println("[ERROR] end without start");
+        }
     }
 
     private void sendEvent(EventVisitable event){

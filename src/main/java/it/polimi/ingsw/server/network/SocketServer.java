@@ -144,6 +144,11 @@ public class SocketServer implements NetworkInterfaceServer, MessageVisitor {
 
     }
 
+    @Override
+    public void visit(GameOverMessage gameOverMessage) {
+        messagePrefix = "#GAMEOVER#";
+    }
+
     private EventVisitable unwrap(String eventText){
         //todo: remove next line
         //System.out.println(eventText);

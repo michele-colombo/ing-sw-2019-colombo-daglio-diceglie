@@ -28,6 +28,8 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+import java.util.Map;
+
 public class Gui extends Application implements UserInterface {
     private static Client client;
     private Text actionTarget;
@@ -259,6 +261,11 @@ public class Gui extends Application implements UserInterface {
 
     @Override
     public void printError(String message) {
+
+    }
+
+    @Override
+    public void showGameOver(Map<PlayerView, Integer> rank, Map<PlayerView, Integer> points) {
 
     }
 

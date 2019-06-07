@@ -95,6 +95,7 @@ public class SocketClient extends NetworkInterfaceClient implements EventVisitor
             case "#SELECTABLESUPDATE#": result= gson.fromJson(messageText, SelectablesUpdateMessage.class); break;
             case "#DAMAGEUPDATE#": result= gson.fromJson(messageText, DamageUpdateMessage.class); break;
             case "#CONNECTIONUPDATE#": result= gson.fromJson(messageText, ConnectionUpdateMessage.class); break;
+            case "#GAMEOVER#": result = gson.fromJson(messageText, GameOverMessage.class); break;
             default: break;
         }
 

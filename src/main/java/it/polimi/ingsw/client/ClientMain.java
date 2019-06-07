@@ -23,6 +23,8 @@ public class ClientMain{
 
         loadFromConfigurationFile();
 
+        System.setProperty("java.rmi.server.hostname", "10.0.0.2");
+
         if(args.length > 0) {
             if (args[0].equals("-h") || args[0].equals("--help")) {
                 printHelpScreen();

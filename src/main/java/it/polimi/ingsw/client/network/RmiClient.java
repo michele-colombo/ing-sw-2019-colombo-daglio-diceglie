@@ -184,8 +184,9 @@ public class RmiClient extends NetworkInterfaceClient{
                 while(active.get()){
                     MessageVisitable message= server.ask();
                     if(message!= null) {
-                        Thread resend = new Thread(() -> message.accept(client));
-                        resend.start();
+                        //Thread resend = new Thread(() -> message.accept(client));
+                        //resend.start();
+                        message.accept(client);
                     }
                 }
             }
@@ -198,6 +199,8 @@ public class RmiClient extends NetworkInterfaceClient{
         public void close(){
             active.set(false);
         }
+
+
     }
 
 }

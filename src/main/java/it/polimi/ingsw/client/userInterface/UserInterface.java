@@ -3,6 +3,8 @@ package it.polimi.ingsw.client.userInterface;
 import it.polimi.ingsw.client.MatchView;
 import it.polimi.ingsw.client.PlayerView;
 
+import java.util.Map;
+
 public interface UserInterface {
 
     void UpdateStartMatch(MatchView matchView);
@@ -38,4 +40,7 @@ public interface UserInterface {
     void updateSelectables();
 
     void printError(String message);
+
+    void showGameOver(Map<PlayerView, Integer> rank, Map<PlayerView, Integer> points);
+
 }

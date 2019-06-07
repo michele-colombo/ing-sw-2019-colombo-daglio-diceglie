@@ -207,7 +207,6 @@ public class RmiServer extends UnicastRemoteObject implements NetworkInterfaceSe
                 serverView.disconnectPlayer();
             }
         }, CommonProperties.PING_PONG_DELAY*2);
-
         eventEater= new EventTrafficManager();
         eventEater.start();
 

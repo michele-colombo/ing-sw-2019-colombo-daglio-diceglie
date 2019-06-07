@@ -85,7 +85,7 @@ public class KillShotTrack {
     }
 
     /**
-     * Returns the number of points to add to each player. Only players who killed at least once are in the list
+     * Returns the number of points to add to each player. Only players who killed at least once are in the map
      * @return a map (player, points_to_add_to_the_player)
      */
     public Map<Player, Integer> score(){

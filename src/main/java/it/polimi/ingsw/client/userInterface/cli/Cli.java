@@ -57,6 +57,7 @@ public class Cli implements UserInterface {
                                 state = CliState.IDLE;    //in order to prevent a player sends a login event twice
                                 break;
                             case LOGGED:
+                                System.out.println("Wait for other players to join");
                                 break;
                             case IDLE:
                                 break;
@@ -211,6 +212,23 @@ public class Cli implements UserInterface {
     public void printError(String message) {
         System.out.println(RED + message + DEFAULT_COLOR);
 
+    }
+
+    @Override
+    public void showGameOver(Map<PlayerView, Integer> rank, Map<PlayerView, Integer> points) {
+        List<String> rankEntries = new ArrayList<>();
+        for (Map.Entry<PlayerView, Integer> entry : rank.entrySet()){
+            rankEntries.add(entry.getKey().getName()+
+                    " has arrived "+
+                    entry.getValue()+
+                    "° with "+
+                    points.get(entry.getKey())+
+                    " points!");
+        }
+        Window window = new TitleAndListWindow(50, 10,
+                "GAME OVER", RED,
+                rankEntries);
+        window.show();
     }
 
     public void addSelectableId(String id){

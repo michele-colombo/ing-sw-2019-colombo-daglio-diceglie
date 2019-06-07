@@ -126,4 +126,9 @@ public class PlayerView {
     public void setFrenzy(boolean frenzy) {
         isFrenzy = frenzy;
     }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

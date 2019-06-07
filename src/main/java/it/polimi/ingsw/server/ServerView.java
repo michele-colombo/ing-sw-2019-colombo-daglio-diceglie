@@ -21,8 +21,16 @@ public class ServerView implements Observer, EventVisitor {
     public ServerView(NetworkInterfaceServer network, Controller controller){
         this.network = network;
         this.controller = controller;
+        controller.addServerView(this);
     }
-
+/*
+    public void receiveEvent(EventVisitable event){
+        //todo: remove next line
+        System.out.println("sto per fare la accept di un evento");
+        event.accept(this);
+        System.out.println("ho appena finito la accept di un evento");
+    }
+*/
 
     public void update(MessageVisitable messageVisitable){
         try{

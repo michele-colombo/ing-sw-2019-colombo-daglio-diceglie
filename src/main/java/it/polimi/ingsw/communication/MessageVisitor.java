@@ -28,4 +28,7 @@ public interface MessageVisitor {
     void visit(DamageUpdateMessage damageUpdateMessage);
 
     void visit(ConnectionUpdateMessage connectionUpdateMessage);
+
+    void visit(GameOverMessage gameOverMessage);
+
 }
