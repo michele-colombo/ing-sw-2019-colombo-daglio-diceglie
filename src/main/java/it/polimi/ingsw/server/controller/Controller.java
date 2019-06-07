@@ -359,7 +359,6 @@ public class Controller {
             System.out.println("Player already disconnected!");
         } finally {
             serverView.shutDown();
-
             removeTimer(serverView);
             if(checkStopMatch()){
                 gameModel.endGame();

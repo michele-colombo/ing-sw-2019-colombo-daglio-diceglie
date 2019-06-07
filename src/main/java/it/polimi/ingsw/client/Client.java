@@ -481,6 +481,7 @@ public class Client implements MessageVisitor {
 
 
     public void shutDown(){
+        match = null;
         if(network != null) {
             network.closeConnection();
             network= null;
