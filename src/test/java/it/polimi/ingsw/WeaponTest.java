@@ -933,7 +933,7 @@ public class WeaponTest {
         printSel(primo);
         gm.confirmModes(primo);
 
-        assertEquals(primo.getSelectableSquares().size(), 7);
+        assertEquals(primo.getSelectableSquares().size(), 3);
         printSel(primo);
 
         gm.shootTarget(primo, null, gm.getMatch().getLayout().getSquare(0, 2));
@@ -1229,6 +1229,147 @@ public class WeaponTest {
         //System.out.println(new Gson().toJson(currentState));
 
         assertTrue(check.equals(currentState));
+
+
+    }
+
+    @Test
+    public void electroschyteNothingToDamageTest(){
+
+        GameModel gm = new GameModel();
+        gm.resumeMatchFromFile(searchInTestResources( "electroscytheNothingToDo"));
+        StackManager sm = gm.getMatch().getStackManager();
+
+        Player primo = gm.getPlayerByName("first");
+        Player secondo = gm.getPlayerByName("second");
+        Player terzo = gm.getPlayerByName("third");
+        Player quarto = gm.getPlayerByName("fourth");
+        Player quinto = gm.getPlayerByName("fifth");
+
+        gm.performAction(primo, primo.getSelectableActions().get(2));
+
+        gm.shootWeapon(primo, gm.getMatch().getStackManager().getWeaponFromName("Electroscythe"));
+
+
+        gm.addMode(primo, gm.getMatch().getStackManager().getWeaponFromName("Electroscythe").getMyModes().get(0));
+
+        gm.confirmModes(primo);
+
+        assertEquals(primo.getSelectableCommands(), Collections.singletonList(Command.BACK));
+        assertEquals(primo.getSelectablePlayers(), Collections.emptyList());
+        assertEquals(primo.getSelectableSquares(), Collections.emptyList());
+
+        printSel(primo);
+
+        gm.restore();
+
+        assertEquals(primo.getSelectableActions().size(), 4);
+
+        gm.performAction(primo, primo.getSelectableActions().get(2));
+
+        gm.shootWeapon(primo, gm.getMatch().getStackManager().getWeaponFromName("Electroscythe"));
+
+
+        gm.addMode(primo, gm.getMatch().getStackManager().getWeaponFromName("Electroscythe").getMyModes().get(1));
+
+        gm.confirmModes(primo);
+
+        assertEquals(primo.getSelectableCommands(), Collections.singletonList(Command.BACK));
+        assertEquals(primo.getSelectablePlayers(), Collections.emptyList());
+        assertEquals(primo.getSelectableSquares(), Collections.emptyList());
+
+        printSel(primo);
+
+
+
+
+    }
+
+
+    @Test
+    public void furnaceNothingToSelect(){
+        GameModel gm = new GameModel();
+        gm.resumeMatchFromFile(searchInTestResources( "furnaceTestBefore"));
+        StackManager sm = gm.getMatch().getStackManager();
+
+        Player primo = gm.getPlayerByName("first");
+        Player secondo = gm.getPlayerByName("second");
+        Player terzo = gm.getPlayerByName("third");
+        Player quarto = gm.getPlayerByName("fourth");
+        Player quinto = gm.getPlayerByName("fifth");
+
+        assertEquals(primo.getSelectableActions().size(), 4);
+
+        gm.performAction(primo, primo.getSelectableActions().get(2));
+        assertEquals(primo.getState(), PlayerState.SHOOT_WEAPON);
+        assertEquals(primo.getSelectableWeapons().size(), 3);
+        Weapon furnace= gm.getMatch().getStackManager().getWeaponFromName("Furnace");
+        gm.shootWeapon(primo, furnace);
+        assertEquals(primo.getState(), PlayerState.CHOOSE_MODE);
+        assertEquals(primo.getSelectableModes().size(), 2);
+        gm.addMode(primo, furnace.getMyModes().get(0));
+
+        assertEquals(primo.getSelectableCommands(), Collections.singletonList(Command.OK));
+
+        gm.confirmModes(primo);
+
+        Layout l= gm.getMatch().getLayout();
+        assertEquals(primo.getSelectableSquares(), Arrays.asList(new Square[]{l.getSquare(0,2), l.getSquare(1, 2), l.getSquare(2, 2)}));
+
+        printSel(primo);
+
+        gm.restore();
+
+        assertEquals(primo.getSelectableActions().size(), 4);
+
+        gm.performAction(primo, primo.getSelectableActions().get(2));
+        assertEquals(primo.getState(), PlayerState.SHOOT_WEAPON);
+        assertEquals(primo.getSelectableWeapons().size(), 3);
+        gm.shootWeapon(primo, furnace);
+        assertEquals(primo.getState(), PlayerState.CHOOSE_MODE);
+        assertEquals(primo.getSelectableModes().size(), 2);
+        gm.addMode(primo, furnace.getMyModes().get(1));
+
+        assertEquals(primo.getSelectableCommands(), Collections.singletonList(Command.OK));
+
+        gm.confirmModes(primo);
+
+        assertEquals(primo.getSelectableSquares(), Collections.singletonList( l.getSquare(2, 2) ));
+
+
+
+
+
+    }
+
+    @Test
+    public void shockWaveTest(){
+        GameModel gm = new GameModel();
+        gm.resumeMatchFromFile(searchInTestResources( "shockWaveTestBefore"));
+        StackManager sm = gm.getMatch().getStackManager();
+
+        Player primo = gm.getPlayerByName("first");
+        Player secondo = gm.getPlayerByName("second");
+        Player terzo = gm.getPlayerByName("third");
+        Player quarto = gm.getPlayerByName("fourth");
+        Player quinto = gm.getPlayerByName("fifth");
+
+        gm.performAction(primo, primo.getSelectableActions().get(2));
+
+
+        Weapon shockWave= gm.getMatch().getStackManager().getWeaponFromName("Shockwave");
+        assertTrue(primo.getSelectableWeapons().contains(shockWave));
+        gm.shootWeapon(primo, shockWave);
+
+        gm.addMode(primo, shockWave.getMyModes().get(1));
+
+        gm.payWith(primo, primo.getPowerUps().get(0));
+
+
+        gm.confirmModes(primo);
+
+        assertEquals(primo.getSelectableCommands(), Collections.singletonList(Command.BACK));
+
 
 
     }

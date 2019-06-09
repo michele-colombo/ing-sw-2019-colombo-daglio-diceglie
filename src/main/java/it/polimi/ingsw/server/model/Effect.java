@@ -4,6 +4,7 @@ import it.polimi.ingsw.server.exceptions.ApplyEffectImmediatelyException;
 import it.polimi.ingsw.server.model.enums.Command;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -136,6 +137,7 @@ public class Effect {
             case -1: sb.append("Nothing to select"); break;
             case 0: sb.append("square"); break;
             case 1: sb.append("player"); break;
+
             default: sb.append("ERROR"); break;
         }
 
@@ -332,10 +334,10 @@ public class Effect {
         }
 
         switch (what){
-            //NOTHING TO SELECT
+            //NOTHING TO SELECT WITH NO LIMITATIONS
             case -1: // throw exception
                 throw new ApplyEffectImmediatelyException();
-            //SQUARE
+            //SQUARE WITH NO LIMITATIONS
             case 0:
                 if(selectableSquares.isEmpty()){
                     selectableCommands.add(Command.BACK);
@@ -351,6 +353,58 @@ public class Effect {
                 }
                 else{
                     p.setSelectablePlayers(selectablePlayers);
+                }
+                break;
+            //NOTHING TO SELECT, SOMEONE ON MY SQUARE
+            case 2:
+                if(m.getPlayersOn(Collections.singletonList( m.getCurrentPlayer().getSquarePosition()) ).equals(Collections.singletonList(m.getCurrentPlayer()))){
+                    selectableCommands.add(Command.BACK);
+                }
+                else {
+                    throw new ApplyEffectImmediatelyException();
+                }
+                break;
+
+            //SQUARE, SOMEONE IN SELECTED ROOM
+            case 3:
+                List<Square> toRemove= new ArrayList<>();
+                for(Square s: selectableSquares){
+                    if(m.getPlayersOn(s.getRoom().getSquaresInRoom()).equals(Collections.singletonList(m.getCurrentPlayer())) || m.getPlayersOn(s.getRoom().getSquaresInRoom()).isEmpty()){
+                        toRemove.add(s);
+                    }
+                }
+                selectableSquares.removeAll(toRemove);
+
+                if(selectableSquares.isEmpty()){
+                    selectableCommands.add(Command.BACK);
+                }
+                else{
+                    p.setSelectableSquares(selectableSquares);
+                }
+                break;
+            //SQUARE, SOMEONE ON IT
+            case 4:
+                List<Square> tempToRemove= new ArrayList<>();
+                for(Square s: selectableSquares){
+                    if(m.getPlayersOn(Collections.singletonList(s)).equals(Collections.singletonList(m.getCurrentPlayer())) || m.getPlayersOn(Collections.singletonList(s)).isEmpty()){
+                        tempToRemove.add(s);
+                    }
+                }
+                selectableSquares.removeAll(tempToRemove);
+                if(selectableSquares.isEmpty()){
+                    selectableCommands.add(Command.BACK);
+                }
+                else{
+                    p.setSelectableSquares(selectableSquares);
+                }
+                break;
+            //NOTHING, SOMEONE NEAR ME
+            case 5:
+                if(m.getPlayersOn( m.getLayout().getSquaresInDistanceRange(p.getSquarePosition(), 1, 1) ).isEmpty()){
+                    selectableCommands.add(Command.BACK);
+                }
+                else {
+                    throw new ApplyEffectImmediatelyException();
                 }
                 break;
 
