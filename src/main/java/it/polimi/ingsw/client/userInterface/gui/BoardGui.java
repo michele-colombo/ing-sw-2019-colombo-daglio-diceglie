@@ -1,9 +1,6 @@
 package it.polimi.ingsw.client.userInterface.gui;
 
-import it.polimi.ingsw.client.MatchView;
-import it.polimi.ingsw.client.PlayerView;
-import it.polimi.ingsw.client.PowerUpView;
-import it.polimi.ingsw.client.WrongSelectionException;
+import it.polimi.ingsw.client.*;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -190,7 +187,9 @@ public class BoardGui {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                ObservableList<String> comboItems = FXCollections.observableList(Gui.getClient().getMatch().getMyPlayer().getSelectableActions());
+                //ObservableList<String> comboItems = FXCollections.observableList(Gui.getClient().getMatch().getMyPlayer().getSelectableActions());
+                MyPlayer me= Gui.getClient().getMatch().getMyPlayer();
+                ObservableList<String> comboItems = FXCollections.observableList(me.getSelectableActions());
                 selectables.getItems().clear();
                 selectables.getItems().addAll(comboItems);
             }

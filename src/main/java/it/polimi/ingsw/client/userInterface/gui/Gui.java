@@ -16,6 +16,7 @@ import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -49,14 +50,16 @@ public class Gui extends Application implements UserInterface {
 
     @Override
     public void showConnectionSelection() {
-
+        changeScene(grid);
     }
 
     @Override
     public void showLogin() {
-
+        Platform.runLater( () -> { loginGui = new LoginGui();
+            changeScene(loginGui.getView()); } );
     }
 
+    @Override
     public void printLoginMessage(String text, boolean loginSuccessful){
         loginGui.printLoginMessage(text, loginSuccessful);
     }
@@ -128,13 +131,6 @@ public class Gui extends Application implements UserInterface {
 
                 Gui.client = new Client(this);
                 client.createConnection(comboBox.getValue().toString().toLowerCase());
-                if (client.isConnected()) {
-                    changeToLogin();
-                } else {
-                    actionTarget.setFill(Color.RED);
-                    actionTarget.setText("Network not found!");
-                }
-
             }
         });
 
@@ -149,36 +145,26 @@ public class Gui extends Application implements UserInterface {
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             public void handle(WindowEvent we) {
                 System.out.println("Stage is closing");
-                client.shutDown();
+                try {
+                    client.shutDown();
+                }
+                catch (NullPointerException e){
+                    //nothing to do, it's right
+                }
 
                 stage.close();
             }
         });
     }
 
-    public void changeToLogin(){
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                loginGui = new LoginGui();
-                changeScene(loginGui.getView());
-            }
-        });
-    }
-
+    @Override
     public synchronized void UpdateStartMatch(MatchView match){
         boardGui = new BoardGui(match);
 
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                //Parent newView = new BoardGui(match.getLayout().getLayoutConfiguration()).getView();
-                    changeScene(boardGui.getView());
-            }
-        });
-
+        Platform.runLater( () -> changeScene(boardGui.getView()) );
         notify();
     }
+
 
     public static Client getClient(){
         return client;
@@ -188,7 +174,7 @@ public class Gui extends Application implements UserInterface {
         return screenBounds;
     }
 
-
+    @Override
     public void showAndAskSelection() {
         boardGui.updateSelectables();
     }
@@ -198,7 +184,6 @@ public class Gui extends Application implements UserInterface {
         if(boardGui == null){
             loginGui.updateConnection(client.getConnections());
         } else {
-            //sleepGui();
             boardGui.updateConnection(client.getConnections());
         }
     }
@@ -255,13 +240,16 @@ public class Gui extends Application implements UserInterface {
         boardGui.updateSelectables();
     }
 
-    private void changeScene(Parent newView){
-        scene.setRoot(newView);
-    }
-
     @Override
     public void printError(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
 
+        alert.showAndWait();
+
+        alert.setOnCloseRequest( (we) -> alert.close() );
     }
 
     @Override
@@ -269,11 +257,8 @@ public class Gui extends Application implements UserInterface {
 
     }
 
-    public void sleepGui(){
-        try{
-            Thread.sleep(750);
-        } catch(InterruptedException e){
-            ;
-        }
+    private void changeScene(Parent newView){
+        scene.setRoot(newView);
     }
+
 }
