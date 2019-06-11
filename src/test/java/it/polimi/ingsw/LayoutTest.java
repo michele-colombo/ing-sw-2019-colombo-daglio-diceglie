@@ -213,18 +213,6 @@ public class LayoutTest {
     }
 
     @Test
-    public void addSquare() {
-        final int X1 = 0;
-        final int Y1 = 1;
-
-        final int X2 = 0;
-        final int Y2 = 0;
-
-        assertFalse(layout.addSquare(new AmmoSquare(X1, Y1, WALL, WALL, WALL, WALL, RED)));
-        assertTrue(layout.addSquare(new AmmoSquare(X2, Y2, WALL, WALL, WALL, WALL, RED)));
-    }
-
-    @Test
     public void existSquare(){
         final int X1 = 0;
         final int Y1 = 1;
@@ -238,7 +226,7 @@ public class LayoutTest {
 
     @Test
     public void initTest(){
-        Layout layout= new Layout("/media/data/Media/Documents/Universita/AnnoIII/ProvaFinaleINGSW/Backups/");
+        Layout layout= new Layout();
         layout.initLayout(0);
 
         assertTrue( layout.getSquare(0,0).getColor() == AmmoColor.valueOf("WHITE"));
@@ -271,8 +259,7 @@ public class LayoutTest {
 
     @Test
     public void testConfig2e3(){
-        Layout layout= new Layout("/media/data/Media/Documents/Universita/AnnoIII/ProvaFinaleINGSW/Backups/");
-
+        Layout layout= new Layout();
         layout.initLayout(2);
 
         layout.getSquare(0,3);

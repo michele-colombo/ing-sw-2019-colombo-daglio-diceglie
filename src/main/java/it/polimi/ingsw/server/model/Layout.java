@@ -19,7 +19,10 @@ public class Layout {
     /**
      * Contains all squares of the selected layout; max size is 12
      */
-    private List<Square> squares;
+    //private List<Square> squares;
+    private List<SpawnSquare> spawnSquares;
+    private List<AmmoSquare> ammoSquares;
+
     /**
      * A matrix: if the square at coordinates x and y is in squares, then existingSquares[x][y] is 1, otherwise it's 0
      */
@@ -35,6 +38,9 @@ public class Layout {
     private int layoutConfiguration;
 
     public List<Square> getSquares() {
+        List <Square> squares = new ArrayList<>();
+        squares.addAll(ammoSquares);
+        squares.addAll(spawnSquares);
         return squares;
     }
 
@@ -125,7 +131,7 @@ public class Layout {
      */
     public List<Square> getSquaresInDistanceRange(Square startingSquare, int min, int max){
         List<Square> inRange = new ArrayList<>();
-        for(Square sq : squares){
+        for(Square sq : getSquares()){
             if((getDistance(startingSquare, sq) >= min) && (getDistance(startingSquare, sq) <= max)){
                 inRange.add(sq);
             }
@@ -140,7 +146,7 @@ public class Layout {
      */
     public List<Square> getHorizontalSquareLine(int y){
         List<Square> squareLine = new ArrayList<>();
-        for(Square sq : squares){
+        for(Square sq : getSquares()){
             if(sq.getY() == y){
                 squareLine.add(sq);
             }
@@ -170,7 +176,7 @@ public class Layout {
      */
     public List<Square> getVerticalSquareLine(int x){
         List<Square> squareLine = new ArrayList<>();
-        for(Square sq : squares){
+        for(Square sq : getSquares()){
             if(sq.getX() == x){
                 squareLine.add(sq);
             }
@@ -234,13 +240,12 @@ public class Layout {
      * @return The selected square: if the square doesn't exist, it's null;
      */
     public Square getSquare(int x, int y){
-        Square found = null;
-        for(Square s : squares){
+        for(Square s : getSquares()){
             if(s.getX() == x && s.getY() == y){
                 return s;
             }
         }
-        return found;
+        return null;
     }
 
     /**
@@ -250,22 +255,16 @@ public class Layout {
      */
     public SpawnSquare getSpawnPoint(AmmoColor c){
         SpawnSquare spawn = null;
-        for(Square s : squares){
-            if(!s.isAmmo() && s.getColor() == c){
-                spawn = (SpawnSquare) s;
+        for(SpawnSquare s : spawnSquares){
+            if(s.getColor() == c){
+                spawn = s;
             }
         }
         return spawn;
     }
 
     public List<AmmoSquare> getAmmoSquares(){
-        List<AmmoSquare> result = new ArrayList<>();
-        for (Square s : squares){
-            if (s.isAmmo()){
-                result.add((AmmoSquare)s);
-            }
-        }
-        return result;
+        return new ArrayList<>(ammoSquares);
     }
 
     /**
@@ -274,7 +273,7 @@ public class Layout {
      */
     public List<Square> getNotEmptySquares(){
         List<Square> s = new ArrayList<>();
-        for(Square sq : squares){
+        for(Square sq : getSquares()){
             if(!sq.isEmpty()){
                 s.add(sq);
             }
@@ -288,26 +287,12 @@ public class Layout {
      */
     public List<Square> getEmptySquares(){
         List<Square> s = new ArrayList<>();
-        for(Square sq : squares){
+        for(Square sq : getSquares()){
             if(sq.isEmpty()){
                 s.add(sq);
             }
         }
         return s;
-    }
-
-    /**
-     * Return true if the square is added, otherwise false
-     * @param s It's the square to be added
-     * @return A boolean
-     */
-    public boolean addSquare(Square s){
-        if(!existSquare(s.getX(), s.getY()) && squares.size() < 12){
-            squares.add(s);
-            existingSquare[s.getX()][s.getY()] = 1;
-            return true;
-        }
-        return false;
     }
 
     /**
@@ -395,28 +380,15 @@ public class Layout {
      * Create square as a new ArrayList and set every cell of existingSquare to zero
      */
     public Layout(){
-        squares = new ArrayList<>();
+        spawnSquares = new ArrayList<>();
+        ammoSquares = new ArrayList<>();
         existingSquare = new int[4][3];
-        for(int row = 0; row < 4; row++){
-            for(int column = 0; column < 3; column++){
-                existingSquare[row][column] = 0;
-            }
-        }
-    }
 
-    /**
-     * Create square as a new ArrayList, set every cell of existingSquare to zero and set this.jsonFileFolder to jsonFileFolder
-     * @param jsonFileFolder It's the path of the json file in order to create a layout
-     */
-    public Layout(String jsonFileFolder){
-        squares = new ArrayList<>();
-        existingSquare = new int[4][3];
-        for(int row = 0; row < 4; row++){
-            for(int column = 0; column < 3; column++){
-                existingSquare[row][column] = 0;
+        for(int i=0; i< this.existingSquare.length; i++){
+            for(int j=0; j< this.existingSquare[0].length; j++){
+                this.existingSquare[i][j]= 0;
             }
         }
-        this.jsonFileFolder= new String(jsonFileFolder);
     }
 
 
@@ -431,62 +403,39 @@ public class Layout {
      * @return true if the configuration exists, false otherwise
      */
     public boolean initLayout(int config){
-
-        Gson gson= new Gson();
-
-        List<Square> ammoSquares= new ArrayList<>();
-        List<Square> spawnSquares= new ArrayList<>();
-
-        String configFilePath;
-
         if(config < 0 || config>3){
             return false;
         }
-
         layoutConfiguration = config;
 
+        Gson gson= new Gson();
 
         InputStream url = getClass().getClassLoader().getResourceAsStream("layoutConfig/layoutConfig"+layoutConfiguration+".json");
         Scanner sc = new Scanner(url);
-            Square[] tempAmmo;
-            Square[] tempSpawn;
 
-            tempAmmo = gson.fromJson(sc.nextLine(), AmmoSquare[].class);
-            ammoSquares.addAll(Arrays.asList(tempAmmo));
+        AmmoSquare[] tempAmmo;
+        tempAmmo = gson.fromJson(sc.nextLine(), AmmoSquare[].class);
+        ammoSquares.clear();
+        ammoSquares.addAll(Arrays.asList(tempAmmo));
 
-            tempSpawn = gson.fromJson(sc.nextLine(), SpawnSquare[].class);
-            spawnSquares.addAll(Arrays.asList(tempSpawn));
+        SpawnSquare[] tempSpawn;
+        tempSpawn = gson.fromJson(sc.nextLine(), SpawnSquare[].class);
+        spawnSquares.clear();
+        spawnSquares.addAll(Arrays.asList(tempSpawn));
 
-        this.squares.clear();
-        for(int i=0; i< this.existingSquare.length; i++){
-            for(int j=0; j< this.existingSquare[0].length; j++){
-                 this.existingSquare[i][j]= 0;
-            }
-        }
-
-
-        for(Square s : ammoSquares){
-            addSquare(s);
-        }
-        for(Square s : spawnSquares){
-            addSquare(s);
+        for (Square s : getSquares()){
+            existingSquare[s.getX()][s.getY()] = 1;
         }
 
         instantiateRooms();
-
-
-
-
-
         return true;
-
 
     }
 
     private void instantiateRooms(){
         List<Square> squaresWithNoRoomYet= new ArrayList<>();
 
-        squaresWithNoRoomYet.addAll(squares);
+        squaresWithNoRoomYet.addAll(getSquares());
 
         while (!squaresWithNoRoomYet.isEmpty()){
             Square current= squaresWithNoRoomYet.get(0);
@@ -527,7 +476,7 @@ public class Layout {
     }
 
     public void refillAll(StackManager sm){
-        for (Square s : squares){
+        for (Square s : getSquares()){
             s.refill(sm);
         }
     }
@@ -552,7 +501,7 @@ public class Layout {
     }
 
     public Square getSquareFromString(String square){
-        for (Square s : squares){
+        for (Square s : getSquares()){
             if (s.toString().equals(square)){
                 return s;
             }

@@ -246,6 +246,11 @@ public class Match {
                 scoreDamageTrack(p.getDamageTrack().score());
                 killShotTrack.removeSkull();
                 killShotTrack.addKilled(p.getDamageTrack().howDoTheyKilledYou());
+                for (Map.Entry<Player, Integer> entry : p.getDamageTrack().howDoTheyKilledYou().entrySet()){
+                    if (entry.getValue() == 2){
+                        entry.getKey().getDamageTrack().addMark(p, 1);
+                    }
+                }
             }
         }
 
@@ -287,8 +292,8 @@ public class Match {
                             result.add(new Action(true, false, new Grab(1)));
                             if (!p.getLoadedWeapons().isEmpty()){
                                 temp = new Action(true, false, new Shoot());
-                                if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UsePowerUp(TARGETING_SCOPE));
-                                temp.add(new UsePowerUp(TAGBACK_GRENADE));
+                                if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UseTargeting());
+                                temp.add(new ReceiveTagback());
                                 result.add(temp);
                             }
                             break;
@@ -297,8 +302,8 @@ public class Match {
                             result.add(new Action(true, false, new Grab(2)));
                             if (!p.getLoadedWeapons().isEmpty()){
                                 temp = new Action(true, false, new Shoot());
-                                if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UsePowerUp(TARGETING_SCOPE));
-                                temp.add(new UsePowerUp(TAGBACK_GRENADE));
+                                if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UseTargeting());
+                                temp.add(new ReceiveTagback());
                                 result.add(temp);
                             }
                             break;
@@ -308,8 +313,8 @@ public class Match {
                             if (!p.getLoadedWeapons().isEmpty()) {
                                 temp = new Action(true, false, new Move(1));
                                 temp.add(new Shoot());
-                                if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UsePowerUp(TARGETING_SCOPE));
-                                temp.add(new UsePowerUp(TAGBACK_GRENADE));
+                                if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UseTargeting());
+                                temp.add(new ReceiveTagback());
                                 result.add(temp);
                             }
                             break;
@@ -320,8 +325,8 @@ public class Match {
                             temp = new Action(true, false, new Move(1));
                             temp.add(new Reload());
                             temp.add(new Shoot());
-                            if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UsePowerUp(TARGETING_SCOPE));
-                            temp.add(new UsePowerUp(TAGBACK_GRENADE));
+                            if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UseTargeting());
+                            temp.add(new ReceiveTagback());
                             result.add(temp);
                         }
                         result.add(new Action(true, false, new Move(4)));
@@ -331,8 +336,8 @@ public class Match {
                             temp = new Action(true, false, new Move(2));
                             temp.add(new Reload());
                             temp.add(new Shoot());
-                            if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UsePowerUp(TARGETING_SCOPE));
-                            temp.add(new UsePowerUp(TAGBACK_GRENADE));
+                            if (p.howManyPowerUps(TARGETING_SCOPE) > 0) temp.add(new UseTargeting());
+                            temp.add(new ReceiveTagback());
                             result.add(temp);
                         }
                         result.add(new Action(true, false, new Grab(3)));
@@ -345,7 +350,7 @@ public class Match {
                 }
             }
             if (!onlyReload && p.howManyPowerUps(ACTION_POWERUP) > 0) {
-                result.add(new Action(false, false, new UsePowerUp(ACTION_POWERUP)));
+                result.add(new Action(false, false, new UseActionPowerUp()));
             }
         }
         return result;

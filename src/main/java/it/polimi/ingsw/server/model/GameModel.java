@@ -588,6 +588,9 @@ public class GameModel implements Observable {
 
     public void actionCompleted(){
         Player p = match.getCurrentPlayer();
+        for (Player player : allPlayers()){
+            player.getDamageTrack().setMarkToDamages(true);
+        }
         List<Action> selectableActions = match.createSelectableActions(match.getCurrentPlayer());
         if (selectableActions.isEmpty() || !activePlayers.contains(p)){
             //anche rimuovendo il controllo sui giocatori attivi
@@ -852,13 +855,13 @@ public class GameModel implements Observable {
                 //endTurn() is implicit in ActionCompeted, since currentPlayer is no longer active (see comments below)
             } else {
                 //current player is either receiving a tagback grenade or someone is spawning after his turn
-                    //if someone is using tagback grenade, there's nothing to do.
-                    //in ActionCompleted, check if currentPlayer is still active. If not -> endTurn()
+                //if someone is using tagback grenade, there's nothing to do.
+                //in ActionCompleted, check if currentPlayer is still active. If not -> endTurn()
 
-                    //if someone is spawning, there's nothing to do, too.
-                    //once they are all spawned, the next turn begins normally
+                //if someone is spawning, there's nothing to do, too.
+                //once they are all spawned, the next turn begins normally
 
-                    //should never occur a third possibility
+                //should never occur a third possibility
             }
         } else if (match.getWaitingFor().contains(p)){
             //p is not the current player

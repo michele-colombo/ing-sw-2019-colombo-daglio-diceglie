@@ -560,6 +560,7 @@ public class Effect {
             for(Player toShoot: playersToShoot) {
                 toShoot.getDamageTrack().addDamage(source, damageNumber);
                 m.getCurrentAction().addDamaged(toShoot);
+                toShoot.getDamageTrack().setMarkToDamages(false);
 
                 m.notifyDamageUpdate(toShoot);
             }
