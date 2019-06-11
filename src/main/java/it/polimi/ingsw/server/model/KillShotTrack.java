@@ -155,6 +155,8 @@ public class KillShotTrack {
         killingOrder.clear();
     }
 
+    public void clearTrack(){track.clear();}
+
     public List<Map<Player, Integer>> getTrack() {
         return track;
     }

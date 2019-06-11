@@ -430,7 +430,7 @@ public class Controller {
                 gameModel.getMatch().notifySelectablesUpdateAllPlayers();
             }
         } else {
-            for (ServerView serverView : serverViews){
+            for (ServerView serverView : new ArrayList<>(serverViews)){
                 disconnectPlayer(serverView);
             }
         }

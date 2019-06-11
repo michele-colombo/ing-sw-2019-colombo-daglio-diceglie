@@ -193,8 +193,8 @@ public class Backup {
             k.setSkulls(skulls);
             k.clearKillingCounter();
             k.clearKillingOrder();
+            k.clearTrack();
 
-            List<Map<Player, Integer>> tempTrack = new ArrayList<>();
             for (Map<String, Integer> map : track){
                 Map<Player, Integer> temp = new HashMap<>();
                 for (Map.Entry<String, Integer> entry : map.entrySet()){

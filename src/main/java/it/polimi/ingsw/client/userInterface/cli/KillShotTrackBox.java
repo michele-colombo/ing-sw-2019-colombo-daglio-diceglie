@@ -16,7 +16,11 @@ public class KillShotTrackBox extends MiniBox {
 
     @Override
     public void update(MatchView match) {
-        stringBox = prepareBorder(height, width);
+        if (!match.isFrenzyOn()){
+            stringBox = prepareBorder(height, width);
+        } else {
+            stringBox = prepareBorder(height, width, RED);
+        }
         String title = "KILLSHOT TRACK:";
         insertText(title, (width-title.length())/2, 1);
         for (int i=0; i<match.getTrack().size(); i++){

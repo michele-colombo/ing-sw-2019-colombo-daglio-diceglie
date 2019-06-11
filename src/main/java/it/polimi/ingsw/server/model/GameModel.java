@@ -101,6 +101,7 @@ public class GameModel implements Observable {
                     }
                     match.setObservers(observers);
                     tempBackup.restore(match);
+                    System.out.println("[OK] match from a previous backup started");
                     match.notifyStartMatchUpdate();
                     match.notifyFullUpdateAllPlayers();
                     matchInProgress = true;
@@ -110,8 +111,8 @@ public class GameModel implements Observable {
                     //saved backup has at least one different name
                     startNewMatch();
                 }
-            } catch (IOException | NullPointerException e){
-                System.out.println("[WARNING] Cannot open saved backup");
+            } catch (IOException | NullPointerException | NoSuchElementException e){
+                System.out.println("[WARNING] Cannot open saved backup, a new match will start");
                 startNewMatch();
                 return true;
             }
@@ -143,6 +144,7 @@ public class GameModel implements Observable {
         }
         match.getFirstPlayer().setFirstPlayer(true);
         matchInProgress = true;
+        System.out.println("[OK] new match started");
         match.notifyStartMatchUpdate();
         match.notifyFullUpdateAllPlayers();
         beginNextTurn();
