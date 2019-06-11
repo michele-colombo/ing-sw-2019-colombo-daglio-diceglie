@@ -5,9 +5,11 @@ import it.polimi.ingsw.client.WrongSelectionException;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 
 import java.io.InputStream;
 
@@ -35,6 +37,7 @@ public class PowerUpButton extends Parent {
             public void handle(MouseEvent mouseEvent) {
                 powerUpImageView.setFitWidth(width * 1.2);
                 powerUpImageView.setFitHeight(height * 1.2);
+                //powerUpImageView.setEffect(new DropShadow(20, Color.BLUE));
             }
         });
 
@@ -43,6 +46,7 @@ public class PowerUpButton extends Parent {
             public void handle(MouseEvent mouseEvent) {
                 powerUpImageView.setFitWidth(width);
                 powerUpImageView.setFitHeight(height);
+                //powerUpImageView.setEffect(null);
             }
         });
 

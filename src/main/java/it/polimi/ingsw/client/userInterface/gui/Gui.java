@@ -28,7 +28,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-
 import java.util.Map;
 
 public class Gui extends Application implements UserInterface {
@@ -161,7 +160,13 @@ public class Gui extends Application implements UserInterface {
     public synchronized void UpdateStartMatch(MatchView match){
         boardGui = new BoardGui(match);
 
-        Platform.runLater( () -> changeScene(boardGui.getView()) );
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                changeScene(boardGui.getView());
+            }
+        });
+
         notify();
     }
 
@@ -184,18 +189,19 @@ public class Gui extends Application implements UserInterface {
         if(boardGui == null){
             loginGui.updateConnection(client.getConnections());
         } else {
+            //sleepGui();
             boardGui.updateConnection(client.getConnections());
         }
     }
 
     @Override
     public void updateLayout() {
-        LayoutView layoutView = client.getMatch().getLayout();
+        boardGui.updateLayout(client.getMatch().getLayout());
     }
 
     @Override
     public void updateKillshotTrack() {
-        return;
+        boardGui.updateKillshotTrack(client.getMatch().getSkulls());
     }
 
     @Override
@@ -215,11 +221,11 @@ public class Gui extends Application implements UserInterface {
 
     @Override
     public void updateWeapons(PlayerView player) {
-        return;
+        boardGui.updateWeapons(player);
     }
 
     @Override
-    public synchronized void updatePowerUp(PlayerView player) {
+    public void updatePowerUp(PlayerView player) {
         while(boardGui == null){
             try {
                 wait();

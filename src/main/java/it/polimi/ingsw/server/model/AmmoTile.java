@@ -31,4 +31,8 @@ public class AmmoTile{
     public boolean hasPowerUp() {
         return hasPowerUp;
     }
+
+    public int getAmmoTileID(){
+        return ammoTileID;
+    }
 }
