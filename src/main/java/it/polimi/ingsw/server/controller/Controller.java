@@ -296,7 +296,6 @@ public class Controller {
                 System.out.println("wrong color selection");
                 return; //todo
             }
-            ;
             switch (p.getState()) {
                 case PAYING_ANY:
                     gameModel.payAny(p, col);

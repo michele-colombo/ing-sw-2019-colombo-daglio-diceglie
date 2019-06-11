@@ -18,6 +18,12 @@ public abstract class DamageTrack {
     private Map<Player, Integer> markMap;
 
     /**
+     * when true mark can become damages, otherwise not.
+     * It is used as a support variable for correct damaging.
+     */
+    private boolean markToDamages;
+
+    /**
      * the number of skulls on the damage track
      */
     private int skullsNumber;
@@ -41,6 +47,7 @@ public abstract class DamageTrack {
     protected DamageTrack(int biggerScore, int firstBlood){
         damageList= new ArrayList<>();
         markMap = new HashMap<>();
+        markToDamages = true;
         skullsNumber = 0;
         this.biggerScore = biggerScore;
         this.firstBlood = firstBlood;
@@ -71,6 +78,13 @@ public abstract class DamageTrack {
         return biggerScore;
     }
 
+    public boolean isMarkToDamages() {
+        return markToDamages;
+    }
+
+    public void setMarkToDamages(boolean markToDamages) {
+        this.markToDamages = markToDamages;
+    }
 
     protected int getFirstBlood() {
         return firstBlood;
@@ -120,7 +134,7 @@ public abstract class DamageTrack {
     public void addDamage(Player p, int damage){
         int toAdd;
 
-        if(markMap.containsKey(p)){
+        if(markMap.containsKey(p) && markToDamages){
             toAdd= damage +  this.markMap.get(p);
             this.markMap.remove(p);
         }
