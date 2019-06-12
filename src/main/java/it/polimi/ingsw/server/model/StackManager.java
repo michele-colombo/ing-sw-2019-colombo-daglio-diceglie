@@ -1,6 +1,5 @@
 package it.polimi.ingsw.server.model;
 
-import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.FileNotFoundException;

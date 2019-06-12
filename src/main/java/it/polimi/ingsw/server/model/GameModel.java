@@ -1,10 +1,8 @@
 package it.polimi.ingsw.server.model;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import it.polimi.ingsw.communication.message.ConnectionUpdateMessage;
 import it.polimi.ingsw.server.ServerMain;
+import it.polimi.ingsw.server.controller.ParserManager;
 import it.polimi.ingsw.server.exceptions.*;
 import it.polimi.ingsw.communication.message.MessageVisitable;
 import it.polimi.ingsw.server.model.enums.AmmoColor;
@@ -45,6 +43,9 @@ public class GameModel implements Observable {
     private Map<Player, Observer> observers;
     private boolean gameOver;
     private static final String BACKUP_NAME = "currentBackup";
+    private static final int DEFAULT_SKULLS= 8;
+
+    private ParserManager pm;
 
 
     public GameModel(){
@@ -59,6 +60,8 @@ public class GameModel implements Observable {
         currBackup = null;
         observers = new HashMap<>();
         gameOver = false;
+
+        pm= new ParserManager();
     }
 
     /**
@@ -86,16 +89,12 @@ public class GameModel implements Observable {
      * @return true if a new match begins, false if a saved one is restored
      */
     public boolean startMatch(){
-        if (Backup.isBackupAvailable(BACKUP_NAME)){
             try {
-                String jarPath = URLDecoder.decode(Backup.class.getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
-                String filePath = jarPath.substring(0, jarPath.lastIndexOf("/")) + File.separator + "backups"+ File.separator + BACKUP_NAME + ".json";
-                InputStream url = new FileInputStream(filePath);
-                Backup tempBackup = Backup.initFromFile(url);
+                Backup tempBackup = pm.getBackup();
                 if (tempBackup.getPlayerNames().containsAll(getAllPlayerNames()) && getAllPlayerNames().containsAll(tempBackup.getPlayerNames())){
                     //all names match
                     int layoutConfig = tempBackup.getLayoutConfig();
-                    match = new Match(layoutConfig);
+                    match = new Match(pm.getLayout(layoutConfig), DEFAULT_SKULLS, pm.getStackManager());
                     for (String name : tempBackup.getPlayerNames()){
                         match.addPlayer(getPlayerByName(name));
                     }
@@ -111,27 +110,21 @@ public class GameModel implements Observable {
                     //saved backup has at least one different name
                     startNewMatch();
                 }
-            } catch (IOException | NullPointerException | NoSuchElementException e){
+            } catch (NullPointerException | NoSuchElementException e){
                 System.out.println("[WARNING] Cannot open saved backup, a new match will start");
                 startNewMatch();
                 return true;
             }
-        } else {
-            //there is no backup available
-            startNewMatch();
-        }
         return true;
     }
 
     public void startNewMatch(){
-        InputStream url = ServerMain.class.getClassLoader().getResourceAsStream("serverConfig.json");
-        Scanner sc = new Scanner(url);
-        JsonObject o = (JsonObject) new JsonParser().parse(sc.nextLine());
-        JsonElement data =  o.get("layoutConfig");
-        int layoutConfig = data.getAsInt();
-        data =  o.get("skullNumber");
-        int skulls = data.getAsInt();
-        match = new Match(layoutConfig, skulls);
+        //match = new Match(layoutConfig, skulls);
+        //match= new Match(pm.getLayoutConfig(), pm.getSkullNumberConfig());
+
+        match= new Match(pm.getLayout(), pm.getSkullNumberConfig(), pm.getStackManager());
+
+
         for (Player p : allPlayers()){ //activePlayers only? or all players?
             match.addPlayer(p);
             p.setState(IDLE);
@@ -156,7 +149,7 @@ public class GameModel implements Observable {
 
         Backup savedBackup = Backup.initFromFile(url);
         int layoutConfig = savedBackup.getLayoutConfig();
-        match = new Match(layoutConfig);
+        match = new Match(pm.getLayout(layoutConfig), DEFAULT_SKULLS, pm.getStackManager());
         for (String playerName : savedBackup.getPlayerNames()){
             try {
                 Player newPlayer = addPlayer(playerName);

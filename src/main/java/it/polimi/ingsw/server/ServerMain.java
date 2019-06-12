@@ -1,9 +1,11 @@
 package it.polimi.ingsw.server;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import it.polimi.ingsw.communication.CommonProperties;
+import it.polimi.ingsw.server.controller.ParserManager;
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.controller.Controller;
 import it.polimi.ingsw.server.network.RmiServerAcceptor;
@@ -101,47 +103,18 @@ public class ServerMain {
             acceptedIp= args[0];
         }
 
-
-        InputStream url= ServerMain.class.getClassLoader().getResourceAsStream("serverConfig.json");
-        Scanner sc= new Scanner(url);
-
         //getting port number
         try {
-            JsonObject o = (JsonObject) new JsonParser().parse(sc.nextLine());
-            JsonElement data = o.get("port");
-            int portNumber = data.getAsInt();
-            int loginTimerDuration;
-            int inputTimerDuration;
-            try {
-                data = o.get("loginTimer");
-                loginTimerDuration = data.getAsInt();
-            } catch (Exception e) {
-                loginTimerDuration = -1;
-            }
-            try {
-                data = o.get("inputTimer");
-                inputTimerDuration = data.getAsInt();
-            } catch (Exception e) {
-                inputTimerDuration = -1;
-            }
+            ParserManager pm= new ParserManager();
+            int port= pm.getPortConfig();
+            int loginTimer= pm.getLoginTimerConfig();
+            int inputTimer= pm.getInputTimerConfig();
 
 
-            new ServerMain(acceptedIp, portNumber, loginTimerDuration, inputTimerDuration);
+            new ServerMain(acceptedIp, port, loginTimer, inputTimer);
         }
         catch (NullPointerException e){
             System.out.println("Configuration file not found");
         }
-    }
-
-    public static <T> String listToString(List<T> list){
-        StringBuilder result = new StringBuilder();
-        for (T t : list){
-            if (t == null){
-                result.append("    null;");
-            } else {
-                result.append("    "+t.toString()+";");
-            }
-        }
-        return result.toString();
     }
 }

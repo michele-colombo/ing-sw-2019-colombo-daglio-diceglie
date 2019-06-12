@@ -3,12 +3,10 @@ package it.polimi.ingsw.server.model;
 
 
 import it.polimi.ingsw.communication.message.*;
-import it.polimi.ingsw.server.controller.ParserManager;
 import it.polimi.ingsw.server.model.enums.AmmoColor;
 import it.polimi.ingsw.server.model.enums.Command;
 import it.polimi.ingsw.server.model.enums.PlayerColor;
 import it.polimi.ingsw.server.model.enums.PlayerState;
-import it.polimi.ingsw.server.observer.Observable;
 import it.polimi.ingsw.server.observer.Observer;
 
 import java.util.ArrayList;
@@ -85,26 +83,23 @@ public class Match {
 
     /**
      * It creates the match with the selected layout configuration and number of skulls
-     * @param layoutConfig It's the number of the selected layout
+     * @param layout It's the layout of the game
      * @param skulls It's the number of skull of the KillShotTrack
+     * @param stackManager They are the stacks
      */
-    public Match(int layoutConfig, int skulls){
-        ParserManager pm= new ParserManager();
-        layout = pm.getLayout(layoutConfig);
+    public Match(Layout layout, int skulls, StackManager stackManager){
+        this.layout = layout;
         players = new ArrayList<>();
         waitingFor = new ArrayList<>();
         killShotTrack = new KillShotTrack(skulls);
 
-        stackManager = pm.getStackManager();
+        this.stackManager = stackManager;
 
         currentAction = null;
         currentPlayer = null;
         observers = new HashMap<>();
     }
 
-    public Match(int layoutConfig){
-        this(layoutConfig, 8);
-    }
 
     public void setObservers(Map<Player, Observer> observers) {
         this.observers = observers;

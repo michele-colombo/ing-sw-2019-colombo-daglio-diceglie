@@ -1,5 +1,6 @@
 package it.polimi.ingsw;
 
+import it.polimi.ingsw.server.controller.ParserManager;
 import it.polimi.ingsw.server.exceptions.ApplyEffectImmediatelyException;
 import it.polimi.ingsw.server.model.*;
 import it.polimi.ingsw.server.model.enums.Command;
@@ -10,7 +11,8 @@ public class EffectTest {
 
     @Test
     private Match inizializza(){
-        Match m = new Match(0, 5);
+        ParserManager pm= new ParserManager();
+        Match m = new Match(pm.getLayout(0), 5, pm.getStackManager());
         Layout layout= m.getLayout();
 
         Player anna= new Player("Anna", PlayerColor.BLUE);

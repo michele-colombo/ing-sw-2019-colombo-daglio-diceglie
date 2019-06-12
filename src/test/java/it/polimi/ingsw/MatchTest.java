@@ -2,6 +2,7 @@ package it.polimi.ingsw;
 
 
 
+import it.polimi.ingsw.server.controller.ParserManager;
 import it.polimi.ingsw.server.model.Match;
 import it.polimi.ingsw.server.model.Player;
 import it.polimi.ingsw.server.model.Square;
@@ -14,10 +15,15 @@ import static org.junit.jupiter.api.Assertions.*;
 import static it.polimi.ingsw.testUtils.*;
 
 public class MatchTest {
+    ParserManager pm= new ParserManager();
+
+    private Match createMatch(int layoutConfig, int skulls){
+        return new Match(pm.getLayout( layoutConfig ), skulls, pm.getStackManager());
+    }
 
     @Test
     public void getPlayersOn() {
-        Match match = new Match(3, 8);
+        Match match = createMatch(3, 8);
 
         Player p1 = new Player("Paul", GREY);
         Player p2 = new Player("John", YELLOW);
@@ -45,7 +51,7 @@ public class MatchTest {
 
     @Test
     public void justOneWinner() {
-        Match match = new Match(0, 8);
+        Match match = createMatch(0, 8);
 
         Player p1 = new Player("Paul", GREY);
         Player p2 = new Player("John", YELLOW);
@@ -87,7 +93,7 @@ public class MatchTest {
 
     @Test
     public void theWinnerKilledALot(){
-        Match match = new Match(0, 8);
+        Match match = createMatch(0, 8);
 
         Player p1 = new Player("Paul", GREY);
         Player p2 = new Player("John", YELLOW);
@@ -129,7 +135,7 @@ public class MatchTest {
 
     @Test
     public void tie(){
-        Match match = new Match(0, 8);
+        Match match = createMatch(0, 8);
 
         Player p1 = new Player("Paul", GREY);
         Player p2 = new Player("John", YELLOW);
@@ -165,7 +171,7 @@ public class MatchTest {
 
     @Test
     public void rankTest1(){
-        Match match = new Match(0, 8);
+        Match match = createMatch(0, 8);
 
         Player p1 = new Player("uno", GREY);
         Player p2 = new Player("due", YELLOW);
@@ -211,7 +217,7 @@ public class MatchTest {
 
     @Test
     public void tieBetweenPlayersNotInKillshotTrack(){
-        Match match = new Match(0, 8);
+        Match match = createMatch(0, 8);
 
         Player p1 = new Player("uno", GREY);
         Player p2 = new Player("due", YELLOW);

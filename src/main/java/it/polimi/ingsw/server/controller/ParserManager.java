@@ -1,10 +1,11 @@
 package it.polimi.ingsw.server.controller;
 
 import com.google.gson.Gson;
+import it.polimi.ingsw.server.ServerMain;
 import it.polimi.ingsw.server.model.*;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,9 +14,13 @@ import java.util.Scanner;
 import static it.polimi.ingsw.server.model.enums.Border.OPEN;
 
 public class ParserManager {
+    private static final String BACKUP_NAME = "currentBackup";
 
-    Layout[] layouts;
-    StackManager stackManager;
+    private Layout[] layouts;
+    private StackManager stackManager;
+    private Backup backup;
+
+    private ServerConfig serverConfig;
 
     private Gson gson;
 
@@ -27,10 +32,56 @@ public class ParserManager {
             parseLayout(i);
         }
         parseStack();
+
+        parseBackup();
+
+        parseServerConfig();
+
+
+    }
+
+    public Backup getBackup(){
+        return backup;
     }
 
     public StackManager getStackManager() {
         return stackManager;
+    }
+
+    public int getLayoutConfig(){
+        return serverConfig.layoutConfig;
+    }
+
+    public int getPortConfig() {
+        return serverConfig.port;
+    }
+
+    public int getLoginTimerConfig() {
+        return serverConfig.loginTimer;
+    }
+
+    public int getInputTimerConfig() {
+        return serverConfig.inputTimer;
+    }
+
+    public int getSkullNumberConfig() {
+        return serverConfig.skullNumber;
+    }
+
+
+
+    private void parseServerConfig(){
+
+        try {
+            InputStream url= ServerMain.class.getClassLoader().getResourceAsStream("serverConfig.json");
+            Scanner sc= new Scanner(url);
+
+            Gson gson= new Gson();
+            serverConfig= gson.fromJson(sc.nextLine(), ServerConfig.class);
+        }
+        catch (NullPointerException e){
+            System.out.println("Configuration file not found");
+        }
     }
 
     /**
@@ -47,6 +98,38 @@ public class ParserManager {
             return layouts[configNumber];
         }
         return null;
+    }
+
+    public Layout getLayout(){
+        return layouts[getLayoutConfig()];
+    }
+
+    private void parseBackup(){
+        try{
+            String jarPath = URLDecoder.decode(Backup.class.getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
+            String filePath = jarPath.substring(0, jarPath.lastIndexOf("/")) + File.separator + "backups" + File.separator + BACKUP_NAME + ".json";
+            File file= new File(filePath);
+
+            if(file.exists()) {
+
+                InputStream url = new FileInputStream(filePath);
+                Scanner sc = new Scanner(url);
+                backup = gson.fromJson(sc.nextLine(), Backup.class);
+                sc.close();
+                url.close();
+            }
+            else{
+                backup= null;
+            }
+        }
+        catch (UnsupportedEncodingException e){
+            backup= null;
+            System.out.println("Unsupported encoding exception while parsing currBackup");
+        }
+        catch (IOException e){
+            backup= null;
+            System.out.println("File not found or error while closing stream");
+        }
     }
 
     private void parseLayout(int num){
@@ -111,6 +194,15 @@ public class ParserManager {
         }
 
 
+    }
+
+
+    private static class ServerConfig{
+        private int port;
+        private int loginTimer;
+        private int inputTimer;
+        private int skullNumber;
+        private int layoutConfig;
     }
 
 }
