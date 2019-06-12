@@ -17,15 +17,15 @@ public class Parser {
         this.layout = layout;
     }
 
-    public List<PixelAmmo> loadAmmoResource(){
+    public List<PixelPosition> loadAmmoResource(){
         InputStream resourceUrl = getClass().getClassLoader().getResourceAsStream("coord" + layout + ".json");
-        List<PixelAmmo> pixelAmmos = new LinkedList<>();
-        PixelAmmo[] pixelAmmoArray;
+        List<PixelPosition> pixelPositions = new LinkedList<>();
+        PixelPosition[] pixelPositionArray;
         Scanner sc = new Scanner(resourceUrl);
-        pixelAmmoArray = gson.fromJson(sc.nextLine(), PixelAmmo[].class);
-        pixelAmmos.addAll(Arrays.asList(pixelAmmoArray));
+        pixelPositionArray = gson.fromJson(sc.nextLine(), PixelPosition[].class);
+        pixelPositions.addAll(Arrays.asList(pixelPositionArray));
 
-        return pixelAmmos;
+        return pixelPositions;
     }
 
     public List<PixelWeapon> loadWeaponResource(String color){
@@ -41,9 +41,9 @@ public class Parser {
 
     public static void main(String[] args){
         Parser parser = new Parser(0);
-        List<PixelAmmo> pixelAmmos = parser.loadAmmoResource();
-        List<PixelWeapon> a = parser.loadWeaponResource("yellow");
-        if(pixelAmmos.isEmpty()){
+        List<PixelPosition> pixelPositions = parser.loadAmmoResource();
+        List<PixelWeapon> a = parser.loadWeaponResource("red");
+        if(pixelPositions.isEmpty()){
             System.out.println("ehi");
         }
         System.out.println("fine");

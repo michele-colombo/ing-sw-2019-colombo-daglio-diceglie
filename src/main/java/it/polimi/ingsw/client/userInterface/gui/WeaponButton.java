@@ -23,6 +23,7 @@ public class WeaponButton extends Parent {
 
     public WeaponButton(WeaponView weaponView){
         InputStream weaponUrl = getClass().getClassLoader().getResourceAsStream("weapon/" + weaponView.getName() + ".png");
+        System.out.println(weaponView.getName());
         this.weaponImage = new Image(weaponUrl);
         this.weaponImageView = new ImageView(weaponImage);
         this.weaponView = weaponView;

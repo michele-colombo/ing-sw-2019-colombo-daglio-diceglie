@@ -17,14 +17,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.StrokeType;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BoardGui {
     private final static double xKillshotTrack = 0.0909;
@@ -39,10 +34,13 @@ public class BoardGui {
     private AnchorPane board;
     private List<Label> connectionLabels;
     private ComboBox selectables;
-    private List<PixelAmmo> pixelAmmos;
+    private List<PixelPosition> pixelPositions;
     private List<AmmoButton> ammoButtonsList;
     private List<WeaponButton> weaponButtonList;
     private List<PixelWeapon> yellowWeapons;
+    private List<PixelWeapon> blueWeapons;
+    private List<PixelWeapon> redWeapons;
+    private Map<PlayerView, HBox> playerPositions;
     private double boardWidth;
     private double boardHeight;
 
@@ -54,8 +52,11 @@ public class BoardGui {
         ammoButtonsList = new LinkedList<>();
         weaponButtonList = new LinkedList<>();
         Parser parser = new Parser(match.getLayout().getLayoutConfiguration());
-        pixelAmmos = parser.loadAmmoResource();
+        pixelPositions = parser.loadAmmoResource();
         yellowWeapons = parser.loadWeaponResource("yellow");
+        blueWeapons = parser.loadWeaponResource("blue");
+        redWeapons = parser.loadWeaponResource("red");
+        playerPositions = new HashMap<>();
         System.out.println("we");
         //selectables.setDisable(true);
 
@@ -198,7 +199,9 @@ public class BoardGui {
                 if(player.getName().equals(Gui.getClient().getMatch().getMyPlayer().getName())){
                     powerUpBox.getChildren().clear();
                     for(PowerUpView powerUpView : Gui.getClient().getMatch().getMyPlayer().getPowerUps()){
-                        powerUpBox.getChildren().add(new PowerUpButton(powerUpView));
+                        PowerUpButton powerUpButton = new PowerUpButton(powerUpView);
+                        powerUpBox.getChildren().add(powerUpButton);
+                        powerUpBox.setHgrow(powerUpButton, Priority.ALWAYS);
                     }
                 }
                 //sleepGui(750);
@@ -216,15 +219,15 @@ public class BoardGui {
                 selectables.getItems().clear();
                 selectables.getItems().addAll(comboItems);
 
-                for(SquareView squareView : Gui.getClient().getMatch().getMyPlayer().getSelectableSquares()){
+                /*for(SquareView squareView : Gui.getClient().getMatch().getMyPlayer().getSelectableSquares()){
                     Rectangle square = new Rectangle(25,25);
                     square.setFill(Color.RED);
                     square.setStroke(Color.RED);
                     square.setStrokeType(StrokeType.INSIDE);
-                    square.setTranslateX(-square.getX() * 60);
-                    square.setTranslateY(-square.getY() * 15);
+                    square.setTranslateX(-square.getxAmmo() * 60);
+                    square.setTranslateY(-square.getyAmmo() * 15);
                     board.getChildren().add(square);
-                }
+                }*/
             }
         });
     }
@@ -258,34 +261,49 @@ public class BoardGui {
         });
     }
 
+    public void updatePlayer(PlayerView player){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                return;
+            }
+        });
+    }
+
     public void updateLayout(LayoutView layoutView){
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
                 board.getChildren().removeAll(ammoButtonsList);
                 for(SquareView sv : layoutView.getSquares()){
-                    for(PixelAmmo pixelAmmo : pixelAmmos){
-                        if(pixelAmmo.equalsSquare(sv)){
+                    for(PixelPosition pixelPosition : pixelPositions){
+                        if(sv.isAmmo() && pixelPosition.equalsSquare(sv)){
                             AmmoButton ammoButton = new AmmoButton(sv);
                             ammoButtonsList.add(ammoButton);
                             board.getChildren().add(ammoButton);
-                            ammoButton.setTranslateX(boardWidth * pixelAmmo.getX());
-                            ammoButton.setTranslateY(boardHeight * pixelAmmo.getY());
+                            ammoButton.setTranslateX(boardWidth * pixelPosition.getxAmmo());
+                            ammoButton.setTranslateY(boardHeight * pixelPosition.getyAmmo());
                         }
                     }
                 }
                 board.getChildren().removeAll(weaponButtonList);
-                int i = 0;
-                for(WeaponView wp : layoutView.getYellowWeapons()){
-                    WeaponButton weaponButton = new WeaponButton(wp);
-                    weaponButtonList.add(weaponButton);
-                    board.getChildren().add(weaponButton);
-                    weaponButton.setTranslateX(boardWidth * yellowWeapons.get(i).getX());
-                    weaponButton.setTranslateY(boardHeight * yellowWeapons.get(i).getY());
-                    weaponButton.setRotate(yellowWeapons.get(i).getRotate());
-                    i++;
-                }
+                updateLayoutWeapon(yellowWeapons, layoutView.getYellowWeapons());
+                updateLayoutWeapon(blueWeapons, layoutView.getBlueWeapons());
+                updateLayoutWeapon(redWeapons, layoutView.getRedWeapons());
             }
         });
+    }
+
+    private void updateLayoutWeapon(List<PixelWeapon> weapons, List<WeaponView> weaponViews){
+        int i = 0;
+        for(WeaponView wp : weaponViews){
+            WeaponButton weaponButton = new WeaponButton(wp);
+            weaponButtonList.add(weaponButton);
+            board.getChildren().add(weaponButton);
+            weaponButton.setTranslateX(boardWidth * weapons.get(i).getX());
+            weaponButton.setTranslateY(boardHeight * weapons.get(i).getY());
+            weaponButton.setRotate(weapons.get(i).getRotate());
+            i++;
+        }
     }
 }
