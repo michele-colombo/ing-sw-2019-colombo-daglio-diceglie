@@ -3,6 +3,7 @@ package it.polimi.ingsw.server.model;
 
 
 import it.polimi.ingsw.communication.message.*;
+import it.polimi.ingsw.server.controller.ParserManager;
 import it.polimi.ingsw.server.model.enums.AmmoColor;
 import it.polimi.ingsw.server.model.enums.Command;
 import it.polimi.ingsw.server.model.enums.PlayerColor;
@@ -88,12 +89,14 @@ public class Match {
      * @param skulls It's the number of skull of the KillShotTrack
      */
     public Match(int layoutConfig, int skulls){
-        layout = new Layout();
-        layout.initLayout(layoutConfig);
+        ParserManager pm= new ParserManager();
+        layout = pm.getLayout(layoutConfig);
         players = new ArrayList<>();
         waitingFor = new ArrayList<>();
         killShotTrack = new KillShotTrack(skulls);
-        stackManager = new StackManager();
+
+        stackManager = pm.getStackManager();
+
         currentAction = null;
         currentPlayer = null;
         observers = new HashMap<>();

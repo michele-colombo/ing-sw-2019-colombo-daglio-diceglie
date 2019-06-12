@@ -1,6 +1,7 @@
 package it.polimi.ingsw;
 
 import com.google.gson.Gson;
+import it.polimi.ingsw.server.controller.ParserManager;
 import it.polimi.ingsw.server.model.*;
 import it.polimi.ingsw.server.model.enums.Command;
 import it.polimi.ingsw.server.model.enums.PlayerState;
@@ -60,7 +61,7 @@ public class WeaponTest {
 
     @Test
     public void selectableModesFromBuilder(){
-        StackManager sm = new StackManager();
+        StackManager sm = new ParserManager().getStackManager();
         List<Weapon> arsenale = sm.getOriginalWeaponArsenal();
 
         Weapon distrutt= arsenale.get(0);
@@ -95,7 +96,7 @@ public class WeaponTest {
     @Test
     public void ancoraSelectableModesZX(){
 
-        StackManager sm = new StackManager();
+        StackManager sm = new ParserManager().getStackManager();
         List<Weapon> arsenale = sm.getOriginalWeaponArsenal();
         Weapon z = sm.getWeaponFromName("ZX-2");
 
@@ -116,7 +117,7 @@ public class WeaponTest {
 
     @Test
     public void selectableModesspadaFotonica(){
-        StackManager sm = new StackManager();
+        StackManager sm = new ParserManager().getStackManager();
         List<Weapon> arsenale = sm.getOriginalWeaponArsenal();
         Weapon z = sm.getWeaponFromName("Cyberblade");
 

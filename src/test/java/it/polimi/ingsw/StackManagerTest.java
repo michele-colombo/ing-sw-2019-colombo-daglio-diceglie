@@ -1,6 +1,7 @@
 package it.polimi.ingsw;
 
 
+import it.polimi.ingsw.server.controller.ParserManager;
 import it.polimi.ingsw.server.model.*;
 import it.polimi.ingsw.server.model.enums.AmmoColor;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class StackManagerTest {
 @Test
     public void initTest(){
-        StackManager sm= new StackManager();
+        StackManager sm= new ParserManager().getStackManager();
 
         Weapon arma1= new Weapon();
         Weapon arma2= new Weapon();
@@ -48,7 +49,7 @@ public class StackManagerTest {
         l.add(new AmmoTile(new Cash(1,1,1), false));
         l.add(new AmmoTile(new Cash(1,1,1), false));
 
-        StackManager s= new StackManager();
+        StackManager s= new ParserManager().getStackManager();
 
         s.initAmmoTilesStack(l);
 
@@ -74,7 +75,7 @@ public class StackManagerTest {
 
     @Test
     public void testRicicloImpossibileWeapon(){
-    StackManager s= new StackManager();
+    StackManager s= new ParserManager().getStackManager();
 
     List<Weapon> w= new ArrayList<>();
     w.add(new Weapon());
@@ -117,7 +118,7 @@ public class StackManagerTest {
 
     @Test
     public void buildingStacks(){
-    StackManager sm= new StackManager();
+    StackManager sm= new ParserManager().getStackManager();
 
     assertEquals(sm.getOriginalWeaponArsenal().get(0).getName(), "Lock rifle");
 
@@ -147,7 +148,7 @@ public class StackManagerTest {
 
     @Test
     public void powerUpsLoadingTest(){
-    StackManager sm= new StackManager();
+    StackManager sm= new ParserManager().getStackManager();
     assertEquals(sm.getOriginalPowerUps().size(), 24);
 
     for(int i=0; i< sm.getOriginalPowerUps().size(); i++) {
@@ -159,7 +160,7 @@ public class StackManagerTest {
 
     @Test
     public void weaponsLoadingTest(){
-    StackManager sm= new StackManager();
+    StackManager sm= new ParserManager().getStackManager();
 
     assertEquals(sm.getOriginalWeaponArsenal().size(), 21);
 

@@ -377,11 +377,13 @@ public class Layout {
     }
 
     /**
-     * Create square as a new ArrayList and set every cell of existingSquare to zero
+     * Build layout with passed ammoSquare and spawnSquares. Keep track of layoutConfiguration
      */
-    public Layout(){
-        spawnSquares = new ArrayList<>();
-        ammoSquares = new ArrayList<>();
+    public Layout(List<SpawnSquare> spawnSquares, List<AmmoSquare> ammoSquares, int layoutConfiguration) {
+        this.spawnSquares = spawnSquares;
+        this.ammoSquares = ammoSquares;
+        this.layoutConfiguration= layoutConfiguration;
+
         existingSquare = new int[4][3];
 
         for(int i=0; i< this.existingSquare.length; i++){
@@ -389,50 +391,17 @@ public class Layout {
                 this.existingSquare[i][j]= 0;
             }
         }
-    }
 
-
-    /**
-     * le configurazioni del tabellone riferite al manuale di gioco sono:
-     * -0 == piccola "ottima per 4 o 5 giocatori"
-     * -1 == quella grande che e' disegnata su entrambe le pagine
-     * -2 == piccola "ottima per qualsiasi numero di giocatori
-     * -3 == picoola "ottima per 3 o 4 giocatori"
-     *
-     * @param config configuration code
-     * @return true if the configuration exists, false otherwise
-     */
-    public boolean initLayout(int config){
-        if(config < 0 || config>3){
-            return false;
+        for (Square s : spawnSquares){
+            existingSquare[s.getX()][s.getY()] = 1;
         }
-        layoutConfiguration = config;
-
-        Gson gson= new Gson();
-
-        InputStream url = getClass().getClassLoader().getResourceAsStream("layoutConfig/layoutConfig"+layoutConfiguration+".json");
-        Scanner sc = new Scanner(url);
-
-        AmmoSquare[] tempAmmo;
-        tempAmmo = gson.fromJson(sc.nextLine(), AmmoSquare[].class);
-        ammoSquares.clear();
-        ammoSquares.addAll(Arrays.asList(tempAmmo));
-
-        SpawnSquare[] tempSpawn;
-        tempSpawn = gson.fromJson(sc.nextLine(), SpawnSquare[].class);
-        spawnSquares.clear();
-        spawnSquares.addAll(Arrays.asList(tempSpawn));
-
-        for (Square s : getSquares()){
+        for (Square s : ammoSquares){
             existingSquare[s.getX()][s.getY()] = 1;
         }
 
-        instantiateRooms();
-        return true;
-
     }
 
-    private void instantiateRooms(){
+    public void instantiateRooms(){
         List<Square> squaresWithNoRoomYet= new ArrayList<>();
 
         squaresWithNoRoomYet.addAll(getSquares());

@@ -21,40 +21,6 @@ public class StackManager {
     private List<PowerUp> originalPowerUps;
     private List<AmmoTile> originalAmmoTiles;
 
-    private List<Weapon> loadOriginalWeaponArsenal(){
-        Gson gson= new Gson();
-        List<Weapon> result;
-
-        InputStream url= getClass().getClassLoader().getResourceAsStream("weapons.json");
-        Scanner sc= new Scanner(url);
-
-        result= Arrays.asList( gson.fromJson(sc.nextLine(), Weapon[].class));
-
-        return result;
-    }
-
-    private List<PowerUp> loadOriginalPowerups(){
-        Gson gson= new Gson();
-        List<PowerUp> result;
-
-    InputStream url= getClass().getClassLoader().getResourceAsStream("powerUps.json");
-        Scanner sc= new Scanner(url);
-        result= Arrays.asList( gson.fromJson(sc.nextLine(), PowerUp[].class) );
-
-        return result;
-    }
-
-    private List<AmmoTile> loadOriginalAmmoTiles(){
-        Gson gson = new Gson();
-        List<AmmoTile> result = new ArrayList<>();
-        InputStream url= getClass().getClassLoader().getResourceAsStream("ammoTiles.json");
-        Scanner sc= new Scanner(url);
-        AmmoTile[] tempAmmo;
-        tempAmmo = gson.fromJson(sc.nextLine(), AmmoTile[].class);
-        result.addAll(Arrays.asList(tempAmmo));
-        return result;
-    }
-
     public List<Weapon> getWeaponActiveStack() {
         return weaponActiveStack;
     }
@@ -88,10 +54,10 @@ public class StackManager {
         return originalAmmoTiles;
     }
 
-    public StackManager(){
-        originalWeaponArsenal= loadOriginalWeaponArsenal();
-        originalPowerUps= loadOriginalPowerups();
-        originalAmmoTiles= loadOriginalAmmoTiles();
+    public StackManager(List<Weapon> originalWeaponArsenal, List<PowerUp> originalPowerUps, List<AmmoTile> originalAmmoTiles) {
+        this.originalWeaponArsenal = originalWeaponArsenal;
+        this.originalPowerUps = originalPowerUps;
+        this.originalAmmoTiles = originalAmmoTiles;
 
         weaponActiveStack= new ArrayList<>();
         weaponActiveStack.addAll(originalWeaponArsenal);

@@ -1,5 +1,6 @@
 package it.polimi.ingsw;
 
+import it.polimi.ingsw.server.controller.ParserManager;
 import it.polimi.ingsw.server.model.*;
 import it.polimi.ingsw.server.model.enums.AmmoColor;
 import it.polimi.ingsw.server.model.enums.Direction;
@@ -16,14 +17,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class LayoutTest {
     private Layout layout;
+    private ParserManager pm= new ParserManager();
 
     @BeforeEach
     public void prepareTest(){
         final int layout_config = 2;
 
         System.out.println("Preparing layout " + layout_config +  " for tests");
-        layout = new Layout();
-        layout.initLayout(layout_config);
+        layout = pm.getLayout(layout_config);
     }
 
     @Test
@@ -226,8 +227,7 @@ public class LayoutTest {
 
     @Test
     public void initTest(){
-        Layout layout= new Layout();
-        layout.initLayout(0);
+        Layout layout= pm.getLayout(0);
 
         assertTrue( layout.getSquare(0,0).getColor() == AmmoColor.valueOf("WHITE"));
         assertTrue( layout.getDistance(layout.getSquare(0,0), layout.getSquare(1,2)) == 3);
@@ -239,7 +239,7 @@ public class LayoutTest {
 
         assertEquals(layout.getNeighbours(layout.getSquare(0,2)), vicini );
 
-        layout.initLayout(1);
+        layout = pm.getLayout(1);
 
         vicini.clear();
         vicini.add(layout.getSquare(1, 2));
@@ -259,8 +259,7 @@ public class LayoutTest {
 
     @Test
     public void testConfig2e3(){
-        Layout layout= new Layout();
-        layout.initLayout(2);
+        Layout layout= pm.getLayout(2);
 
         layout.getSquare(0,3);
         //layout.getSquare(3,0);
@@ -272,7 +271,7 @@ public class LayoutTest {
 
         assertTrue(layout.getHorizontalSquareLine(0).size()== 3);
 
-        layout.initLayout(3);
+        layout= pm.getLayout(3);
 
         assertTrue( layout.getSpawnPoint(RED).getX() == 0);
         assertTrue( layout.getSpawnPoint(RED).getY() == 1);
@@ -298,8 +297,7 @@ public class LayoutTest {
     public void provareGetClassResources(){
 
 
-        Layout layout= new Layout();
-        layout.initLayout(3);
+        Layout layout= pm.getLayout(3);
 
         assertTrue( layout.getSquare(0,1).getColor().toString() == "RED");
 
@@ -307,8 +305,7 @@ public class LayoutTest {
 
     @Test
     public void whatHappenToRoom(){
-        Layout l= new Layout();
-        l.initLayout(3);
+        Layout l= pm.getLayout(3);
 
 
 
@@ -337,8 +334,7 @@ public class LayoutTest {
 
     @Test
     public void testVisibility(){
-        Layout l= new Layout();
-        l.initLayout(2);
+        Layout l= pm.getLayout(2);
 
         assertTrue( l.getVisibleSquares(l.getSquare(1,1)).contains(l.getSquare(1,0)));
         assertTrue( l.getVisibleSquares(l.getSquare(1,1)).contains(l.getSquare(0,1)));
@@ -352,8 +348,7 @@ public class LayoutTest {
 
     @Test
     public void furthercloser(){
-        Layout l= new Layout();
-        l.initLayout(0);
+        Layout l= pm.getLayout(0);
 
         List<Square> trovatiAMano= new ArrayList<>();
         trovatiAMano.add(l.getSquare(2, 0));
@@ -377,8 +372,7 @@ public class LayoutTest {
 
     @Test
     public void visibleSquares(){
-        Layout l= new Layout();
-        l.initLayout(2);
+        Layout l= pm.getLayout(2);
 
         List<Square> trovatiAMano= new ArrayList<>();
 
@@ -399,8 +393,7 @@ public class LayoutTest {
 
     @Test
     public void distanceTest(){
-        Layout l= new Layout();
-        l.initLayout(3);
+        Layout l= pm.getLayout(3);
 
         assertEquals(l.getDistance(l.getSquare(1, 1), l.getSquare(3, 1)), 2);
 
