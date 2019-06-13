@@ -92,7 +92,7 @@ public class Client implements MessageVisitor {
     }
 
     @Override
-    public  synchronized void visit(ConnectionUpdateMessage connectionUpdateMessage) {
+    public synchronized void visit(ConnectionUpdateMessage connectionUpdateMessage) {
 
         System.out.println("Connection update received");
         connections.clear();
@@ -161,7 +161,6 @@ public class Client implements MessageVisitor {
         userInterface.updateKillshotTrack();
     }
 
-
     public synchronized void visit(CurrentPlayerUpdateMessage currentPlayerUpdate) {
         System.out.println("current player update received");
         match.setCurrentPlayer(match.getPlayerFromName(currentPlayerUpdate.getCurrentPlayer()));
@@ -177,14 +176,12 @@ public class Client implements MessageVisitor {
         userInterface.updatePlayer(playerToUpdate);
     }
 
-
     public synchronized void visit(PaymentUpdateMessage paymentUpdateMessage) {
         System.out.println("Payment update received");
         match.getMyPlayer().setPending(paymentUpdateMessage.getPending());
         match.getMyPlayer().setCredit(paymentUpdateMessage.getCredit());
         userInterface.updatePayment();
     }
-
 
     public synchronized void visit(WeaponsUpdateMessage weaponsUpdateMessage) {
         System.out.println("Weapons update received");
@@ -208,7 +205,6 @@ public class Client implements MessageVisitor {
         player.setUnloadedWeapons(unloadedWeapons);
         userInterface.updateWeapons(player);
     }
-
 
     public synchronized void visit(PowerUpUpdateMessage powerUpUpdateMessage) {
         System.out.println("PowerUp update received");
@@ -244,7 +240,6 @@ public class Client implements MessageVisitor {
         playerToUpdate.setMarkMap(tempMarkMap);
         userInterface.updateDamage(playerToUpdate);
     }
-
 
     public synchronized void visit(SelectablesUpdateMessage selectablesUpdateMessage) {
         System.out.println("Selectables update received");

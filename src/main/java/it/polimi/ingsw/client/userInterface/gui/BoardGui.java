@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client.userInterface.gui;
 
+import com.sun.jdi.connect.spi.TransportService;
 import it.polimi.ingsw.client.*;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -17,6 +18,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 
 import java.io.InputStream;
 import java.util.*;
@@ -40,7 +42,8 @@ public class BoardGui {
     private List<PixelWeapon> yellowWeapons;
     private List<PixelWeapon> blueWeapons;
     private List<PixelWeapon> redWeapons;
-    private Map<PlayerView, HBox> playerPositions;
+    private Map<PlayerRectangle, HBox> playerPositions;
+    private Map<SquareView, HBox> playerPositionHBox;
     private double boardWidth;
     private double boardHeight;
 
@@ -57,7 +60,9 @@ public class BoardGui {
         blueWeapons = parser.loadWeaponResource("blue");
         redWeapons = parser.loadWeaponResource("red");
         playerPositions = new HashMap<>();
-        System.out.println("we");
+        playerPositionHBox = new HashMap<>();
+        //createPlayerPositionHBox(match);
+        initializePlayerRectangle(match);
         //selectables.setDisable(true);
 
         view.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
@@ -265,7 +270,25 @@ public class BoardGui {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                return;
+                if(player.getSquarePosition() != null){
+                    PlayerRectangle playerRectangle = getPlayerRectangle(player);
+                    HBox newPosition = playerPositionHBox.get(player.getSquarePosition());
+
+                    if(playerPositions.get(player) == null){
+                        System.out.println(player.getName());
+
+                        if(newPosition != playerPositions.get(playerRectangle)){
+                            playerPositions.put(playerRectangle, newPosition);
+                            newPosition.getChildren().add(playerRectangle);
+                        }
+                    } else {
+                        HBox oldPosition = playerPositions.get(playerRectangle);
+                        oldPosition.getChildren().remove(playerRectangle);
+                        newPosition.getChildren().add(playerRectangle);
+                        playerPositions.put(playerRectangle, newPosition);
+                        //elimino dall'hbox precedente e lo sposto in quello nuovo
+                    }
+                }
             }
         });
     }
@@ -275,17 +298,8 @@ public class BoardGui {
             @Override
             public void run() {
                 board.getChildren().removeAll(ammoButtonsList);
-                for(SquareView sv : layoutView.getSquares()){
-                    for(PixelPosition pixelPosition : pixelPositions){
-                        if(sv.isAmmo() && pixelPosition.equalsSquare(sv)){
-                            AmmoButton ammoButton = new AmmoButton(sv);
-                            ammoButtonsList.add(ammoButton);
-                            board.getChildren().add(ammoButton);
-                            ammoButton.setTranslateX(boardWidth * pixelPosition.getxAmmo());
-                            ammoButton.setTranslateY(boardHeight * pixelPosition.getyAmmo());
-                        }
-                    }
-                }
+                updateLayoutAmmo(layoutView.getSquares());
+
                 board.getChildren().removeAll(weaponButtonList);
                 updateLayoutWeapon(yellowWeapons, layoutView.getYellowWeapons());
                 updateLayoutWeapon(blueWeapons, layoutView.getBlueWeapons());
@@ -305,5 +319,71 @@ public class BoardGui {
             weaponButton.setRotate(weapons.get(i).getRotate());
             i++;
         }
+    }
+
+    private void updateLayoutAmmo(List<SquareView> squareViews){
+        for(SquareView sv : squareViews){
+            for(PixelPosition pixelPosition : pixelPositions){
+                if(sv.getAmmo() != null && pixelPosition.equalsSquare(sv)){
+                    AmmoButton ammoButton = new AmmoButton(sv);
+                    ammoButtonsList.add(ammoButton);
+                    board.getChildren().add(ammoButton);
+                    ammoButton.setTranslateX(boardWidth * pixelPosition.getxAmmo());
+                    ammoButton.setTranslateY(boardHeight * pixelPosition.getyAmmo());
+                }
+            }
+        }
+    }
+
+    private Rectangle createPlayerRectangle(Color color){
+        final Rectangle rectangle = new Rectangle(5, 20);
+        rectangle.setFill(color);
+
+        rectangle.setOnMouseClicked(new EventHandler<MouseEvent>()
+        {
+            @Override
+            public void handle(MouseEvent t) {
+                rectangle.setFill(Color.GAINSBORO);
+            }
+        });
+
+        return rectangle;
+    }
+
+    private PixelPosition searchPixelPosition(SquareView squareView){
+        for(PixelPosition pp : pixelPositions){
+            if(squareView.getX() == pp.getxSquare() && squareView.getY() == pp.getySquare()){
+                return pp;
+            }
+        }
+        return null; //non dovrebbe verificarsi mai
+    }
+
+    public void createPlayerPositionHBox(MatchView matchView){
+        List<HBox> toAdd = new LinkedList<>();
+        for(PixelPosition pp : pixelPositions){
+            HBox newPlayerPositionHBox = new HBox();
+            newPlayerPositionHBox.setTranslateX(boardWidth * pp.getxPlayer());
+            newPlayerPositionHBox.setTranslateY(boardHeight * pp.getyPlayer());
+            newPlayerPositionHBox.setBackground(new Background(new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
+            playerPositionHBox.put(matchView.getLayout().getSquare(pp.getxSquare(), pp.getySquare()), newPlayerPositionHBox);
+            toAdd.add(newPlayerPositionHBox);
+        }
+        board.getChildren().addAll(toAdd);
+    }
+
+    private void initializePlayerRectangle(MatchView matchView){
+        for(PlayerView pv : matchView.getAllPlayers()){
+            playerPositions.put(new PlayerRectangle(5, 20, Color.valueOf(pv.getColor().toString()), pv), null);
+        }
+    }
+
+    private PlayerRectangle getPlayerRectangle(PlayerView playerView){
+        for(PlayerRectangle pr : playerPositions.keySet()){
+            if(pr.getPlayerView() == playerView){
+                return pr;
+            }
+        }
+        return null;
     }
 }

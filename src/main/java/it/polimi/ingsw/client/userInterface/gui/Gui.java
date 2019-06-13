@@ -159,6 +159,7 @@ public class Gui extends Application implements UserInterface {
     @Override
     public synchronized void UpdateStartMatch(MatchView match){
         boardGui = new BoardGui(match);
+        boardGui.createPlayerPositionHBox(match);
 
         Platform.runLater(new Runnable() {
             @Override
@@ -211,7 +212,7 @@ public class Gui extends Application implements UserInterface {
 
     @Override
     public void updatePlayer(PlayerView updated) {
-        return;
+        boardGui.updatePlayer(updated);
     }
 
     @Override
