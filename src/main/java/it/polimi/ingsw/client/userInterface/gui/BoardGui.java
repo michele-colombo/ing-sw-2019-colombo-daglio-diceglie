@@ -1,6 +1,5 @@
 package it.polimi.ingsw.client.userInterface.gui;
 
-import com.sun.jdi.connect.spi.TransportService;
 import it.polimi.ingsw.client.*;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -19,6 +18,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.StrokeType;
 
 import java.io.InputStream;
 import java.util.*;
@@ -42,6 +42,7 @@ public class BoardGui {
     private List<PixelWeapon> yellowWeapons;
     private List<PixelWeapon> blueWeapons;
     private List<PixelWeapon> redWeapons;
+    private static List<SelectableRectangle> selectableRectangles;
     private Map<PlayerRectangle, HBox> playerPositions;
     private Map<SquareView, HBox> playerPositionHBox;
     private double boardWidth;
@@ -61,8 +62,9 @@ public class BoardGui {
         redWeapons = parser.loadWeaponResource("red");
         playerPositions = new HashMap<>();
         playerPositionHBox = new HashMap<>();
+        selectableRectangles = new LinkedList<>();
         //createPlayerPositionHBox(match);
-        initializePlayerRectangle(match);
+        createPlayerRectangle(match);
         //selectables.setDisable(true);
 
         view.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
@@ -218,21 +220,20 @@ public class BoardGui {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                //ObservableList<String> comboItems = FXCollections.observableList(Gui.getClient().getMatch().getMyPlayer().getSelectableActions());
-                MyPlayer me= Gui.getClient().getMatch().getMyPlayer();
+
+                MyPlayer me = Gui.getClient().getMatch().getMyPlayer();
                 ObservableList<String> comboItems = FXCollections.observableList(me.getSelectableActions());
                 selectables.getItems().clear();
                 selectables.getItems().addAll(comboItems);
 
-                /*for(SquareView squareView : Gui.getClient().getMatch().getMyPlayer().getSelectableSquares()){
-                    Rectangle square = new Rectangle(25,25);
-                    square.setFill(Color.RED);
-                    square.setStroke(Color.RED);
-                    square.setStrokeType(StrokeType.INSIDE);
-                    square.setTranslateX(-square.getxAmmo() * 60);
-                    square.setTranslateY(-square.getyAmmo() * 15);
-                    board.getChildren().add(square);
-                }*/
+                for(SquareView sv : me.getSelectableSquares()){
+                    for(SelectableRectangle sr : selectableRectangles){
+                        if(sr.equals(sv)){
+                            sr.setVisible(true);
+                        }
+                    }
+                }
+
             }
         });
     }
@@ -275,7 +276,6 @@ public class BoardGui {
                     HBox newPosition = playerPositionHBox.get(player.getSquarePosition());
 
                     if(playerPositions.get(player) == null){
-                        System.out.println(player.getName());
 
                         if(newPosition != playerPositions.get(playerRectangle)){
                             playerPositions.put(playerRectangle, newPosition);
@@ -360,21 +360,31 @@ public class BoardGui {
     }
 
     public void createPlayerPositionHBox(MatchView matchView){
-        List<HBox> toAdd = new LinkedList<>();
+        //List<HBox> toAdd = new LinkedList<>();
         for(PixelPosition pp : pixelPositions){
             HBox newPlayerPositionHBox = new HBox();
             newPlayerPositionHBox.setTranslateX(boardWidth * pp.getxPlayer());
             newPlayerPositionHBox.setTranslateY(boardHeight * pp.getyPlayer());
-            newPlayerPositionHBox.setBackground(new Background(new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
+            //newPlayerPositionHBox.setBackground(new Background(new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
             playerPositionHBox.put(matchView.getLayout().getSquare(pp.getxSquare(), pp.getySquare()), newPlayerPositionHBox);
-            toAdd.add(newPlayerPositionHBox);
+            board.getChildren().add(newPlayerPositionHBox);
         }
-        board.getChildren().addAll(toAdd);
+        //board.getChildren().addAll(toAdd);
     }
 
-    private void initializePlayerRectangle(MatchView matchView){
+    private void createPlayerRectangle(MatchView matchView){
         for(PlayerView pv : matchView.getAllPlayers()){
             playerPositions.put(new PlayerRectangle(5, 20, Color.valueOf(pv.getColor().toString()), pv), null);
+        }
+    }
+
+    public void createSelectableRectangle(MatchView matchView){
+        for(PixelPosition pp : pixelPositions){
+            SelectableRectangle newSelectableRectangle = new SelectableRectangle(100, 110, matchView.getLayout().getSquare(pp.getxSquare(), pp.getySquare()));
+            newSelectableRectangle.setTranslateX(boardWidth * pp.getxSelectable());
+            newSelectableRectangle.setTranslateY(boardHeight * pp.getySelectable());
+            selectableRectangles.add(newSelectableRectangle);
+            board.getChildren().add(newSelectableRectangle);
         }
     }
 
@@ -385,5 +395,11 @@ public class BoardGui {
             }
         }
         return null;
+    }
+
+    public synchronized static void setUnvisibleSelectableRectangle(){
+        for(SelectableRectangle sr : selectableRectangles){
+            sr.setVisible(false);
+        }
     }
 }
