@@ -244,8 +244,11 @@ public class BoardGui {
             public void run() {
                 if(player.getName().equals(Gui.getClient().getMatch().getMyPlayer().getName())){
                     weaponBox.getChildren().clear();
-                    for(WeaponView weaponView : Gui.getClient().getMatch().getMyPlayer().getSelectableWeapons()){
-                        weaponBox.getChildren().add(new WeaponButton(weaponView));
+                    //todo usare un metodo getAllWeapons o qualcosa di simile oppure cambiare dinamicamente immagine
+                    for(WeaponView weaponView : Gui.getClient().getMatch().getMyPlayer().getWeapons().keySet()){
+                        WeaponButton newWeapon = new WeaponButton(weaponView, true);
+                        newWeapon.reScale();
+                        weaponBox.getChildren().add(newWeapon);
                     }
                 }
             }
@@ -311,7 +314,8 @@ public class BoardGui {
     private void updateLayoutWeapon(List<PixelWeapon> weapons, List<WeaponView> weaponViews){
         int i = 0;
         for(WeaponView wp : weaponViews){
-            WeaponButton weaponButton = new WeaponButton(wp);
+            WeaponButton weaponButton = new WeaponButton(wp, false);
+            weaponButton.reScale();
             weaponButtonList.add(weaponButton);
             board.getChildren().add(weaponButton);
             weaponButton.setTranslateX(boardWidth * weapons.get(i).getX());

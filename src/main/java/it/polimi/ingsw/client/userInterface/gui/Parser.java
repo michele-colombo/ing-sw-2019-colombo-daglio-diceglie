@@ -38,14 +38,4 @@ public class Parser {
 
         return pixelWeapons;
     }
-
-    public static void main(String[] args){
-        Parser parser = new Parser(0);
-        List<PixelPosition> pixelPositions = parser.loadAmmoResource();
-        List<PixelWeapon> a = parser.loadWeaponResource("red");
-        if(pixelPositions.isEmpty()){
-            System.out.println("ehi");
-        }
-        System.out.println("fine");
-    }
 }

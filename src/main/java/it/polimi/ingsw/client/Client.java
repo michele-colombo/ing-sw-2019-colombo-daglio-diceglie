@@ -39,7 +39,7 @@ public class Client implements MessageVisitor {
 
     public void createConnection(String connection){
         try {
-            switch (connection) {
+            switch (connection.toLowerCase()) {
 
                 case "socket":
                     network = new SocketClient(this);
@@ -87,14 +87,14 @@ public class Client implements MessageVisitor {
     }
 
     @Override
-    public  synchronized void visit(GenericMessage message){
+    public synchronized void visit(GenericMessage message){
         //userInterface.printDisconnectionMessage(message.toString());
     }
 
     @Override
     public synchronized void visit(ConnectionUpdateMessage connectionUpdateMessage) {
 
-        System.out.println("Connection update received");
+        //System.out.println("Connection update received");
         connections.clear();
         for (Map.Entry<String, Boolean> entry : connectionUpdateMessage.getConnectionStates().entrySet()){
             connections.put(entry.getKey(), entry.getValue());
@@ -103,7 +103,7 @@ public class Client implements MessageVisitor {
     }
 
     public synchronized void visit(StartMatchUpdateMessage startMatchUpdateMessage) {
-        System.out.println("Start match update received");
+        //System.out.println("Start match update received");
         if (match == null){
             match = new MatchView(name, startMatchUpdateMessage.getLayoutConfiguration(), startMatchUpdateMessage.getNames(), startMatchUpdateMessage.getColors(), connections);
         }
@@ -112,7 +112,7 @@ public class Client implements MessageVisitor {
     }
 
     public synchronized void visit(LayoutUpdateMessage layoutUpdateMessage) {
-        System.out.println("Layout update received");
+        //System.out.println("Layout update received");
         LayoutView layout = match.getLayout();
         DecksView decks = match.getDecks();
 
@@ -144,7 +144,7 @@ public class Client implements MessageVisitor {
     }
 
     public synchronized void visit(KillshotTrackUpdateMessage killshotTrackUpdate) {
-        System.out.println("Killshot track update received");
+        //System.out.println("Killshot track update received");
         match.setSkulls(killshotTrackUpdate.getSkulls());
         match.setFrenzyOn(killshotTrackUpdate.isFrenzyOn());
         match.getMyPlayer().setPoints(killshotTrackUpdate.getYourPoints());
@@ -162,13 +162,13 @@ public class Client implements MessageVisitor {
     }
 
     public synchronized void visit(CurrentPlayerUpdateMessage currentPlayerUpdate) {
-        System.out.println("current player update received");
+        //System.out.println("current player update received");
         match.setCurrentPlayer(match.getPlayerFromName(currentPlayerUpdate.getCurrentPlayer()));
         userInterface.updateCurrentPlayer();
     }
 
     public synchronized void visit(PlayerUpdateMessage playerUpdateMessage) {
-        System.out.println("Player update received");
+        //System.out.println("Player update received");
         PlayerView playerToUpdate = match.getPlayerFromName(playerUpdateMessage.getName());
         playerToUpdate.setState(playerUpdateMessage.getState());
         playerToUpdate.setSquarePosition(match.getLayout().getSquareFromString(playerUpdateMessage.getPosition()));
@@ -177,14 +177,14 @@ public class Client implements MessageVisitor {
     }
 
     public synchronized void visit(PaymentUpdateMessage paymentUpdateMessage) {
-        System.out.println("Payment update received");
+        //System.out.println("Payment update received");
         match.getMyPlayer().setPending(paymentUpdateMessage.getPending());
         match.getMyPlayer().setCredit(paymentUpdateMessage.getCredit());
         userInterface.updatePayment();
     }
 
     public synchronized void visit(WeaponsUpdateMessage weaponsUpdateMessage) {
-        System.out.println("Weapons update received");
+        //System.out.println("Weapons update received");
         if (weaponsUpdateMessage.getName().equals(name)){
             MyPlayer me = match.getMyPlayer();
             Map<WeaponView, Boolean> temp = new HashMap<>();
@@ -207,7 +207,7 @@ public class Client implements MessageVisitor {
     }
 
     public synchronized void visit(PowerUpUpdateMessage powerUpUpdateMessage) {
-        System.out.println("PowerUp update received");
+        //System.out.println("PowerUp update received");
         if (powerUpUpdateMessage.getName().equals(name)){
             MyPlayer me = match.getMyPlayer();
             List<PowerUpView> powerUps = new ArrayList<>();
@@ -222,7 +222,7 @@ public class Client implements MessageVisitor {
     }
 
     public synchronized void visit(DamageUpdateMessage damageUpdateMessage) {
-        System.out.println("Damage update received");
+        //System.out.println("Damage update received");
         PlayerView playerToUpdate = match.getPlayerFromName(damageUpdateMessage.getName());
         playerToUpdate.setSkulls(damageUpdateMessage.getSkulls());
         playerToUpdate.setFrenzy(damageUpdateMessage.isFrenzy());
@@ -242,7 +242,7 @@ public class Client implements MessageVisitor {
     }
 
     public synchronized void visit(SelectablesUpdateMessage selectablesUpdateMessage) {
-        System.out.println("Selectables update received");
+        //System.out.println("Selectables update received");
         MyPlayer me = match.getMyPlayer();
 
         List<WeaponView> selWeapons = new ArrayList<>();

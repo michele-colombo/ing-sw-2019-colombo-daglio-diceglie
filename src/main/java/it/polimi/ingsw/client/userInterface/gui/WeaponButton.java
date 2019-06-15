@@ -19,16 +19,17 @@ public class WeaponButton extends Parent {
     private final WeaponView weaponView;
     private double width;
     private double height;
+    private boolean inHand;
 
 
-    public WeaponButton(WeaponView weaponView){
+    public WeaponButton(WeaponView weaponView, boolean inHand){
         InputStream weaponUrl = getClass().getClassLoader().getResourceAsStream("weapon/" + weaponView.getName() + ".png");
         this.weaponImage = new Image(weaponUrl);
         this.weaponImageView = new ImageView(weaponImage);
         this.weaponView = weaponView;
-        this.width = weaponImageView.boundsInParentProperty().get().getWidth() / 3.5;
+        this.inHand = inHand;
+        this.width = weaponImageView.boundsInParentProperty().get().getWidth();
         //this.height = weaponImageView.boundsInParentProperty().get().getHeight() / 1.5;
-        this.weaponImageView.setFitWidth(width);
         //this.weaponImageView.setFitHeight(height);
         this.weaponImageView.setPreserveRatio(true);
         this.getChildren().add(weaponImageView);
@@ -36,17 +37,15 @@ public class WeaponButton extends Parent {
         this.setOnMouseEntered(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                //weaponImageView.setFitWidth(width * 1.2);
-                //weaponImageView.setFitHeight(height * 1.2);
-                weaponImageView.setEffect(new DropShadow(20, Color.WHITE));
+                if(!inHand){
+                    weaponImageView.setEffect(new DropShadow(20, Color.WHITE));
+                }
             }
         });
 
         this.setOnMouseExited(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                //weaponImageView.setFitWidth(width);
-                //weaponImageView.setFitHeight(height);
                 weaponImageView.setEffect(null);
             }
         });
@@ -55,7 +54,8 @@ public class WeaponButton extends Parent {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 try{
-                    Gui.getClient().selected(weaponView.toString());
+                    Gui.getClient().selected(weaponView.getName());
+                    System.out.println("Sto acquistando " + weaponView.getName());
                 } catch(WrongSelectionException e){
                     System.out.println("Wrong selection!");
                 }
@@ -65,5 +65,13 @@ public class WeaponButton extends Parent {
 
     public void disable(){
         this.setDisable(true);
+    }
+
+    public void reScale(){
+        if(inHand){
+            weaponImageView.setFitWidth(width / 2);
+        } else {
+            weaponImageView.setFitWidth(width / 3.5);
+        }
     }
 }
