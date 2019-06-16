@@ -157,7 +157,7 @@ public class Gui extends Application implements UserInterface {
     }
 
     @Override
-    public synchronized void UpdateStartMatch(MatchView match){
+    public synchronized void updateStartMatch(MatchView match){
         boardGui = new BoardGui(match);
         boardGui.createSelectableRectangle(match);
         boardGui.createPlayerPositionHBox(match);

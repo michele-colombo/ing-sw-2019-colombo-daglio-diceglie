@@ -6,8 +6,6 @@ import it.polimi.ingsw.client.network.NetworkInterfaceClient;
 import it.polimi.ingsw.client.network.RmiClient;
 import it.polimi.ingsw.client.network.SocketClient;
 import it.polimi.ingsw.client.userInterface.UserInterface;
-import it.polimi.ingsw.communication.CommonProperties;
-import it.polimi.ingsw.client.userInterface.cli.CliUtils;
 import it.polimi.ingsw.communication.MessageVisitor;
 import it.polimi.ingsw.communication.events.*;
 import it.polimi.ingsw.communication.message.*;
@@ -15,7 +13,6 @@ import it.polimi.ingsw.server.model.enums.AmmoColor;
 import it.polimi.ingsw.server.model.enums.Command;
 import it.polimi.ingsw.server.model.enums.PlayerState;
 
-import java.rmi.RemoteException;
 import java.util.*;
 
 public class Client implements MessageVisitor {
@@ -107,7 +104,7 @@ public class Client implements MessageVisitor {
         if (match == null){
             match = new MatchView(name, startMatchUpdateMessage.getLayoutConfiguration(), startMatchUpdateMessage.getNames(), startMatchUpdateMessage.getColors(), connections);
         }
-        userInterface.UpdateStartMatch(match);
+        userInterface.updateStartMatch(match);
         //todo
     }
 
@@ -473,7 +470,6 @@ public class Client implements MessageVisitor {
         shutDown();
         userInterface.showConnectionSelection();
     }
-
 
     public void shutDown(){
         match = null;

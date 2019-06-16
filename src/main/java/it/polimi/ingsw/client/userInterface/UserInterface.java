@@ -7,7 +7,7 @@ import java.util.Map;
 
 public interface UserInterface {
 
-    void UpdateStartMatch(MatchView matchView);
+    void updateStartMatch(MatchView matchView);
 
     void showConnectionSelection();
 

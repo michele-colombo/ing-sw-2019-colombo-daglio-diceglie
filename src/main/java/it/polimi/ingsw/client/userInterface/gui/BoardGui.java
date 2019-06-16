@@ -18,15 +18,17 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.StrokeType;
 
 import java.io.InputStream;
 import java.util.*;
 
 public class BoardGui {
-    private final static double xKillshotTrack = 0.0909;
-    private final static double yKillshotTrack = 0.0921;
-    private final static double gapKillshotTrack = 0.0421;
+    private final static double X_KILLSHOT_TRACK = 0.0909;
+    private final static double Y_KILLSHOT_TRACK = 0.0921;
+    private final static double GAP_KILLSHOT_TRACK = 0.0421;
+    private final static double SCALE_RATIO_SELECTABLE_RECTANGLE_X = 7.68;
+    private final static double SCALE_RATIO_SELECTABLE_RECTANGLE_Y = 5.25;
+    private final static double SKULL_CIRCLE = 76.08;
 
     private final GridPane view;
     private HBox weaponBox;
@@ -45,8 +47,8 @@ public class BoardGui {
     private static List<SelectableRectangle> selectableRectangles;
     private Map<PlayerRectangle, HBox> playerPositions;
     private Map<SquareView, HBox> playerPositionHBox;
-    private double boardWidth;
-    private double boardHeight;
+    private static double boardWidth;
+    private static double boardHeight;
 
     public BoardGui(MatchView match){
         view = new GridPane();
@@ -95,7 +97,7 @@ public class BoardGui {
         //view.add(ivTarget,0,0);
         view.add(weaponBox, 0,1);
         view.add(powerUpBox, 1, 1);
-        addDamageTrack(match); //todo utilizzare il messaggio di UpdateStartMatch
+        addDamageTrack(match); //todo utilizzare il messaggio di updateStartMatch
         addConnectionState(match.getAllPlayers());
         addSelectables();
         updateConnection(match.readConnections());
@@ -260,10 +262,10 @@ public class BoardGui {
             @Override
             public void run() {
                 for(double i = 0; i < skulls; i++){
-                    Circle skull = new Circle(10);
+                    Circle skull = new Circle(boardWidth / SKULL_CIRCLE);
                     skull.setFill(Color.RED);
-                    skull.setTranslateX(boardWidth * (BoardGui.xKillshotTrack + i * BoardGui.gapKillshotTrack));
-                    skull.setTranslateY(boardHeight * BoardGui.yKillshotTrack);
+                    skull.setTranslateX(boardWidth * (BoardGui.X_KILLSHOT_TRACK + i * BoardGui.GAP_KILLSHOT_TRACK));
+                    skull.setTranslateY(boardHeight * BoardGui.Y_KILLSHOT_TRACK);
                     board.getChildren().add(skull);
                 }
             }
@@ -384,7 +386,7 @@ public class BoardGui {
 
     public void createSelectableRectangle(MatchView matchView){
         for(PixelPosition pp : pixelPositions){
-            SelectableRectangle newSelectableRectangle = new SelectableRectangle(100, 110, matchView.getLayout().getSquare(pp.getxSquare(), pp.getySquare()));
+            SelectableRectangle newSelectableRectangle = new SelectableRectangle(boardWidth / SCALE_RATIO_SELECTABLE_RECTANGLE_X, boardHeight / SCALE_RATIO_SELECTABLE_RECTANGLE_Y, matchView.getLayout().getSquare(pp.getxSquare(), pp.getySquare()));
             newSelectableRectangle.setTranslateX(boardWidth * pp.getxSelectable());
             newSelectableRectangle.setTranslateY(boardHeight * pp.getySelectable());
             selectableRectangles.add(newSelectableRectangle);
@@ -405,5 +407,9 @@ public class BoardGui {
         for(SelectableRectangle sr : selectableRectangles){
             sr.setVisible(false);
         }
+    }
+
+    public static double getWidth(){
+        return boardWidth;
     }
 }
