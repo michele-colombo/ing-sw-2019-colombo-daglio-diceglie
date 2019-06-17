@@ -47,6 +47,7 @@ public class BoardGui {
     private static List<SelectableRectangle> selectableRectangles;
     private Map<PlayerRectangle, HBox> playerPositions;
     private Map<SquareView, HBox> playerPositionHBox;
+    private Map<PlayerView, DamageTrack> playerDamageTracks;
     private static double boardWidth;
     private static double boardHeight;
 
@@ -65,13 +66,14 @@ public class BoardGui {
         playerPositions = new HashMap<>();
         playerPositionHBox = new HashMap<>();
         selectableRectangles = new LinkedList<>();
+        playerDamageTracks = new HashMap<>();
         //createPlayerPositionHBox(match);
         createPlayerRectangle(match);
         //selectables.setDisable(true);
 
         view.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         //view.setAlignment(Pos.CENTER);
-        view.setHgap(15);
+        view.setHgap(5);
         view.setVgap(15);
 
         board = new AnchorPane();
@@ -79,8 +81,6 @@ public class BoardGui {
         //board.setAlignment(Pos.TOP_LEFT);
         board.setPadding(new Insets(0,0,0,0));
 
-        final ImageView ivTarget = new ImageView();
-        //board.add(ivTarget, 0,0);
         InputStream boardUrl = getClass().getClassLoader().getResourceAsStream("layoutPNG/layout" + match.getLayout().getLayoutConfiguration() + ".png");
         Image image = new Image(boardUrl);
         ImageView imageView = new ImageView(image);
@@ -94,7 +94,6 @@ public class BoardGui {
         board.getChildren().addAll(imageView);
         GridPane.setHalignment(imageView, HPos.LEFT);
         view.add(board, 0,0);
-        //view.add(ivTarget,0,0);
         view.add(weaponBox, 0,1);
         view.add(powerUpBox, 1, 1);
         addDamageTrack(match); //todo utilizzare il messaggio di updateStartMatch
@@ -108,6 +107,7 @@ public class BoardGui {
     }
 
     public void addDamageTrack(MatchView match){
+        List<Color> colors = getAllColors(match);
         damageTracks = new GridPane();
         damageTracks.setVgap(5);
         damageTracks.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
@@ -116,10 +116,9 @@ public class BoardGui {
         InputStream myDmgUrl = getClass().getClassLoader().getResourceAsStream("damageTracks/dmg" + match.getMyPlayer().getColor().toString().toLowerCase() + ".png");
         Image image = new Image(myDmgUrl);
         ImageView imageView = new ImageView(image);
-        imageView.setFitHeight(Gui.getScreenBounds().getHeight());
-        imageView.setFitWidth(Gui.getScreenBounds().getWidth()/4);
-        imageView.setPreserveRatio(true);
-        damageTracks.add(imageView, 0, 0);
+        DamageTrack damageTrack = new DamageTrack(imageView, colors);
+        playerDamageTracks.put(match.getMyPlayer(), damageTrack);
+        damageTracks.add(damageTrack, 0, 0);
 
         int i = 1;
         for(PlayerView pv : match.getAllPlayers()){
@@ -127,10 +126,9 @@ public class BoardGui {
                 InputStream dmgUrl = getClass().getClassLoader().getResourceAsStream("damageTracks/dmg" + pv.getColor().toString().toLowerCase() + ".png");
                 image = new Image(dmgUrl);
                 imageView = new ImageView(image);
-                imageView.setFitHeight(Gui.getScreenBounds().getHeight());
-                imageView.setFitWidth(Gui.getScreenBounds().getWidth()/4);
-                imageView.setPreserveRatio(true);
-                damageTracks.add(imageView, 0, i);
+                DamageTrack damageTrack1 = new DamageTrack(imageView, colors);
+                playerDamageTracks.put(pv, damageTrack1);
+                damageTracks.add(damageTrack1, 0, i);
             }
             i++;
         }
@@ -205,15 +203,15 @@ public class BoardGui {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                if(player.getName().equals(Gui.getClient().getMatch().getMyPlayer().getName())){
+                MyPlayer me = Gui.getClient().getMatch().getMyPlayer();
+                if(player.getName().equals(me.getName())){
                     powerUpBox.getChildren().clear();
-                    for(PowerUpView powerUpView : Gui.getClient().getMatch().getMyPlayer().getPowerUps()){
+                    for(PowerUpView powerUpView : me.getPowerUps()){
                         PowerUpButton powerUpButton = new PowerUpButton(powerUpView);
                         powerUpBox.getChildren().add(powerUpButton);
                         powerUpBox.setHgrow(powerUpButton, Priority.ALWAYS);
                     }
                 }
-                //sleepGui(750);
             }
         });
     }
@@ -276,26 +274,46 @@ public class BoardGui {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                if(player.getSquarePosition() != null){
-                    PlayerRectangle playerRectangle = getPlayerRectangle(player);
-                    HBox newPosition = playerPositionHBox.get(player.getSquarePosition());
-
-                    if(playerPositions.get(player) == null){
-
-                        if(newPosition != playerPositions.get(playerRectangle)){
-                            playerPositions.put(playerRectangle, newPosition);
-                            newPosition.getChildren().add(playerRectangle);
-                        }
-                    } else {
-                        HBox oldPosition = playerPositions.get(playerRectangle);
-                        oldPosition.getChildren().remove(playerRectangle);
-                        newPosition.getChildren().add(playerRectangle);
-                        playerPositions.put(playerRectangle, newPosition);
-                        //elimino dall'hbox precedente e lo sposto in quello nuovo
-                    }
-                }
+                updatePosition(player);
+                updateWallet(player);
+                updateDamageTrack(player);
             }
         });
+    }
+
+    private void updatePosition(PlayerView player){
+        if(player.getSquarePosition() != null){
+            PlayerRectangle playerRectangle = getPlayerRectangle(player);
+            HBox newPosition = playerPositionHBox.get(player.getSquarePosition());
+
+            if(playerPositions.get(player) == null){
+
+                if(newPosition != playerPositions.get(playerRectangle)){
+                    playerPositions.put(playerRectangle, newPosition);
+                    newPosition.getChildren().add(playerRectangle);
+                }
+            } else {
+                HBox oldPosition = playerPositions.get(playerRectangle);
+                oldPosition.getChildren().remove(playerRectangle);
+                newPosition.getChildren().add(playerRectangle);
+                playerPositions.put(playerRectangle, newPosition);
+                //elimino dall'hbox precedente e lo sposto in quello nuovo
+            }
+        }
+    }
+
+    private void updateDamageTrack(PlayerView player){
+        for(PlayerView pv : player.getDamageList()){
+            playerDamageTracks.get(player).addDamage(Color.valueOf(pv.getColor().toString()));
+        }
+        playerDamageTracks.get(player).addMark(player.getMarkMap());
+    }
+
+    private void updateWallet(PlayerView player){
+        DamageTrack damageTrackToUpdate = playerDamageTracks.get(player);
+        damageTrackToUpdate.addAmmo(Color.BLUE, player.getWallet().getBlue());
+        damageTrackToUpdate.addAmmo(Color.RED,player.getWallet().getRed());
+        damageTrackToUpdate.addAmmo(Color.YELLOW, player.getWallet().getYellow());
     }
 
     public void updateLayout(LayoutView layoutView){
@@ -375,7 +393,6 @@ public class BoardGui {
             playerPositionHBox.put(matchView.getLayout().getSquare(pp.getxSquare(), pp.getySquare()), newPlayerPositionHBox);
             board.getChildren().add(newPlayerPositionHBox);
         }
-        //board.getChildren().addAll(toAdd);
     }
 
     private void createPlayerRectangle(MatchView matchView){
@@ -411,5 +428,13 @@ public class BoardGui {
 
     public static double getWidth(){
         return boardWidth;
+    }
+
+    private List<Color> getAllColors(MatchView match){
+        List<Color> colors = new LinkedList<>();
+        for(PlayerView pv : match.getAllPlayers()){
+            colors.add(Color.valueOf(pv.getColor().toString()));
+        }
+        return colors;
     }
 }
