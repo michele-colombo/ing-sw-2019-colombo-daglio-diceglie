@@ -12,11 +12,6 @@ public abstract class Square {
     protected Border west;
     protected Room room;
     protected AmmoColor color;
-    protected boolean isAmmo;
-
-    public boolean isAmmo(){
-        return isAmmo;
-    }
 
     public abstract boolean collect(Player p, Match m);
 

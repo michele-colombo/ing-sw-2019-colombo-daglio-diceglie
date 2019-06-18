@@ -91,7 +91,7 @@ public class Client implements MessageVisitor {
     @Override
     public synchronized void visit(ConnectionUpdateMessage connectionUpdateMessage) {
 
-        //System.out.println("Connection update received");
+        System.out.println("Connection update received");
         connections.clear();
         for (Map.Entry<String, Boolean> entry : connectionUpdateMessage.getConnectionStates().entrySet()){
             connections.put(entry.getKey(), entry.getValue());
@@ -473,6 +473,7 @@ public class Client implements MessageVisitor {
     }
 
     public void shutDown(){
+        System.out.println("I'm in Client.shutDown()");
         match = null;
         if(network != null) {
             network.closeConnection();

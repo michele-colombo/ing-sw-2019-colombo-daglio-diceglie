@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlayingWindow extends Window{
-    protected MatchView match;
+    //protected MatchView match;
     protected Cli cli;
     private int firstColumnWidth;
     private int secondColumnWidth;
@@ -37,7 +37,7 @@ public class PlayingWindow extends Window{
 
     public PlayingWindow(int width, int height, MatchView match, Cli cli) {
         super(width, height);
-        this.match = match;
+        //this.match = match;
         this.cli = cli;
         this.firstColumnWidth = width/6;
         this.secondColumnWidth = (width*3)/7;

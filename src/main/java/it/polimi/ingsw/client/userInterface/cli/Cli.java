@@ -15,7 +15,6 @@ public class Cli implements UserInterface {
     }
     private Client client;
     private PlayingWindow playingWindow;
-    private MatchView match;
     private List<String> selectableIds;
     private Runnable reader;
     private boolean isActive;
@@ -64,7 +63,7 @@ public class Cli implements UserInterface {
                             case PLAY:
                                 input = input.trim();
                                 if (input.matches("man [\\w\\d-. ]+")){
-                                    WeaponView w = match.getDecks().getWeaponFromName(input.substring(4).trim());
+                                    WeaponView w = client.getMatch().getDecks().getWeaponFromName(input.substring(4).trim());
                                     if (w != null){
                                         System.out.println(getPrettyManWeapon(w));
                                     }
@@ -78,7 +77,7 @@ public class Cli implements UserInterface {
                                             String[] coordinates = input.split("[^\\d^\\w]+");
                                             int x = Integer.parseInt(coordinates[0].trim());
                                             int y = Integer.parseInt(coordinates[1].trim());
-                                            SquareView square = match.getLayout().getSquare(x, y);
+                                            SquareView square = client.getMatch().getLayout().getSquare(x, y);
                                             if (square != null) {
                                                 client.selected(square.toString());
                                             }
@@ -150,14 +149,15 @@ public class Cli implements UserInterface {
 
     public void showAndAskSelection(){
         selectableIds.clear();
-        playingWindow.fullUpdate(match);
+        playingWindow.fullUpdate(client.getMatch());
         playingWindow.show();
         state = CliState.PLAY;
     }
 
     @Override
     public void updateConnection() {
-        if (match != null){
+        if (client.getMatch() != null){
+            System.out.println("Il match è diverso da null!");
         } else {
             printConnectedPlayers();
         }
@@ -243,8 +243,7 @@ public class Cli implements UserInterface {
 
     @Override
     public void updateStartMatch(MatchView matchView) {
-        this.match = matchView;
-        playingWindow = new PlayingWindow(150, 37, match, this);
+        playingWindow = new PlayingWindow(150, 37, matchView, this);
         state = CliState.PLAY;
     }
 

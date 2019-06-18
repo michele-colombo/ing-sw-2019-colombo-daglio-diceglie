@@ -13,7 +13,6 @@ public class SpawnSquare extends Square{
 
     public SpawnSquare(int x, int y, Border north, Border east, Border south, Border west, AmmoColor color){
         super(x, y, north, east, south, west, color);
-        isAmmo = false;
         weapons = new ArrayList<>();
     }
 

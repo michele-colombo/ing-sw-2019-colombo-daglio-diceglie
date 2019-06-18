@@ -19,7 +19,17 @@ public class Layout {
      * Contains all squares of the selected layout; max size is 12
      */
     //private List<Square> squares;
+
+    /**
+     * Contains all the spawn squares of the selected layout,
+     * size is always 3
+     */
     private List<SpawnSquare> spawnSquares;
+
+    /**
+     * Contains all the ammo squares of the selected layout,
+     * size is up to 9
+     */
     private List<AmmoSquare> ammoSquares;
 
     /**
@@ -36,6 +46,10 @@ public class Layout {
      */
     private int layoutConfiguration;
 
+    /**
+     * Returns a list with all the squares of the layout, both of type {@link AmmoSquare} and {@link SpawnSquare}
+     * @return cloned list with all squares
+     */
     public List<Square> getSquares() {
         List <Square> squares = new ArrayList<>();
         squares.addAll(ammoSquares);
