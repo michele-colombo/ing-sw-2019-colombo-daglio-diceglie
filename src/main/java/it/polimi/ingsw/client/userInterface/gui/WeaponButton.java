@@ -53,7 +53,6 @@ public class WeaponButton extends Parent {
             public void handle(MouseEvent mouseEvent) {
                 try{
                     Gui.getClient().selected(weaponView.getName());
-                    System.out.println("Sto acquistando " + weaponView.getName());
                 } catch(WrongSelectionException e){
                     System.out.println("Wrong selection!");
                 }

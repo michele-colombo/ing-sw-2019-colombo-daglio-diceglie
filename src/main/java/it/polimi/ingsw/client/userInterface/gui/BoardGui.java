@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.userInterface.gui;
 
 import it.polimi.ingsw.client.*;
+import it.polimi.ingsw.server.model.enums.Command;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -37,6 +38,7 @@ public class BoardGui {
     private GridPane damageTracks;
     private AnchorPane board;
     private List<Label> connectionLabels;
+    private Label currentPlayer;
     private ComboBox selectables;
     private List<PixelPosition> pixelPositions;
     private List<AmmoButton> ammoButtonsList;
@@ -116,7 +118,8 @@ public class BoardGui {
         InputStream myDmgUrl = getClass().getClassLoader().getResourceAsStream("damageTracks/dmg" + match.getMyPlayer().getColor().toString().toLowerCase() + ".png");
         Image image = new Image(myDmgUrl);
         ImageView imageView = new ImageView(image);
-        DamageTrack damageTrack = new DamageTrack(imageView, colors);
+        DamageTrack damageTrack = new DamageTrack(imageView, colors, match.getMyPlayer());
+        damageTrack.updateInfo();
         playerDamageTracks.put(match.getMyPlayer(), damageTrack);
         damageTracks.add(damageTrack, 0, 0);
 
@@ -126,9 +129,10 @@ public class BoardGui {
                 InputStream dmgUrl = getClass().getClassLoader().getResourceAsStream("damageTracks/dmg" + pv.getColor().toString().toLowerCase() + ".png");
                 image = new Image(dmgUrl);
                 imageView = new ImageView(image);
-                DamageTrack damageTrack1 = new DamageTrack(imageView, colors);
-                playerDamageTracks.put(pv, damageTrack1);
-                damageTracks.add(damageTrack1, 0, i);
+                DamageTrack otherDamageTrack = new DamageTrack(imageView, colors, pv);
+                otherDamageTrack.updateInfo();
+                playerDamageTracks.put(pv, otherDamageTrack);
+                damageTracks.add(otherDamageTrack, 0, i);
             }
             i++;
         }
@@ -138,12 +142,16 @@ public class BoardGui {
     public void addConnectionState(List<PlayerView> players ){
         connectionLabels = new ArrayList<>();
         connectionState = new GridPane();
+        currentPlayer = new Label("Current: " + players.get(0).getName());
+        currentPlayer.setTextFill(Color.YELLOW);
+        currentPlayer.setWrapText(true);
         Label connectionLabel = new Label("PLAYERS");
         connectionLabel.setTextFill(Color.GHOSTWHITE);
         connectionState.add(connectionLabel, 0, 0);
         connectionState.setVgap(10);
         connectionState.setHgap(10);
         connectionState.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
+        connectionState.add(currentPlayer, 0, 1);
         view.add(connectionState, 4,0);
     }
 
@@ -171,7 +179,7 @@ public class BoardGui {
             public void run() {
                 connectionState.getChildren().removeAll(connectionLabels);
                 connectionLabels.clear();
-                int i = 1;
+                int i = 2;
                 for(String string : connections.keySet()){
                     Label playerLabel = new Label(string);
                     playerLabel.setWrapText(true);
@@ -194,7 +202,19 @@ public class BoardGui {
                     connectionLabels.add(onlineLabel);
                     i++;
                 }
+                if(Gui.getClient().getMatch().getCurrentPlayer() != null){
+                    currentPlayer.setText("Current: " + Gui.getClient().getMatch().getCurrentPlayer());
+                }
                 //sleepGui(750);
+            }
+        });
+    }
+
+    public void updateCurrentPlayer(){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                currentPlayer.setText("Current: " + Gui.getClient().getMatch().getCurrentPlayer());
             }
         });
     }
@@ -222,9 +242,11 @@ public class BoardGui {
             public void run() {
 
                 MyPlayer me = Gui.getClient().getMatch().getMyPlayer();
-                ObservableList<String> comboItems = FXCollections.observableList(me.getSelectableActions());
+                ObservableList<String> comboItemsActions = FXCollections.observableList(me.getSelectableActions());
+                ObservableList<Command> comboItemsCommand = FXCollections.observableList(me.getSelectableCommands());
                 selectables.getItems().clear();
-                selectables.getItems().addAll(comboItems);
+                selectables.getItems().addAll(comboItemsActions);
+                selectables.getItems().addAll(comboItemsCommand);
 
                 for(SquareView sv : me.getSelectableSquares()){
                     for(SelectableRectangle sr : selectableRectangles){
@@ -303,10 +325,13 @@ public class BoardGui {
     }
 
     private void updateDamageTrack(PlayerView player){
+        DamageTrack toUpdate = playerDamageTracks.get(player);
         for(PlayerView pv : player.getDamageList()){
             playerDamageTracks.get(player).addDamage(Color.valueOf(pv.getColor().toString()));
         }
-        playerDamageTracks.get(player).addMark(player.getMarkMap());
+        toUpdate.addMark(player.getMarkMap());
+        toUpdate.updateInfo();
+
     }
 
     private void updateWallet(PlayerView player){

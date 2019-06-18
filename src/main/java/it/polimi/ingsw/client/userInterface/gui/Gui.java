@@ -208,7 +208,7 @@ public class Gui extends Application implements UserInterface {
 
     @Override
     public void updateCurrentPlayer() {
-        return;
+        boardGui.updateCurrentPlayer();
     }
 
     @Override

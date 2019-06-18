@@ -67,26 +67,5 @@ public class PixelPosition {
         }
         return false;
     }
-
-
-    public static void main(String[] args){
-
-        List<PixelPosition> pixel = new LinkedList<>();
-        pixel.add(new PixelPosition(0,2,0.2042, 0.3568, 0.22, 0.31, 0.17, 0.233));
-        pixel.add(new PixelPosition(0, 0,0.2051, 0.7784, 0.22, 0.725, 0.17, 0.693));
-        pixel.add(new PixelPosition(1,0,0.3441, 0.7784, 0.4, 0.725, 0.34, 0.693));
-        pixel.add(new PixelPosition(1,2,0.3540, 0.2452, 0.4, 0.31, 0.34, 0.233));
-        pixel.add(new PixelPosition(2,0,0.5435, 0.7729, 0.6, 0.725, 0.52, 0.693));
-        pixel.add(new PixelPosition(3,2,0.7618, 0.3475, 0.72, 0.31, 0.69, 0.233));
-        pixel.add(new PixelPosition(1,1,0.3396, 0.5238, 0.4, 0.53, 0.34, 0.47));
-        pixel.add(new PixelPosition(2,1,0.5339, 0.5860, 0.6, 0.53, 0.52, 0.47));
-        pixel.add(new PixelPosition(3,1,0.6830, 0.5852, 0.72, 0.53, 0.69, 0.47));
-        pixel.add(new PixelPosition(3,0,0.0, 0.0, 0.72, 0.725, 0.69, 0.693));
-        pixel.add(new PixelPosition(0,1,0.0, 0.0, 0.22, 0.53, 0.17, 0.47));
-        pixel.add(new PixelPosition(2,2,0.0, 0.0, 0.57, 0.31, 0.52, 0.233));
-
-        Gson gson = new Gson();
-        System.out.println(gson.toJson(pixel));
-    }
 }
 

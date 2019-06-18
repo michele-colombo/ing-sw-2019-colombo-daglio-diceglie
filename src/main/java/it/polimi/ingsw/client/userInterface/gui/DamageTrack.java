@@ -1,14 +1,13 @@
 package it.polimi.ingsw.client.userInterface.gui;
 
 import it.polimi.ingsw.client.PlayerView;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.HBox;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -23,6 +22,7 @@ public class DamageTrack extends Parent {
     private static final double TRANSLATE_MARKS_BOX_X = 0.48;
     private static final double TRANSLATE_MARKS_BOX_Y = 0.01;
 
+    private final PlayerView playerView;
     private final ImageView damageTrackImageView;
     private HBox ammoBox;
     private HBox markBox;
@@ -33,8 +33,10 @@ public class DamageTrack extends Parent {
     private Map<Color, Label> marks;
     private List<Rectangle> damage;
     private List<Color> markColors;
+    private HBox playerInfo;
 
-    public DamageTrack(ImageView damageTrackImageView, List<Color> markColors){
+    public DamageTrack(ImageView damageTrackImageView, List<Color> markColors, PlayerView playerView){
+        this.playerView = playerView;
         this.damageTrackImageView = damageTrackImageView;
         this.damageTrackImageView.setFitWidth(Gui.getScreenBounds().getWidth()/4);
         this.damageTrackImageView.setPreserveRatio(true);
@@ -46,6 +48,8 @@ public class DamageTrack extends Parent {
         this.marks = new HashMap<>();
         this.damage = new LinkedList<>();
         this.markColors = markColors;
+        this.playerInfo = new HBox();
+        this.playerInfo.setVisible(false);
         ammoBox.setTranslateX(width * TRANSLATE_AMMO_BOX_X);
         ammoBox.setTranslateY(height * TRANSLATE_AMMO_BOX_Y);
         Label ammoLabel = new Label("AMMO ");
@@ -59,9 +63,23 @@ public class DamageTrack extends Parent {
         marksLabel.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         markBox.getChildren().add(marksLabel);
         this.tears = 0;
-        this.getChildren().addAll(damageTrackImageView, ammoBox, markBox);
+        this.getChildren().addAll(damageTrackImageView, ammoBox, markBox, playerInfo);
         addAmmos();
         addMarkLabels(markColors);
+
+        this.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                playerInfo.setVisible(true);
+            }
+        });
+
+        this.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                playerInfo.setVisible(false);
+            }
+        });
     }
 
     private void addAmmos(){
@@ -118,5 +136,16 @@ public class DamageTrack extends Parent {
             Label markLabel = marks.get(pv.getColor());
             markLabel.setText(markMap.get(pv).toString());
         }
+    }
+
+    public void updateInfo(){
+        playerInfo.getChildren().clear();
+        VBox infos = new VBox();
+        playerInfo.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
+        //infos.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
+        Label numberPu = new Label("Number of PowerUps: " + playerView.getNumPowerUps());
+        Label numberWeapons = new Label("Number of Weapons: " + (playerView.getUnloadedWeapons().size() + playerView.getNumLoadedWeapons()));
+        infos.getChildren().addAll(numberPu, numberWeapons);
+        playerInfo.getChildren().add(infos);
     }
 }
