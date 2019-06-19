@@ -54,8 +54,9 @@ public class Gui extends Application implements UserInterface {
 
     @Override
     public void showLogin() {
-        Platform.runLater( () -> { loginGui = new LoginGui();
-            changeScene(loginGui.getView()); } );
+        loginGui = new LoginGui();
+
+        Platform.runLater( () ->   changeScene(loginGui.getView())  );
     }
 
     @Override
@@ -157,7 +158,7 @@ public class Gui extends Application implements UserInterface {
     }
 
     @Override
-    public synchronized void updateStartMatch(MatchView match){
+    public void updateStartMatch(MatchView match){
         boardGui = new BoardGui(match);
         boardGui.createSelectableRectangle(match);
         boardGui.createPlayerPositionHBox(match);
@@ -166,7 +167,7 @@ public class Gui extends Application implements UserInterface {
             changeScene(boardGui.getView());
         });
 
-        notify();
+        //notify();
     }
 
 
@@ -224,7 +225,8 @@ public class Gui extends Application implements UserInterface {
     }
 
     @Override
-    public synchronized void updatePowerUp(PlayerView player) {
+    public void updatePowerUp(PlayerView player) {
+        /*
         while(boardGui == null){
             try {
                 wait();
@@ -232,6 +234,7 @@ public class Gui extends Application implements UserInterface {
                 e.printStackTrace();
             }
         }
+        */
         boardGui.updatePowerUp(player);
     }
 
