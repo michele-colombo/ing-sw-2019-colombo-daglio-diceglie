@@ -1,16 +1,19 @@
 package it.polimi.ingsw.client.userInterface.gui;
 
 import it.polimi.ingsw.client.PlayerView;
+import it.polimi.ingsw.client.WeaponView;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,9 +38,11 @@ public class DamageTrack extends Parent {
     private List<Color> markColors;
     private HBox playerInfo;
 
-    public DamageTrack(ImageView damageTrackImageView, List<Color> markColors, PlayerView playerView){
+    public DamageTrack(List<Color> markColors, PlayerView playerView){
+        InputStream myDmgUrl = getClass().getClassLoader().getResourceAsStream("damageTracks/dmg" + playerView.getColor() + ".png");
+        Image image = new Image(myDmgUrl);
+        this.damageTrackImageView = new ImageView(image);
         this.playerView = playerView;
-        this.damageTrackImageView = damageTrackImageView;
         this.damageTrackImageView.setFitWidth(Gui.getScreenBounds().getWidth()/4);
         this.damageTrackImageView.setPreserveRatio(true);
         this.width = damageTrackImageView.boundsInParentProperty().get().getWidth();
@@ -67,18 +72,12 @@ public class DamageTrack extends Parent {
         addAmmos();
         addMarkLabels(markColors);
 
-        this.setOnMouseEntered(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                playerInfo.setVisible(true);
-            }
+        this.setOnMouseEntered((MouseEvent t) -> {
+            playerInfo.setVisible(true);
         });
 
-        this.setOnMouseExited(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                playerInfo.setVisible(false);
-            }
+        this.setOnMouseExited((MouseEvent t) ->{
+            playerInfo.setVisible(false);
         });
     }
 
@@ -144,8 +143,24 @@ public class DamageTrack extends Parent {
         playerInfo.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         //infos.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         Label numberPu = new Label("Number of PowerUps: " + playerView.getNumPowerUps());
+        numberPu.setTextFill(Color.WHITE);
         Label numberWeapons = new Label("Number of Weapons: " + (playerView.getUnloadedWeapons().size() + playerView.getNumLoadedWeapons()));
+        numberWeapons.setTextFill(Color.WHITE);
         infos.getChildren().addAll(numberPu, numberWeapons);
+        for(WeaponView wv : playerView.getUnloadedWeapons()){
+            WeaponButton unloadedWeapon = new WeaponButton(wv, false);
+            unloadedWeapon.setDisable(true);
+            playerInfo.getChildren().add(unloadedWeapon);
+        }
         playerInfo.getChildren().add(infos);
+    }
+
+    public void switchToFrenzy(){
+        InputStream frenzyDmgUrl = getClass().getClassLoader().getResourceAsStream("damageTracks/dmg" + playerView.getColor() + ".png");
+        Image image = new Image(frenzyDmgUrl);
+        damageTrackImageView.setImage(image);
+        this.getChildren().remove(damage);
+        damage.clear();
+        tears = 0;
     }
 }

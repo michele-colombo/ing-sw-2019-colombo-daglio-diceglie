@@ -27,20 +27,14 @@ public class AmmoButton extends Parent {
         this.ammoImageView.setPreserveRatio(true);
         this.getChildren().add(ammoImageView);
 
-        this.setOnMouseEntered(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                ammoImageView.setFitWidth(width * 1.8);
-                ammoImageView.setEffect(new DropShadow(20, Color.RED));
-            }
+        this.setOnMouseEntered((MouseEvent t) -> {
+            ammoImageView.setFitWidth(width * 1.8);
+            ammoImageView.setEffect(new DropShadow(20, Color.RED));
         });
 
-        this.setOnMouseExited(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                ammoImageView.setFitWidth(width);
-                ammoImageView.setEffect(null);
-            }
+        this.setOnMouseExited((MouseEvent t) -> {
+            ammoImageView.setFitWidth(width);
+            ammoImageView.setEffect(null);
         });
     }
 }

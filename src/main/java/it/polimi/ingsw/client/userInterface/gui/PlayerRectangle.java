@@ -14,14 +14,11 @@ public class PlayerRectangle extends Rectangle{
         super(width, height, color);
         this.playerView = playerView;
 
-        this.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                try{
-                    Gui.getClient().selected(playerView.getName());
-                } catch(WrongSelectionException e){
-                    System.out.println("Wrong selection!");
-                }
+        this.setOnMouseClicked((MouseEvent t) -> {
+            try{
+                Gui.getClient().selected(playerView.getName());
+            } catch(WrongSelectionException e){
+                System.out.println("Wrong selection!");
             }
         });
     }

@@ -166,7 +166,7 @@ public class Client implements MessageVisitor {
     }
 
     public synchronized void visit(PlayerUpdateMessage playerUpdateMessage) {
-        //System.out.println("Player update received");
+        System.out.println("Player update received");
         PlayerView playerToUpdate = match.getPlayerFromName(playerUpdateMessage.getName());
         playerToUpdate.setState(playerUpdateMessage.getState());
         playerToUpdate.setSquarePosition(match.getLayout().getSquareFromString(playerUpdateMessage.getPosition()));
@@ -175,14 +175,14 @@ public class Client implements MessageVisitor {
     }
 
     public synchronized void visit(PaymentUpdateMessage paymentUpdateMessage) {
-        //System.out.println("Payment update received");
+        System.out.println("Payment update received");
         match.getMyPlayer().setPending(paymentUpdateMessage.getPending());
         match.getMyPlayer().setCredit(paymentUpdateMessage.getCredit());
         userInterface.updatePayment();
     }
 
     public synchronized void visit(WeaponsUpdateMessage weaponsUpdateMessage) {
-        //System.out.println("Weapons update received");
+        System.out.println("Weapons update received");
         if (weaponsUpdateMessage.getName().equals(name)){
             MyPlayer me = match.getMyPlayer();
             Map<WeaponView, Boolean> temp = new HashMap<>();
@@ -205,7 +205,7 @@ public class Client implements MessageVisitor {
     }
 
     public synchronized void visit(PowerUpUpdateMessage powerUpUpdateMessage) {
-        //System.out.println("PowerUp update received");
+        System.out.println("PowerUp update received");
         if (powerUpUpdateMessage.getName().equals(name)){
             MyPlayer me = match.getMyPlayer();
             List<PowerUpView> powerUps = new ArrayList<>();
@@ -220,7 +220,7 @@ public class Client implements MessageVisitor {
     }
 
     public synchronized void visit(DamageUpdateMessage damageUpdateMessage) {
-        //System.out.println("Damage update received");
+        System.out.println("Damage update received");
         PlayerView playerToUpdate = match.getPlayerFromName(damageUpdateMessage.getName());
         playerToUpdate.setSkulls(damageUpdateMessage.getSkulls());
         playerToUpdate.setFrenzy(damageUpdateMessage.isFrenzy());

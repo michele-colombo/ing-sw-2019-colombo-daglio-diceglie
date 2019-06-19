@@ -18,15 +18,12 @@ public class SelectableRectangle extends Rectangle {
         this.setVisible(false);
         this.squareView = squareView;
 
-        this.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                try{
-                    Gui.getClient().selected(squareView.toString());
-                    BoardGui.setUnvisibleSelectableRectangle();
-                } catch(WrongSelectionException e){
-                    System.out.println("Wrong selection!");
-                }
+        this.setOnMouseClicked((MouseEvent t) -> {
+            try{
+                Gui.getClient().selected(squareView.toString());
+                BoardGui.setUnvisibleSelectableRectangle();
+            } catch(WrongSelectionException e){
+                System.out.println("Wrong selection!");
             }
         });
     }

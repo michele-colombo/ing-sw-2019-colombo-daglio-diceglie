@@ -162,11 +162,8 @@ public class Gui extends Application implements UserInterface {
         boardGui.createSelectableRectangle(match);
         boardGui.createPlayerPositionHBox(match);
 
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                changeScene(boardGui.getView());
-            }
+        Platform.runLater(() -> {
+            changeScene(boardGui.getView());
         });
 
         notify();
@@ -240,7 +237,7 @@ public class Gui extends Application implements UserInterface {
 
     @Override
     public void updateDamage(PlayerView player) {
-        return;
+        boardGui.updateDamageTrack(player);
     }
 
     @Override

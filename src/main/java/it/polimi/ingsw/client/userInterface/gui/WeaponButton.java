@@ -32,30 +32,21 @@ public class WeaponButton extends Parent {
         this.weaponImageView.setPreserveRatio(true);
         this.getChildren().add(weaponImageView);
 
-        this.setOnMouseEntered(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                if(!inHand){
-                    weaponImageView.setEffect(new DropShadow(20, Color.WHITE));
-                }
+        this.setOnMouseEntered((MouseEvent) -> {
+            if(!inHand){
+                weaponImageView.setEffect(new DropShadow(20, Color.WHITE));
             }
         });
 
-        this.setOnMouseExited(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                weaponImageView.setEffect(null);
-            }
+        this.setOnMouseExited((MouseEvent t) -> {
+            weaponImageView.setEffect(null);
         });
 
-        this.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                try{
-                    Gui.getClient().selected(weaponView.getName());
-                } catch(WrongSelectionException e){
-                    System.out.println("Wrong selection!");
-                }
+        this.setOnMouseClicked((MouseEvent t) -> {
+            try{
+                Gui.getClient().selected(weaponView.getName());
+            } catch(WrongSelectionException e){
+                System.out.println("Wrong selection!");
             }
         });
     }

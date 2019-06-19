@@ -32,32 +32,23 @@ public class PowerUpButton extends Parent {
         this.powerUpImageView.setFitHeight(height);
         this.getChildren().add(powerUpImageView);
 
-        this.powerUpImageView.setOnMouseEntered(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                powerUpImageView.setFitWidth(width * 1.2);
-                powerUpImageView.setFitHeight(height * 1.2);
-                //powerUpImageView.setEffect(new DropShadow(20, Color.BLUE));
-            }
+        this.powerUpImageView.setOnMouseEntered((MouseEvent t) -> {
+            powerUpImageView.setFitWidth(width * 1.2);
+            powerUpImageView.setFitHeight(height * 1.2);
+            //powerUpImageView.setEffect(new DropShadow(20, Color.BLUE));
         });
 
-        this.setOnMouseExited(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                powerUpImageView.setFitWidth(width);
-                powerUpImageView.setFitHeight(height);
-                //powerUpImageView.setEffect(null);
-            }
+        this.setOnMouseExited((MouseEvent t) -> {
+            powerUpImageView.setFitWidth(width);
+            powerUpImageView.setFitHeight(height);
+            //powerUpImageView.setEffect(null);
         });
 
-        this.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                try{
-                    Gui.getClient().selected(powerUpView.toString());
-                } catch(WrongSelectionException e){
-                    System.out.println("Wrong selection!");
-                }
+        this.setOnMouseClicked((MouseEvent t) -> {
+            try{
+                Gui.getClient().selected(powerUpView.toString());
+            } catch(WrongSelectionException e){
+                System.out.println("Wrong selection!");
             }
         });
     }

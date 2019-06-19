@@ -115,10 +115,10 @@ public class BoardGui {
         damageTracks.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         damageTracks.setAlignment(Pos.TOP_CENTER);
 
-        InputStream myDmgUrl = getClass().getClassLoader().getResourceAsStream("damageTracks/dmg" + match.getMyPlayer().getColor().toString().toLowerCase() + ".png");
-        Image image = new Image(myDmgUrl);
-        ImageView imageView = new ImageView(image);
-        DamageTrack damageTrack = new DamageTrack(imageView, colors, match.getMyPlayer());
+        //InputStream myDmgUrl = getClass().getClassLoader().getResourceAsStream("damageTracks/dmg" + match.getMyPlayer().getColor().toString().toLowerCase() + ".png");
+        //Image image = new Image(myDmgUrl);
+        //ImageView imageView = new ImageView(image);
+        DamageTrack damageTrack = new DamageTrack(colors, match.getMyPlayer());
         damageTrack.updateInfo();
         playerDamageTracks.put(match.getMyPlayer(), damageTrack);
         damageTracks.add(damageTrack, 0, 0);
@@ -126,10 +126,10 @@ public class BoardGui {
         int i = 1;
         for(PlayerView pv : match.getAllPlayers()){
             if(pv.getColor() != match.getMyPlayer().getColor()){
-                InputStream dmgUrl = getClass().getClassLoader().getResourceAsStream("damageTracks/dmg" + pv.getColor().toString().toLowerCase() + ".png");
-                image = new Image(dmgUrl);
-                imageView = new ImageView(image);
-                DamageTrack otherDamageTrack = new DamageTrack(imageView, colors, pv);
+                //InputStream dmgUrl = getClass().getClassLoader().getResourceAsStream("damageTracks/dmg" + pv.getColor().toString().toLowerCase() + ".png");
+                //image = new Image(dmgUrl);
+                //imageView = new ImageView(image);
+                DamageTrack otherDamageTrack = new DamageTrack(colors, pv);
                 otherDamageTrack.updateInfo();
                 playerDamageTracks.put(pv, otherDamageTrack);
                 damageTracks.add(otherDamageTrack, 0, i);
@@ -143,7 +143,7 @@ public class BoardGui {
         connectionLabels = new ArrayList<>();
         connectionState = new GridPane();
         currentPlayer = new Label("Current: " + players.get(0).getName());
-        currentPlayer.setTextFill(Color.YELLOW);
+        currentPlayer.setTextFill(Color.WHITE);
         currentPlayer.setWrapText(true);
         Label connectionLabel = new Label("PLAYERS");
         connectionLabel.setTextFill(Color.GHOSTWHITE);
@@ -174,132 +174,110 @@ public class BoardGui {
     }
 
     public void updateConnection(Map<String, Boolean> connections){
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                connectionState.getChildren().removeAll(connectionLabels);
-                connectionLabels.clear();
-                int i = 2;
-                for(String string : connections.keySet()){
-                    Label playerLabel = new Label(string);
-                    playerLabel.setWrapText(true);
-                    playerLabel.setTextFill(Color.WHITE);
-                    playerLabel.setMaxWidth(Gui.getScreenBounds().getWidth()/20);
-                    Label onlineLabel;
-                    if(connections.get(string)){
-                        onlineLabel = new Label("online");
-                        onlineLabel.setTextFill(Color.GREEN);
-                        onlineLabel.setWrapText(true);
-                    } else {
-                        onlineLabel = new Label("offline");
-                        onlineLabel.setTextFill(Color.RED);
-                        onlineLabel.setWrapText(true);
-                    }
-                    onlineLabel.setMaxWidth(Gui.getScreenBounds().getWidth()/20);
-                    connectionState.add(playerLabel, 0, i);
-                    connectionState.add(onlineLabel, 1, i);
-                    connectionLabels.add(playerLabel);
-                    connectionLabels.add(onlineLabel);
-                    i++;
+        Platform.runLater(() -> {
+            connectionState.getChildren().removeAll(connectionLabels);
+            connectionLabels.clear();
+            int i = 2;
+            for(PlayerView pv : Gui.getClient().getMatch().getAllPlayers()){
+                Label playerLabel = new Label(pv.getName());
+                playerLabel.setWrapText(true);
+                playerLabel.setTextFill(Color.valueOf(pv.getColor().toString()));
+                playerLabel.setMaxWidth(Gui.getScreenBounds().getWidth()/20);
+                Label onlineLabel;
+                if(connections.get(pv.getName())){
+                    onlineLabel = new Label("online");
+                    onlineLabel.setTextFill(Color.GREEN);
+                    onlineLabel.setWrapText(true);
+                } else {
+                    onlineLabel = new Label("offline");
+                    onlineLabel.setTextFill(Color.RED);
+                    onlineLabel.setWrapText(true);
                 }
-                if(Gui.getClient().getMatch().getCurrentPlayer() != null){
-                    currentPlayer.setText("Current: " + Gui.getClient().getMatch().getCurrentPlayer());
-                }
-                //sleepGui(750);
+                onlineLabel.setMaxWidth(Gui.getScreenBounds().getWidth()/20);
+                connectionState.add(playerLabel, 0, i);
+                connectionState.add(onlineLabel, 1, i);
+                connectionLabels.add(playerLabel);
+                connectionLabels.add(onlineLabel);
+                i++;
             }
-        });
-    }
-
-    public void updateCurrentPlayer(){
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
+            if(Gui.getClient().getMatch().getCurrentPlayer() != null){
                 currentPlayer.setText("Current: " + Gui.getClient().getMatch().getCurrentPlayer());
             }
         });
     }
 
+    public void updateCurrentPlayer(){
+        Platform.runLater(() -> {
+            currentPlayer.setText("Current: " + Gui.getClient().getMatch().getCurrentPlayer());
+        });
+    }
+
     public void updatePowerUp(PlayerView player){
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                MyPlayer me = Gui.getClient().getMatch().getMyPlayer();
+        Platform.runLater(() -> {
+            MyPlayer me = Gui.getClient().getMatch().getMyPlayer();
                 if(player.getName().equals(me.getName())){
-                    powerUpBox.getChildren().clear();
-                    for(PowerUpView powerUpView : me.getPowerUps()){
-                        PowerUpButton powerUpButton = new PowerUpButton(powerUpView);
-                        powerUpBox.getChildren().add(powerUpButton);
-                        powerUpBox.setHgrow(powerUpButton, Priority.ALWAYS);
-                    }
+                powerUpBox.getChildren().clear();
+                for(PowerUpView powerUpView : me.getPowerUps()){
+                    PowerUpButton powerUpButton = new PowerUpButton(powerUpView);
+                    powerUpBox.getChildren().add(powerUpButton);
+                    powerUpBox.setHgrow(powerUpButton, Priority.ALWAYS);
                 }
             }
+                playerDamageTracks.get(player).updateInfo();
         });
     }
 
     public void updateSelectables(){
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
+        Platform.runLater(() -> {
+            MyPlayer me = Gui.getClient().getMatch().getMyPlayer();
+            ObservableList<String> comboItemsActions = FXCollections.observableList(me.getSelectableActions());
+            ObservableList<Command> comboItemsCommand = FXCollections.observableList(me.getSelectableCommands());
+            selectables.getItems().clear();
+            selectables.getItems().addAll(comboItemsActions);
+            selectables.getItems().addAll(comboItemsCommand);
 
-                MyPlayer me = Gui.getClient().getMatch().getMyPlayer();
-                ObservableList<String> comboItemsActions = FXCollections.observableList(me.getSelectableActions());
-                ObservableList<Command> comboItemsCommand = FXCollections.observableList(me.getSelectableCommands());
-                selectables.getItems().clear();
-                selectables.getItems().addAll(comboItemsActions);
-                selectables.getItems().addAll(comboItemsCommand);
-
-                for(SquareView sv : me.getSelectableSquares()){
-                    for(SelectableRectangle sr : selectableRectangles){
-                        if(sr.equals(sv)){
-                            sr.setVisible(true);
-                        }
+            for(SquareView sv : me.getSelectableSquares()){
+                for(SelectableRectangle sr : selectableRectangles){
+                    if(sr.equals(sv)){
+                        sr.setVisible(true);
                     }
                 }
-
             }
         });
     }
 
     public void updateWeapons(PlayerView player){
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                if(player.getName().equals(Gui.getClient().getMatch().getMyPlayer().getName())){
-                    weaponBox.getChildren().clear();
-                    //todo usare un metodo getAllWeapons o qualcosa di simile oppure cambiare dinamicamente immagine
-                    for(WeaponView weaponView : Gui.getClient().getMatch().getMyPlayer().getWeapons().keySet()){
-                        WeaponButton newWeapon = new WeaponButton(weaponView, true);
-                        newWeapon.reScale();
-                        weaponBox.getChildren().add(newWeapon);
-                    }
+        Platform.runLater(() -> {
+            if(player.getName().equals(Gui.getClient().getMatch().getMyPlayer().getName())){
+                weaponBox.getChildren().clear();
+                //todo usare un metodo getAllWeapons o qualcosa di simile oppure cambiare dinamicamente immagine
+                for(WeaponView weaponView : Gui.getClient().getMatch().getMyPlayer().getWeapons().keySet()){
+                    WeaponButton newWeapon = new WeaponButton(weaponView, true);
+                    newWeapon.reScale();
+                    weaponBox.getChildren().add(newWeapon);
                 }
             }
+            playerDamageTracks.get(player).updateInfo(); //todo forse è inutile
         });
     }
 
     public void updateKillshotTrack(int skulls){
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                for(double i = 0; i < skulls; i++){
-                    Circle skull = new Circle(boardWidth / SKULL_CIRCLE);
-                    skull.setFill(Color.RED);
-                    skull.setTranslateX(boardWidth * (BoardGui.X_KILLSHOT_TRACK + i * BoardGui.GAP_KILLSHOT_TRACK));
-                    skull.setTranslateY(boardHeight * BoardGui.Y_KILLSHOT_TRACK);
-                    board.getChildren().add(skull);
-                }
+        Platform.runLater(() -> {
+            for(double i = 0; i < skulls; i++){
+                Circle skull = new Circle(boardWidth / SKULL_CIRCLE);
+                skull.setFill(Color.RED);
+                skull.setTranslateX(boardWidth * (BoardGui.X_KILLSHOT_TRACK + i * BoardGui.GAP_KILLSHOT_TRACK));
+                skull.setTranslateY(boardHeight * BoardGui.Y_KILLSHOT_TRACK);
+                board.getChildren().add(skull);
             }
         });
     }
 
     public void updatePlayer(PlayerView player){
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                updatePosition(player);
-                updateWallet(player);
-                updateDamageTrack(player);
-            }
+        Platform.runLater(() -> {
+            updatePosition(player);
+            updateWallet(player);
+            //updateDamageTrack(player);
         });
     }
 
@@ -324,13 +302,13 @@ public class BoardGui {
         }
     }
 
-    private void updateDamageTrack(PlayerView player){
+    public void updateDamageTrack(PlayerView player){
         DamageTrack toUpdate = playerDamageTracks.get(player);
         for(PlayerView pv : player.getDamageList()){
             playerDamageTracks.get(player).addDamage(Color.valueOf(pv.getColor().toString()));
         }
         toUpdate.addMark(player.getMarkMap());
-        toUpdate.updateInfo();
+        //toUpdate.updateInfo();
 
     }
 
@@ -342,17 +320,14 @@ public class BoardGui {
     }
 
     public void updateLayout(LayoutView layoutView){
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                board.getChildren().removeAll(ammoButtonsList);
-                updateLayoutAmmo(layoutView.getSquares());
+        Platform.runLater(() -> {
+            board.getChildren().removeAll(ammoButtonsList);
+            updateLayoutAmmo(layoutView.getSquares());
 
-                board.getChildren().removeAll(weaponButtonList);
-                updateLayoutWeapon(yellowWeapons, layoutView.getYellowWeapons());
-                updateLayoutWeapon(blueWeapons, layoutView.getBlueWeapons());
-                updateLayoutWeapon(redWeapons, layoutView.getRedWeapons());
-            }
+            board.getChildren().removeAll(weaponButtonList);
+            updateLayoutWeapon(yellowWeapons, layoutView.getYellowWeapons());
+            updateLayoutWeapon(blueWeapons, layoutView.getBlueWeapons());
+            updateLayoutWeapon(redWeapons, layoutView.getRedWeapons());
         });
     }
 
