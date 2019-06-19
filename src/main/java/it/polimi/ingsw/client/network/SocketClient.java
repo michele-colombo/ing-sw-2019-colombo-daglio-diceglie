@@ -181,7 +181,7 @@ public class SocketClient extends NetworkInterfaceClient implements EventVisitor
         }
 
         @Override
-        public synchronized void run(){
+        public void run(){
             try {
                 Scanner in = new Scanner(socket.getInputStream());
                 while(active.get()) {

@@ -2,6 +2,8 @@ package it.polimi.ingsw.client.userInterface.gui;
 
 import it.polimi.ingsw.client.*;
 import it.polimi.ingsw.server.model.enums.Command;
+import it.polimi.ingsw.server.model.enums.PlayerState;
+import it.polimi.ingsw.server.model.enums.PlayerState;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -10,6 +12,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -19,6 +22,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Stage;
 
 import java.io.InputStream;
 import java.util.*;
@@ -52,6 +56,8 @@ public class BoardGui {
     private Map<PlayerView, DamageTrack> playerDamageTracks;
     private static double boardWidth;
     private static double boardHeight;
+
+    private ModeChoiceDialog modeChoiceDialog;
 
     public BoardGui(MatchView match){
         view = new GridPane();
@@ -102,6 +108,8 @@ public class BoardGui {
         addConnectionState(match.getAllPlayers());
         addSelectables();
         updateConnection(match.readConnections());
+
+        modeChoiceDialog= null;
     }
 
     public Parent getView(){
@@ -243,6 +251,25 @@ public class BoardGui {
                     }
                 }
             }
+
+
+            //added by Giuseppe
+            if(me.getState() == PlayerState.CHOOSE_MODE){
+                System.out.println("Selecting modes, si deve aprire");
+
+            //if(!me.getSelectableModes().isEmpty()){
+                if(modeChoiceDialog == null){
+                    System.out.println("Creating and updating modeSelection");
+                    modeChoiceDialog= new ModeChoiceDialog();
+                }
+                else{
+                    System.out.println("updating modeSelection");
+                    modeChoiceDialog.update();
+                }
+            }
+            //finished Giuseppe's part
+
+
         });
     }
 
@@ -303,12 +330,14 @@ public class BoardGui {
     }
 
     public void updateDamageTrack(PlayerView player){
-        DamageTrack toUpdate = playerDamageTracks.get(player);
-        for(PlayerView pv : player.getDamageList()){
-            playerDamageTracks.get(player).addDamage(Color.valueOf(pv.getColor().toString()));
-        }
-        toUpdate.addMark(player.getMarkMap());
-        //toUpdate.updateInfo();
+        Platform.runLater(() -> {
+            DamageTrack toUpdate = playerDamageTracks.get(player);
+            for(PlayerView pv : player.getDamageList()){
+                playerDamageTracks.get(player).addDamage(Color.valueOf(pv.getColor().toString()));
+            }
+            toUpdate.addMark(player.getMarkMap());
+            //toUpdate.updateInfo();
+        });
 
     }
 

@@ -39,7 +39,7 @@ public class DamageTrack extends Parent {
     private HBox playerInfo;
 
     public DamageTrack(List<Color> markColors, PlayerView playerView){
-        InputStream myDmgUrl = getClass().getClassLoader().getResourceAsStream("damageTracks/dmg" + playerView.getColor() + ".png");
+        InputStream myDmgUrl = getClass().getClassLoader().getResourceAsStream("damageTracks/dmg" + playerView.getColor().toString().toLowerCase() + ".png");
         Image image = new Image(myDmgUrl);
         this.damageTrackImageView = new ImageView(image);
         this.playerView = playerView;
@@ -150,6 +150,7 @@ public class DamageTrack extends Parent {
         for(WeaponView wv : playerView.getUnloadedWeapons()){
             WeaponButton unloadedWeapon = new WeaponButton(wv, false);
             unloadedWeapon.setDisable(true);
+            unloadedWeapon.reScale();
             playerInfo.getChildren().add(unloadedWeapon);
         }
         playerInfo.getChildren().add(infos);

@@ -224,7 +224,7 @@ public class Gui extends Application implements UserInterface {
     }
 
     @Override
-    public void updatePowerUp(PlayerView player) {
+    public synchronized void updatePowerUp(PlayerView player) {
         while(boardGui == null){
             try {
                 wait();
