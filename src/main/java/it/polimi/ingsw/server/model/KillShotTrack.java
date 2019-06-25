@@ -19,7 +19,7 @@ public class KillShotTrack {
      */
     private List<Player> killingOrder;
     /**
-     * The actual killshoot track, each slot is a tuple (Player, number_of_drops)
+     * The actual killshot track, each slot is a tuple (Player, number_of_drops)
      */
     private List<Map<Player, Integer>> track;
     /**
