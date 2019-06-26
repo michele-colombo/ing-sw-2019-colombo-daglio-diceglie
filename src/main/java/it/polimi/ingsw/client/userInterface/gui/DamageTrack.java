@@ -143,7 +143,7 @@ public class DamageTrack extends Parent {
 
     public void addMark(Map<PlayerView, Integer> markMap){
         for(PlayerView pv : markMap.keySet()){
-            Label markLabel = marks.get(pv.getColor());
+            Label markLabel = marks.get(pv.getColor().toString().toLowerCase());
             markLabel.setText(markMap.get(pv).toString());
         }
     }
@@ -172,9 +172,10 @@ public class DamageTrack extends Parent {
         Image image;
         if(Gui.getClient().getMatch().isFrenzyOn()){
             if(playerView.isFrenzy()){
-                frenzyDmgUrl = getClass().getClassLoader().getResourceAsStream("damageTracks/dmgfullf" + playerView.getColor() + ".png");
+                frenzyDmgUrl = getClass().getClassLoader().getResourceAsStream("damageTracks/dmgfullf" + playerView.getColor().toString().toLowerCase() + ".png");
+                //this.getChildren().removeAll(skulls);
             } else {
-                frenzyDmgUrl = getClass().getClassLoader().getResourceAsStream("damageTracks/dmgf" + playerView.getColor() + ".png");
+                frenzyDmgUrl = getClass().getClassLoader().getResourceAsStream("damageTracks/dmgf" + playerView.getColor().toString().toLowerCase() + ".png");
             }
             image = new Image(frenzyDmgUrl);
             damageTrackImageView.setImage(image);
@@ -194,13 +195,13 @@ public class DamageTrack extends Parent {
     }
 
     public void updateDamage(){ //todo da controllare
-        this.getChildren().remove(damage);
+        this.getChildren().removeAll(damage);
         damage.clear();
         if(playerView.getDamageList().isEmpty()){
             tears = 0;
         } else {
             for(PlayerView pv : playerView.getDamageList()){
-                this.addDamage(Color.valueOf(pv.getColor().toString()));
+                this.addDamage(Color.valueOf(pv.getColor().toString().toLowerCase()));
             }
         }
     }
