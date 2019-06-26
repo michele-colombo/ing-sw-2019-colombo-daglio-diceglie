@@ -159,7 +159,7 @@ public class Client implements MessageVisitor {
     }
 
     public synchronized void visit(CurrentPlayerUpdateMessage currentPlayerUpdate) {
-        System.out.println("current player update received");
+        //System.out.println("current player update received");
         match.setCurrentPlayer(match.getPlayerFromName(currentPlayerUpdate.getCurrentPlayer()));
         System.out.println(currentPlayerUpdate.getCurrentPlayer());
         userInterface.updateCurrentPlayer();
@@ -182,7 +182,7 @@ public class Client implements MessageVisitor {
     }
 
     public synchronized void visit(WeaponsUpdateMessage weaponsUpdateMessage) {
-        System.out.println("Weapons update received");
+        //System.out.println("Weapons update received");
         if (weaponsUpdateMessage.getName().equals(name)){
             MyPlayer me = match.getMyPlayer();
             Map<WeaponView, Boolean> temp = new HashMap<>();
@@ -205,7 +205,7 @@ public class Client implements MessageVisitor {
     }
 
     public synchronized void visit(PowerUpUpdateMessage powerUpUpdateMessage) {
-        System.out.println("PowerUp update received");
+        //System.out.println("PowerUp update received");
         if (powerUpUpdateMessage.getName().equals(name)){
             MyPlayer me = match.getMyPlayer();
             List<PowerUpView> powerUps = new ArrayList<>();
@@ -220,7 +220,7 @@ public class Client implements MessageVisitor {
     }
 
     public synchronized void visit(DamageUpdateMessage damageUpdateMessage) {
-        System.out.println("Damage update received");
+        //System.out.println("Damage update received");
         PlayerView playerToUpdate = match.getPlayerFromName(damageUpdateMessage.getName());
         playerToUpdate.setSkulls(damageUpdateMessage.getSkulls());
         playerToUpdate.setFrenzy(damageUpdateMessage.isFrenzy());

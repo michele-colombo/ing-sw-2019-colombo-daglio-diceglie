@@ -143,7 +143,7 @@ public class DamageTrack extends Parent {
 
     public void addMark(Map<PlayerView, Integer> markMap){
         for(PlayerView pv : markMap.keySet()){
-            Label markLabel = marks.get(Color.valueOf(pv.getColor().toString()));
+            Label markLabel = marks.get(Color.valueOf(pv.getColor().toString().toLowerCase()));
             markLabel.setText(markMap.get(pv).toString());
         }
     }
