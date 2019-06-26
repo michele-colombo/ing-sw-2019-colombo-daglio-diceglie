@@ -13,6 +13,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -45,7 +46,7 @@ public class BoardGui {
     private AnchorPane board;
     private List<Label> connectionLabels;
     private Label currentPlayer;
-    private ComboBox selectables;
+    private GridPane selectables;
     private List<PixelPosition> pixelPositions;
     private List<AmmoButton> ammoButtonsList;
     private List<WeaponButton> weaponButtonList;
@@ -66,7 +67,7 @@ public class BoardGui {
         view = new GridPane();
         weaponBox = new HBox();
         powerUpBox = new HBox();
-        selectables = new ComboBox();
+        selectables = new GridPane();
         ammoButtonsList = new LinkedList<>();
         weaponButtonList = new LinkedList<>();
         Parser parser = new Parser(match.getLayout().getLayoutConfiguration());
@@ -169,21 +170,7 @@ public class BoardGui {
     }
 
     public void addSelectables(){
-        selectables = new ComboBox();
-        view.add(selectables,4,0);
-
-        selectables.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                if(selectables.getValue() != null && !selectables.getValue().toString().isEmpty()){
-                    try{
-                        Gui.getClient().selected(selectables.getValue().toString());
-                    } catch(WrongSelectionException e){
-                        System.out.println("Action ComboBox error!");
-                    }
-                }
-            }
-        });
+        view.add(selectables,4,1);
     }
 
     public void updateConnection(Map<String, Boolean> connections){
@@ -242,12 +229,43 @@ public class BoardGui {
 
     public void updateSelectables(){
         Platform.runLater(() -> {
+            selectables.getChildren().clear();
+
+
             MyPlayer me = Gui.getClient().getMatch().getMyPlayer();
             ObservableList<String> comboItemsActions = FXCollections.observableList(me.getSelectableActions());
             ObservableList<Command> comboItemsCommand = FXCollections.observableList(me.getSelectableCommands());
-            selectables.getItems().clear();
-            selectables.getItems().addAll(comboItemsActions);
-            selectables.getItems().addAll(comboItemsCommand);
+            int index= 0;
+            for(String action : comboItemsActions){
+                Button button= new Button(action);
+                button.setOnMouseClicked((MouseEvent) ->
+                {
+                    try {
+                        Gui.getClient().selected(action);
+                    }
+                    catch (WrongSelectionException e){
+                        System.out.println("Wrong selection");
+                    }
+                });
+
+                selectables.add(button, index%3, index/3);
+                index++;
+            }
+            for(Command command : comboItemsCommand){
+                Button button= new Button(command.toString());
+                button.setOnMouseClicked((MouseEvent) ->
+                {
+                    try {
+                        Gui.getClient().selected(command.toString());
+                    }
+                    catch (WrongSelectionException e){
+                        System.out.println("Wrong selection");
+                    }
+                });
+
+                selectables.add(button, index%3, index/3);
+                index++;
+            }
 
             for(SquareView sv : me.getSelectableSquares()){
                 for(SelectableRectangle sr : selectableRectangles){
@@ -273,7 +291,11 @@ public class BoardGui {
                 }
             }
             else{
-                modeChoiceDialog= null;
+                if(modeChoiceDialog != null){
+                    modeChoiceDialog.killWindow();
+                    modeChoiceDialog= null;
+                }
+
             }
             //finished Giuseppe's part
 

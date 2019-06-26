@@ -16,9 +16,11 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -51,9 +53,22 @@ public class ModeChoiceDialog {
 
         grid = new GridPane();
 
+        ColumnConstraints column1 = new ColumnConstraints();
+        column1.setPercentWidth(40);
+        ColumnConstraints column2 = new ColumnConstraints();
+        column2.setPercentWidth(40);
+        ColumnConstraints column3 = new ColumnConstraints();
+        column3.setPercentWidth(20);
+        grid.getColumnConstraints().addAll(column1, column2, column3);
+
         buttons= new GridPane();
 
-        grid.add(buttons, 1, 0);
+        Label description= new Label(Gui.getClient().getMatch().getMyPlayer().getCurrWeapon().getDescription());
+        description.setWrapText(true);
+
+        grid.add(description, 1, 0);
+
+        grid.add(buttons, 2, 0);
 
 
         width= Gui.getScreenBounds().getWidth()/WIDTH_RATIO;
@@ -64,7 +79,7 @@ public class ModeChoiceDialog {
         Image weaponImage= new Image(getClass().getClassLoader().getResourceAsStream("weapon/" + weapon.getName() + ".png"));
         ImageView imageView = new ImageView(weaponImage);
         //imageView.setFitHeight(height);
-        imageView.setFitWidth(width/2);
+        //imageView.setFitWidth(width/2);
         imageView.setPreserveRatio(true);
         imageView.setSmooth(true);
 
@@ -83,7 +98,7 @@ public class ModeChoiceDialog {
         */
     }
 
-    private void killWindow() {
+    public void killWindow() {
         stage.close();
     }
 
@@ -117,7 +132,6 @@ public class ModeChoiceDialog {
                 public void handle(MouseEvent mouseEvent) {
                     try {
                         Gui.getClient().selected(c.toString());
-                        killWindow();
                     }
                     catch (WrongSelectionException e){
                         System.out.println("Wrong exception");
