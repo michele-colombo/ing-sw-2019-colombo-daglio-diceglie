@@ -36,8 +36,9 @@ public class ModeChoiceDialog {
 
     private WeaponView weapon;
     private GridPane grid;
-    private ComboBox selectables;
     private Stage stage;
+
+    private GridPane buttons;
 
     private double width;
     private double height;
@@ -49,31 +50,10 @@ public class ModeChoiceDialog {
         System.out.println("lo sto creando (mode selection)");
 
         grid = new GridPane();
-        selectables= new ComboBox();
 
-        grid.add(selectables, 1, 0);
+        buttons= new GridPane();
 
-
-        Button ok= new Button("OK");
-
-        ok.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                if(selectables.getValue() != null && !selectables.getValue().toString().isEmpty()){
-                    try{
-                        String daMandare= selectables.getValue().toString();
-                        Gui.getClient().selected(daMandare);
-                        if(daMandare.equalsIgnoreCase("OK") || daMandare.equalsIgnoreCase("BACK")){
-                            killWindow();
-                        }
-                    } catch(WrongSelectionException e){
-                        System.out.println("Action ComboBox error!");
-                    }
-                }
-            }
-        });
-
-        grid.add(ok, 2, 0);
+        grid.add(buttons, 1, 0);
 
 
         width= Gui.getScreenBounds().getWidth()/WIDTH_RATIO;
@@ -83,7 +63,7 @@ public class ModeChoiceDialog {
         weapon= Gui.getClient().getMatch().getMyPlayer().getCurrWeapon();
         Image weaponImage= new Image(getClass().getClassLoader().getResourceAsStream("weapon/" + weapon.getName() + ".png"));
         ImageView imageView = new ImageView(weaponImage);
-        imageView.setFitHeight(height);
+        //imageView.setFitHeight(height);
         imageView.setFitWidth(width/2);
         imageView.setPreserveRatio(true);
         imageView.setSmooth(true);
@@ -109,17 +89,46 @@ public class ModeChoiceDialog {
 
     public void update() {
         List<ModeView> modeViews= Gui.getClient().getMatch().getMyPlayer().getSelectableModes();
-        List<String> modes= new ArrayList<>();
+        List<Command> commands= Gui.getClient().getMatch().getMyPlayer().getSelectableCommands();
+
+        buttons.getChildren().clear();
+
+        int i= 0;
         for(ModeView mode: modeViews){
-            modes.add(mode.getTitle());
+            Button button= new Button(mode.getTitle());
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    try {
+                        Gui.getClient().selected(mode.getTitle());
+                    }
+                    catch (WrongSelectionException e){
+                        System.out.println("Wrong exception");
+                    }
+                }
+            });
+            buttons.add(button, 0, i);
+            i++;
+        }
+        for(Command c: commands){
+            Button button= new Button(c.toString());
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    try {
+                        Gui.getClient().selected(c.toString());
+                        killWindow();
+                    }
+                    catch (WrongSelectionException e){
+                        System.out.println("Wrong exception");
+                    }
+                }
+            });
+            buttons.add(button, 0, i);
+            i++;
         }
 
-        ObservableList<String> comboItemsModes = FXCollections.observableList(modes);
-        ObservableList<Command> comboItemsCommand = FXCollections.observableList(Gui.getClient().getMatch().getMyPlayer().getSelectableCommands());
-
-        selectables.getItems().clear();
-        selectables.getItems().addAll(comboItemsModes);
-        selectables.getItems().addAll(comboItemsCommand);
-
     }
+
+
 }

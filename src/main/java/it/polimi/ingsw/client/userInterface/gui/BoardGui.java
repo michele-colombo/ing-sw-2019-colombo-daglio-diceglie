@@ -267,6 +267,9 @@ public class BoardGui {
                     modeChoiceDialog.update();
                 }
             }
+            else{
+                modeChoiceDialog= null;
+            }
             //finished Giuseppe's part
 
 
