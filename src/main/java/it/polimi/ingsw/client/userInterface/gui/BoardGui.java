@@ -22,6 +22,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.StrokeType;
 import javafx.stage.Stage;
 
 import java.io.InputStream;
@@ -30,6 +31,7 @@ import java.util.*;
 public class BoardGui {
     private final static double X_KILLSHOT_TRACK = 0.0909;
     private final static double Y_KILLSHOT_TRACK = 0.0921;
+    private final static double Y_KILLSHOT_TRACK_OVERKILL = 0.025;
     private final static double GAP_KILLSHOT_TRACK = 0.0421;
     private final static double SCALE_RATIO_SELECTABLE_RECTANGLE_X = 7.68;
     private final static double SCALE_RATIO_SELECTABLE_RECTANGLE_Y = 5.25;
@@ -54,9 +56,10 @@ public class BoardGui {
     private Map<PlayerRectangle, HBox> playerPositions;
     private Map<SquareView, HBox> playerPositionHBox;
     private Map<PlayerView, DamageTrack> playerDamageTracks;
+    private List<Rectangle> killOnKillshotTrack;
+    private List<Circle> skulls;
     private static double boardWidth;
     private static double boardHeight;
-
     private ModeChoiceDialog modeChoiceDialog;
 
     public BoardGui(MatchView match){
@@ -75,6 +78,8 @@ public class BoardGui {
         playerPositionHBox = new HashMap<>();
         selectableRectangles = new LinkedList<>();
         playerDamageTracks = new HashMap<>();
+        killOnKillshotTrack = new LinkedList<>();
+        skulls = new LinkedList<>();
         //createPlayerPositionHBox(match);
         createPlayerRectangle(match);
         //selectables.setDisable(true);
@@ -283,7 +288,7 @@ public class BoardGui {
                 //todo usare un metodo getAllWeapons o qualcosa di simile oppure cambiare dinamicamente immagine
                 for(WeaponView weaponView : Gui.getClient().getMatch().getMyPlayer().getWeapons().keySet()){
                     WeaponButton newWeapon = new WeaponButton(weaponView, true);
-                    newWeapon.reScale();
+                    newWeapon.rescaleOnHand();
                     weaponBox.getChildren().add(newWeapon);
                 }
             }
@@ -291,14 +296,44 @@ public class BoardGui {
         });
     }
 
-    public void updateKillshotTrack(int skulls){
+    public void updateKillshotTrack(){
         Platform.runLater(() -> {
-            for(double i = 0; i < skulls; i++){
+            MatchView matchView = Gui.getClient().getMatch();
+            killOnKillshotTrack.clear();
+
+            int i;
+            for(i = 0; i < matchView.getTrack().size(); i++){
+                Map<PlayerView, Integer> map = matchView.getTrack().get(i);
+                PlayerView player = new ArrayList<>(map.keySet()).get(0);
+                Rectangle kill = new Rectangle(10, 10, Color.valueOf(player.getColor().toString()));
+                kill.setStrokeType(StrokeType.OUTSIDE);
+                kill.setStroke(Color.BLACK);
+                kill.setTranslateX(boardWidth * (BoardGui.X_KILLSHOT_TRACK + i * BoardGui.GAP_KILLSHOT_TRACK));
+                kill.setTranslateY(boardHeight * BoardGui.Y_KILLSHOT_TRACK);
+                killOnKillshotTrack.add(kill);
+                board.getChildren().add(kill);
+
+                if(map.get(player) > 1){
+                    kill = new Rectangle(10, 10, Color.valueOf(player.getColor().toString()));
+                    kill.setStrokeType(StrokeType.OUTSIDE);
+                    kill.setStroke(Color.BLACK);
+                    kill.setTranslateX(boardWidth * (BoardGui.X_KILLSHOT_TRACK + i * BoardGui.GAP_KILLSHOT_TRACK));
+                    kill.setTranslateY(boardHeight * BoardGui.Y_KILLSHOT_TRACK_OVERKILL);
+                    killOnKillshotTrack.add(kill);
+                    board.getChildren().add(kill);
+                }
+            }
+
+            board.getChildren().removeAll(skulls);
+            skulls.clear();
+            while(i < matchView.getSkulls()){
                 Circle skull = new Circle(boardWidth / SKULL_CIRCLE);
                 skull.setFill(Color.RED);
                 skull.setTranslateX(boardWidth * (BoardGui.X_KILLSHOT_TRACK + i * BoardGui.GAP_KILLSHOT_TRACK));
                 skull.setTranslateY(boardHeight * BoardGui.Y_KILLSHOT_TRACK);
                 board.getChildren().add(skull);
+                skulls.add(skull);
+                i++;
             }
         });
     }
@@ -318,7 +353,7 @@ public class BoardGui {
 
             if(playerPositions.get(player) == null){
 
-                if(newPosition != playerPositions.get(playerRectangle)){
+                if(newPosition != playerPositions.get(playerRectangle)){ //messo per evitare problemi con i doppi update
                     playerPositions.put(playerRectangle, newPosition);
                     newPosition.getChildren().add(playerRectangle);
                 }
@@ -335,10 +370,10 @@ public class BoardGui {
     public void updateDamageTrack(PlayerView player){
         Platform.runLater(() -> {
             DamageTrack toUpdate = playerDamageTracks.get(player);
-            for(PlayerView pv : player.getDamageList()){
-                playerDamageTracks.get(player).addDamage(Color.valueOf(pv.getColor().toString()));
-            }
-            toUpdate.addMark(player.getMarkMap());
+            toUpdate.updateDamage();
+            toUpdate.updateMarks();
+            toUpdate.updateSkulls();
+            toUpdate.checkSwitchToFrenzy();
             //toUpdate.updateInfo();
         });
 
@@ -367,7 +402,7 @@ public class BoardGui {
         int i = 0;
         for(WeaponView wp : weaponViews){
             WeaponButton weaponButton = new WeaponButton(wp, false);
-            weaponButton.reScale();
+            weaponButton.rescaleOnBoard();
             weaponButtonList.add(weaponButton);
             board.getChildren().add(weaponButton);
             weaponButton.setTranslateX(boardWidth * weapons.get(i).getX());

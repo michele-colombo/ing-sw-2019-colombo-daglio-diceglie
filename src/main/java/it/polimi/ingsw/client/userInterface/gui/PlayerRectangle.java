@@ -6,12 +6,15 @@ import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.StrokeType;
 
 public class PlayerRectangle extends Rectangle{
     private PlayerView playerView;
 
     public PlayerRectangle(double width, double height, Color color, PlayerView playerView){
         super(width, height, color);
+        setStrokeType(StrokeType.CENTERED);
+        setStroke(Color.BLACK);
         this.playerView = playerView;
 
         this.setOnMouseClicked((MouseEvent t) -> {

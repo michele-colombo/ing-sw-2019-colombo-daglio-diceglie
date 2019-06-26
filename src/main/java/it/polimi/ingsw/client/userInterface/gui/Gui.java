@@ -201,7 +201,7 @@ public class Gui extends Application implements UserInterface {
 
     @Override
     public void updateKillshotTrack() {
-        boardGui.updateKillshotTrack(client.getMatch().getSkulls());
+        boardGui.updateKillshotTrack();
     }
 
     @Override
@@ -229,7 +229,7 @@ public class Gui extends Application implements UserInterface {
         /*
         while(boardGui == null){
             try {
-                wait();
+                this.wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

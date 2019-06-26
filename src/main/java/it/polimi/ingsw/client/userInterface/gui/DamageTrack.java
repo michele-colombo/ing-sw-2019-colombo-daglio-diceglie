@@ -2,7 +2,6 @@ package it.polimi.ingsw.client.userInterface.gui;
 
 import it.polimi.ingsw.client.PlayerView;
 import it.polimi.ingsw.client.WeaponView;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
@@ -11,7 +10,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.StrokeType;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -36,6 +37,7 @@ public class DamageTrack extends Parent {
     private Map<Color, Label> marks;
     private List<Rectangle> damage;
     private List<Color> markColors;
+    private List<Circle> skulls;
     private HBox playerInfo;
 
     public DamageTrack(List<Color> markColors, PlayerView playerView){
@@ -53,6 +55,7 @@ public class DamageTrack extends Parent {
         this.marks = new HashMap<>();
         this.damage = new LinkedList<>();
         this.markColors = markColors;
+        this.skulls = new LinkedList<>();
         this.playerInfo = new HBox();
         this.playerInfo.setVisible(false);
         ammoBox.setTranslateX(width * TRANSLATE_AMMO_BOX_X);
@@ -97,21 +100,29 @@ public class DamageTrack extends Parent {
 
     public void addDamage(Color color){
         if(tears < 12){
-            this.getChildren().remove(damage);
-            damage.clear();
-            Rectangle drop = new Rectangle(10, 10, color);
-            this.getChildren().add(drop);
+            Rectangle newDamage = new Rectangle(10, 10, color);
+            newDamage.setStrokeType(StrokeType.OUTSIDE);
+            newDamage.setStroke(Color.BLACK);
+            damage.add(newDamage);
+            this.getChildren().add(newDamage);
             if(tears < 2){
-                drop.setTranslateX(width * (0.107 + tears * 0.051));
-                drop.setTranslateY(height * 0.48);
+                if(playerView.isFrenzy()){
+                    newDamage.setTranslateX(width * (0.118 + tears * 0.051));
+                } else {
+                    newDamage.setTranslateX(width * (0.107 + tears * 0.051));
+                }
+                newDamage.setTranslateY(height * 0.48);
             } else if(tears < 5){
-                drop.setTranslateX(width * (0.107 + tears * 0.055));
-                drop.setTranslateY(height * 0.48);
+                if(playerView.isFrenzy()){
+                    newDamage.setTranslateX(width * (0.115 + tears * 0.055));
+                } else {
+                    newDamage.setTranslateX(width * (0.107 + tears * 0.055));
+                }
+                newDamage.setTranslateY(height * 0.48);
             } else {
-                drop.setTranslateX(width * (0.107 + tears * 0.0558));
-                drop.setTranslateY(height * 0.48);
+                newDamage.setTranslateX(width * (0.107 + tears * 0.0558));
+                newDamage.setTranslateY(height * 0.48);
             }
-
             tears++;
         }
     }
@@ -141,27 +152,70 @@ public class DamageTrack extends Parent {
         playerInfo.getChildren().clear();
         VBox infos = new VBox();
         playerInfo.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
-        //infos.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
-        Label numberPu = new Label("Number of PowerUps: " + playerView.getNumPowerUps());
-        numberPu.setTextFill(Color.WHITE);
-        Label numberWeapons = new Label("Number of Weapons: " + (playerView.getUnloadedWeapons().size() + playerView.getNumLoadedWeapons()));
-        numberWeapons.setTextFill(Color.WHITE);
-        infos.getChildren().addAll(numberPu, numberWeapons);
         for(WeaponView wv : playerView.getUnloadedWeapons()){
             WeaponButton unloadedWeapon = new WeaponButton(wv, false);
             unloadedWeapon.setDisable(true);
-            unloadedWeapon.reScale();
+            unloadedWeapon.rescaleUnloaded(width);
             playerInfo.getChildren().add(unloadedWeapon);
         }
+        //infos.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
+        Label numberPu = new Label("Number of PowerUps: " + playerView.getNumPowerUps());
+        numberPu.setTextFill(Color.YELLOWGREEN);
+        Label numberWeapons = new Label("Number of Weapons: " + (playerView.getUnloadedWeapons().size() + playerView.getNumLoadedWeapons()));
+        numberWeapons.setTextFill(Color.YELLOWGREEN);
+        infos.getChildren().addAll(numberPu, numberWeapons);
         playerInfo.getChildren().add(infos);
     }
 
-    public void switchToFrenzy(){
-        InputStream frenzyDmgUrl = getClass().getClassLoader().getResourceAsStream("damageTracks/dmg" + playerView.getColor() + ".png");
-        Image image = new Image(frenzyDmgUrl);
-        damageTrackImageView.setImage(image);
+    public void checkSwitchToFrenzy(){
+        InputStream frenzyDmgUrl;
+        Image image;
+        if(Gui.getClient().getMatch().isFrenzyOn()){
+            if(playerView.isFrenzy()){
+                frenzyDmgUrl = getClass().getClassLoader().getResourceAsStream("damageTracks/dmgfullf" + playerView.getColor() + ".png");
+            } else {
+                frenzyDmgUrl = getClass().getClassLoader().getResourceAsStream("damageTracks/dmgf" + playerView.getColor() + ".png");
+            }
+            image = new Image(frenzyDmgUrl);
+            damageTrackImageView.setImage(image);
+        }
+        //this.getChildren().remove(damage);
+        //damage.clear(); //todo teoricamente viene già fatto
+        //tears = 0;
+    }
+
+    public void addSkull(int skullNumber){
+        Circle newSkull = new Circle(5);
+        newSkull.setFill(Color.RED);
+        newSkull.setTranslateX(width * (0.2335 + skullNumber * 0.053));
+        newSkull.setTranslateY(height * 0.85);
+        this.getChildren().add(newSkull);
+        skulls.add(newSkull);
+    }
+
+    public void updateDamage(){ //todo da controllare
         this.getChildren().remove(damage);
         damage.clear();
-        tears = 0;
+        if(playerView.getDamageList().isEmpty()){
+            tears = 0;
+        } else {
+            for(PlayerView pv : playerView.getDamageList()){
+                this.addDamage(Color.valueOf(pv.getColor().toString()));
+            }
+        }
+    }
+
+    public void updateMarks(){
+        this.addMark(playerView.getMarkMap());
+    }
+
+    public void updateSkulls(){
+        this.getChildren().removeAll(skulls); //todo controllare meglio
+        skulls.clear();
+        if(!Gui.getClient().getMatch().isFrenzyOn()){
+            for(int i = 0; i < playerView.getSkulls(); i++){
+                addSkull(i);
+            }
+        }
     }
 }

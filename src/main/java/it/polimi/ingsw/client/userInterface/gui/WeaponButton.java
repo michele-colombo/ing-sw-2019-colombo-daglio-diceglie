@@ -14,6 +14,8 @@ import java.io.InputStream;
 
 public class WeaponButton extends Parent {
     private static final double SCALE_RATIO_ON_BOARD = 11.09;
+    private static final double SCALE_RATIO_UNLOADED = 11.09;
+    private static final double SCALE_RATIO_IN_HAND = 11.09;
 
     private final Image weaponImage;
     private final ImageView weaponImageView;
@@ -55,11 +57,21 @@ public class WeaponButton extends Parent {
         this.setDisable(true);
     }
 
-    public void reScale(){
-        if(inHand){
-            weaponImageView.setFitWidth(width / 2);
-        } else {
-            weaponImageView.setFitWidth(BoardGui.getWidth() / SCALE_RATIO_ON_BOARD);
-        }
+    public void reScale(double scaleRatio){
+        weaponImageView.setFitWidth(width / 2);
+        weaponImageView.setFitWidth(BoardGui.getWidth() / SCALE_RATIO_ON_BOARD);
+        weaponImageView.setFitWidth(scaleRatio);
+    }
+
+    public void rescaleOnBoard(){
+        weaponImageView.setFitWidth(BoardGui.getWidth() / SCALE_RATIO_ON_BOARD);
+    }
+
+    public void rescaleOnHand(){
+        weaponImageView.setFitWidth(width / 2.2);
+    }
+
+    public void rescaleUnloaded(double width){
+        weaponImageView.setFitWidth(width / 7);
     }
 }
