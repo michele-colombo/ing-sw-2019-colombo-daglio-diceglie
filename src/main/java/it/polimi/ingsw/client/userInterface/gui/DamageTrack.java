@@ -123,7 +123,7 @@ public class DamageTrack extends Parent {
                 newDamage.setTranslateX(width * (0.107 + tears * 0.0558));
                 newDamage.setTranslateY(height * 0.48);
             }
-            tears++;
+            //tears++;
         }
     }
 
@@ -143,7 +143,7 @@ public class DamageTrack extends Parent {
 
     public void addMark(Map<PlayerView, Integer> markMap){
         for(PlayerView pv : markMap.keySet()){
-            Label markLabel = marks.get(pv.getColor().toString().toLowerCase());
+            Label markLabel = marks.get(Color.valueOf(pv.getColor().toString()));
             markLabel.setText(markMap.get(pv).toString());
         }
     }
@@ -197,12 +197,10 @@ public class DamageTrack extends Parent {
     public void updateDamage(){ //todo da controllare
         this.getChildren().removeAll(damage);
         damage.clear();
-        if(playerView.getDamageList().isEmpty()){
-            tears = 0;
-        } else {
-            for(PlayerView pv : playerView.getDamageList()){
-                this.addDamage(Color.valueOf(pv.getColor().toString().toLowerCase()));
-            }
+        tears = 0;
+        for(PlayerView pv : playerView.getDamageList()){
+            this.addDamage(Color.valueOf(pv.getColor().toString()));
+            tears++;
         }
     }
 
