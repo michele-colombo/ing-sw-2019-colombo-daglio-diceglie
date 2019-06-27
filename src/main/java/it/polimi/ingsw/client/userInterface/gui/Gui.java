@@ -5,6 +5,7 @@ import it.polimi.ingsw.client.LayoutView;
 import it.polimi.ingsw.client.MatchView;
 import it.polimi.ingsw.client.userInterface.UserInterface;
 import it.polimi.ingsw.client.PlayerView;
+import it.polimi.ingsw.server.model.enums.PlayerState;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -42,6 +43,7 @@ public class Gui extends Application implements UserInterface {
     private LoginGui loginGui;
     private BoardGui boardGui;
     private static Rectangle2D screenBounds;
+    private ModeChoiceScreen modeChoiceScreen;
 
     public static void main(String[] args){
         launch(args);
@@ -181,6 +183,8 @@ public class Gui extends Application implements UserInterface {
 
     @Override
     public void showAndAskSelection() {
+
+
         boardGui.updateSelectables();
     }
 
@@ -245,7 +249,30 @@ public class Gui extends Application implements UserInterface {
 
     @Override
     public void updateSelectables() {
-        boardGui.updateSelectables();
+        PlayerView me= client.getMatch().getMyPlayer();
+
+        if(me.getState() == PlayerState.CHOOSE_MODE){
+            System.out.println("Selecting modes, si deve aprire");
+
+            //if(!me.getSelectableModes().isEmpty()){
+            if(modeChoiceScreen == null){
+                System.out.println("Creating and updating modeSelection");
+                modeChoiceScreen= new ModeChoiceScreen();
+                Platform.runLater( () ->  changeScene(modeChoiceScreen.getParent()));
+
+            }
+            else{
+                System.out.println("updating modeSelection");
+                modeChoiceScreen.update();
+            }
+        }
+        else{
+            if(modeChoiceScreen != null){
+                modeChoiceScreen= null;
+            }
+            boardGui.updateSelectables();
+            changeScene(boardGui.getView());
+        }
     }
 
     @Override
