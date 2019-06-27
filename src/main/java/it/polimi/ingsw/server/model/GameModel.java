@@ -602,11 +602,20 @@ public class GameModel implements Observable {
             match.notifyPlayerUpdate(p);
         }
     }
-
+/*
     private void saveSnapshot(Match match){
         currBackup = new Backup(match);
         currBackup.saveOnFile(BACKUP_NAME);
     }
+    */
+
+
+    //new made by Giuseppe
+    private void saveSnapshot(Match match){
+        currBackup = new Backup(match);
+        pm.saveOnSameDirectory(currBackup, BACKUP_NAME);
+    }
+    //finished
 
     public Backup createMatchBackup(){
         return new Backup(match);

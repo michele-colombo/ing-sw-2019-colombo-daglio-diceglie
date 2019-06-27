@@ -1,6 +1,7 @@
 package it.polimi.ingsw.server.controller;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import it.polimi.ingsw.server.ServerMain;
 import it.polimi.ingsw.server.model.*;
 
@@ -15,6 +16,7 @@ import static it.polimi.ingsw.server.model.enums.Border.OPEN;
 
 public class ParserManager {
     private static final String BACKUP_NAME = "currentBackup";
+    private static final String BACKUP_EXTENSION = ".json";
 
     private Layout[] layouts;
     private StackManager stackManager;
@@ -66,6 +68,37 @@ public class ParserManager {
 
     public int getSkullNumberConfig() {
         return serverConfig.skullNumber;
+    }
+
+    public boolean saveOnSameDirectory(Backup backup, String fileName){
+
+        String jarPath = "";
+        System.out.println("Writing data...");
+        try {
+            jarPath = URLDecoder.decode(getClass().getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
+            System.out.println(jarPath);
+        } catch (UnsupportedEncodingException e1) {
+            e1.printStackTrace();
+        }
+        // construct a File within the same folder of this jar, or of this class.
+        String dirPath = jarPath.substring(0, jarPath.lastIndexOf("/")) + File.separator + "backups";
+        File dir = new File(dirPath);
+        if (!dir.exists()){
+            dir.mkdir();
+        }
+        String completePath = dirPath + File.separator + fileName + BACKUP_EXTENSION;
+        File file = new File(completePath);
+        try {
+            FileWriter fw = new FileWriter(file);
+            gson.toJson(backup, fw);
+            fw.close();
+            return true;
+        } catch (IOException e){
+            System.out.println("Cannot write backup file");
+        }
+        System.out.println("backup file written [OK]");
+
+        return false;
     }
 
 
@@ -129,6 +162,10 @@ public class ParserManager {
         catch (IOException e){
             backup= null;
             System.out.println("File not found or error while closing stream");
+        }
+        catch (JsonSyntaxException e){
+            backup= null;
+            System.out.println("Backup file is non correctly written");
         }
     }
 
