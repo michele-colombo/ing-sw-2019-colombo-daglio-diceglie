@@ -271,7 +271,7 @@ public class Gui extends Application implements UserInterface {
                 modeChoiceScreen= null;
             }
             boardGui.updateSelectables();
-            changeScene(boardGui.getView());
+            Platform.runLater(() -> changeScene(boardGui.getView()));
         }
     }
 
