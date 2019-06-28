@@ -2,8 +2,6 @@ package it.polimi.ingsw.client.userInterface.gui;
 
 import it.polimi.ingsw.client.*;
 import it.polimi.ingsw.server.model.enums.Command;
-import it.polimi.ingsw.server.model.enums.PlayerState;
-import it.polimi.ingsw.server.model.enums.PlayerState;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -12,9 +10,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -24,12 +20,14 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
-import javafx.stage.Stage;
 
 import java.io.InputStream;
 import java.util.*;
 
 public class BoardGui {
+    private static final String LAYOUT_PNG_FOLDER = "resources/layoutPNG/";
+
+
     private final static double X_KILLSHOT_TRACK = 0.0909;
     private final static double Y_KILLSHOT_TRACK = 0.0921;
     private final static double Y_KILLSHOT_TRACK_OVERKILL = 0.025;
@@ -94,7 +92,7 @@ public class BoardGui {
         //board.setAlignment(Pos.TOP_LEFT);
         board.setPadding(new Insets(0,0,0,0));
 
-        InputStream boardUrl = getClass().getClassLoader().getResourceAsStream("layoutPNG/layout" + match.getLayout().getLayoutConfiguration() + ".png");
+        InputStream boardUrl = getClass().getClassLoader().getResourceAsStream(LAYOUT_PNG_FOLDER + "layout" + match.getLayout().getLayoutConfiguration() + ".png");
         Image image = new Image(boardUrl);
         ImageView imageView = new ImageView(image);
         imageView.setFitHeight(Gui.getScreenBounds().getHeight()/1.5);

@@ -12,6 +12,8 @@ import javafx.scene.paint.Color;
 import java.io.InputStream;
 
 public class AmmoButton extends Parent {
+    private static final String AMMOTILES_FOLDER= "resources/ammo/";
+
     private static final double SCALE_RATIO = 25;
 
     private final Image ammoImage;
@@ -19,7 +21,7 @@ public class AmmoButton extends Parent {
     private double width;
 
     public AmmoButton(SquareView squareView){
-        InputStream ammoUrl = getClass().getClassLoader().getResourceAsStream("ammo/ammo" + squareView.getAmmo().getAmmoTileID() + ".png");
+        InputStream ammoUrl = getClass().getClassLoader().getResourceAsStream(AMMOTILES_FOLDER + "ammo" + squareView.getAmmo().getAmmoTileID() + ".png");
         this.ammoImage = new Image(ammoUrl);
         this.ammoImageView = new ImageView(ammoImage);
         this.width = BoardGui.getWidth() / SCALE_RATIO;

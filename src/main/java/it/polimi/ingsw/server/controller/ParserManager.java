@@ -15,6 +15,13 @@ import java.util.Scanner;
 import static it.polimi.ingsw.server.model.enums.Border.OPEN;
 
 public class ParserManager {
+    private static final String SERVER_CONFIG_FILE= "resources/serverConfig.json";
+    private static final String LAYOUT_CONFIG_FOLDER= "resources/layoutConfig/";
+    private static final String WEAPONS_FILE= "resources/weapons.json";
+    private static final String POWERUPS_FILE= "resources/powerUps.json";
+    private static final String AMMOTILES_FILE= "resources/ammoTiles.json";
+
+
     private static final String BACKUP_NAME = "currentBackup";
     private static final String BACKUP_EXTENSION = ".json";
 
@@ -106,7 +113,7 @@ public class ParserManager {
     private void parseServerConfig(){
 
         try {
-            InputStream url= ServerMain.class.getClassLoader().getResourceAsStream("serverConfig.json");
+            InputStream url= ServerMain.class.getClassLoader().getResourceAsStream(SERVER_CONFIG_FILE);
             Scanner sc= new Scanner(url);
 
             Gson gson= new Gson();
@@ -172,7 +179,7 @@ public class ParserManager {
         List<AmmoSquare> ammoSquares= new ArrayList<>();
         List<SpawnSquare> spawnSquares= new ArrayList<>();
 
-        InputStream url = getClass().getClassLoader().getResourceAsStream("layoutConfig/layoutConfig"+num+".json");
+        InputStream url = getClass().getClassLoader().getResourceAsStream(LAYOUT_CONFIG_FOLDER + "layoutConfig"+num+".json");
         Scanner sc = new Scanner(url);
 
         AmmoSquare[] tempAmmo;
@@ -201,20 +208,20 @@ public class ParserManager {
 
         try {
 
-            url = getClass().getClassLoader().getResourceAsStream("weapons.json");
+            url = getClass().getClassLoader().getResourceAsStream(WEAPONS_FILE);
             sc = new Scanner(url);
             weapons = Arrays.asList(gson.fromJson(sc.nextLine(), Weapon[].class));
             sc.close();
             url.close();
 
 
-            url = getClass().getClassLoader().getResourceAsStream("powerUps.json");
+            url = getClass().getClassLoader().getResourceAsStream(POWERUPS_FILE);
             sc = new Scanner(url);
             powerUps = Arrays.asList(gson.fromJson(sc.nextLine(), PowerUp[].class));
             sc.close();
             url.close();
 
-            url= getClass().getClassLoader().getResourceAsStream("ammoTiles.json");
+            url= getClass().getClassLoader().getResourceAsStream(AMMOTILES_FILE);
             sc= new Scanner(url);
             ammoTiles= Arrays.asList(gson.fromJson(sc.nextLine(), AmmoTile[].class));
             sc.close();
