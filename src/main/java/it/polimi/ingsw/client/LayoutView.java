@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Scanner;
 
 public class LayoutView {
+    private static final String LAYPUT_IMAGES_FOLDER= "resources/layoutConfig/";
+
     /**
      * Contains all squares of the selected layout; max size is 12
      */
@@ -112,7 +114,7 @@ public class LayoutView {
         layoutConfiguration = config;
 
         List<SquareView> tempSquares;
-        InputStream url = getClass().getClassLoader().getResourceAsStream("layoutConfig/layoutConfig" + config + ".json");
+        InputStream url = getClass().getClassLoader().getResourceAsStream(LAYPUT_IMAGES_FOLDER + "layoutConfig" + config + ".json");
         Scanner sc = new Scanner(url);
         tempSquares = new ArrayList<>(Arrays.asList(gson.fromJson(sc.nextLine(), SquareView[].class)));
         tempSquares.addAll(Arrays.asList(gson.fromJson(sc.nextLine(), SquareView[].class)));

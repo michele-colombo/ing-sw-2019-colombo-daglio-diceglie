@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Parser {
+    private static final String FILE_SOURCE= "resources/";
+
     private Gson gson;
     private int layout;
 
@@ -18,7 +20,7 @@ public class Parser {
     }
 
     public List<PixelPosition> loadAmmoResource(){
-        InputStream resourceUrl = getClass().getClassLoader().getResourceAsStream("coord" + layout + ".json");
+        InputStream resourceUrl = getClass().getClassLoader().getResourceAsStream(FILE_SOURCE + "coord" + layout + ".json");
         List<PixelPosition> pixelPositions = new LinkedList<>();
         PixelPosition[] pixelPositionArray;
         Scanner sc = new Scanner(resourceUrl);
@@ -29,7 +31,7 @@ public class Parser {
     }
 
     public List<PixelWeapon> loadWeaponResource(String color){
-        InputStream resourceUrl = getClass().getClassLoader().getResourceAsStream(color + "Weapons.json");
+        InputStream resourceUrl = getClass().getClassLoader().getResourceAsStream(FILE_SOURCE + color + "Weapons.json");
         List<PixelWeapon> pixelWeapons = new LinkedList<>();
         PixelWeapon[] pixelWeaponsArray;
         Scanner sc = new Scanner(resourceUrl);

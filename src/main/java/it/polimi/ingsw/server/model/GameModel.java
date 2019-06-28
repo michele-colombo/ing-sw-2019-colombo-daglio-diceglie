@@ -612,7 +612,7 @@ public class GameModel implements Observable {
 
 
     //new made by Giuseppe
-    private void saveSnapshot(Match match){
+    public void saveSnapshot(Match match){
         currBackup = new Backup(match);
         pm.saveOnSameDirectory(currBackup, BACKUP_NAME);
     }

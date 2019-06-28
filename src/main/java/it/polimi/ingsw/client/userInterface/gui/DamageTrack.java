@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 
 public class DamageTrack extends Parent {
+    private static final String DAMAGE_TRACK_IMAGE_FOLDER= "resources/damageTracks/";
+
     private static final double TRANSLATE_AMMO_BOX_X = 0.09;
     private static final double TRANSLATE_AMMO_BOX_Y = 0.01;
     private static final double TRANSLATE_MARKS_BOX_X = 0.48;
@@ -41,7 +43,7 @@ public class DamageTrack extends Parent {
     private HBox playerInfo;
 
     public DamageTrack(List<Color> markColors, PlayerView playerView){
-        InputStream myDmgUrl = getClass().getClassLoader().getResourceAsStream("damageTracks/dmg" + playerView.getColor().toString().toLowerCase() + ".png");
+        InputStream myDmgUrl = getClass().getClassLoader().getResourceAsStream(DAMAGE_TRACK_IMAGE_FOLDER + "dmg" + playerView.getColor().toString().toLowerCase() + ".png");
         Image image = new Image(myDmgUrl);
         this.damageTrackImageView = new ImageView(image);
         this.playerView = playerView;
@@ -172,10 +174,10 @@ public class DamageTrack extends Parent {
         Image image;
         if(Gui.getClient().getMatch().isFrenzyOn()){
             if(playerView.isFrenzy()){
-                frenzyDmgUrl = getClass().getClassLoader().getResourceAsStream("damageTracks/dmgfullf" + playerView.getColor().toString().toLowerCase() + ".png");
+                frenzyDmgUrl = getClass().getClassLoader().getResourceAsStream(DAMAGE_TRACK_IMAGE_FOLDER + "dmgfullf" + playerView.getColor().toString().toLowerCase() + ".png");
                 //this.getChildren().removeAll(skulls);
             } else {
-                frenzyDmgUrl = getClass().getClassLoader().getResourceAsStream("damageTracks/dmgf" + playerView.getColor().toString().toLowerCase() + ".png");
+                frenzyDmgUrl = getClass().getClassLoader().getResourceAsStream(DAMAGE_TRACK_IMAGE_FOLDER + "dmgf" + playerView.getColor().toString().toLowerCase() + ".png");
             }
             image = new Image(frenzyDmgUrl);
             damageTrackImageView.setImage(image);

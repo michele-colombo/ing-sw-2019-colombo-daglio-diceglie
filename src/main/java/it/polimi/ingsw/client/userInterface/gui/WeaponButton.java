@@ -13,6 +13,8 @@ import javafx.scene.paint.Color;
 import java.io.InputStream;
 
 public class WeaponButton extends Parent {
+    private static final String WEAPON_IMAGE_FOLDER= "resources/weapon/";
+
     private static final double SCALE_RATIO_ON_BOARD = 11.09;
     private static final double SCALE_RATIO_UNLOADED = 11.09;
     private static final double SCALE_RATIO_IN_HAND = 11.09;
@@ -25,7 +27,7 @@ public class WeaponButton extends Parent {
 
 
     public WeaponButton(WeaponView weaponView, boolean inHand){
-        InputStream weaponUrl = getClass().getClassLoader().getResourceAsStream("weapon/" + weaponView.getName() + ".png");
+        InputStream weaponUrl = getClass().getClassLoader().getResourceAsStream(WEAPON_IMAGE_FOLDER + weaponView.getName() + ".png");
         this.weaponImage = new Image(weaponUrl);
         this.weaponImageView = new ImageView(weaponImage);
         this.weaponView = weaponView;

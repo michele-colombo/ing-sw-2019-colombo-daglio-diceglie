@@ -26,6 +26,7 @@ import javafx.stage.Stage;
 import java.util.List;
 
 public class ModeChoiceScreen {
+    private static final String WEAPON_IMAGE_FOLDER= "resources/weapon/";
 
 
     private WeaponView weapon;
@@ -62,7 +63,7 @@ public class ModeChoiceScreen {
 
         weapon= Gui.getClient().getMatch().getMyPlayer().getCurrWeapon();
 
-        Image weaponImage= new Image(getClass().getClassLoader().getResourceAsStream("weapon/" + weapon.getName() + ".png"));
+        Image weaponImage= new Image(getClass().getClassLoader().getResourceAsStream(WEAPON_IMAGE_FOLDER + weapon.getName() + ".png"));
         ImageView imageView = new ImageView(weaponImage);
         imageView.setFitHeight(Gui.getScreenBounds().getHeight() * 0.90);
         imageView.setPreserveRatio(true);

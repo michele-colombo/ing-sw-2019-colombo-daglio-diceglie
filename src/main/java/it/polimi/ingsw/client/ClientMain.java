@@ -20,6 +20,7 @@ import java.rmi.server.RMISocketFactory;
 import java.util.Scanner;
 
 public class ClientMain{
+    private static final String CLIENTCONFIG_PATH= "resources/clientConfig.json";
 
     public static ClientConfig config;
 
@@ -89,7 +90,7 @@ public class ClientMain{
         Gson gson= new Gson();
         JsonParser jp= new JsonParser();
 
-        InputStream url= new ClientMain().getClass().getClassLoader().getResourceAsStream("clientConfig.json");
+        InputStream url= new ClientMain().getClass().getClassLoader().getResourceAsStream(CLIENTCONFIG_PATH);
 
         if(url==null){
             System.out.println("No configuration file!");

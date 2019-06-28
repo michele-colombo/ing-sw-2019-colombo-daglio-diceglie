@@ -16,6 +16,13 @@ public class DecksView {
     private List<PowerUpView> originalPowerUps;
     private List<AmmoTile> originalAmmoTiles;
 
+    private static final String WEAPONS_PATH = "resources/weapons.json";
+    private static final String POWERUPS_PATH = "resources/powerUps.json";
+    private static final String POWERUPS_DESCRIPTION_PATH = "resources/powerUpsDescription.json";
+    private static final String AMMOTILES_PATH = "resources/ammoTiles.json";
+
+
+
     public DecksView() {
         originalWeaponArsenal= loadOriginalWeaponArsenal();
         originalPowerUps= loadOriginalPowerups();
@@ -26,7 +33,7 @@ public class DecksView {
         Gson gson= new Gson();
         List<WeaponView> result;
 
-        InputStream url= getClass().getClassLoader().getResourceAsStream("weapons.json");
+        InputStream url= getClass().getClassLoader().getResourceAsStream(WEAPONS_PATH);
         Scanner sc= new Scanner(url);
         result= Arrays.asList( gson.fromJson(sc.nextLine(), WeaponView[].class));
 
@@ -37,11 +44,11 @@ public class DecksView {
         Gson gson= new Gson();
         List<PowerUpView> result;
 
-        InputStream url= getClass().getClassLoader().getResourceAsStream("powerUps.json");
+        InputStream url= getClass().getClassLoader().getResourceAsStream(POWERUPS_PATH);
         Scanner sc= new Scanner(url);
         result= Arrays.asList( gson.fromJson(sc.nextLine(), PowerUpView[].class));
 
-        url = getClass().getClassLoader().getResourceAsStream("powerUpsDescription.json");
+        url = getClass().getClassLoader().getResourceAsStream(POWERUPS_DESCRIPTION_PATH);
         sc = new Scanner(url);
         JsonObject o = (JsonObject) new JsonParser().parse(sc.nextLine());
         String tagbackDescription =  o.get("Tagback grenade").getAsString();
@@ -73,7 +80,7 @@ public class DecksView {
         Gson gson = new Gson();
         List<AmmoTile> result;
 
-        InputStream url= getClass().getClassLoader().getResourceAsStream("ammoTiles.json");
+        InputStream url= getClass().getClassLoader().getResourceAsStream(AMMOTILES_PATH);
         Scanner sc= new Scanner(url);
         result= Arrays.asList( gson.fromJson(sc.nextLine(), AmmoTile[].class));
 
