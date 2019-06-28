@@ -20,30 +20,101 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * It represents a player's damageTrack
+ */
 public class DamageTrack extends Parent {
+    /**
+     * It's the ratio of translation on x axe of the ammoBox
+     */
     private static final double TRANSLATE_AMMO_BOX_X = 0.09;
+
+    /**
+     * It's the ratio of translation on y axe of the ammoBox
+     */
     private static final double TRANSLATE_AMMO_BOX_Y = 0.01;
+
+    /**
+     * It's the ratio of translation on x axe of the marksBox
+     */
     private static final double TRANSLATE_MARKS_BOX_X = 0.48;
+
+    /**
+     * It's the ratio of translation on y axe of the marksBox
+     */
     private static final double TRANSLATE_MARKS_BOX_Y = 0.01;
 
+    /**
+     * It's the playerView associated to this DamageTrack
+     */
     private final PlayerView playerView;
+
+    /**
+     * The image of this DamageTrack
+     */
     private final ImageView damageTrackImageView;
+
+    /**
+     * The ammoBox that shows how many ammos has this player's damageTrack
+     */
     private HBox ammoBox;
+
+    /**
+     * The ammoBox that shows how many marks has this player's damageTrack
+     */
     private HBox markBox;
+
+    /**
+     * It's the width of this DamageTrack
+     */
     private final double width;
+
+    /**
+     * It's the height of this DamageTrack
+     */
     private final double height;
+
+    /**
+     * It's the number of damage on thi DamageTrack
+     */
     private int tears;
+
+    /**
+     * It's represents the number of ammo for each color
+     */
     private Map<Color, Label> ammos;
+
+    /**
+     * It's represents the number of mark for each color
+     */
     private Map<Color, Label> marks;
+
+    /**
+     * It contains the damage (shown as rectangle) of this DamageTrack
+     */
     private List<Rectangle> damage;
-    private List<Color> markColors;
+
+    /**
+     * It contains the skulls (shown as circle) of this DamageTrack
+     */
     private List<Circle> skulls;
+
+    /**
+     * It contains the number of power up, weapons and images of unloaded weapons of this player's DamageTrack
+     */
     private HBox playerInfo;
 
+
+    /**
+     * Creates a DamageTrack. Entering on it, it will shows the number of power up, weapons and images of unloaded weapons
+     * of this player's DamageTrack
+     * @param markColors The colors of the marks shown on this DamageTrack
+     * @param playerView The playerView associated to this DamageTrack
+     *
+     */
     public DamageTrack(List<Color> markColors, PlayerView playerView){
         InputStream myDmgUrl = getClass().getClassLoader().getResourceAsStream("damageTracks/dmg" + playerView.getColor().toString().toLowerCase() + ".png");
-        Image image = new Image(myDmgUrl);
-        this.damageTrackImageView = new ImageView(image);
+        this.damageTrackImageView = new ImageView(new Image(myDmgUrl));
         this.playerView = playerView;
         this.damageTrackImageView.setFitWidth(Gui.getScreenBounds().getWidth()/4);
         this.damageTrackImageView.setPreserveRatio(true);
@@ -54,7 +125,6 @@ public class DamageTrack extends Parent {
         this.ammos = new HashMap<>();
         this.marks = new HashMap<>();
         this.damage = new LinkedList<>();
-        this.markColors = markColors;
         this.skulls = new LinkedList<>();
         this.playerInfo = new HBox();
         this.playerInfo.setVisible(false);
@@ -84,6 +154,9 @@ public class DamageTrack extends Parent {
         });
     }
 
+    /**
+     * Create and add the labels associated to player's ammo to this DamageTrack
+     */
     private void addAmmos(){
         Label redAmmo = new Label("0");
         redAmmo.setBackground(new Background(new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY)));
@@ -98,6 +171,10 @@ public class DamageTrack extends Parent {
         ammoBox.getChildren().addAll(redAmmo, blueAmmo, yellowAmmo);
     }
 
+    /**
+     * Add a damage, on this DamageTrack, of the specified color and at the right position
+     * @param color The color of the damage to add
+     */
     public void addDamage(Color color){
         if(tears < 12){
             Rectangle newDamage = new Rectangle(10, 10, color);
@@ -123,10 +200,12 @@ public class DamageTrack extends Parent {
                 newDamage.setTranslateX(width * (0.107 + tears * 0.0558));
                 newDamage.setTranslateY(height * 0.48);
             }
-            //tears++;
         }
     }
 
+    /**
+     * Create and add the labels associated to player's marks to this DamageTrack
+     */
     private void addMarkLabels(List<Color> colors){
         for(Color color : colors){
             Label markLabel = new Label("0");
@@ -136,11 +215,20 @@ public class DamageTrack extends Parent {
         }
     }
 
+    /**
+     * Set the text of the label, associated to the color, to the specified quantity
+     * @param color The color of the ammo to add
+     * @param quantity The number of ammo to add
+     */
     public void addAmmo(Color color, Integer quantity){
         Label label = ammos.get(color);
         label.setText(quantity.toString());
     }
 
+    /**
+     * Set all the marks label to color and quantity specified by the markMap
+     * @param markMap A map containing other PlayerView and each own number of marks on this DamageTrack
+     */
     public void addMark(Map<PlayerView, Integer> markMap){
         for(PlayerView pv : markMap.keySet()){
             Label markLabel = marks.get(Color.valueOf(pv.getColor().toString().toLowerCase()));
@@ -148,6 +236,9 @@ public class DamageTrack extends Parent {
         }
     }
 
+    /**
+     * Update the number of power up, weapon and images unloaded associated to playerView
+     */
     public void updateInfo(){
         playerInfo.getChildren().clear();
         VBox infos = new VBox();
@@ -158,7 +249,6 @@ public class DamageTrack extends Parent {
             unloadedWeapon.rescaleUnloaded(width);
             playerInfo.getChildren().add(unloadedWeapon);
         }
-        //infos.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         Label numberPu = new Label("Number of PowerUps: " + playerView.getNumPowerUps());
         numberPu.setTextFill(Color.YELLOWGREEN);
         Label numberWeapons = new Label("Number of Weapons: " + (playerView.getUnloadedWeapons().size() + playerView.getNumLoadedWeapons()));
@@ -167,6 +257,10 @@ public class DamageTrack extends Parent {
         playerInfo.getChildren().add(infos);
     }
 
+    /**
+     * Check: if the game is in frenzy mode, then: if the owner of this DamageTrack is frenzy, change image to
+     * full frenzy DamageTrack, else to frenzy DamageTrack
+     */
     public void checkSwitchToFrenzy(){
         InputStream frenzyDmgUrl;
         Image image;
@@ -185,6 +279,10 @@ public class DamageTrack extends Parent {
         //tears = 0;
     }
 
+    /**
+     * Add a skull on this DamageTrack, and positions it on the right place, based on skullNumber
+     * @param skullNumber It's represent the number of skulls on this board, in order to place properly the next one
+     */
     public void addSkull(int skullNumber){
         Circle newSkull = new Circle(5);
         newSkull.setFill(Color.RED);
@@ -194,7 +292,10 @@ public class DamageTrack extends Parent {
         skulls.add(newSkull);
     }
 
-    public void updateDamage(){ //todo da controllare
+    /**
+     * Update the damage shown on this DamageTrack
+     */
+    public void updateDamage(){
         this.getChildren().removeAll(damage);
         damage.clear();
         tears = 0;
@@ -204,10 +305,16 @@ public class DamageTrack extends Parent {
         }
     }
 
+    /**
+     * Update the marks shown on this DamageTrack
+     */
     public void updateMarks(){
         this.addMark(playerView.getMarkMap());
     }
 
+    /**
+     * Update the skulls shown on this DamageTrack
+     */
     public void updateSkulls(){
         this.getChildren().removeAll(skulls); //todo controllare meglio
         skulls.clear();

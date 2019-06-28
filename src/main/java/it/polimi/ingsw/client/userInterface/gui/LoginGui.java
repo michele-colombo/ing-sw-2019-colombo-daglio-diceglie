@@ -1,6 +1,5 @@
 package it.polimi.ingsw.client.userInterface.gui;
 
-import it.polimi.ingsw.client.userInterface.gui.Gui;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -17,13 +16,31 @@ import javafx.scene.text.Text;
 
 import java.util.Map;
 
+/**
+ * It's the login window of the GUI, in which choose own nickname
+ */
 public class LoginGui {
+    /**
+     * The main part of the stage
+     */
     private final BorderPane view;
+    /**
+     * Text in which write the chosen name
+     */
     private Text actionTarget;
+    /**
+     * Button to confirm the written name and send it to the server
+     */
     private Button loginButton;
+    /**
+     * The grid added to view, where actionTarget and loginButton are put
+     */
     private GridPane connectionPane;
 
 
+    /**
+     * Create the loginGui
+     */
     public LoginGui(){
         view = new BorderPane();
 
@@ -36,7 +53,6 @@ public class LoginGui {
         loginGrid.setBackground(new Background(new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
         loginGrid.setHgap(10);
         loginGrid.setVgap(10);
-        //loginGrid.setPadding(new Insets(25, 25, 25, 25));
 
         Text sceneTitle = new Text("Login");
         sceneTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
@@ -44,7 +60,7 @@ public class LoginGui {
         GridPane.setHalignment(sceneTitle, HPos.CENTER);
 
         Label userName = new Label("User Name:");
-        userName.setMinWidth(80); //todo da riscalare
+        userName.setMinWidth(80);
         loginGrid.add(userName, 0, 1);
 
         TextField userTextField = new TextField();
@@ -70,7 +86,7 @@ public class LoginGui {
         GridPane.setHalignment(actionTarget, HPos.CENTER);
         loginGrid.setGridLinesVisible(false);
 
-        Gui.disconnectionText = actionTarget;
+        Gui.setDisconnectionText(actionTarget);
         connectionPane = new GridPane();
         connectionPane.setHgap(10);
         connectionPane.setVgap(25);
@@ -82,6 +98,11 @@ public class LoginGui {
         });
     }
 
+    /**
+     * Shows the login message;
+     * @param text The text to be written; it's green if loginSuccessful is true, otherwise is red
+     * @param loginSuccessful The situation of the login
+     */
     public void printLoginMessage(String text, boolean loginSuccessful){
             if(loginSuccessful){
                 loginButton.setDisable(true);
@@ -92,29 +113,33 @@ public class LoginGui {
             actionTarget.setText(text);
     }
 
+    /**
+     * Create a text for each connected player, waiting for a new match to start
+     * @param connections Map with players' name and their connection status
+     */
     public void updateConnection(Map<String, Boolean> connections){
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    connectionPane.getChildren().clear();
-                    Text text = new Text("OTHER PLAYERS");
-                    Text sceneTitle = new Text("Login");
+            Platform.runLater(() -> {
+                connectionPane.getChildren().clear();
+                Text text = new Text("OTHER PLAYERS");
+                Text sceneTitle = new Text("Login");
                     sceneTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 25));
                     connectionPane.add(text, 0, 0);
-                    int i = 1;
+                int i = 1;
                     for(String string : connections.keySet()){
-                        Label playerLabel = new Label(string);
-                        playerLabel.setWrapText(true);
-                        playerLabel.setMaxWidth(Gui.getScreenBounds().getWidth()/20);
-                        //playerLabel.textProperty().bind()
-                        connectionPane.add(playerLabel, 0, i);
-                        GridPane.setHalignment(playerLabel, HPos.CENTER);
-                        i++;
-                    }
+                    Label playerLabel = new Label(string);
+                    playerLabel.setWrapText(true);
+                    playerLabel.setMaxWidth(Gui.getScreenBounds().getWidth()/20);
+                    connectionPane.add(playerLabel, 0, i);
+                    GridPane.setHalignment(playerLabel, HPos.CENTER);
+                    i++;
                 }
             });
     }
 
+    /**
+     *
+     * @return return view
+     */
     public Parent getView(){
         return view;
     }

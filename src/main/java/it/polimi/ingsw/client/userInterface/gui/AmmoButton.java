@@ -11,17 +11,32 @@ import javafx.scene.paint.Color;
 
 import java.io.InputStream;
 
+/**
+ * It's represent an ammo on the board
+ */
 public class AmmoButton extends Parent {
+    /**
+     * It's the scale ratio of the card associated to this card
+     */
     private static final double SCALE_RATIO = 25;
 
-    private final Image ammoImage;
+    /**
+     * The image of this AmmoButton
+     */
     private final ImageView ammoImageView;
+    /**
+     * It's the width of this AmmoButton
+     */
     private double width;
 
+    /**
+     * Creates an AmmoButton. Entering the mouse, it will be zoomed and will have a dropshadow. Exiting, it will return
+     * to its normal state
+     * @param squareView The SquareView associated to this AmmoButton
+     */
     public AmmoButton(SquareView squareView){
         InputStream ammoUrl = getClass().getClassLoader().getResourceAsStream("ammo/ammo" + squareView.getAmmo().getAmmoTileID() + ".png");
-        this.ammoImage = new Image(ammoUrl);
-        this.ammoImageView = new ImageView(ammoImage);
+        this.ammoImageView = new ImageView(new Image(ammoUrl));
         this.width = BoardGui.getWidth() / SCALE_RATIO;
         this.ammoImageView.setFitWidth(width);
         this.ammoImageView.setPreserveRatio(true);

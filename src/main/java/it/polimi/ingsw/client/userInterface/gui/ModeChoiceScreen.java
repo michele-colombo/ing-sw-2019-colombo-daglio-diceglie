@@ -9,9 +9,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -20,20 +18,29 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 
 import java.util.List;
 
+/**
+ * It represents the screen in which to choose the mode of a weapon
+ */
 public class ModeChoiceScreen {
 
-
     private WeaponView weapon;
+    /**
+     * Grid shown, in which there are buttons and card
+     */
     private GridPane grid;
 
+    /**
+     * VBox containing the buttons with whom choose the preferred modes
+     */
     private VBox buttons;
     private AnchorPane card;
 
+    /**
+     * Create the screen in which shows the weapon and it's selectable modes
+     */
     public ModeChoiceScreen(){
         System.out.println("lo sto creando (mode selection)");
 
@@ -75,6 +82,9 @@ public class ModeChoiceScreen {
     }
 
 
+    /**
+     * Update the screen, showing new selectable modes
+     */
     public void update() {
         Platform.runLater( () -> {
             List<ModeView> modeViews = Gui.getClient().getMatch().getMyPlayer().getSelectableModes();
@@ -84,28 +94,22 @@ public class ModeChoiceScreen {
 
             for (ModeView mode : modeViews) {
                 Button button = new Button(mode.getTitle());
-                button.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent mouseEvent) {
-                        try {
-                            Gui.getClient().selected(mode.getTitle());
-                        } catch (WrongSelectionException e) {
-                            System.out.println("Wrong exception");
-                        }
+                button.setOnMouseClicked((MouseEvent me) -> {
+                    try {
+                        Gui.getClient().selected(mode.getTitle());
+                    } catch (WrongSelectionException e) {
+                    System.out.println("Wrong exception");
                     }
                 });
                 buttons.getChildren().add(button);
             }
             for (Command c : commands) {
                 Button button = new Button(c.toString());
-                button.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent mouseEvent) {
-                        try {
-                            Gui.getClient().selected(c.toString());
-                        } catch (WrongSelectionException e) {
-                            System.out.println("Wrong exception");
-                        }
+                button.setOnMouseClicked((MouseEvent me) -> {
+                    try {
+                        Gui.getClient().selected(c.toString());
+                    } catch (WrongSelectionException e) {
+                        System.out.println("Wrong exception");
                     }
                 });
                 buttons.getChildren().add(button);
@@ -114,7 +118,11 @@ public class ModeChoiceScreen {
 
     }
 
+    /**
+     *
+     * @return grid
+     */
     public Parent getParent(){
-        return  grid;
+        return grid;
     }
 }

@@ -2,19 +2,14 @@ package it.polimi.ingsw.client.userInterface.gui;
 
 import it.polimi.ingsw.client.*;
 import it.polimi.ingsw.server.model.enums.Command;
-import it.polimi.ingsw.server.model.enums.PlayerState;
-import it.polimi.ingsw.server.model.enums.PlayerState;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -24,25 +19,24 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
-import javafx.stage.Stage;
+import javafx.scene.text.Text;
 
 import java.io.InputStream;
 import java.util.*;
 
 public class BoardGui {
-    private final static double X_KILLSHOT_TRACK = 0.0909;
-    private final static double Y_KILLSHOT_TRACK = 0.0921;
-    private final static double Y_KILLSHOT_TRACK_OVERKILL = 0.025;
-    private final static double GAP_KILLSHOT_TRACK = 0.0421;
-    private final static double SCALE_RATIO_SELECTABLE_RECTANGLE_X = 7.68;
-    private final static double SCALE_RATIO_SELECTABLE_RECTANGLE_Y = 5.25;
-    private final static double SKULL_CIRCLE = 76.08;
+    private static final double X_KILLSHOT_TRACK = 0.0909;
+    private static final double Y_KILLSHOT_TRACK = 0.0921;
+    private static final double Y_KILLSHOT_TRACK_OVERKILL = 0.025;
+    private static final double GAP_KILLSHOT_TRACK = 0.0421;
+    private static final double SCALE_RATIO_SELECTABLE_RECTANGLE_X = 7.68;
+    private static final double SCALE_RATIO_SELECTABLE_RECTANGLE_Y = 5.25;
+    private static final double SKULL_CIRCLE = 76.08;
 
     private final GridPane view;
     private HBox weaponBox;
     private HBox powerUpBox;
     private GridPane connectionState;
-    private GridPane damageTracks;
     private AnchorPane board;
     private List<Label> connectionLabels;
     private Label currentPlayer;
@@ -53,15 +47,21 @@ public class BoardGui {
     private List<PixelWeapon> yellowWeapons;
     private List<PixelWeapon> blueWeapons;
     private List<PixelWeapon> redWeapons;
-    private static List<SelectableRectangle> selectableRectangles;
+    private static List<SquareRectangle> squareRectangles;
     private Map<PlayerRectangle, HBox> playerPositions;
     private Map<SquareView, HBox> playerPositionHBox;
     private Map<PlayerView, DamageTrack> playerDamageTracks;
     private List<Rectangle> killOnKillshotTrack;
     private List<Circle> skulls;
+    private Text stateText;
     private static double boardWidth;
     private static double boardHeight;
 
+    /**
+     * Create a new BoardGui from match. It adds the board, damageTracks, connection state of the player,
+     * PlayerRectangle, playerPosition, SquareButtons
+     * @param match The MatchView from which get information
+     */
     public BoardGui(MatchView match){
         view = new GridPane();
         weaponBox = new HBox();
@@ -76,7 +76,7 @@ public class BoardGui {
         redWeapons = parser.loadWeaponResource("red");
         playerPositions = new HashMap<>();
         playerPositionHBox = new HashMap<>();
-        selectableRectangles = new LinkedList<>();
+        squareRectangles = new LinkedList<>();
         playerDamageTracks = new HashMap<>();
         killOnKillshotTrack = new LinkedList<>();
         skulls = new LinkedList<>();
@@ -106,29 +106,37 @@ public class BoardGui {
 
         board.getChildren().addAll(imageView);
         GridPane.setHalignment(imageView, HPos.LEFT);
+        stateText = new Text();
+        stateText.setFill(Color.WHITE);
         view.add(board, 0,0);
         view.add(weaponBox, 0,1);
         view.add(powerUpBox, 1, 1);
-        addDamageTrack(match); //todo utilizzare il messaggio di updateStartMatch
+        addDamageTrack(match);
         addConnectionState(match.getAllPlayers());
         addSelectables();
         updateConnection(match.readConnections());
     }
 
+    /**
+     *
+     * @return view
+     */
     public Parent getView(){
         return view;
     }
 
-    public void addDamageTrack(MatchView match){
+    /**
+     * Creat DamageTrack and add them view; the higher is the one referred to this client; the color is based on player's color
+     * @param match MatchView from which get all players' color
+     */
+    private void addDamageTrack(MatchView match){
         List<Color> colors = getAllColors(match);
+        GridPane damageTracks;
         damageTracks = new GridPane();
         damageTracks.setVgap(5);
         damageTracks.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         damageTracks.setAlignment(Pos.TOP_CENTER);
 
-        //InputStream myDmgUrl = getClass().getClassLoader().getResourceAsStream("damageTracks/dmg" + match.getMyPlayer().getColor().toString().toLowerCase() + ".png");
-        //Image image = new Image(myDmgUrl);
-        //ImageView imageView = new ImageView(image);
         DamageTrack damageTrack = new DamageTrack(colors, match.getMyPlayer());
         damageTrack.updateInfo();
         playerDamageTracks.put(match.getMyPlayer(), damageTrack);
@@ -137,9 +145,6 @@ public class BoardGui {
         int i = 1;
         for(PlayerView pv : match.getAllPlayers()){
             if(pv.getColor() != match.getMyPlayer().getColor()){
-                //InputStream dmgUrl = getClass().getClassLoader().getResourceAsStream("damageTracks/dmg" + pv.getColor().toString().toLowerCase() + ".png");
-                //image = new Image(dmgUrl);
-                //imageView = new ImageView(image);
                 DamageTrack otherDamageTrack = new DamageTrack(colors, pv);
                 otherDamageTrack.updateInfo();
                 playerDamageTracks.put(pv, otherDamageTrack);
@@ -150,10 +155,15 @@ public class BoardGui {
         view.add(damageTracks, 1,0);
     }
 
-    public void addConnectionState(List<PlayerView> players ){
+    /**
+     * Create connection state GridPane and add it to view; it contains a label as title of the GridPane, and another one
+     * showing the current player (in white)
+     * @param players List of Player, from whom get the current one
+     */
+    private void addConnectionState(List<PlayerView> players ){
         connectionLabels = new ArrayList<>();
         connectionState = new GridPane();
-        currentPlayer = new Label("Current: " + players.get(0).getName());
+        currentPlayer = new Label("Current: " + players.get(0).getName()); //todo forse da fixare
         currentPlayer.setTextFill(Color.WHITE);
         currentPlayer.setWrapText(true);
         Label connectionLabel = new Label("PLAYERS");
@@ -166,10 +176,19 @@ public class BoardGui {
         view.add(connectionState, 4,0);
     }
 
-    public void addSelectables(){
+    /**
+     * Add selectables GridPane in view
+     */
+    private void addSelectables(){
         view.add(selectables,4,1);
     }
 
+    /**
+     * Update connection state, adding two label for each player (and clearing old ones)
+     * : the former contains own name, the latter their
+     * connection state: this one is green if the respective player is online, otherwise is red
+     * @param connections
+     */
     public void updateConnection(Map<String, Boolean> connections){
         Platform.runLater(() -> {
             connectionState.getChildren().removeAll(connectionLabels);
@@ -200,30 +219,45 @@ public class BoardGui {
             if(Gui.getClient().getMatch().getCurrentPlayer() != null){
                 currentPlayer.setText("Current: " + Gui.getClient().getMatch().getCurrentPlayer());
             }
+            updateStateText();
         });
     }
 
+    /**
+     * Update currentPlayer with the name of the current one
+     */
     public void updateCurrentPlayer(){
         Platform.runLater(() -> {
             currentPlayer.setText("Current: " + Gui.getClient().getMatch().getCurrentPlayer());
+            updateStateText();
         });
     }
 
+    /**
+     * Updates your own power up, clearing old ones and recreating them
+     * @param player
+     */
     public void updatePowerUp(PlayerView player){
         Platform.runLater(() -> {
             MyPlayer me = Gui.getClient().getMatch().getMyPlayer();
                 if(player.getName().equals(me.getName())){
-                powerUpBox.getChildren().clear();
-                for(PowerUpView powerUpView : me.getPowerUps()){
-                    PowerUpButton powerUpButton = new PowerUpButton(powerUpView);
-                    powerUpBox.getChildren().add(powerUpButton);
-                    powerUpBox.setHgrow(powerUpButton, Priority.ALWAYS);
+                    powerUpBox.getChildren().clear();
+                    for(PowerUpView powerUpView : me.getPowerUps()){
+                        PowerUpButton powerUpButton = new PowerUpButton(powerUpView);
+                        powerUpBox.getChildren().add(powerUpButton);
+                        powerUpBox.setHgrow(powerUpButton, Priority.ALWAYS);
                 }
             }
                 playerDamageTracks.get(player).updateInfo();
+            updateStateText();
         });
     }
 
+    /**
+     * Updates the selectables for this client, creating and adding them to the window, and clearing old ones.
+     * They includes: action, command as button and selectableSquares as SquareButton set to visible.
+     * Clicking on action or command button, the choice will be sent to the server
+     */
     public void updateSelectables(){
         Platform.runLater(() -> {
             selectables.getChildren().clear();
@@ -250,7 +284,7 @@ public class BoardGui {
             }
             for(Command command : comboItemsCommand){
                 Button button= new Button(command.toString());
-                button.setOnMouseClicked((MouseEvent) ->
+                button.setOnMouseClicked((MouseEvent t) ->
                 {
                     try {
                         Gui.getClient().selected(command.toString());
@@ -265,39 +299,52 @@ public class BoardGui {
             }
 
             for(SquareView sv : me.getSelectableSquares()){
-                for(SelectableRectangle sr : selectableRectangles){
-                    if(sr.equals(sv)){
+                for(SquareRectangle sr : squareRectangles){
+                    if(sr.equalsSquareView(sv)){
                         sr.setVisible(true);
                     }
                 }
             }
-
-
+            updateStateText();
         });
     }
 
+    /**
+     * Create and add WeaponButtons of your weapon (clearing old ones). If they're unloaded, they have low opacity.
+     * @param player
+     */
     public void updateWeapons(PlayerView player){
         Platform.runLater(() -> {
             if(player.getName().equals(Gui.getClient().getMatch().getMyPlayer().getName())){
                 weaponBox.getChildren().clear();
-                //todo usare un metodo getAllWeapons o qualcosa di simile oppure cambiare dinamicamente immagine
                 for(WeaponView weaponView : Gui.getClient().getMatch().getMyPlayer().getWeapons().keySet()){
                     WeaponButton newWeapon = new WeaponButton(weaponView, true);
+                    if(Gui.getClient().getMatch().getMyPlayer().getUnloadedWeapons().contains(newWeapon.getWeaponView())){
+                        newWeapon.setOpacity(0.1);
+                    } else{
+                        newWeapon.setOpacity(1);
+                    }
                     newWeapon.rescaleOnHand();
                     weaponBox.getChildren().add(newWeapon);
                 }
             }
             playerDamageTracks.get(player).updateInfo(); //todo forse è inutile
+            updateStateText();
         });
     }
 
+    /**
+     * Update KillshotTrack, creating and adding a kill for each skull removed (max eight), then remaining skulls
+     * are added (old kills and skulls are removed)
+     */
     public void updateKillshotTrack(){
         Platform.runLater(() -> {
             MatchView matchView = Gui.getClient().getMatch();
+            board.getChildren().removeAll(killOnKillshotTrack);
             killOnKillshotTrack.clear();
 
             int i;
-            for(i = 0; i < matchView.getTrack().size(); i++){
+            for(i = 0; i < matchView.getTrack().size() && i < 8; i++){
                 Map<PlayerView, Integer> map = matchView.getTrack().get(i);
                 PlayerView player = new ArrayList<>(map.keySet()).get(0);
                 Rectangle kill = new Rectangle(10, 10, Color.valueOf(player.getColor().toString()));
@@ -330,17 +377,27 @@ public class BoardGui {
                 skulls.add(skull);
                 i++;
             }
+            updateStateText();
         });
     }
 
+    /**
+     * Update position, wallet of the specified player
+     * @param player The player to be updated
+     */
     public void updatePlayer(PlayerView player){
         Platform.runLater(() -> {
             updatePosition(player);
             updateWallet(player);
+            updateStateText();
             //updateDamageTrack(player);
         });
     }
 
+    /**
+     * Update the position of the specified player, removing him from the old one and adding to the new one
+     * @param player The player to be updated
+     */
     private void updatePosition(PlayerView player){
         if(player.getSquarePosition() != null){
             PlayerRectangle playerRectangle = getPlayerRectangle(player);
@@ -362,6 +419,10 @@ public class BoardGui {
         }
     }
 
+    /**
+     * Update the damageTrack of the specified player (damage, marks, skulls and check of frenzy mode are done)
+     * @param player The player to Update
+     */
     public void updateDamageTrack(PlayerView player){
         Platform.runLater(() -> {
             DamageTrack toUpdate = playerDamageTracks.get(player);
@@ -369,18 +430,28 @@ public class BoardGui {
             toUpdate.updateMarks();
             toUpdate.updateSkulls();
             toUpdate.checkSwitchToFrenzy();
+            updateStateText();
             //toUpdate.updateInfo();
         });
 
     }
 
+    /**
+     * Updates the wallet of the specified player
+     * @param player The player to be updated
+     */
     private void updateWallet(PlayerView player){
         DamageTrack damageTrackToUpdate = playerDamageTracks.get(player);
         damageTrackToUpdate.addAmmo(Color.BLUE, player.getWallet().getBlue());
         damageTrackToUpdate.addAmmo(Color.RED,player.getWallet().getRed());
         damageTrackToUpdate.addAmmo(Color.YELLOW, player.getWallet().getYellow());
+        updateStateText();
     }
 
+    /**
+     * Updates the board, replacing all the AmmoButton and WeaponButton
+     * @param layoutView
+     */
     public void updateLayout(LayoutView layoutView){
         Platform.runLater(() -> {
             board.getChildren().removeAll(ammoButtonsList);
@@ -390,9 +461,16 @@ public class BoardGui {
             updateLayoutWeapon(yellowWeapons, layoutView.getYellowWeapons());
             updateLayoutWeapon(blueWeapons, layoutView.getBlueWeapons());
             updateLayoutWeapon(redWeapons, layoutView.getRedWeapons());
+            updateStateText();
         });
     }
 
+    /**
+     * Updates the WeaponButton of the specified WeaponView and color on the board, creating and adding new ones,
+     * clearing the older ones, translating them with pixelWeapons
+     * @param weapons The PixelWeapon, from which get the position of the weapon
+     * @param weaponViews The WeaponViews from which create new WeaponButton
+     */
     private void updateLayoutWeapon(List<PixelWeapon> weapons, List<WeaponView> weaponViews){
         int i = 0;
         for(WeaponView wp : weaponViews){
@@ -407,6 +485,11 @@ public class BoardGui {
         }
     }
 
+    /**
+     * Update all AmmoButton, creating and adding them to the board, clearing old ones, translating them
+     * with pixelPositions
+     * @param squareViews SquareViews from which create new AmmoButton
+     */
     private void updateLayoutAmmo(List<SquareView> squareViews){
         for(SquareView sv : squareViews){
             for(PixelPosition pixelPosition : pixelPositions){
@@ -421,58 +504,50 @@ public class BoardGui {
         }
     }
 
-    private Rectangle createPlayerRectangle(Color color){
-        final Rectangle rectangle = new Rectangle(5, 20);
-        rectangle.setFill(color);
-
-        rectangle.setOnMouseClicked(new EventHandler<MouseEvent>()
-        {
-            @Override
-            public void handle(MouseEvent t) {
-                rectangle.setFill(Color.GAINSBORO);
-            }
-        });
-
-        return rectangle;
-    }
-
-    private PixelPosition searchPixelPosition(SquareView squareView){
-        for(PixelPosition pp : pixelPositions){
-            if(squareView.getX() == pp.getxSquare() && squareView.getY() == pp.getySquare()){
-                return pp;
-            }
-        }
-        return null; //non dovrebbe verificarsi mai
-    }
-
+    /**
+     * Creates and adds playerPositionsHBox to the board, translating them with pixelPositions
+     * @param matchView MatchView from wich creates PlayerPositionHBox
+     */
     public void createPlayerPositionHBox(MatchView matchView){
-        //List<HBox> toAdd = new LinkedList<>();
         for(PixelPosition pp : pixelPositions){
             HBox newPlayerPositionHBox = new HBox();
             newPlayerPositionHBox.setTranslateX(boardWidth * pp.getxPlayer());
             newPlayerPositionHBox.setTranslateY(boardHeight * pp.getyPlayer());
-            //newPlayerPositionHBox.setBackground(new Background(new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
             playerPositionHBox.put(matchView.getLayout().getSquare(pp.getxSquare(), pp.getySquare()), newPlayerPositionHBox);
             board.getChildren().add(newPlayerPositionHBox);
         }
     }
 
+    /**
+     * Creates and adds playerRectangles to the board, translating them with pixelPositions
+     * @param matchView MatchView from which creates PlayerRectangle
+     */
     private void createPlayerRectangle(MatchView matchView){
         for(PlayerView pv : matchView.getAllPlayers()){
-            playerPositions.put(new PlayerRectangle(5, 20, Color.valueOf(pv.getColor().toString()), pv), null);
+            PlayerRectangle position = new PlayerRectangle(5, 20, Color.valueOf(pv.getColor().toString()), pv);
+            playerPositions.put(position, null);
         }
     }
 
+    /**
+     * Creates the SquareButton, adding them to the board and translating them with pixelPositions
+     * @param matchView The MatchView from which get the coordinates of the square
+     */
     public void createSelectableRectangle(MatchView matchView){
         for(PixelPosition pp : pixelPositions){
-            SelectableRectangle newSelectableRectangle = new SelectableRectangle(boardWidth / SCALE_RATIO_SELECTABLE_RECTANGLE_X, boardHeight / SCALE_RATIO_SELECTABLE_RECTANGLE_Y, matchView.getLayout().getSquare(pp.getxSquare(), pp.getySquare()));
-            newSelectableRectangle.setTranslateX(boardWidth * pp.getxSelectable());
-            newSelectableRectangle.setTranslateY(boardHeight * pp.getySelectable());
-            selectableRectangles.add(newSelectableRectangle);
-            board.getChildren().add(newSelectableRectangle);
+            SquareRectangle newSquareRectangle = new SquareRectangle(boardWidth / SCALE_RATIO_SELECTABLE_RECTANGLE_X, boardHeight / SCALE_RATIO_SELECTABLE_RECTANGLE_Y, matchView.getLayout().getSquare(pp.getxSquare(), pp.getySquare()));
+            newSquareRectangle.setTranslateX(boardWidth * pp.getxSelectable());
+            newSquareRectangle.setTranslateY(boardHeight * pp.getySelectable());
+            squareRectangles.add(newSquareRectangle);
+            board.getChildren().add(newSquareRectangle);
         }
     }
 
+    /**
+     *
+     * @param playerView The playerView from whom get the PlayerRectangle
+     * @return The PlayerRectangle with the same playerView
+     */
     private PlayerRectangle getPlayerRectangle(PlayerView playerView){
         for(PlayerRectangle pr : playerPositions.keySet()){
             if(pr.getPlayerView() == playerView){
@@ -482,21 +557,37 @@ public class BoardGui {
         return null;
     }
 
-    public synchronized static void setUnvisibleSelectableRectangle(){
-        for(SelectableRectangle sr : selectableRectangles){
+    /**
+     * Sets to invisible all squareRectangles
+     */
+    public synchronized static void setUnvisibleSquareRectangle(){
+        for(SquareRectangle sr : squareRectangles){
             sr.setVisible(false);
         }
     }
 
+    /**
+     *
+     * @return boardWidth
+     */
     public static double getWidth(){
         return boardWidth;
     }
 
+    /**
+     * Returns the color of each player
+     * @param match The MatchView from which get colors
+     * @return A List of Color
+     */
     private List<Color> getAllColors(MatchView match){
         List<Color> colors = new LinkedList<>();
         for(PlayerView pv : match.getAllPlayers()){
-            colors.add(Color.valueOf(pv.getColor().toString()));
+            colors.add(Color.valueOf(pv.getColor().toString().toLowerCase()));
         }
         return colors;
+    }
+
+    private void updateStateText(){
+        return;
     }
 }

@@ -159,7 +159,6 @@ public class Client implements MessageVisitor {
     }
 
     public synchronized void visit(CurrentPlayerUpdateMessage currentPlayerUpdate) {
-        //System.out.println("current player update received");
         match.setCurrentPlayer(match.getPlayerFromName(currentPlayerUpdate.getCurrentPlayer()));
         System.out.println(currentPlayerUpdate.getCurrentPlayer());
         userInterface.updateCurrentPlayer();

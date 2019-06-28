@@ -2,30 +2,37 @@ package it.polimi.ingsw.client.userInterface.gui;
 
 import it.polimi.ingsw.client.PowerUpView;
 import it.polimi.ingsw.client.WrongSelectionException;
-import javafx.event.EventHandler;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
-
 import java.io.InputStream;
 
-public class PowerUpButton extends Parent {
-    private final Image powerUpImage;
+/**
+ * It represents a power up card
+ */
+public class PowerUpButton extends Parent{
+    /**
+     * The image of this PowerUpButton
+     */
     private final ImageView powerUpImageView;
-    private final PowerUpView powerUpView;
+    /**
+     * It's the width of this power up
+     */
     private double width;
+    /**
+     * It's the height of this power up
+     */
     private double height;
 
 
+    /**
+     * Creates a PowerUpButton. Pressing on it, it will send this powerUpView's name to the server
+     * @param powerUpView The powerUpView associated to this PowerUpButton
+     */
     public PowerUpButton(PowerUpView powerUpView){
         InputStream powerUpUrl = getClass().getClassLoader().getResourceAsStream("powerUp/" + powerUpView.getName() + " " + powerUpView.getColor().toString().toLowerCase() + ".png");
-        this.powerUpImage = new Image(powerUpUrl);
-        this.powerUpImageView = new ImageView(powerUpImage);
-        this.powerUpView = powerUpView;
+        powerUpImageView = new ImageView(new Image(powerUpUrl));
         this.width = powerUpImageView.boundsInParentProperty().get().getWidth() / 1.5;
         this.height = powerUpImageView.boundsInParentProperty().get().getHeight() / 1.5;
         this.powerUpImageView.setFitWidth(width);
@@ -35,13 +42,11 @@ public class PowerUpButton extends Parent {
         this.powerUpImageView.setOnMouseEntered((MouseEvent t) -> {
             powerUpImageView.setFitWidth(width * 1.2);
             powerUpImageView.setFitHeight(height * 1.2);
-            //powerUpImageView.setEffect(new DropShadow(20, Color.BLUE));
         });
 
         this.setOnMouseExited((MouseEvent t) -> {
             powerUpImageView.setFitWidth(width);
             powerUpImageView.setFitHeight(height);
-            //powerUpImageView.setEffect(null);
         });
 
         this.setOnMouseClicked((MouseEvent t) -> {

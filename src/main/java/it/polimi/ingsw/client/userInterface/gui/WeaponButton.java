@@ -2,7 +2,6 @@ package it.polimi.ingsw.client.userInterface.gui;
 
 import it.polimi.ingsw.client.WeaponView;
 import it.polimi.ingsw.client.WrongSelectionException;
-import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
@@ -12,29 +11,49 @@ import javafx.scene.paint.Color;
 
 import java.io.InputStream;
 
-public class WeaponButton extends Parent {
+/**
+ * It represent a weapon
+ */
+public class WeaponButton extends Parent{
+    /**
+     * Rescale ratio of the image associated to this card when is shown on board
+     */
     private static final double SCALE_RATIO_ON_BOARD = 11.09;
-    private static final double SCALE_RATIO_UNLOADED = 11.09;
-    private static final double SCALE_RATIO_IN_HAND = 11.09;
-
-    private final Image weaponImage;
+    /**
+     * Rescale ratio of the image associated to this card when is shown unloaded
+     */
+    private static final double SCALE_RATIO_UNLOADED = 7;
+    /**
+     * Rescale ratio of the image associated to this card when is shown in hand
+     */
+    private static final double SCALE_RATIO_IN_HAND = 2.2;
+    /**
+     * The image of this WeaponButton
+     */
     private final ImageView weaponImageView;
+    /**
+     * The weaponView associated to this WeaponButton
+     */
     private final WeaponView weaponView;
+    /**
+     * It's the width of this WeaponButton
+     */
     private double width;
-    private boolean inHand;
 
-
+    /**
+     * Creates a new WeaponButton. Pressing on it, it will send this weapon's name to the server.
+     * @param weaponView The weaponView associated to this WeaponButton
+     * @param inHand If true, entering the mouse will create a DropShadow effect, removed when mouse is exited
+     */
     public WeaponButton(WeaponView weaponView, boolean inHand){
-        InputStream weaponUrl = getClass().getClassLoader().getResourceAsStream("weapon/" + weaponView.getName() + ".png");
-        this.weaponImage = new Image(weaponUrl);
-        this.weaponImageView = new ImageView(weaponImage);
         this.weaponView = weaponView;
-        this.inHand = inHand;
+        InputStream weaponUrl = getClass().getClassLoader().getResourceAsStream("weapon/" + weaponView.getName() + ".png");
+        this.weaponImageView = new ImageView(new Image(weaponUrl));
         this.width = weaponImageView.boundsInParentProperty().get().getWidth();
         this.weaponImageView.setPreserveRatio(true);
         this.getChildren().add(weaponImageView);
 
-        this.setOnMouseEntered((MouseEvent) -> {
+        this.setOnMouseEntered((MouseEvent t) -> {
             if(!inHand){
                 weaponImageView.setEffect(new DropShadow(20, Color.WHITE));
             }
@@ -53,25 +72,32 @@ public class WeaponButton extends Parent {
         });
     }
 
-    public void disable(){
-        this.setDisable(true);
-    }
-
-    public void reScale(double scaleRatio){
-        weaponImageView.setFitWidth(width / 2);
-        weaponImageView.setFitWidth(BoardGui.getWidth() / SCALE_RATIO_ON_BOARD);
-        weaponImageView.setFitWidth(scaleRatio);
-    }
-
+    /**
+     * Rescale this WeaponButton with SCALE_RATION_ON_BOARD and Screen width
+     */
     public void rescaleOnBoard(){
         weaponImageView.setFitWidth(BoardGui.getWidth() / SCALE_RATIO_ON_BOARD);
     }
 
+    /**
+     * Rescale this WeaponButton with SCALE_RATION_IN_HAND and the width of the associated image
+     */
     public void rescaleOnHand(){
-        weaponImageView.setFitWidth(width / 2.2);
+        weaponImageView.setFitWidth(width / SCALE_RATIO_IN_HAND);
     }
 
+    /**
+     * Rescale this WeaponButton with SCALE_RATION_UNLOADED and the chosen width
+     */
     public void rescaleUnloaded(double width){
-        weaponImageView.setFitWidth(width / 7);
+        weaponImageView.setFitWidth(width / SCALE_RATIO_UNLOADED);
+    }
+
+    /**
+     *
+     * @return weaponView
+     */
+    public WeaponView getWeaponView(){
+        return weaponView;
     }
 }
