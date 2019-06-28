@@ -61,7 +61,6 @@ public class BoardGui {
     private List<Circle> skulls;
     private static double boardWidth;
     private static double boardHeight;
-    private ModeChoiceDialog modeChoiceDialog;
 
     public BoardGui(MatchView match){
         view = new GridPane();
@@ -114,8 +113,6 @@ public class BoardGui {
         addConnectionState(match.getAllPlayers());
         addSelectables();
         updateConnection(match.readConnections());
-
-        modeChoiceDialog= null;
     }
 
     public Parent getView(){
@@ -274,30 +271,6 @@ public class BoardGui {
                     }
                 }
             }
-
-
-            //added by Giuseppe
-            if(me.getState() == PlayerState.CHOOSE_MODE){
-                System.out.println("Selecting modes, si deve aprire");
-
-            //if(!me.getSelectableModes().isEmpty()){
-                if(modeChoiceDialog == null){
-                    System.out.println("Creating and updating modeSelection");
-                    modeChoiceDialog= new ModeChoiceDialog();
-                }
-                else{
-                    System.out.println("updating modeSelection");
-                    modeChoiceDialog.update();
-                }
-            }
-            else{
-                if(modeChoiceDialog != null){
-                    modeChoiceDialog.killWindow();
-                    modeChoiceDialog= null;
-                }
-
-            }
-            //finished Giuseppe's part
 
 
         });

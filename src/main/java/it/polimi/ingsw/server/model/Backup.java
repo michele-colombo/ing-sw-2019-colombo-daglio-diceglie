@@ -1,7 +1,6 @@
 package it.polimi.ingsw.server.model;
 
 import com.google.gson.Gson;
-import it.polimi.ingsw.server.controller.ParserManager;
 import it.polimi.ingsw.server.model.enums.AmmoColor;
 import it.polimi.ingsw.server.model.enums.PlayerColor;
 import it.polimi.ingsw.server.model.enums.PlayerState;
@@ -782,16 +781,6 @@ public class Backup {
     }
 
     public Backup (){}
-
-    /**
-     * Saves this backup on a file of the specified name, in a default folder (near the jar)
-     * @param name the name of the file
-     * @return
-     */
-    public void saveOnFile(String name) {
-        ParserManager pm = new ParserManager();
-        pm.saveBackupOnFile(this, name);
-    }
 
     /**
      * Restores the whole match to the state saved in the backup.
