@@ -1,6 +1,7 @@
 package it.polimi.ingsw.server.model;
 
 
+import it.polimi.ingsw.server.controller.ParserManager;
 import it.polimi.ingsw.server.exceptions.*;
 import it.polimi.ingsw.server.model.enums.AmmoColor;
 import it.polimi.ingsw.server.model.enums.Command;
@@ -295,7 +296,8 @@ public class PlayingTest {
                             Backup b1 = new Backup(match);
                             System.out.println("Insert file name (without .json):");
                             String name = new Scanner(System.in).nextLine();
-                            b1.saveOnFile(name);
+                            ParserManager pm = new ParserManager();
+                            pm.saveOnSameDirectory(b1, name);
                             break;
                         case "back":
                             System.out.println("Insert file to restore (only for test)");
