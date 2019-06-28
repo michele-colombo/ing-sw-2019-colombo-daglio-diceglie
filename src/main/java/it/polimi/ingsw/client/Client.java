@@ -594,5 +594,56 @@ public class Client implements MessageVisitor {
         }
     }
 
+    public static String getStateDescription(PlayerState state){
+        String result = "";
+        switch (state){
+            case IDLE:
+                result = "You can't do anything at the moment.";
+                break;
+            case CHOOSE_ACTION:
+                result = "Choose an action to do.";
+                break;
+            case MOVE_THERE:
+                result = "Choose a square to move into.";
+                break;
+            case GRAB_THERE:
+                result = "Choose a square to grab from.";
+                break;
+            case GRAB_WEAPON:
+                result = "Choose a weapon to grab.";
+                break;
+            case DISCARD_WEAPON:
+                result = "You must discard one of your weapon: choose one.";
+                break;
+            case RELOAD:
+                result = "Choose a weapon to reload, or select OK to skip.";
+                break;
+            case PAYING:
+                result = "You have to pay for something. Select a powerUp(s) or press OK to pay with ammos.";
+                break;
+            case PAYING_ANY:
+                result = "Choose an ammo (or powerup) to pay";
+                break;
+            case SHOOT_WEAPON:
+                result = "Choose a weapon to shoot with";
+                break;
+            case CHOOSE_MODE:
+                result = "Select a mode to build the shoot. When you have done, select OK.";
+                break;
+            case SHOOT_TARGET:
+                result = "Choose a target (either a player or a square) to shoot";
+                break;
+            case SPAWN:
+                result = "Choose a powerup to discard (and spawn on the corresponding spawn point)";
+                break;
+            case USE_POWERUP:
+                result = "Choose a powerup to use or select OK to skip";
+                break;
+            default:
+                result = "";
+        }
+        return result;
+    }
+
 
 }
