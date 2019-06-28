@@ -4,8 +4,21 @@ import it.polimi.ingsw.server.model.enums.AmmoColor;
 import it.polimi.ingsw.server.model.enums.Border;
 
 public class AmmoSquare extends Square{
+    /**
+     * Contains the ammoTile of the square. Is null when no ammoTile is present
+     */
     private AmmoTile ammo;
 
+    /**
+     * Constructor with all parameters.
+     * @param x x coordinate of square
+     * @param y y coordinate of square
+     * @param north type of border at north
+     * @param east type of border at east
+     * @param south type of border at south
+     * @param west type of border at west
+     * @param color color of the square
+     */
     public AmmoSquare(int x, int y, Border north, Border east, Border south, Border west, AmmoColor color){
         super(x, y, north, east, south, west, color);
         ammo = null;
@@ -15,6 +28,10 @@ public class AmmoSquare extends Square{
         super();
     }
 
+    /**
+     * Gets a description of the content of the square
+     * @return
+     */
     @Override
     public String getFullDescription(){
         StringBuilder result= new StringBuilder();
@@ -28,6 +45,12 @@ public class AmmoSquare extends Square{
         return result.toString();
     }
 
+    /**
+     * Gives the player p the content of this square
+     * @param p player who collects
+     * @param m reference to the current match
+     * @return
+     */
     @Override
     public boolean collect(Player p, Match m){
         p.getWallet().deposit(ammo.getAmmos());
@@ -44,11 +67,19 @@ public class AmmoSquare extends Square{
         return true;
     }
 
+    /**
+     * Tells if the square is empty (has currently no ammoTile)
+     * @return false if there is no ammoTile
+     */
     @Override
     public boolean isEmpty(){
         return (ammo == null);
     }
 
+    /**
+     * Refills the square eith a new ammoTile
+     * @param s the stack manager to draw from
+     */
     @Override
     public void refill(StackManager s){
         if (isEmpty()){
@@ -56,10 +87,18 @@ public class AmmoSquare extends Square{
         }
     }
 
+    /**
+     * Getter for the ammoTile
+     * @return the actual reference to the ammoTile
+     */
     public AmmoTile getAmmo() {
         return ammo;
     }
 
+    /**
+     * Setter for the ammoTile
+     * @param ammo
+     */
     public void setAmmo(AmmoTile ammo){
         this.ammo = ammo;
     }

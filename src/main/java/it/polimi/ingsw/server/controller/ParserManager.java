@@ -68,6 +68,27 @@ public class ParserManager {
         return serverConfig.skullNumber;
     }
 
+    public void saveBackupOnFile(Backup backup, String name){
+        String jarPath = "";
+        try {
+            jarPath = URLDecoder.decode(getClass().getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
+            // construct a File within the same folder of this jar
+            String dirPath = jarPath.substring(0, jarPath.lastIndexOf("/")) + File.separator + "backups";
+            File dir = new File(dirPath);
+            if (!dir.exists()){
+                dir.mkdir();
+            }
+            String completePath = dirPath + File.separator + name + ".json";
+            File file = new File(completePath);
+            FileWriter fw = new FileWriter(file);
+            gson.toJson(backup, fw);
+            fw.close();
+            System.out.println("[OK] backup file written");
+        } catch (IOException e) {
+            System.out.println("[WARNING] cannot write backup file");
+        }
+    }
+
 
 
     private void parseServerConfig(){
@@ -117,8 +138,7 @@ public class ParserManager {
                 backup = gson.fromJson(sc.nextLine(), Backup.class);
                 sc.close();
                 url.close();
-            }
-            else{
+            } else {
                 backup= null;
             }
         }

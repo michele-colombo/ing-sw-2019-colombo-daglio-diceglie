@@ -48,6 +48,6 @@ public class PowerUp{
     }
 
     public List<Effect> getEffects() {
-        return effects;
+        return new ArrayList<>(effects);
     }
 }

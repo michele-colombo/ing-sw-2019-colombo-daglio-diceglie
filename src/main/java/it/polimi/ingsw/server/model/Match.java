@@ -808,11 +808,6 @@ public class Match {
             notifyPowerUpUpdate(p);
             notifyDamageUpdate(p);
         }
-        /*
-        for (Player p : players){
-            notifySelectableUpdate(p);
-        }
-        */
     }
 
     public void notifyGameOver(){

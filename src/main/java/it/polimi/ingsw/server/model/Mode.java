@@ -14,7 +14,7 @@ public class Mode {
     private List<Effect> effects;
 
     public List<Effect> getEffects() {
-        return effects;
+        return new ArrayList<>(effects);
     }
 
     public Mode(boolean isMandatory, int mustComeBefore, String title, String description, Cash cost){

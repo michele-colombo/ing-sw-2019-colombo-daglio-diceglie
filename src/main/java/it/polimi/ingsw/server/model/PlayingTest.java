@@ -295,7 +295,7 @@ public class PlayingTest {
                             Backup b1 = new Backup(match);
                             System.out.println("Insert file name (without .json):");
                             String name = new Scanner(System.in).nextLine();
-                            b1.saveOnFile(testBackupPath, name);
+                            b1.saveOnFile(name);
                             break;
                         case "back":
                             System.out.println("Insert file to restore (only for test)");

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.server.model;
 
 import com.google.gson.Gson;
+import it.polimi.ingsw.server.controller.ParserManager;
 import it.polimi.ingsw.server.model.enums.AmmoColor;
 import it.polimi.ingsw.server.model.enums.PlayerColor;
 import it.polimi.ingsw.server.model.enums.PlayerState;
@@ -17,28 +18,110 @@ import java.util.*;
  */
 public class Backup {
 
+    /**
+     * Contains the backup of a player
+     */
     private class PlayerBackup{
+        /**
+         * name of the player (identifier)
+         */
         private String name;
+
+        /**
+         * color of the player
+         */
         private PlayerColor color;
+
+        /**
+         * has the player already spawned for the first time?
+         */
         private boolean isBorn;
+
+        /**
+         * is the player before or after the first (significant in frenzy)
+         */
         private boolean isBeforeFirst;
+
+        /**
+         * points of the player
+         */
         private int points;
+
+        /**
+         * state of the player
+         */
         private PlayerState state;
+
+        /**
+         * next state of the player
+         */
         private PlayerState nextState;
+
+        /**
+         * is the player the first?
+         */
         private boolean isFirstPlayer;
+
+        /**
+         * has the player another turn in the game?
+         */
         private boolean hasAnotherTurn;
+
+        /**
+         * position of the player (saved as square)
+         */
         private String squarePosition;
+
+        /**
+         * skull number on the palyer's damage track
+         */
         private int skullsNumber;
+
+        /**
+         * has the damage track been turned (frenzy mode)?
+         */
         private boolean isFrenzy;
+
+        /**
+         * list of damges of the player
+         */
         private List<String> damageList;
+
+        /**
+         * list of marks of the player
+         */
         private Map<String, Integer> markMap;
+
+        /**
+         * weapons of the player, with their charging status
+         */
         private Map<String, Boolean> weapons;
+
+        /**
+         * list of powerUps of the player
+         */
         private List<String> powerUps;
+
+        /**
+         * ammos currently owned by the player
+         */
         private Cash wallet;
+
+        /**
+         * ammos the player has currently to pay
+         */
         private Cash pending;
+
+        /**
+         * ammos the player has currently paid
+         */
         private Cash credit;
 
-        public PlayerBackup(Player p){
+        /**
+         * Builds the backup of a player
+         * @param p the player to backup
+         */
+        private PlayerBackup(Player p){
             name = p.getName();
             color = p.getColor();
             isBorn = p.isBorn();
@@ -77,7 +160,12 @@ public class Backup {
             credit = new Cash(p.getCredit());
         }
 
-        public void restore(Player p, Match match){
+        /**
+         * Sets all attributes in the player as in the backup. Objects are taken from the current match
+         * @param p player to restore to backup status
+         * @param match current match (used to take current objects for weapons, powerUps and squares)
+         */
+        private void restore(Player p, Match match){
             p.setColor(color);
             p.setBorn(isBorn);
             p.setBeforeFirst(isBeforeFirst);
@@ -123,6 +211,11 @@ public class Backup {
             p.getPending().set(pending);
         }
 
+        /**
+         * checks equality between the backups of two players
+         * @param obj the object to compare
+         * @return
+         */
         @Override
         public boolean equals(Object obj) {
             if (!(obj instanceof PlayerBackup)) return false;
@@ -172,11 +265,25 @@ public class Backup {
         }
     }
 
+    /**
+     * Contains the backup of the kill shot track of the game
+     */
     private class KillShotTrackBackup{
+        /**
+         * number of skulls currently present
+         */
         private int skulls;
+
+        /**
+         * the killshot track with killings already performed
+         */
         private List<Map<String, Integer>> track;
 
-        public KillShotTrackBackup(KillShotTrack k){
+        /**
+         * Builds the backup of the killshot track
+         * @param k the killshot track to backup
+         */
+        private KillShotTrackBackup(KillShotTrack k){
             skulls = k.getSkulls();
 
             track = new ArrayList<>();
@@ -189,7 +296,12 @@ public class Backup {
             }
         }
 
-        public void restore(KillShotTrack k, Match match){
+        /**
+         * Restores the passed killshot track to the state saved in the backup, using objects from the current match
+         * @param k the killshot track to restore
+         * @param match the current match (used to take the actual objects of players)
+         */
+        private void restore(KillShotTrack k, Match match){
             k.setSkulls(skulls);
             k.clearKillingCounter();
             k.clearKillingOrder();
@@ -204,6 +316,11 @@ public class Backup {
             }
         }
 
+        /**
+         * checks equality between two killshot track backups
+         * @param obj the object to compare
+         * @return
+         */
         @Override
         public boolean equals(Object obj) {
             if (!(obj instanceof KillShotTrackBackup)) return false;
@@ -220,14 +337,40 @@ public class Backup {
         }
     }
 
+    /**
+     * Contains the backup of the stack manager (with cards' objects of the match)
+     */
     private class StackManagerBackup{
+        /**
+         * the stack of the weapons to draw
+         */
         private List<String> weaponActiveStack;
+
+        /**
+         * the stack of the powerUps to draw
+         */
         private List<String> powerUpActiveStack;
+
+        /**
+         * the stack of the powerUps already drawed and discarded
+         */
         private List<String> powerUpWasteStack;
+
+        /**
+         * the stack of the ammoTiles to draw
+         */
         private List<String> ammoTilesActiveStack;
+
+        /**
+         * the stack of the ammoTiles already drawed and discarded
+         */
         private List<String> ammoTilesWasteStack;
 
-        public StackManagerBackup(StackManager sm){
+        /**
+         * Builds the backup of the current stack manager
+         * @param sm the stack manager to backup
+         */
+        private StackManagerBackup(StackManager sm){
             weaponActiveStack = new ArrayList<>();
             for (Weapon w : sm.getWeaponActiveStack()){
                 weaponActiveStack.add(w.getName());
@@ -254,7 +397,11 @@ public class Backup {
             }
         }
 
-        public void restore(StackManager stackManager){
+        /**
+         * Restores the stack manager to the state saved in the backup (building new objects for cards)
+         * @param stackManager the stack manager to restore
+         */
+        private void restore(StackManager stackManager){
             List<Weapon> tempWeapons = new ArrayList<>();
             for (String name : weaponActiveStack){
                 tempWeapons.add(stackManager.getWeaponFromName(name));
@@ -286,6 +433,11 @@ public class Backup {
             stackManager.initAmmoTilesWasteStack(tempAmmoTilesWaste);
         }
 
+        /**
+         * chacks equality between two stack managers
+         * @param obj the object to compare
+         * @return
+         */
         @Override
         public boolean equals(Object obj) {
             if (!( obj instanceof StackManagerBackup)) return false;
@@ -311,14 +463,40 @@ public class Backup {
         }
     }
 
+    /**
+     * Contains the backup of the current layout
+     */
     private class LayoutBackup{
+        /**
+         * number of configuration
+         */
         private int layoutConfiguration;
+
+        /**
+         * weapons in the blue spawn point
+         */
         private List<String> blueWeapons;
+
+        /**
+         * weapons in the red spawn point
+         */
         private List<String> redWeapons;
+
+        /**
+         * weapons in the yellow spawn point
+         */
         private List<String> yellowWeapons;
+
+        /**
+         * ammoTiles in the squares of the map
+         */
         private Map<String, String> ammosTilesInSquares;
 
-        public LayoutBackup(Layout layout){
+        /**
+         * Builds the backup of the current layout
+         * @param layout the layout to backup
+         */
+        private LayoutBackup(Layout layout){
             layoutConfiguration = layout.getLayoutConfiguration();
 
             blueWeapons = new ArrayList<>();
@@ -346,7 +524,12 @@ public class Backup {
             }
         }
 
-        public void restore(Layout layout, Match match){
+        /**
+         * Restores the layout to the state saved in the backup (using objects from current match)
+         * @param layout the layout to restore
+         * @param match the current match (used to take the actual objects of the cards)
+         */
+        private void restore(Layout layout, Match match){
             SpawnSquare tempSpawnSquare = layout.getSpawnPoint(AmmoColor.BLUE);
             tempSpawnSquare.clearWeapons();
             for (String name : blueWeapons){
@@ -406,17 +589,55 @@ public class Backup {
         }
     }
 
+    /**
+     * Contains the backup of the status of the global match and turn
+     */
     private class MatchBackup{
+        /**
+         * is the final frenzy started?
+         */
         private boolean frenzyOn;
+
+        /**
+         * number of actions allowed in the current turn
+         */
         private int numberOfActions;
+
+        /**
+         * number of actions already completed
+         */
         private int actionsCompleted;
+
+        /**
+         * true if the current player can only reload
+         */
         private boolean onlyReload;
+
+        /**
+         * true if the current player can complete the turn
+         */
         private boolean turnCompletable;
+
+        /**
+         * true if the player has already completed his turn
+         */
         private boolean alreadyCompleted;
+
+        /**
+         * the current player of the match
+         */
         private String currentPlayer;
+
+        /**
+         * players which are requested to do something
+         */
         private List<String> waitingFor = new ArrayList<>();
 
-        public MatchBackup(Match match){
+        /**
+         * Builds a backup of the global status of the match
+         * @param match the match to backup
+         */
+        private MatchBackup(Match match){
             frenzyOn = match.isFrenzyOn();
             numberOfActions = match.getNumberOfActions();
             actionsCompleted = match.getActionsCompleted();
@@ -429,7 +650,11 @@ public class Backup {
             }
         }
 
-        public void restore (Match match){
+        /**
+         * Restores the match to the state saved in the backup
+         * @param match the match to restore
+         */
+        private void restore (Match match){
             match.setFrenzyOn(frenzyOn);
             match.setNumberOfActions(numberOfActions);
             match.setActionsCompleted(actionsCompleted);
@@ -440,6 +665,11 @@ public class Backup {
             //todo: restore waitingFor or not (it is recreated when resuming game)
         }
 
+        /**
+         * checks equality between two match backups
+         * @param obj teh object to compare
+         * @return
+         */
         @Override
         public boolean equals(Object obj) {
             if (!(obj instanceof MatchBackup)) return false;
@@ -467,14 +697,45 @@ public class Backup {
         }
     }
 
+    /**
+     * list with backups of the players of the match
+     */
     private List<PlayerBackup> playerBackups;
+
+    /**
+     * the backup of the killshot track
+     */
     private KillShotTrackBackup killShotTrackBackup;
+
+    /**
+     * the backup of the stack manager
+     */
     private StackManagerBackup stackManagerBackup;
+
+    /**
+     * the backup of the layout
+     */
     private LayoutBackup layoutBackup;
+
+    /**
+     * the backup of the layout
+     */
     private MatchBackup matchBackup;
+
+    /**
+     * the folder containg backup(s) related to the current game
+     */
     private static final String FILE_PATH = "backups/";
+
+    /**
+     * extension of the backups
+     */
     private static final String EXTENSION = ".json";
 
+    /**
+     * Builds a backup of the whole match, saving each subpart (players, killshot, layout, stacks)
+     * @param match the match to backup
+     */
     public Backup(Match match){
         playerBackups = new ArrayList<>();
         for (Player p : match.getPlayers()){
@@ -486,11 +747,22 @@ public class Backup {
         matchBackup = new MatchBackup(match);
     }
 
+    /**
+     * Creates a backup from its name. Test-only method.
+     * @param name name of the file with the saved backup
+     * @return
+     */
     public static Backup initFromFile(String name){
         InputStream url= Backup.class.getClassLoader().getResourceAsStream(FILE_PATH + name + EXTENSION);
         return initFromFile(url);
     }
 
+    /**
+     * Creates a backup from a input stream.
+     * It is used to set up a proper match for weapon tests.
+     * @param url the url of the file with the backup
+     * @return
+     */
     public static Backup initFromFile(InputStream url){
         Gson gson = new Gson();
         Backup temp;
@@ -509,82 +781,24 @@ public class Backup {
         return temp;
     }
 
-    public static boolean isBackupAvailable(String name){
-        //return Backup.class.getClassLoader().getResource("backup/" + name + EXTENSION) != null;
-        try {
-            String jarPath = URLDecoder.decode(Backup.class.getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
-            String filePath = jarPath.substring(0, jarPath.lastIndexOf("/")) + File.separator + "backups"+ File.separator + name + EXTENSION;
-            File file = new File(filePath);
-            return file.exists();
-        } catch (UnsupportedEncodingException e){
-            System.out.println("[WARNING] Cannot check if there's a backup");
-            return false;
-        }
-    }
-
     public Backup (){}
 
-    public boolean saveOnFile(String name){
-        return saveOnFile(FILE_PATH, name);
+    /**
+     * Saves this backup on a file of the specified name, in a default folder (near the jar)
+     * @param name the name of the file
+     * @return
+     */
+    public void saveOnFile(String name) {
+        ParserManager pm = new ParserManager();
+        pm.saveBackupOnFile(this, name);
     }
 
-    public boolean saveOnFile(String path, String name) {
-        Gson gson = new Gson();
-
-        String jarPath = "";
-        System.out.println("Writing data...");
-        try {
-            jarPath = URLDecoder.decode(getClass().getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
-            System.out.println(jarPath);
-        } catch (UnsupportedEncodingException e1) {
-            e1.printStackTrace();
-        }
-        // construct a File within the same folder of this jar, or of this class.
-        String dirPath = jarPath.substring(0, jarPath.lastIndexOf("/")) + File.separator + "backups";
-        File dir = new File(dirPath);
-        if (!dir.exists()){
-            dir.mkdir();
-        }
-        String completePath = dirPath + File.separator + name + EXTENSION;
-        File file = new File(completePath);
-        try {
-            FileWriter fw = new FileWriter(file);
-            gson.toJson(this, fw);
-            fw.close();
-            return true;
-        } catch (IOException e){
-            System.out.println("Cannot write backup file");
-        }
-        System.out.println("backup file writte [OK]");
-
-        /*
-        //File file = new File(path+name+EXTENSION);
-        System.out.println("Sto per scrivere su file");
-        try {
-            File file = new File(getClass().getClassLoader().getResource("backups/" + name + EXTENSION).toURI());
-            FileWriter fw;
-            try {
-                fw = new FileWriter(file);
-                gson.toJson(this, fw);
-                fw.close();
-                return true;
-            } catch (IOException e){
-                e.printStackTrace();
-            }
-            System.out.println("Ho finito di scrivere su file");
-        }
-        catch (URISyntaxException e){
-            e.printStackTrace();
-        }
-        */
-        return false;
-    }
-
+    /**
+     * Restores the whole match to the state saved in the backup.
+     * After restoring all the objects in the match are coherent.
+     * @param match the match to restore
+     */
     public void restore(Match match){
-        restoreMatch(match);
-    }
-
-    private void restoreMatch(Match match){
         stackManagerBackup.restore(match.getStackManager());
         layoutBackup.restore(match.getLayout(), match);
         for (PlayerBackup pb : playerBackups) {
@@ -595,10 +809,19 @@ public class Backup {
         matchBackup.restore(match);
     }
 
+    /**
+     * Gets the layout config from the backup
+     * @return integer coresponding to layout config
+     */
     public int getLayoutConfig(){
         return layoutBackup.layoutConfiguration;
     }
 
+
+    /**
+     * Gets all the names of the players in this backup.
+     * @return list of the names, in the order of playing
+     */
     public List<String> getPlayerNames(){
         List<String> result = new ArrayList<>();
         for (PlayerBackup pb : playerBackups){
@@ -607,10 +830,21 @@ public class Backup {
         return result;
     }
 
+    /**
+     * Gets the order of a player in the match
+     * @param name name of the player
+     * @return integer corresponding to the order of playing. -1 if the player is not present
+     */
     public int getPlayerIndex(String name){
         return getPlayerNames().indexOf(name);
     }
 
+    /**
+     * Checks equality between two backups (by recursively checking equality of subparts)
+     * It is used in tests, to compare the actual and the expected situation
+     * @param obj the object to compare
+     * @return
+     */
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof Backup)) return false;

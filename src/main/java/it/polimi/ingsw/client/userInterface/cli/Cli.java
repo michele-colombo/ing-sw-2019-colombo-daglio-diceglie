@@ -165,42 +165,54 @@ public class Cli implements UserInterface {
 
     @Override
     public void updateLayout() {
-
+        playingWindow.getLayoutBox().update(client.getMatch());
     }
 
     @Override
     public void updateKillshotTrack() {
-
+        playingWindow.getKillShotTrackBox().update(client.getMatch());
     }
 
     @Override
     public void updateCurrentPlayer() {
-
+        for (MiniBox playerBox : playingWindow.getAllPlayers()){
+            playerBox.update(client.getMatch());
+        }
     }
 
     @Override
     public void updatePlayer(PlayerView updated) {
-
+        for (MiniBox playerBox : playingWindow.getAllPlayers()){
+            playerBox.update(client.getMatch());
+        }
     }
 
     @Override
     public void updatePayment() {
-
+        playingWindow.getMyInfoBox().update(client.getMatch());
     }
 
     @Override
     public void updateWeapons(PlayerView player) {
-
+        playingWindow.getMyWeaponBox().update(client.getMatch());
+        for (MiniBox playerBox : playingWindow.getAllPlayers()){
+            playerBox.update(client.getMatch());
+        }
     }
 
     @Override
     public void updatePowerUp(PlayerView player) {
-
+        playingWindow.getMyPowerUpBox().update(client.getMatch());
+        for (MiniBox playerBox : playingWindow.getAllPlayers()){
+            playerBox.update(client.getMatch());
+        }
     }
 
     @Override
     public void updateDamage(PlayerView player) {
-
+        for (MiniBox playerBox : playingWindow.getAllPlayers()){
+            playerBox.update(client.getMatch());
+        }
     }
 
     @Override

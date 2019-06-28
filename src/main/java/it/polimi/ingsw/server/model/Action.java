@@ -57,10 +57,13 @@ public class Action {
 
     //added by Giuseppe Diceglie
     /**
-     * it's the square chosen by the player. useful for many weapons
+     * it's the square chosen by the player, used for shooting.
      */
     private Square chosenSquare;
 
+    /**
+     * It's the player chosen during action, used for shooting.
+     */
     private Player chosenPlayer;
 
 
@@ -95,7 +98,7 @@ public class Action {
 
     /**
      * Builds a string according to the microActions present (with the multiplicity for movements)
-     * @return
+     * @return the identifier of the action
      */
     @Override
     public String toString(){
@@ -106,10 +109,18 @@ public class Action {
         return s;
     }
 
+    /**
+     * Getter for the current mode
+     * @return the mode stored
+     */
     public Mode getCurrMode() {
         return currMode;
     }
 
+    /**
+     * setter for the current mode
+     * @param currMode the mode to set
+     */
     public void setCurrMode(Mode currMode) {
         this.currMode = currMode;
     }
@@ -122,6 +133,10 @@ public class Action {
         return microActions;
     }
 
+    /**
+     * getter for the current weapon (the one relative to action)
+     * @return the actual weapon
+     */
     public Weapon getCurrWeapon() {
         return currWeapon;
     }
@@ -144,7 +159,7 @@ public class Action {
 
     /**
      * Adds a microAction to the list. It is used to build the action.
-     * @param microAction
+     * @param microAction the microAction to add
      */
     public void add (MicroAction microAction) {
         if (microAction != null) {
@@ -152,48 +167,76 @@ public class Action {
         }
     }
 
+    /**
+     * Getter for IncrementActionCounter
+     * @return true if the action increments the counter (counts as one of the two permitted)
+     */
     public boolean isIncrementActionCounter() {
         return incrementActionCounter;
     }
 
+    /**
+     * Getter for ActivateOnlyReloads
+     * @return true if after this action only reloads are allowed
+     */
     public boolean isActivateOnlyReloads() {
         return activateOnlyReloads;
     }
 
+    /**
+     * Getter for the current spawnSquare
+     * @return the current spawnSquare
+     */
     public SpawnSquare getCurrSpawnSquare() {
         return currSpawnSquare;
     }
 
+    /**
+     * Setter for the current spawnSquare
+     * @param currSpawnSquare
+     */
     public void setCurrSpawnSquare(SpawnSquare currSpawnSquare) {
         this.currSpawnSquare = currSpawnSquare;
     }
 
+    /**
+     * Setter for the current weapon
+     * @param currWeapon
+     */
     public void setCurrWeapon(Weapon currWeapon) {
         this.currWeapon = currWeapon;
     }
 
+    /**
+     * Setter for the current powerUp
+     * @param po
+     */
     public void setCurrPowerUp(PowerUp po){
         this.currPowerUp = po;
     }
 
+    /**
+     * getter for the current powerUp
+     * @return
+     */
     public PowerUp getCurrPowerUp() {
         return currPowerUp;
     }
 
-    public void setSelectedModes(List<Mode> selectedModes) {
-        this.selectedModes = selectedModes; //should set a shallow copy instead?
-    }
-
+    /**
+     * Sets the current effects
+     * @param currEffects
+     */
     public void setCurrEffects(List<Effect> currEffects) {
-        this.currEffects = currEffects; //should set a shallow copy instead?
-    }
-
-    public void addEffects(List<Effect> effects){
-        this.currEffects.addAll(effects);
+        this.currEffects = currEffects;
     }
 
     //added by Giuseppe Diceglie
 
+    /**
+     * Gets the last player damaged during shooting
+     * @return null if no player has been already damaged in this action
+     */
     public Player getLastDamaged(){
         if(!damaged.isEmpty()) {
             return damaged.get(damaged.size() - 1);
@@ -201,26 +244,50 @@ public class Action {
         return null;
     }
 
+    /**
+     * Gets the list of player damaged during this action
+     * @return an empty list if nobody was damaged during this action
+     */
     public List<Player> getDamaged(){
         return damaged;
     }
 
+    /**
+     * Adds a player (which has just been damaged)
+     * @param damagedToAdd the player just damaged
+     */
     public void addDamaged(Player damagedToAdd){
         damaged.add(damagedToAdd);
     }
 
+    /**
+     * Gets the chosen square during shooting
+     * @return
+     */
     public Square getChosenSquare() {
         return chosenSquare;
     }
 
+    /**
+     * Gets the chosen player during shooting
+     * @return
+     */
     public Player getChosenPlayer() {
         return chosenPlayer;
     }
 
+    /**
+     * Sets the chosen square. Used for shooting.
+     * @param chosenSquare
+     */
     public void setChosenSquare(Square chosenSquare) {
         this.chosenSquare = chosenSquare;
     }
 
+    /**
+     * Sets the chosen player. used for shooting.
+     * @param chosenPlayer
+     */
     public void setChosenPlayer(Player chosenPlayer) {
         this.chosenPlayer = chosenPlayer;
     }

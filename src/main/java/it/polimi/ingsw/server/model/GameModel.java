@@ -38,6 +38,7 @@ public class GameModel implements Observable {
      * the current match in progress
      */
     private Match match;
+
     private boolean matchInProgress;
     private Backup currBackup;
     private Map<Player, Observer> observers;
@@ -122,7 +123,7 @@ public class GameModel implements Observable {
         //match = new Match(layoutConfig, skulls);
         //match= new Match(pm.getLayoutConfig(), pm.getSkullNumberConfig());
 
-        match= new Match(pm.getLayout(), pm.getSkullNumberConfig(), pm.getStackManager());
+        match = new Match(pm.getLayout(), pm.getSkullNumberConfig(), pm.getStackManager());
 
 
         for (Player p : allPlayers()){ //activePlayers only? or all players?

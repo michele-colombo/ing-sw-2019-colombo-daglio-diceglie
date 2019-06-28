@@ -74,7 +74,7 @@ public class SocketClient extends NetworkInterfaceClient implements EventVisitor
 
     private MessageVisitable unwrap(String messageText){
         //todo: remove line below
-        //System.out.println(messageText);
+        System.out.println(messageText);
         Gson gson= new Gson();
 
         String prefix= messageText.substring(messageText.indexOf('#'), messageText.lastIndexOf('#') + 1);
@@ -188,11 +188,10 @@ public class SocketClient extends NetworkInterfaceClient implements EventVisitor
                     String strcv= in.nextLine();
                     if(!strcv.equalsIgnoreCase(CommonProperties.PING_NAME)) {
                         MessageVisitable received = unwrap(strcv);
-                        try {
+                        if (received != null){
                             received.accept(client);
-                        }
-                        catch (NullPointerException e){
-                            System.out.println("NULL MESSAGE RECEIVED!!");
+                        } else {
+                            System.out.println("NULL MESSAGE RECEIVED");
                         }
                     }
                 }

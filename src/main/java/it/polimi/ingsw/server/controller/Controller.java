@@ -1,5 +1,7 @@
 package it.polimi.ingsw.server.controller;
 
+import it.polimi.ingsw.communication.message.GenericMessage;
+import it.polimi.ingsw.communication.message.MessageVisitable;
 import it.polimi.ingsw.server.ServerView;
 import it.polimi.ingsw.server.exceptions.*;
 import it.polimi.ingsw.communication.message.LoginMessage;
@@ -54,7 +56,7 @@ public class Controller {
     }
 
     public void setInputTimerDuration(int inputTimerDuration) {
-        if (inputTimerDuration > 0){
+        if (inputTimerDuration > 0) {
             this.inputTimerDuration = inputTimerDuration;
         }
     }
@@ -99,8 +101,8 @@ public class Controller {
             try {
                 sq = p.getSelectableSquares().get(selection);
             } catch (IndexOutOfBoundsException e) {
-                System.out.println("wrong square selection");
-                return; //todo: what to do? create a responseMessage? or errorMessage?
+                selectionError(serverView);
+                return;
             }
             switch (p.getState()) {
                 case GRAB_THERE:
@@ -116,8 +118,7 @@ public class Controller {
                     gameModel.choosePowerUpTarget(p, null, sq);
                     break;
                 default:
-                    System.out.println("selected a square in the wrong state");
-                    //todo: what to do?
+                    selectionError(serverView);
                     return;
             }
 
@@ -135,16 +136,16 @@ public class Controller {
             try {
                 act = p.getSelectableActions().get(selection);
             } catch (IndexOutOfBoundsException e) {
-                System.out.println("wrong action selection");
-                return; //todo (should not occur)
+                selectionError(serverView);
+                return;
             }
             switch (p.getState()) {
                 case CHOOSE_ACTION:
                     gameModel.performAction(p, act);
                     break;
                 default:
-                    System.out.println("selected an action in the wrong state");
-                    return; //todo (should not occur)
+                    selectionError(serverView);
+                    return;
             }
         } catch (NoSuchObserverException e){
             //todo (should not occur)
@@ -160,8 +161,8 @@ public class Controller {
             try {
                 pl = p.getSelectablePlayers().get(selection);
             } catch (IndexOutOfBoundsException e) {
-                System.out.println("wrong player selection");
-                return; //todo
+                selectionError(serverView);
+                return;
             }
             ;
             switch (p.getState()) {
@@ -172,8 +173,8 @@ public class Controller {
                     gameModel.choosePowerUpTarget(p, pl, null);
                     break;
                 default:
-                    System.out.println("selected a player in the wrong state");
-                    return; //todo
+                    selectionError(serverView);
+                    return;
             }
         } catch (NoSuchObserverException e){
             //todo
@@ -189,8 +190,8 @@ public class Controller {
             try {
                 wp = p.getSelectableWeapons().get(selection);
             } catch (IndexOutOfBoundsException e) {
-                System.out.println("wrong weapon selection");
-                return; //todo
+                selectionError(serverView);
+                return;
             }
             switch (p.getState()) {
                 case GRAB_WEAPON:
@@ -206,8 +207,8 @@ public class Controller {
                     gameModel.reloadWeapon(p, wp);
                     break;
                 default:
-                    System.out.println("selected a weapon in the wrong state");
-                    return; //todo
+                    selectionError(serverView);
+                    return;
             }
         } catch (NoSuchObserverException e){
             //todo
@@ -223,16 +224,16 @@ public class Controller {
             try {
                 mod = p.getSelectableModes().get(selection);
             } catch (IndexOutOfBoundsException e) {
-                System.out.println("wrong mode selection");
-                return; //todo
+                selectionError(serverView);
+                return;
             }
             switch (p.getState()) {
                 case CHOOSE_MODE:
                     gameModel.addMode(p, mod);
                     break;
                 default:
-                    System.out.println("selected a mode in the wrong state");
-                    return; //todo
+                    selectionError(serverView);
+                    return;
             }
         } catch (NoSuchObserverException e){
             //todo
@@ -248,8 +249,8 @@ public class Controller {
             try {
                 cmd = p.getSelectableCommands().get(selection);
             } catch (IndexOutOfBoundsException e) {
-                System.out.println("wrong command selection");
-                return; //todo
+                selectionError(serverView);
+                return;
             }
             if (cmd == Command.OK) {
                 switch (p.getState()) {
@@ -272,8 +273,8 @@ public class Controller {
                         gameModel.nextMicroAction();
                         break;
                     default:
-                        System.out.println("selected OK in the wrong state");
-                        return; //todo
+                        selectionError(serverView);
+                        return;
                 }
             } else if (cmd == Command.BACK) {
                 gameModel.restore();
@@ -282,7 +283,6 @@ public class Controller {
             //todo
         }
         finalCleaning();
-        //todo:  update
     }
 
     public synchronized void colorSelected(int selection, ServerView serverView) {
@@ -293,22 +293,21 @@ public class Controller {
             try {
                 col = p.getSelectableColors().get(selection);
             } catch (IndexOutOfBoundsException e) {
-                System.out.println("wrong color selection");
-                return; //todo
+                selectionError(serverView);
+                return;
             }
             switch (p.getState()) {
                 case PAYING_ANY:
                     gameModel.payAny(p, col);
                     break;
                 default:
-                    System.out.println("selected a color in the wrong state");
-                    return; //todo
+                    selectionError(serverView);
+                    return;
             }
         } catch (NoSuchObserverException e){
             //todo
         }
         finalCleaning();
-        //todo: update
     }
 
     public synchronized void powerUpSelected(int selection, ServerView serverView) {
@@ -319,8 +318,7 @@ public class Controller {
             try {
                 po = p.getSelectablePowerUps().get(selection);
             } catch (IndexOutOfBoundsException e) {
-                //todo (should not occur)
-                System.out.println("wrong powerup selection");
+                selectionError(serverView);
                 return;
             }
             switch (p.getState()) {
@@ -337,15 +335,13 @@ public class Controller {
                     gameModel.usePowerUp(p, po);
                     break;
                 default:
-                    //todo (should not occur)
-                    System.out.println("selected a powerup in the wrong state");
+                    selectionError(serverView);
                     return;
             }
         } catch (NoSuchObserverException e){
             //todo (should not occur)
         }
         finalCleaning();
-        //todo: update
     }
 
     public synchronized void disconnectPlayer(ServerView serverView){
@@ -449,5 +445,16 @@ public class Controller {
             timers.get(observer).cancel();
         }
         timers.remove(observer);
+    }
+
+    private void selectionError(Observer observer){
+        try {
+            MessageVisitable message = new GenericMessage("Selection not permitted, retry.");
+            gameModel.notify(message, observer);
+            System.out.println("[WARNING] wrong selection from player " + gameModel.getPlayerByObserver(observer).getName());
+        } catch (NoSuchObserverException e){
+            System.out.println("[WARNING] wrong selection, player does not exist");
+        }
+        gameModel.getMatch().notifyFullUpdateAllPlayers();
     }
 }

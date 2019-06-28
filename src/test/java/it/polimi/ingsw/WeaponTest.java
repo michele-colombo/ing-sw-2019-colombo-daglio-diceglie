@@ -509,7 +509,7 @@ public class WeaponTest {
         assertEquals(gianni.getState(), PlayerState.SHOOT_TARGET);
         assertEquals(gianni.getSelectableSquares().size(), 0);
         assertEquals(gianni.getSelectablePlayers().size(), 2);
-        assertEquals(Set.copyOf( gianni.getSelectablePlayers() ), Set.copyOf(Arrays.asList(new Player[]{evila, michele})));  //gianni can select only evila and michele
+        assertEquals(new HashSet<>( gianni.getSelectablePlayers() ), new HashSet<>(Arrays.asList(new Player[]{evila, michele})));  //gianni can select only evila and michele
 
         printSel(gianni);
 

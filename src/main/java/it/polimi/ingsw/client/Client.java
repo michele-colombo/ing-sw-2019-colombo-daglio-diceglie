@@ -318,7 +318,7 @@ public class Client implements MessageVisitor {
     }
 
     @Override
-    public void visit(GameOverMessage gameOverMessage) {
+    public synchronized void visit(GameOverMessage gameOverMessage) {
         Map<PlayerView, Integer> rank = new HashMap<>();
         Map<PlayerView, Integer> points = new HashMap<>();
         if (match != null){
