@@ -24,11 +24,11 @@ import java.util.Map;
  * It represents a player's damageTrack
  */
 public class DamageTrack extends Parent {
+    private static final String DAMAGE_TRACK_IMAGE_FOLDER= "resources/damageTracks/";
+
     /**
      * It's the ratio of translation on x axe of the ammoBox
      */
-    private static final String DAMAGE_TRACK_IMAGE_FOLDER= "resources/damageTracks/";
-
     private static final double TRANSLATE_AMMO_BOX_X = 0.09;
 
     /**
@@ -115,8 +115,6 @@ public class DamageTrack extends Parent {
      *
      */
     public DamageTrack(List<Color> markColors, PlayerView playerView){
-        InputStream myDmgUrl = getClass().getClassLoader().getResourceAsStream("damageTracks/dmg" + playerView.getColor().toString().toLowerCase() + ".png");
-        this.damageTrackImageView = new ImageView(new Image(myDmgUrl));
         InputStream myDmgUrl = getClass().getClassLoader().getResourceAsStream(DAMAGE_TRACK_IMAGE_FOLDER + "dmg" + playerView.getColor().toString().toLowerCase() + ".png");
         Image image = new Image(myDmgUrl);
         this.damageTrackImageView = new ImageView(image);

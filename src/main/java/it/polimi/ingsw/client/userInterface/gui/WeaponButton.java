@@ -14,13 +14,12 @@ import java.io.InputStream;
 /**
  * It represent a weapon
  */
-public class WeaponButton extends Parent{
-    /**
-     * Rescale ratio of the image associated to this card when is shown on board
-     */
 public class WeaponButton extends Parent {
     private static final String WEAPON_IMAGE_FOLDER= "resources/weapon/";
 
+    /**
+     * Rescale ratio of the image associated to this card when is shown on board
+     */
     private static final double SCALE_RATIO_ON_BOARD = 11.09;
     /**
      * Rescale ratio of the image associated to this card when is shown unloaded
@@ -50,11 +49,9 @@ public class WeaponButton extends Parent {
      */
     public WeaponButton(WeaponView weaponView, boolean inHand){
         InputStream weaponUrl = getClass().getClassLoader().getResourceAsStream(WEAPON_IMAGE_FOLDER + weaponView.getName() + ".png");
-        this.weaponImage = new Image(weaponUrl);
+        Image weaponImage = new Image(weaponUrl);
         this.weaponImageView = new ImageView(weaponImage);
         this.weaponView = weaponView;
-        InputStream weaponUrl = getClass().getClassLoader().getResourceAsStream("weapon/" + weaponView.getName() + ".png");
-        this.weaponImageView = new ImageView(new Image(weaponUrl));
         this.width = weaponImageView.boundsInParentProperty().get().getWidth();
         this.weaponImageView.setPreserveRatio(true);
         this.getChildren().add(weaponImageView);

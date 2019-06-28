@@ -35,13 +35,6 @@ public class BoardGui {
     private final static double SCALE_RATIO_SELECTABLE_RECTANGLE_X = 7.68;
     private final static double SCALE_RATIO_SELECTABLE_RECTANGLE_Y = 5.25;
     private final static double SKULL_CIRCLE = 76.08;
-    private static final double X_KILLSHOT_TRACK = 0.0909;
-    private static final double Y_KILLSHOT_TRACK = 0.0921;
-    private static final double Y_KILLSHOT_TRACK_OVERKILL = 0.025;
-    private static final double GAP_KILLSHOT_TRACK = 0.0421;
-    private static final double SCALE_RATIO_SELECTABLE_RECTANGLE_X = 7.68;
-    private static final double SCALE_RATIO_SELECTABLE_RECTANGLE_Y = 5.25;
-    private static final double SKULL_CIRCLE = 76.08;
 
     private final GridPane view;
     private HBox weaponBox;

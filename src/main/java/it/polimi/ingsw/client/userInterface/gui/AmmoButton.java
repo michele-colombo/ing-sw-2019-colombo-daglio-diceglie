@@ -37,10 +37,8 @@ public class AmmoButton extends Parent {
      * @param squareView The SquareView associated to this AmmoButton
      */
     public AmmoButton(SquareView squareView){
-        InputStream ammoUrl = getClass().getClassLoader().getResourceAsStream("ammo/ammo" + squareView.getAmmo().getAmmoTileID() + ".png");
-        this.ammoImageView = new ImageView(new Image(ammoUrl));
         InputStream ammoUrl = getClass().getClassLoader().getResourceAsStream(AMMOTILES_FOLDER + "ammo" + squareView.getAmmo().getAmmoTileID() + ".png");
-        this.ammoImage = new Image(ammoUrl);
+        Image ammoImage = new Image(ammoUrl);
         this.ammoImageView = new ImageView(ammoImage);
         this.width = BoardGui.getWidth() / SCALE_RATIO;
         this.ammoImageView.setFitWidth(width);

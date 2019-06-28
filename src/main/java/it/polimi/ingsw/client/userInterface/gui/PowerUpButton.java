@@ -33,12 +33,9 @@ public class PowerUpButton extends Parent{
      * @param powerUpView The powerUpView associated to this PowerUpButton
      */
     public PowerUpButton(PowerUpView powerUpView){
-        InputStream powerUpUrl = getClass().getClassLoader().getResourceAsStream("powerUp/" + powerUpView.getName() + " " + powerUpView.getColor().toString().toLowerCase() + ".png");
-        powerUpImageView = new ImageView(new Image(powerUpUrl));
         InputStream powerUpUrl = getClass().getClassLoader().getResourceAsStream(POWERUP_IMAGES_FOLDER + powerUpView.getName() + " " + powerUpView.getColor().toString().toLowerCase() + ".png");
-        this.powerUpImage = new Image(powerUpUrl);
+        Image powerUpImage = new Image(powerUpUrl);
         this.powerUpImageView = new ImageView(powerUpImage);
-        this.powerUpView = powerUpView;
         this.width = powerUpImageView.boundsInParentProperty().get().getWidth() / 1.5;
         this.height = powerUpImageView.boundsInParentProperty().get().getHeight() / 1.5;
         this.powerUpImageView.setFitWidth(width);
