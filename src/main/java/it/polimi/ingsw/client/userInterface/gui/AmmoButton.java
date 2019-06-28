@@ -15,6 +15,8 @@ import java.io.InputStream;
  * It's represent an ammo on the board
  */
 public class AmmoButton extends Parent {
+    private static final String AMMOTILES_FOLDER= "resources/ammo/";
+
     /**
      * It's the scale ratio of the card associated to this card
      */
@@ -37,6 +39,9 @@ public class AmmoButton extends Parent {
     public AmmoButton(SquareView squareView){
         InputStream ammoUrl = getClass().getClassLoader().getResourceAsStream("ammo/ammo" + squareView.getAmmo().getAmmoTileID() + ".png");
         this.ammoImageView = new ImageView(new Image(ammoUrl));
+        InputStream ammoUrl = getClass().getClassLoader().getResourceAsStream(AMMOTILES_FOLDER + "ammo" + squareView.getAmmo().getAmmoTileID() + ".png");
+        this.ammoImage = new Image(ammoUrl);
+        this.ammoImageView = new ImageView(ammoImage);
         this.width = BoardGui.getWidth() / SCALE_RATIO;
         this.ammoImageView.setFitWidth(width);
         this.ammoImageView.setPreserveRatio(true);

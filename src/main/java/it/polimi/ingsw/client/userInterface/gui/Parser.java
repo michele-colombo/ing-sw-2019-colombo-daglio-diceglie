@@ -15,6 +15,8 @@ public class Parser {
     /**
      * The gson parser
      */
+    private static final String FILE_SOURCE= "resources/";
+
     private Gson gson;
     /**
      * The layout of the board
@@ -35,7 +37,7 @@ public class Parser {
      * @return The List of PixelPosition loaded from file
      */
     public List<PixelPosition> loadAmmoResource(){
-        InputStream resourceUrl = getClass().getClassLoader().getResourceAsStream("coord" + layout + ".json");
+        InputStream resourceUrl = getClass().getClassLoader().getResourceAsStream(FILE_SOURCE + "coord" + layout + ".json");
         List<PixelPosition> pixelPositions = new LinkedList<>();
         PixelPosition[] pixelPositionArray;
         Scanner sc = new Scanner(resourceUrl);
@@ -50,7 +52,7 @@ public class Parser {
      * @return The List of PixelWeapon loaded from file
      */
     public List<PixelWeapon> loadWeaponResource(String color){
-        InputStream resourceUrl = getClass().getClassLoader().getResourceAsStream(color + "Weapons.json");
+        InputStream resourceUrl = getClass().getClassLoader().getResourceAsStream(FILE_SOURCE + color + "Weapons.json");
         List<PixelWeapon> pixelWeapons = new LinkedList<>();
         PixelWeapon[] pixelWeaponsArray;
         Scanner sc = new Scanner(resourceUrl);

@@ -25,21 +25,40 @@ import java.util.List;
  * It represents the screen in which to choose the mode of a weapon
  */
 public class ModeChoiceScreen {
+    private static final String WEAPON_IMAGE_FOLDER= "resources/weapon/";
 
+
+    /**
+     * weapon of witch the player has to choose the modes
+     */
     private WeaponView weapon;
     /**
      * Grid shown, in which there are buttons and card
+     */
+
+    /**
+     * grid to collocate nodes
      */
     private GridPane grid;
 
     /**
      * VBox containing the buttons with whom choose the preferred modes
      */
+    /**
+     * choice buttons in a column
+     */
     private VBox buttons;
+
+    /**
+     * card image in an anchorPane
+     */
     private AnchorPane card;
 
     /**
      * Create the screen in which shows the weapon and it's selectable modes
+     */
+    /**
+     * build the screen: set the image on the left, text in the center and button on the right
      */
     public ModeChoiceScreen(){
         System.out.println("lo sto creando (mode selection)");
@@ -69,7 +88,7 @@ public class ModeChoiceScreen {
 
         weapon= Gui.getClient().getMatch().getMyPlayer().getCurrWeapon();
 
-        Image weaponImage= new Image(getClass().getClassLoader().getResourceAsStream("weapon/" + weapon.getName() + ".png"));
+        Image weaponImage= new Image(getClass().getClassLoader().getResourceAsStream(WEAPON_IMAGE_FOLDER + weapon.getName() + ".png"));
         ImageView imageView = new ImageView(weaponImage);
         imageView.setFitHeight(Gui.getScreenBounds().getHeight() * 0.90);
         imageView.setPreserveRatio(true);
@@ -84,6 +103,9 @@ public class ModeChoiceScreen {
 
     /**
      * Update the screen, showing new selectable modes
+     */
+    /**
+     * update the screen
      */
     public void update() {
         Platform.runLater( () -> {
@@ -121,6 +143,10 @@ public class ModeChoiceScreen {
     /**
      *
      * @return grid
+     */
+    /**
+     *
+     * @return main grid
      */
     public Parent getParent(){
         return grid;

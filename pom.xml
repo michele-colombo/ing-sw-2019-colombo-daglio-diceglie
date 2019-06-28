@@ -81,6 +81,24 @@
                           <mainClass>it.polimi.ingsw.client.ClientMain</mainClass>
                       </transformer>
                   </transformers>
+                  <filters>
+                      <filter>
+                          <artifact>*:*</artifact>
+                          <includes>
+                              <include>resources/**</include>
+                              <include>it/polimi/ingsw/client/**</include>
+                              <include>it/polimi/ingsw/communication/**</include>
+                              <include>it/polimi/ingsw/server/model/enums/**</include>
+                              <include>it/polimi/ingsw/server/model/Cash*</include>
+                              <include>it/polimi/ingsw/server/model/AmmoTile*</include>
+                              <include>it/polimi/ingsw/server/network/**</include>
+                              <include>com/**</include>
+                          </includes>
+                          <excludes>
+                              <exclude>resources/serverConfig.json</exclude>
+                          </excludes>
+                      </filter>
+                  </filters>
               </configuration>
             </execution>
               <execution>
@@ -101,6 +119,18 @@
                               <artifact>*:*</artifact>
                               <excludes>
                                   <exclude>it/polimi/ingsw/client/**</exclude>
+                                  <exclude>resources/ammo/**</exclude>
+                                  <exclude>resources/damageTracks/**</exclude>
+                                  <exclude>resources/layoutPNG/**</exclude>
+                                  <exclude>resources/powerUp/**</exclude>
+                                  <exclude>resources/weapon/**</exclude>
+                                  <exclude>resources/clientConfig.json</exclude>
+                                  <exclude>resources/blueWeapons.json</exclude>
+                                  <exclude>resources/redWeapons.json</exclude>
+                                  <exclude>resources/yellowWeapons.json</exclude>
+                                  <exclude>resources/coord0.json</exclude>
+                                  <exclude>resources/coord2.json</exclude>
+                                  <exclude>resources/powerUpsDescription.json</exclude>
                               </excludes>
                           </filter>
                       </filters>

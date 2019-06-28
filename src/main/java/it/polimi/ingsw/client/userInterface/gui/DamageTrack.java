@@ -27,6 +27,8 @@ public class DamageTrack extends Parent {
     /**
      * It's the ratio of translation on x axe of the ammoBox
      */
+    private static final String DAMAGE_TRACK_IMAGE_FOLDER= "resources/damageTracks/";
+
     private static final double TRANSLATE_AMMO_BOX_X = 0.09;
 
     /**
@@ -115,6 +117,9 @@ public class DamageTrack extends Parent {
     public DamageTrack(List<Color> markColors, PlayerView playerView){
         InputStream myDmgUrl = getClass().getClassLoader().getResourceAsStream("damageTracks/dmg" + playerView.getColor().toString().toLowerCase() + ".png");
         this.damageTrackImageView = new ImageView(new Image(myDmgUrl));
+        InputStream myDmgUrl = getClass().getClassLoader().getResourceAsStream(DAMAGE_TRACK_IMAGE_FOLDER + "dmg" + playerView.getColor().toString().toLowerCase() + ".png");
+        Image image = new Image(myDmgUrl);
+        this.damageTrackImageView = new ImageView(image);
         this.playerView = playerView;
         this.damageTrackImageView.setFitWidth(Gui.getScreenBounds().getWidth()/4);
         this.damageTrackImageView.setPreserveRatio(true);
@@ -266,10 +271,10 @@ public class DamageTrack extends Parent {
         Image image;
         if(Gui.getClient().getMatch().isFrenzyOn()){
             if(playerView.isFrenzy()){
-                frenzyDmgUrl = getClass().getClassLoader().getResourceAsStream("damageTracks/dmgfullf" + playerView.getColor().toString().toLowerCase() + ".png");
+                frenzyDmgUrl = getClass().getClassLoader().getResourceAsStream(DAMAGE_TRACK_IMAGE_FOLDER + "dmgfullf" + playerView.getColor().toString().toLowerCase() + ".png");
                 //this.getChildren().removeAll(skulls);
             } else {
-                frenzyDmgUrl = getClass().getClassLoader().getResourceAsStream("damageTracks/dmgf" + playerView.getColor().toString().toLowerCase() + ".png");
+                frenzyDmgUrl = getClass().getClassLoader().getResourceAsStream(DAMAGE_TRACK_IMAGE_FOLDER + "dmgf" + playerView.getColor().toString().toLowerCase() + ".png");
             }
             image = new Image(frenzyDmgUrl);
             damageTrackImageView.setImage(image);

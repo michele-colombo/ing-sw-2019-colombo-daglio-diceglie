@@ -25,6 +25,16 @@ import java.io.InputStream;
 import java.util.*;
 
 public class BoardGui {
+    private static final String LAYOUT_PNG_FOLDER = "resources/layoutPNG/";
+
+
+    private final static double X_KILLSHOT_TRACK = 0.0909;
+    private final static double Y_KILLSHOT_TRACK = 0.0921;
+    private final static double Y_KILLSHOT_TRACK_OVERKILL = 0.025;
+    private final static double GAP_KILLSHOT_TRACK = 0.0421;
+    private final static double SCALE_RATIO_SELECTABLE_RECTANGLE_X = 7.68;
+    private final static double SCALE_RATIO_SELECTABLE_RECTANGLE_Y = 5.25;
+    private final static double SKULL_CIRCLE = 76.08;
     private static final double X_KILLSHOT_TRACK = 0.0909;
     private static final double Y_KILLSHOT_TRACK = 0.0921;
     private static final double Y_KILLSHOT_TRACK_OVERKILL = 0.025;
@@ -461,7 +471,6 @@ public class BoardGui {
             updateLayoutWeapon(yellowWeapons, layoutView.getYellowWeapons());
             updateLayoutWeapon(blueWeapons, layoutView.getBlueWeapons());
             updateLayoutWeapon(redWeapons, layoutView.getRedWeapons());
-            updateStateText();
         });
     }
 

@@ -20,7 +20,11 @@ import java.rmi.server.RMISocketFactory;
 import java.util.Scanner;
 
 public class ClientMain{
+    private static final String CLIENTCONFIG_PATH= "resources/clientConfig.json";
 
+    /**
+     * the configuration for the client
+     */
     public static ClientConfig config;
 
     public static void main(String[] args) throws IOException {
@@ -70,6 +74,9 @@ public class ClientMain{
         }
     }
 
+    /**
+     * ask input from user
+     */
     private static void askUserInput(){
         while(! isValidIp(config.getIp())){
             System.out.println("Please insert ip (X.X.X.X): ");
@@ -85,11 +92,15 @@ public class ClientMain{
         }
     }
 
+    /**
+     * load configuration parameters from configuration file (defaults)
+     */
+
     private static void loadFromConfigurationFile(){
         Gson gson= new Gson();
         JsonParser jp= new JsonParser();
 
-        InputStream url= new ClientMain().getClass().getClassLoader().getResourceAsStream("clientConfig.json");
+        InputStream url= new ClientMain().getClass().getClassLoader().getResourceAsStream(CLIENTCONFIG_PATH);
 
         if(url==null){
             System.out.println("No configuration file!");
@@ -105,6 +116,10 @@ public class ClientMain{
 
     }
 
+    /**
+     * load configuration parameters from cmd arguments
+     * @param args command line arguments
+     */
     private static void getFromCmdArguments(String[] args){
         for(int i=0; i<args.length; i++){
             String argument= args[i];
@@ -143,6 +158,11 @@ public class ClientMain{
     }
 
 
+    /**
+     *
+     * @param userInterface user interface choice
+     * @return true if it's valid
+     */
     private static boolean isValidInterface(String userInterface) {
         if(userInterface.equals( "gui" ) || userInterface.equals("cli") ){
             return true;
@@ -151,7 +171,11 @@ public class ClientMain{
     }
 
 
-
+    /**
+     *
+     * @param port port choice
+     * @return true if it's valid
+     */
     private static boolean isValidPort(int port) {
         if(port>1023 && port<65536) {
             return true;
@@ -159,6 +183,9 @@ public class ClientMain{
         return false;
     }
 
+    /**
+     * print the help dialog in the command line
+     */
     public static void printHelpScreen(){
         System.out.println("-ui [gui|cli]\n" +
                            "-ip [x.x.x.x]\n" +
@@ -166,6 +193,11 @@ public class ClientMain{
         return;
     }
 
+    /**
+     *
+     * @param ip ip choice
+     * @return true if it's valid
+     */
     public static boolean isValidIp(String ip){
         String[] splitted= ip.split("\\.");
         if(splitted.length != 4) return false;
@@ -178,6 +210,7 @@ public class ClientMain{
 
         return true;
     }
+
 
 
     public static class ClientConfig{

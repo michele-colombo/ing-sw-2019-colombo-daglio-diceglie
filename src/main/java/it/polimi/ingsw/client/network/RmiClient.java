@@ -27,11 +27,23 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RmiClient extends NetworkInterfaceClient{
+    /**
+     * the remote interface of the server
+     */
     private RmiServerRemoteInterface server;
+
+    /**
+     * a thread that alway asks to the server if he wants to send a message
+     */
     private Asker asker;
 
    // private MessageTrafficManager messageEater;
 
+    /**
+     * builds an RmiClient and starts it
+     * @param cl the owner of this connection
+     * @throws ConnectionInitializationException if something goes wriong during initialization
+     */
     public RmiClient(Client cl) throws ConnectionInitializationException{
         super(cl);
 
@@ -76,6 +88,11 @@ public class RmiClient extends NetworkInterfaceClient{
 
     }
 
+    /**
+     * forward an event to the server
+     * @param eventVisitable
+     * @throws ForwardingException
+     */
     @Override
     public void forward(EventVisitable eventVisitable) throws ForwardingException {
         //todo: remove
@@ -89,6 +106,9 @@ public class RmiClient extends NetworkInterfaceClient{
     }
 
 
+    /**
+     * stop all active threads
+     */
     @Override
     public synchronized void closeConnection() {
         ponging.interrupt();
@@ -96,6 +116,9 @@ public class RmiClient extends NetworkInterfaceClient{
         asker.close();
     }
 
+    /**
+     * pong the server to keep him awake
+     */
     @Override
     void pong() {
         try {
@@ -108,57 +131,22 @@ public class RmiClient extends NetworkInterfaceClient{
 
 
 
-
-    private class MessageTrafficManager extends Thread{
-        private List<MessageVisitable> queue;
-        private AtomicBoolean active;
-
-        public MessageTrafficManager(){
-            queue= Collections.synchronizedList(new ArrayList<>());
-            active= new AtomicBoolean(true);
-        }
-
-        public synchronized void eat(){
-            if(queue.isEmpty()){
-                try {
-                    wait();
-                } catch (InterruptedException e) {
-                    close();
-                }
-            }
-            else {
-                notifyAll();
-                queue.remove(0).accept(client);
-            }
-        }
-
-        public synchronized void put(MessageVisitable message){
-            queue.add(message);
-            notifyAll();
-        }
-
-
-        public synchronized void run(){
-            while(active.get()) {
-                eat();
-            }
-            System.out.println("run finished");
-
-        }
-
-        public synchronized void close(){
-            active.set(false);
-            notifyAll();
-        }
-    }
-
     private class Asker extends Thread{
+        /**
+         * flag true when the thread active
+         */
         private AtomicBoolean active;
 
+        /**
+         * build the asker
+         */
         private Asker(){
             active= new AtomicBoolean(true);
         }
 
+        /**
+         * repetively asks the server if he wants to send something. Close everything if connection fall
+         */
         @Override
         public synchronized void run(){
             try{

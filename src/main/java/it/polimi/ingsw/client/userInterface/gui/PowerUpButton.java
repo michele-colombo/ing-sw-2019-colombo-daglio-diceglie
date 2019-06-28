@@ -25,6 +25,8 @@ public class PowerUpButton extends Parent{
      */
     private double height;
 
+    private static final String POWERUP_IMAGES_FOLDER= "resources/powerUp/";
+
 
     /**
      * Creates a PowerUpButton. Pressing on it, it will send this powerUpView's name to the server
@@ -33,6 +35,10 @@ public class PowerUpButton extends Parent{
     public PowerUpButton(PowerUpView powerUpView){
         InputStream powerUpUrl = getClass().getClassLoader().getResourceAsStream("powerUp/" + powerUpView.getName() + " " + powerUpView.getColor().toString().toLowerCase() + ".png");
         powerUpImageView = new ImageView(new Image(powerUpUrl));
+        InputStream powerUpUrl = getClass().getClassLoader().getResourceAsStream(POWERUP_IMAGES_FOLDER + powerUpView.getName() + " " + powerUpView.getColor().toString().toLowerCase() + ".png");
+        this.powerUpImage = new Image(powerUpUrl);
+        this.powerUpImageView = new ImageView(powerUpImage);
+        this.powerUpView = powerUpView;
         this.width = powerUpImageView.boundsInParentProperty().get().getWidth() / 1.5;
         this.height = powerUpImageView.boundsInParentProperty().get().getHeight() / 1.5;
         this.powerUpImageView.setFitWidth(width);
