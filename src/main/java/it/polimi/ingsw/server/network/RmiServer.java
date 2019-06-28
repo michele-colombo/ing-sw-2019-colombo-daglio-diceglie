@@ -2,7 +2,6 @@ package it.polimi.ingsw.server.network;
 
 import it.polimi.ingsw.communication.CommonProperties;
 import it.polimi.ingsw.communication.events.EventVisitable;
-import it.polimi.ingsw.communication.message.ConnectionUpdateMessage;
 import it.polimi.ingsw.communication.message.GenericMessage;
 import it.polimi.ingsw.communication.message.MessageVisitable;
 import it.polimi.ingsw.server.ServerView;
@@ -14,174 +13,34 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-/*
-public class RmiServer extends UnicastRemoteObject implements NetworkInterfaceServer, RmiServerRemoteInterface{
-    private ServerView serverView;
-    private ResponseQueue responses;
-
-    private Timer pingPongTimer;
-
-
-    public RmiServer(Controller controller) throws RemoteException{
-        this.serverView= new ServerView(this, controller);
-
-        responses= new ResponseQueue();
-
-        Timer pinger= new Timer();
-        pinger.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    forwardMessage(new GenericMessage("cacchina"));
-                }
-                catch (IOException e){
-                    cancel();
-                }
-            }
-        }, CommonProperties.PING_PONG_DELAY, CommonProperties.PING_PONG_DELAY);
-
-        pingPongTimer= new Timer();
-        pingPongTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                closeNetwork();
-            }
-        }, CommonProperties.PING_PONG_DELAY*2);
-    }
-
-
-    @Override
-    public void forwardMessage(MessageVisitable messaggio) throws IOException{
-        responses.metti(messaggio);
-    }
-
-    @Override
-    public void closeNetwork() {
-        try {
-            UnicastRemoteObject.unexportObject(this, true);
-        }
-        catch (NoSuchObjectException e){  }
-    }
-
-    @Override
-    public void receive(EventVisitable event) throws RemoteException {
-        pingPongTimer.cancel();
-        pingPongTimer= new Timer();
-        pingPongTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                closeNetwork();
-            }
-        }, CommonProperties.PING_PONG_DELAY*2);
-
-
-        Thread resend= new Thread( () -> event.accept(serverView));
-        resend.start();
-    }
-
-    @Override
-    public MessageVisitable ask(){
-        return responses.prendi();
-    }
-
-    @Override
-    public boolean pong(){
-        return responses.isEmpty();
-    }
-
-
-
-    private class EventTrafficManager extends Thread{
-        private List<EventVisitable> queue;
-        private AtomicBoolean active;
-
-        public EventTrafficManager(){
-            queue= Collections.synchronizedList(new ArrayList<>());
-            active= new AtomicBoolean(true);
-        }
-
-        public synchronized void eat(){
-            if(queue.isEmpty()){
-                try {
-                    wait();
-                } catch (InterruptedException e) {
-                    //nothing
-                }
-            }
-            else {
-                notifyAll();
-                queue.remove(0).accept(serverView);
-            }
-        }
-
-        public synchronized void put(EventVisitable event){
-            queue.add(event);
-            notifyAll();
-        }
-
-
-        public synchronized void run(){
-            while(active.get()) {
-                eat();
-            }
-            System.out.println("run finished");
-
-        }
-
-        public synchronized void close(){
-            active.set(false);
-            notifyAll();
-        }
-    }
-
-
-    private class ResponseQueue extends Thread{
-        private List<MessageVisitable> coda;
-
-        public ResponseQueue() {
-            coda= Collections.synchronizedList(new ArrayList<>());
-        }
-
-        private boolean isEmpty(){
-            return coda.isEmpty();
-        }
-
-        public synchronized void metti(MessageVisitable daMettere){
-            coda.add(daMettere);
-            notifyAll();
-        }
-
-        public synchronized MessageVisitable prendi() {
-
-            try {
-                while(coda.isEmpty()) {
-                    wait();
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                this.interrupt();
-            }
-
-            return coda.remove(0);
-        }
-
-
-
-    }
-
-}
-
-
-*/
 
 public class RmiServer extends UnicastRemoteObject implements NetworkInterfaceServer, RmiServerRemoteInterface{
+    /**
+     * the owner of this connection
+     */
     private ServerView serverView;
+
+    /**
+     * queue with messages to send to client
+     */
     private ResponseQueue responses;
+
+    /**
+     * manager of incoming events
+     */
     private EventTrafficManager eventEater;
 
+    /**
+     * timer to understand if a client is already connected or not
+     */
     private Timer disconnectionTimer;
 
 
+    /**
+     * builds the rmi server
+     * @param controller controller of the game
+     * @throws RemoteException if an error occurs during initialization
+     */
     public RmiServer(Controller controller) throws RemoteException{
         this.serverView= new ServerView(this, controller);
         responses= new ResponseQueue();
@@ -215,11 +74,19 @@ public class RmiServer extends UnicastRemoteObject implements NetworkInterfaceSe
     }
 
 
+    /**
+     * forward a message to the client
+     * @param messaggio
+     * @throws IOException
+     */
     @Override
     public void forwardMessage(MessageVisitable messaggio) throws IOException{
-        responses.metti(messaggio);
+        responses.put(messaggio);
     }
 
+    /**
+     * stop all the active threads
+     */
     @Override
     public void closeNetwork() {
         eventEater.close();
@@ -235,15 +102,30 @@ public class RmiServer extends UnicastRemoteObject implements NetworkInterfaceSe
         }
     }
 
+    /**
+     * receive an event
+     * @param event incoming event
+     */
     @Override
-    public void receive(EventVisitable event) throws RemoteException {
+    public void receive(EventVisitable event){
         eventEater.put(event);
     }
 
+
+    /**
+     * ask if there are messages to send
+     * @return the first message to send
+     */
     @Override
     public MessageVisitable ask(){
-        return responses.prendi();
+        return responses.getIt();
     }
+
+    /**
+     * reset the disconnection timer. It's an impulse to know that the client is alive
+     * @return always true
+     * @throws RemoteException if connection is down
+     */
 
     @Override
     public boolean pong() throws RemoteException {
@@ -263,14 +145,26 @@ public class RmiServer extends UnicastRemoteObject implements NetworkInterfaceSe
 
 
     private class EventTrafficManager extends Thread{
+        /**
+         * incoming events
+         */
         private List<EventVisitable> queue;
+        /**
+         * flag true if thread is active
+         */
         private AtomicBoolean active;
 
+        /**
+         * build the eventTraffic Manager
+         */
         public EventTrafficManager(){
             queue= Collections.synchronizedList(new ArrayList<>());
             active= new AtomicBoolean(true);
         }
 
+        /**
+         * make the serverView visit the incoming events
+         */
         public synchronized void eat(){
             if(queue.isEmpty()){
                 try {
@@ -285,12 +179,19 @@ public class RmiServer extends UnicastRemoteObject implements NetworkInterfaceSe
             }
         }
 
+        /**
+         * add an event to the queue
+         * @param event the event to add
+         */
         public synchronized void put(EventVisitable event){
             queue.add(event);
             notifyAll();
         }
 
 
+        /**
+         * repetively try to eat the events in the queue
+         */
         public synchronized void run(){
             while(active.get()) {
                 eat();
@@ -299,6 +200,9 @@ public class RmiServer extends UnicastRemoteObject implements NetworkInterfaceSe
 
         }
 
+        /**
+         * stop the thread
+         */
         public synchronized void close(){
             active.set(false);
             notifyAll();
@@ -306,26 +210,39 @@ public class RmiServer extends UnicastRemoteObject implements NetworkInterfaceSe
     }
 
 
-    private class ResponseQueue extends Thread{
+    private class ResponseQueue{
+        /**
+         * queue with the outc=going responses
+         */
         private List<MessageVisitable> coda;
 
+        /**
+         * build the queue
+         */
         public ResponseQueue() {
             coda= new ArrayList<>();
         }
 
-        public synchronized void metti(MessageVisitable daMettere){
-            coda.add(daMettere);
+        /**
+         * put a message in the responseQueue
+         * @param toPut
+         */
+        public synchronized void put(MessageVisitable toPut){
+            coda.add(toPut);
             notifyAll();
         }
 
-        public synchronized MessageVisitable prendi(){
+        /**
+         * get the firs message to send to the client from the queue
+         * @return the message
+         */
+        public synchronized MessageVisitable getIt(){
             try {
                 while(coda.isEmpty()) {
                     wait();
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
-                this.interrupt();
             }
 
             return coda.remove(0);

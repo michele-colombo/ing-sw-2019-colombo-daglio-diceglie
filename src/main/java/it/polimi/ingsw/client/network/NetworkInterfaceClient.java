@@ -9,12 +9,26 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class NetworkInterfaceClient{
 
+    /**
+     * maximum time for the connection to initiate
+     */
     public static final int REACHING_TIME = 2000;
+
+    /**
+     * reference of the owner of the connection
+     */
     protected Client client;
 
+    /**
+     * the source of sent pongs
+     */
     protected PongSource ponging;
 
 
+    /**
+     * build the network layer
+     * @param client
+     */
     public NetworkInterfaceClient(Client client){
         this.client= client;
         ponging= new PongSource();
@@ -28,12 +42,21 @@ public abstract class NetworkInterfaceClient{
 
 
     protected class PongSource extends Thread{
+        /**
+         * flag true if thread is active
+         */
         private AtomicBoolean active;
 
+        /**
+         * build the pongSource and set it active
+         */
         protected PongSource(){
             active= new AtomicBoolean(true);
         }
 
+        /**
+         * repetively pong and wait
+         */
         public synchronized void run() {
             try {
                 while (active.get()) {
@@ -48,6 +71,9 @@ public abstract class NetworkInterfaceClient{
 
         }
 
+        /**
+         * stop the ponging generation
+         */
         protected void close(){
             active.set(false);
         }

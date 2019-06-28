@@ -17,23 +17,51 @@ import java.util.*;
 
 public class Client implements MessageVisitor {
 
+    /**
+     * the client's network
+     */
     private NetworkInterfaceClient network;
+
+    /**
+     * client's user interface
+     */
     private UserInterface userInterface;
+
+    /**
+     * client's name
+     */
     private String name;
 
+    /**
+     * true if client is connected
+     */
     private boolean connected;
+
+    /**
+     * current match
+     */
     private MatchView match;
+
+    /**
+     * the state of connections (of all the players)
+     */
     private Map<String, Boolean> connections;
 
 
-
-
+    /**
+     * Build a Client
+     * @param userInterface the interface of the client
+     */
     public Client(UserInterface userInterface){
         this.userInterface = userInterface;
         this.connected = false;
         connections = new HashMap<>();
     }
 
+    /**
+     * Create the connectoin for this client
+     * @param connection type of connection: socket or rmi
+     */
     public void createConnection(String connection){
         try {
             switch (connection.toLowerCase()) {
@@ -61,8 +89,10 @@ public class Client implements MessageVisitor {
 
     }
 
-
-
+    /**
+     * Log in with a name
+     * @param name name chosen
+     */
     public void chooseName(String name){
         this.name = name;
         try{
@@ -78,16 +108,28 @@ public class Client implements MessageVisitor {
         }
     }
 
+    /**
+     * display LoginMessage when arrives
+     * @param message
+     */
     @Override
     public synchronized void visit(LoginMessage message){
         userInterface.printLoginMessage(message.toString(), message.getLoginSuccessful());
     }
 
+    /**
+     * display the GenericMessage when arrives
+     * @param message
+     */
     @Override
     public synchronized void visit(GenericMessage message){
         //userInterface.printDisconnectionMessage(message.toString());
     }
 
+    /**
+     * update the connections status
+     * @param connectionUpdateMessage
+     */
     @Override
     public synchronized void visit(ConnectionUpdateMessage connectionUpdateMessage) {
 
@@ -99,6 +141,10 @@ public class Client implements MessageVisitor {
         userInterface.updateConnection(); //aggiunta per la Gui, potrebbe non funzionare per la Cli
     }
 
+    /**
+     * display the gameboard at the beginning of a match
+     * @param startMatchUpdateMessage
+     */
     public synchronized void visit(StartMatchUpdateMessage startMatchUpdateMessage) {
         //System.out.println("Start match update received");
         if (match == null){
@@ -108,6 +154,10 @@ public class Client implements MessageVisitor {
         //todo
     }
 
+    /**
+     * update the layout with new ammos and weapons
+     * @param layoutUpdateMessage
+     */
     public synchronized void visit(LayoutUpdateMessage layoutUpdateMessage) {
         //System.out.println("Layout update received");
         LayoutView layout = match.getLayout();
@@ -140,6 +190,10 @@ public class Client implements MessageVisitor {
         userInterface.updateLayout();
     }
 
+    /**
+     * update the killshot track
+     * @param killshotTrackUpdate
+     */
     public synchronized void visit(KillshotTrackUpdateMessage killshotTrackUpdate) {
         //System.out.println("Killshot track update received");
         match.setSkulls(killshotTrackUpdate.getSkulls());
@@ -158,6 +212,10 @@ public class Client implements MessageVisitor {
         userInterface.updateKillshotTrack();
     }
 
+    /**
+     * change the current player
+     * @param currentPlayerUpdate
+     */
     public synchronized void visit(CurrentPlayerUpdateMessage currentPlayerUpdate) {
         //System.out.println("current player update received");
         match.setCurrentPlayer(match.getPlayerFromName(currentPlayerUpdate.getCurrentPlayer()));
@@ -165,6 +223,10 @@ public class Client implements MessageVisitor {
         userInterface.updateCurrentPlayer();
     }
 
+    /**
+     * Change the status of a player (position, state, wallet)
+     * @param playerUpdateMessage
+     */
     public synchronized void visit(PlayerUpdateMessage playerUpdateMessage) {
         System.out.println("Player update received");
         PlayerView playerToUpdate = match.getPlayerFromName(playerUpdateMessage.getName());
@@ -174,6 +236,10 @@ public class Client implements MessageVisitor {
         userInterface.updatePlayer(playerToUpdate);
     }
 
+    /**
+     * displays a payment request
+     * @param paymentUpdateMessage
+     */
     public synchronized void visit(PaymentUpdateMessage paymentUpdateMessage) {
         System.out.println("Payment update received");
         match.getMyPlayer().setPending(paymentUpdateMessage.getPending());
@@ -181,6 +247,10 @@ public class Client implements MessageVisitor {
         userInterface.updatePayment();
     }
 
+    /**
+     * update weapons of a player
+     * @param weaponsUpdateMessage
+     */
     public synchronized void visit(WeaponsUpdateMessage weaponsUpdateMessage) {
         //System.out.println("Weapons update received");
         if (weaponsUpdateMessage.getName().equals(name)){
@@ -204,6 +274,10 @@ public class Client implements MessageVisitor {
         userInterface.updateWeapons(player);
     }
 
+    /**
+     * update powerups of a player
+     * @param powerUpUpdateMessage
+     */
     public synchronized void visit(PowerUpUpdateMessage powerUpUpdateMessage) {
         //System.out.println("PowerUp update received");
         if (powerUpUpdateMessage.getName().equals(name)){
@@ -219,6 +293,10 @@ public class Client implements MessageVisitor {
         userInterface.updatePowerUp(player);
     }
 
+    /**
+     * update damage tracks (damages and marks)
+     * @param damageUpdateMessage
+     */
     public synchronized void visit(DamageUpdateMessage damageUpdateMessage) {
         //System.out.println("Damage update received");
         PlayerView playerToUpdate = match.getPlayerFromName(damageUpdateMessage.getName());
@@ -239,6 +317,10 @@ public class Client implements MessageVisitor {
         userInterface.updateDamage(playerToUpdate);
     }
 
+    /**
+     * update selectable items
+     * @param selectablesUpdateMessage
+     */
     public synchronized void visit(SelectablesUpdateMessage selectablesUpdateMessage) {
         //System.out.println("Selectables update received");
         MyPlayer me = match.getMyPlayer();
@@ -317,6 +399,10 @@ public class Client implements MessageVisitor {
         userInterface.showAndAskSelection();
     }
 
+    /**
+     * give points to players and displays game over message
+     * @param gameOverMessage
+     */
     @Override
     public synchronized void visit(GameOverMessage gameOverMessage) {
         Map<PlayerView, Integer> rank = new HashMap<>();
@@ -334,6 +420,10 @@ public class Client implements MessageVisitor {
         }
     }
 
+    /**
+     * send an event through the network
+     * @param event Event to send
+     */
     private void sendEvent(EventVisitable event){
         try {
             network.forward(event);
@@ -343,6 +433,11 @@ public class Client implements MessageVisitor {
         }
     }
 
+    /**
+     * select a something from selectable items
+     * @param selected the string identifier of the selected item
+     * @throws WrongSelectionException if the selection is invalid
+     */
     public synchronized void selected(String selected) throws WrongSelectionException {
         int indexSel;
         EventVisitable event;
@@ -455,23 +550,41 @@ public class Client implements MessageVisitor {
         }
     }
 
+    /**
+     *
+     * @return the current matchview
+     */
     public MatchView getMatch() {
         return match;
     }
 
+    /**
+     *
+     * @return if client is connected
+     */
     public boolean isConnected(){
         return connected;
     }
 
+    /**
+     *
+     * @return the connection status of all players
+     */
     public Map<String, Boolean> getConnections(){
         return connections;
     }
 
+    /**
+     * restart the client (from connection selection)
+     */
     public void restart(){
         shutDown();
         userInterface.showConnectionSelection();
     }
 
+    /**
+     * close every active thread
+     */
     public void shutDown(){
         System.out.println("I'm in Client.shutDown()");
         match = null;
