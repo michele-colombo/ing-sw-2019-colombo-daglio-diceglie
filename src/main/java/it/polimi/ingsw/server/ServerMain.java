@@ -1,9 +1,5 @@
 package it.polimi.ingsw.server;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import it.polimi.ingsw.communication.CommonProperties;
 import it.polimi.ingsw.server.controller.ParserManager;
 import it.polimi.ingsw.server.model.GameModel;
@@ -18,8 +14,6 @@ import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.List;
-import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -30,6 +24,13 @@ public class ServerMain {
     private final GameModel gameModel;
     private final Controller controller;
 
+    /**
+     * build the serverMain class with its parameter
+     * @param acceptedIp  the ip tha RMIServer can show outside
+     * @param port the socket port of the server (RMI port = socketPort + 1)
+     * @param loginTimerDuration the maxmum time to login before match starts
+     * @param inputTimerDuration maximum time a player can wait to chose what to do
+     */
     public ServerMain(String acceptedIp, int port, int loginTimerDuration, int inputTimerDuration){
         this.acceptedIp= acceptedIp;
         this.port = port;
@@ -40,6 +41,9 @@ public class ServerMain {
         start();
     }
 
+    /**
+     * starts the server
+     */
     public void start(){
         ExecutorService executor = Executors.newCachedThreadPool();
         ServerSocket serverSocket = null;

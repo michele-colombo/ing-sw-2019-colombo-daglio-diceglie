@@ -21,16 +21,34 @@ import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SocketClient extends NetworkInterfaceClient implements EventVisitor {
+    /**
+     * the socket for send and receive things
+     */
     private final Socket socket;
-    private Client client;
+
+
+    /**
+     * the current prefix for the sending event
+     */
     private String eventPrefix;
 
+    /**
+     * the thread that always listen to arriving messages
+     */
     private Asker asker;
 
 
+    /**
+     * the output stream printer
+     */
     private PrintWriter out;
 
 
+    /**
+     * build a SocketClient
+     * @param client the owner of this connection
+     * @throws ConnectionInitializationException if something goes wrong during connection initialization
+     */
     public SocketClient(Client client) throws ConnectionInitializationException{
         super(client);
 
@@ -62,8 +80,11 @@ public class SocketClient extends NetworkInterfaceClient implements EventVisitor
     }
 
 
-
-
+    /**
+     * put in the network the desired event
+     * @param event sending event
+     * @throws ForwardingException if something goes wrong during sending phase
+     */
     public void forward(EventVisitable event) throws ForwardingException {
         Gson gson= new Gson();
         event.accept(this);
@@ -72,6 +93,11 @@ public class SocketClient extends NetworkInterfaceClient implements EventVisitor
 
     }
 
+    /**
+     * understand what type of message is arriving and parse it to the correct Message Type
+     * @param messageText incoming text
+     * @return the messages that the text contains
+     */
     private MessageVisitable unwrap(String messageText){
         //todo: remove line below
         System.out.println(messageText);
@@ -102,6 +128,9 @@ public class SocketClient extends NetworkInterfaceClient implements EventVisitor
         return result;
     }
 
+    /**
+     * stop all threads
+     */
     public void closeConnection(){
         try{
             ponging.interrupt();
@@ -112,6 +141,10 @@ public class SocketClient extends NetworkInterfaceClient implements EventVisitor
         catch (IOException e){}
     }
 
+    /**
+     * send a pong
+     */
+
     @Override
     void pong() {
         out.println(CommonProperties.PONG_NAME);
@@ -119,23 +152,40 @@ public class SocketClient extends NetworkInterfaceClient implements EventVisitor
     }
 
 
+    /**
+     * setting eventPrefix characterize the outcomoing loginEvent
+     * @param loginEvent
+     */
     @Override
     public void visit(LoginEvent loginEvent) {
         eventPrefix= "#LOGIN#";
 
     }
 
+    /**
+     * setting eventPrefix characterize the outcoming squareSelectedEvent
+     * @param squareSelectedEvent
+     */
     @Override
     public void visit(SquareSelectedEvent squareSelectedEvent) {
         eventPrefix= "#SQUARESELECTED#";
 
     }
 
+    /**
+     * setting eventPrefix characterize the outcoming actionSelectedEvent
+     * @param actionSelectedEvent
+     */
     @Override
     public void visit(ActionSelectedEvent actionSelectedEvent) {
         eventPrefix= "#ACTIONSELECTED#";
 
     }
+
+    /**
+     * setting eventPrefix characterize the outcoming playerSelectedEvent
+     * @param playerSelectedEvent
+     */
 
     @Override
     public void visit(PlayerSelectedEvent playerSelectedEvent) {
@@ -143,30 +193,50 @@ public class SocketClient extends NetworkInterfaceClient implements EventVisitor
 
     }
 
+    /**
+     * setting eventPrefix characterize the outcoming weaponSelectedEvent
+     * @param weaponSelectedEvent
+     */
     @Override
     public void visit(WeaponSelectedEvent weaponSelectedEvent) {
         eventPrefix= "#WEAPONSELECTED#";
 
     }
 
+    /**
+     * setting eventPrefix characterize the outcoming modeSelectedEvent
+     * @param modeSelectedEvent
+     */
     @Override
     public void visit(ModeSelectedEvent modeSelectedEvent) {
         eventPrefix= "#MODESELECTED#";
 
     }
 
+    /**
+     * setting eventPrefix characterize the outcoming commendSelectedEvent
+     * @param commandSelectedEvent
+     */
     @Override
     public void visit(CommandSelectedEvent commandSelectedEvent) {
         eventPrefix= "#COMMANDSELECTED#";
 
     }
 
+    /**
+     * setting eventPrefix characterize the outcoming colorSelectedEvent
+     * @param colorSelectedEvent
+     */
     @Override
     public void visit(ColorSelectedEvent colorSelectedEvent) {
         eventPrefix= "#COLORSELECTED#";
 
     }
 
+    /**
+     * setting eventPrefix characterize the outcoming powerUpSelectedEvent
+     * @param powerUpSelectedEvent
+     */
     @Override
     public void visit(PowerUpSelectedEvent powerUpSelectedEvent) {
         eventPrefix= "#POWERUPSELECTED#";
@@ -174,12 +244,21 @@ public class SocketClient extends NetworkInterfaceClient implements EventVisitor
 
 
     private class Asker extends Thread{
+        /**
+         * this flag is true when this thread is active
+         */
         private AtomicBoolean active;
 
+        /**
+         * asker builder, set active to true
+         */
         private Asker(){
             active= new AtomicBoolean(true);
         }
 
+        /**
+         * always listen to inputStream. If nothing arrives, restart all
+         */
         @Override
         public void run(){
             try {

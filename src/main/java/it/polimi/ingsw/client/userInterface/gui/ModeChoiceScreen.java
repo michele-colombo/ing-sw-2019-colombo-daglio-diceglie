@@ -29,12 +29,29 @@ public class ModeChoiceScreen {
     private static final String WEAPON_IMAGE_FOLDER= "resources/weapon/";
 
 
+    /**
+     * weapon of witch the player has to choose the modes
+     */
     private WeaponView weapon;
+
+    /**
+     * grid to collocate nodes
+     */
     private GridPane grid;
 
+    /**
+     * choice buttons in a column
+     */
     private VBox buttons;
+
+    /**
+     * card image in an anchorPane
+     */
     private AnchorPane card;
 
+    /**
+     * build the screen: set the image on the left, text in the center and button on the right
+     */
     public ModeChoiceScreen(){
         System.out.println("lo sto creando (mode selection)");
 
@@ -76,6 +93,9 @@ public class ModeChoiceScreen {
     }
 
 
+    /**
+     * update the screen
+     */
     public void update() {
         Platform.runLater( () -> {
             List<ModeView> modeViews = Gui.getClient().getMatch().getMyPlayer().getSelectableModes();
@@ -115,6 +135,10 @@ public class ModeChoiceScreen {
 
     }
 
+    /**
+     *
+     * @return main grid
+     */
     public Parent getParent(){
         return  grid;
     }
