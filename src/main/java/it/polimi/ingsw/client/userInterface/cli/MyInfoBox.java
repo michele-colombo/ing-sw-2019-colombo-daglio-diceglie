@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client.userInterface.cli;
 
+import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.client.MatchView;
 import it.polimi.ingsw.client.MyPlayer;
 import it.polimi.ingsw.server.model.Cash;
@@ -24,9 +25,9 @@ public class MyInfoBox extends MiniBox {
             String creditString = "paid: ";
             insertText(creditString, 16, 2);
             insertLine(printCash(me.getCredit()), creditString.length()+16, 2 );
-            insertTextMultiline(getStateDescription(me.getState()), 1, 3, width-2);
+            insertTextMultiline(Client.getStateDescription(me.getState()), 1, 3, width-2);
         } else {
-            insertTextMultiline(getStateDescription(me.getState()), 1, 2, width-2);
+            insertTextMultiline(Client.getStateDescription(me.getState()), 1, 2, width-2);
         }
     }
 }

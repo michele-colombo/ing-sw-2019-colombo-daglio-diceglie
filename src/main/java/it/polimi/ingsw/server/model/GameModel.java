@@ -39,16 +39,45 @@ public class GameModel implements Observable {
      */
     private Match match;
 
+    /**
+     * keeps the status of the match
+     */
     private boolean matchInProgress;
+
+    /**
+     * Stores the current backup
+     */
     private Backup currBackup;
+
+    /**
+     * Keeps track of observer (associated to the corresponding player)
+     */
     private Map<Player, Observer> observers;
+
+    /**
+     * support flag to keep track of gameOver
+     */
     private boolean gameOver;
+
+    /**
+     * the name of the file to save the backup
+     */
     private static final String BACKUP_NAME = "currentBackup";
+
+    /**
+     * default number of skulls
+     */
     private static final int DEFAULT_SKULLS= 8;
 
+    /**
+     * reference to the parserManager, used to get resources from file
+     */
     private ParserManager pm;
 
 
+    /**
+     * Builds the gameModel, initializing all its attributes to default values
+     */
     public GameModel(){
         activePlayers = new ArrayList<>();
         activePlayers.clear();
@@ -73,10 +102,25 @@ public class GameModel implements Observable {
         return match;
     }
 
+    /**
+     * Tells if the match is in progress
+     * @return true if the match is in progress
+     */
     public boolean isMatchInProgress() {
         return matchInProgress;
     }
 
+    /**
+     * Adds a player of the given name to the game.
+     * It creates a new one if the match is not in progress, otherwise it retrieves the xorresponding Player
+     * @param name the name of the player (either new or returning)
+     * @return the Player object corresponding to the name
+     * @throws NameAlreadyTakenException if the name is already taken from another player
+     * @throws GameFullException if the game is already full, and no other player can join
+     * @throws NameNotFoundException if a match is in progress, but the name is not present
+     * @throws AlreadyLoggedException if a match is in progress and the corresponding players is already logged
+     * @throws NameEmptyException if name is empty
+     */
     public Player addPlayer (String name) throws NameAlreadyTakenException, GameFullException, NameNotFoundException, AlreadyLoggedException, NameEmptyException {
         if(!matchInProgress){
             return login(name);
@@ -86,7 +130,7 @@ public class GameModel implements Observable {
     }
 
     /**
-     *
+     * Starts a match. If there is a valid backup with the same players, this is resumed, otherwise it creates a new one.
      * @return true if a new match begins, false if a saved one is restored
      */
     public boolean startMatch(){
@@ -119,6 +163,9 @@ public class GameModel implements Observable {
         return true;
     }
 
+    /**
+     * Force to start a new match, even if a valid backup is present
+     */
     public void startNewMatch(){
         //match = new Match(layoutConfig, skulls);
         //match= new Match(pm.getLayoutConfig(), pm.getSkullNumberConfig());
@@ -144,10 +191,11 @@ public class GameModel implements Observable {
         beginNextTurn();
     }
 
-    //test-only method!
+    /**
+     * Resume a saved match from the URL of a backup file.
+     * @param url URL of the saved match
+     */
     public void resumeMatchFromFile(InputStream url){
-
-
         Backup savedBackup = Backup.initFromFile(url);
         int layoutConfig = savedBackup.getLayoutConfig();
         match = new Match(pm.getLayout(layoutConfig), DEFAULT_SKULLS, pm.getStackManager());
@@ -164,6 +212,11 @@ public class GameModel implements Observable {
         actionCompleted();
     }
 
+    /**
+     * Prepare a player for spawning (or respawning) by drawing one or two powerups anf making them selectable
+     * @param p the player to spawn
+     * @param firstSpawn true if is first spawn
+     */
     private void prepareForSpawning(Player p, boolean firstSpawn){
         p.addPowerUp(match.getStackManager().drawPowerUp());    //p.getPowerUps.size() can be 4 in this moment
         if (firstSpawn){
@@ -184,6 +237,11 @@ public class GameModel implements Observable {
         match.notifyPowerUpUpdate(p);
     }
 
+    /**
+     * Spawns a player on the spawnPoint of the color corresponding to the powerUp (and discards it)
+     * @param p the player to spawn
+     * @param po the powerUp corresponding to the spawnPoint
+     */
     public void spawn(Player p, PowerUp po){
         p.removePowerUp(po);
         match.getStackManager().discardPowerUp(po);
@@ -201,6 +259,9 @@ public class GameModel implements Observable {
         match.notifyPowerUpUpdate(p);
     }
 
+    /**
+     * Checks if the next player is born. If this is the case, it starts the nest turn, otherwise prepares it for spawning
+     */
     private void beginNextTurn(){
         Player nextP;
         try {
@@ -248,6 +309,12 @@ public class GameModel implements Observable {
         return nextPlayer;
     }
 
+    /**
+     * Performs an action for a player.
+     * Performing means that starts the action and sets up the possible selections necessary to the prosecution of the action.
+     * @param p player that is taking the action
+     * @param a the action to start
+     */
     public void performAction(Player p, Action a){
         match.setCurrentAction(a);
         match.updateTurnStatus(a);
@@ -260,6 +327,11 @@ public class GameModel implements Observable {
         match.notifyPlayerUpdate(p);
     }
 
+    /**
+     * Makes a player grab in a square. If it is a spawnSquare, it sets up the choice of the weapon to grab.
+     * @param p player which is grabbing
+     * @param s square where to grab
+     */
     public void grabThere (Player p, Square s){
         p.setSquarePosition(s);
         if (s.collect(p, match)){     //collect sets player state, if necessary
@@ -269,6 +341,11 @@ public class GameModel implements Observable {
         match.notifyPlayerUpdate(p);
     }
 
+    /**
+     * Adds the selcted weapon to a player
+     * @param p the player which is collecting the weapon
+     * @param w the weapon to add
+     */
     public void grabWeapon(Player p, Weapon w){
         match.getCurrentAction().setCurrWeapon(w);
         p.setPending(w.getDiscountedCost());
@@ -293,6 +370,11 @@ public class GameModel implements Observable {
         }
     }
 
+    /**
+     * Removes and discards the selected weapon from a player
+     * @param p the player which is discarding
+     * @param w the weapon to discard
+     */
     public void discardWeapon(Player p, Weapon w){
         match.getCurrentAction().getCurrSpawnSquare().addWeapon(w);
         p.removeWeapon(w);
@@ -304,6 +386,11 @@ public class GameModel implements Observable {
 
     }
 
+    /**
+     * Moves a player in the selected square
+     * @param p the player to move
+     * @param s the destination square
+     */
     public void moveMeThere(Player p, Square s){
         p.setSquarePosition(s);
         nextMicroAction();
@@ -311,6 +398,11 @@ public class GameModel implements Observable {
         match.notifyPlayerUpdate(p);
     }
 
+    /**
+     * Starts the shooting process of a the player with the selected weapon
+     * @param p the player which i sgoing to shoot
+     * @param w the weapon to shoot with
+     */
     public void shootWeapon(Player p, Weapon w){
         match.getCurrentAction().setCurrWeapon(w);
         p.setState(CHOOSE_MODE);
@@ -326,6 +418,11 @@ public class GameModel implements Observable {
         match.notifyPlayerUpdate(p);
     }
 
+    /**
+     * Builds a shoot for the player by adding the selected mode.
+     * @param p the player which is shooting
+     * @param m the mode to add
+     */
     public void addMode(Player p, Mode m){
         p.setPending(m.getCost());
         if (p.getCredit().isEqual(p.getPending())){
@@ -359,6 +456,10 @@ public class GameModel implements Observable {
         }
     }
 
+    /**
+     * Confirm and ends the selection of modes and starts the selection of target in a shoot
+     * @param p the player which is shooting
+     */
     public void confirmModes(Player p){
         p.setState(SHOOT_TARGET);
         p.resetSelectables();
@@ -373,6 +474,12 @@ public class GameModel implements Observable {
         match.notifyPlayerUpdate(p);
     }
 
+    /**
+     * Shoot to the selected target during a shoot. Either targetP or targetS is null
+     * @param p the player which is shooting
+     * @param targetP the target which is receiving the shoot
+     * @param targetS the square which is receiving the shoot
+     */
     public void shootTarget(Player p, Player targetP, Square targetS){
         List<Effect> effects = match.getCurrentAction().getCurrEffects();
         Effect temp = effects.get(0).applyOn(p, targetP, targetS, match);
