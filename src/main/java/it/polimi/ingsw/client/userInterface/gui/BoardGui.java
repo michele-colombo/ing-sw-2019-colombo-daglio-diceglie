@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.userInterface.gui;
 
 import it.polimi.ingsw.client.*;
+import it.polimi.ingsw.server.model.enums.AmmoColor;
 import it.polimi.ingsw.server.model.enums.Command;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -35,6 +36,7 @@ public class BoardGui {
     private final static double SCALE_RATIO_SELECTABLE_RECTANGLE_X = 7.68;
     private final static double SCALE_RATIO_SELECTABLE_RECTANGLE_Y = 5.25;
     private final static double SKULL_CIRCLE = 76.08;
+    private static final double COLOR_BUTTON_SIZE = Gui.getScreenBounds().getWidth() / 68;
 
     private final GridPane view;
     private HBox weaponBox;
@@ -300,6 +302,23 @@ public class BoardGui {
                 selectables.add(button, index%3, index/3);
                 index++;
             }
+            for(AmmoColor colors: me.getSelectableColors()){
+                Button button= new Button();
+
+                button.setGraphic(new Rectangle(COLOR_BUTTON_SIZE, COLOR_BUTTON_SIZE, Color.valueOf(colors.toString().toUpperCase())));
+
+                button.setOnMouseClicked((MouseEvent t) ->
+                {
+                    try {
+                        Gui.getClient().selected(colors.toString());
+                    }
+                    catch (WrongSelectionException e){
+                        System.out.println("Wrong selection");
+                    }
+                });
+                selectables.add(button, index%3, index/3);
+                index++;
+            }
 
             for(SquareView sv : me.getSelectableSquares()){
                 for(SquareRectangle sr : squareRectangles){
@@ -311,6 +330,7 @@ public class BoardGui {
             updateStateText();
         });
     }
+
 
     /**
      * Create and add WeaponButtons of your weapon (clearing old ones). If they're unloaded, they have low opacity.
