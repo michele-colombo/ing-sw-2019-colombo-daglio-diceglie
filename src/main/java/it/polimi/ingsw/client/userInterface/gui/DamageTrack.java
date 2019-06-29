@@ -24,6 +24,9 @@ import java.util.Map;
  * It represents a player's damageTrack
  */
 public class DamageTrack extends Parent {
+    /**
+     * The path of the DamageTrack PNG
+     */
     private static final String DAMAGE_TRACK_IMAGE_FOLDER= "resources/damageTracks/";
 
     /**
@@ -148,13 +151,13 @@ public class DamageTrack extends Parent {
         addAmmos();
         addMarkLabels(markColors);
 
-        this.setOnMouseEntered((MouseEvent t) -> {
-            playerInfo.setVisible(true);
-        });
+        this.setOnMouseEntered((MouseEvent t) ->
+            playerInfo.setVisible(true)
+        );
 
-        this.setOnMouseExited((MouseEvent t) ->{
-            playerInfo.setVisible(false);
-        });
+        this.setOnMouseExited((MouseEvent t) ->
+            playerInfo.setVisible(false)
+        );
     }
 
     /**

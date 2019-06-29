@@ -26,40 +26,132 @@ import java.io.InputStream;
 import java.util.*;
 
 public class BoardGui {
+    /**
+     * The path of layout PNG
+     */
     private static final String LAYOUT_PNG_FOLDER = "resources/layoutPNG/";
+    /**
+     * Ratio used to properly place a skull/kill on killshotTrack, on x axe
+     */
+    private static final double X_KILLSHOT_TRACK = 0.0909;
+    /**
+     * Ratio used to properly place a skull/kill on killshotTrack, on y axe
+     */
+    private static final double Y_KILLSHOT_TRACK = 0.0921;
+    /**
+     * Ratio used to properly place an overkill on killshotTrack, on y axe
+     */
+    private static final double Y_KILLSHOT_TRACK_OVERKILL = 0.025;
+    /**
+     * Ratio used to properly separate skulls/kills on killshotTrack, on x axe
+     */
+    private static final double GAP_KILLSHOT_TRACK = 0.0421;
+    /**
+     * Ratio used to properly create the width of SquareRectangles on layout
+     */
+    private static final double SCALE_RATIO_SQUARE_RECTANGLE_WIDTH = 7.68;
+    /**
+     * Ratio used to properly create height of the SquareRectangles on layout
+     */
+    private static final double SCALE_RATIO_SQUARE_RECTANGLE_HEIGHT = 5.25;
+    /**
+     * Ratio used to properly create skulls on layout
+     */
+    private static final double SKULL_CIRCLE = 76.08;
+    /**
+     * Ratio used to properly create color button on board
+     */
 
-
-    private final static double X_KILLSHOT_TRACK = 0.0909;
-    private final static double Y_KILLSHOT_TRACK = 0.0921;
-    private final static double Y_KILLSHOT_TRACK_OVERKILL = 0.025;
-    private final static double GAP_KILLSHOT_TRACK = 0.0421;
-    private final static double SCALE_RATIO_SELECTABLE_RECTANGLE_X = 7.68;
-    private final static double SCALE_RATIO_SELECTABLE_RECTANGLE_Y = 5.25;
-    private final static double SKULL_CIRCLE = 76.08;
     private static final double COLOR_BUTTON_SIZE = Gui.getScreenBounds().getWidth() / 68;
 
+    /**
+     * The main part of the stage
+     */
     private final GridPane view;
+    /**
+     * Contains own WeaponButton
+     */
     private HBox weaponBox;
+    /**
+     * Contains own PowerUpButton
+     */
     private HBox powerUpBox;
+    /**
+     * Contains connection state anc current player labels
+     */
     private GridPane connectionState;
+    /**
+     * Contains the image of the layout and the other playing images
+     */
     private AnchorPane board;
+    /**
+     * Contains label of connectionState
+     */
     private List<Label> connectionLabels;
+    /**
+     * It's the label that show the current player
+     */
     private Label currentPlayer;
+    /**
+     * Contains selectables button
+     */
     private GridPane selectables;
+    /**
+     * Contains PixelPosition, in order to properly place the buttons on layout
+     */
     private List<PixelPosition> pixelPositions;
+    /**
+     * Contains AmmoButton of layout
+     */
     private List<AmmoButton> ammoButtonsList;
+    /**
+     * Contains WeaponButton of layout
+     */
     private List<WeaponButton> weaponButtonList;
+    /**
+     * Contains PixelWeapon for yellowWeapons, in order to properly the buttons on layout
+     */
     private List<PixelWeapon> yellowWeapons;
+    /**
+     * Contains PixelWeapon for blueWeapons, in order to properly the buttons on layout
+     */
     private List<PixelWeapon> blueWeapons;
+    /**
+     * Contains PixelWeapon for redWeapons, in order to properly the buttons on layout
+     */
     private List<PixelWeapon> redWeapons;
+    /**
+     * Contains SquareRectangles, placed on layout
+     */
     private static List<SquareRectangle> squareRectangles;
+    /**
+     * Contains each player (if he's spawned) and his own position
+     */
     private Map<PlayerRectangle, HBox> playerPositions;
+    /**
+     * Contains each SquareView and its own HBox, used to move players
+     */
     private Map<SquareView, HBox> playerPositionHBox;
+    /**
+     * Contains each PlayerView and his own DamageTrack
+     */
     private Map<PlayerView, DamageTrack> playerDamageTracks;
+    /**
+     * Contains kills on killshoTrack, represented as Rectangles
+     */
     private List<Rectangle> killOnKillshotTrack;
+    /**
+     * Contains skulls on killshotTrack, represented as Circles
+     */
     private List<Circle> skulls;
-    private Text stateText;
+    private Text stateText; //todo add javadoc
+    /**
+     * Width of the image used as background of layout
+     */
     private static double boardWidth;
+    /**
+     * Height of the image used as background of layout
+     */
     private static double boardHeight;
 
     /**
@@ -81,22 +173,17 @@ public class BoardGui {
         redWeapons = parser.loadWeaponResource("red");
         playerPositions = new HashMap<>();
         playerPositionHBox = new HashMap<>();
-        squareRectangles = new LinkedList<>();
         playerDamageTracks = new HashMap<>();
         killOnKillshotTrack = new LinkedList<>();
         skulls = new LinkedList<>();
-        //createPlayerPositionHBox(match);
         createPlayerRectangle(match);
-        //selectables.setDisable(true);
 
         view.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
-        //view.setAlignment(Pos.CENTER);
         view.setHgap(5);
         view.setVgap(15);
 
         board = new AnchorPane();
         board.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
-        //board.setAlignment(Pos.TOP_LEFT);
         board.setPadding(new Insets(0,0,0,0));
 
         InputStream boardUrl = getClass().getClassLoader().getResourceAsStream(LAYOUT_PNG_FOLDER + "layout" + match.getLayout().getLayoutConfiguration() + ".png");
@@ -192,7 +279,7 @@ public class BoardGui {
      * Update connection state, adding two label for each player (and clearing old ones)
      * : the former contains own name, the latter their
      * connection state: this one is green if the respective player is online, otherwise is red
-     * @param connections
+     * @param connections Map containing each player and their own connection state
      */
     public void updateConnection(Map<String, Boolean> connections){
         Platform.runLater(() -> {
@@ -239,8 +326,8 @@ public class BoardGui {
     }
 
     /**
-     * Updates your own power up, clearing old ones and recreating them
-     * @param player
+     * Updates player's damageTrack info and your own power up, clearing old ones and recreating them
+     * @param player The player to be updated
      */
     public void updatePowerUp(PlayerView player){
         Platform.runLater(() -> {
@@ -333,7 +420,8 @@ public class BoardGui {
 
 
     /**
-     * Create and add WeaponButtons of your weapon (clearing old ones). If they're unloaded, they have low opacity.
+     * player's damageTrack info and creates and add WeaponButtons of your weapon (clearing old ones).
+     * If they're unloaded, they have low opacity.
      * @param player
      */
     public void updateWeapons(PlayerView player){
@@ -343,7 +431,7 @@ public class BoardGui {
                 for(WeaponView weaponView : Gui.getClient().getMatch().getMyPlayer().getWeapons().keySet()){
                     WeaponButton newWeapon = new WeaponButton(weaponView, true);
                     if(Gui.getClient().getMatch().getMyPlayer().getUnloadedWeapons().contains(newWeapon.getWeaponView())){
-                        newWeapon.setOpacity(0.1);
+                        newWeapon.setOpacity(0.5);
                     } else{
                         newWeapon.setOpacity(1);
                     }
@@ -357,7 +445,7 @@ public class BoardGui {
     }
 
     /**
-     * Update KillshotTrack, creating and adding a kill for each skull removed (max eight), then remaining skulls
+     * Updates KillshotTrack, creating and adding a kill for each skull removed (max eight), then remaining skulls
      * are added (old kills and skulls are removed)
      */
     public void updateKillshotTrack(){
@@ -405,7 +493,7 @@ public class BoardGui {
     }
 
     /**
-     * Update position, wallet of the specified player
+     * Updates position and wallet of the specified player
      * @param player The player to be updated
      */
     public void updatePlayer(PlayerView player){
@@ -418,7 +506,7 @@ public class BoardGui {
     }
 
     /**
-     * Update the position of the specified player, removing him from the old one and adding to the new one
+     * Updates the position of the specified player, removing him from the old one and adding to the new one
      * @param player The player to be updated
      */
     private void updatePosition(PlayerView player){
@@ -443,7 +531,7 @@ public class BoardGui {
     }
 
     /**
-     * Update the damageTrack of the specified player (damage, marks, skulls and check of frenzy mode are done)
+     * Updates the damageTrack of the specified player (damage, marks, skulls and check of frenzy mode are done)
      * @param player The player to Update
      */
     public void updateDamageTrack(PlayerView player){
@@ -472,8 +560,8 @@ public class BoardGui {
     }
 
     /**
-     * Updates the board, replacing all the AmmoButton and WeaponButton
-     * @param layoutView
+     * Updates layout, replacing all the AmmoButton and WeaponButton
+     * @param layoutView The layout to be updated
      */
     public void updateLayout(LayoutView layoutView){
         Platform.runLater(() -> {
@@ -488,7 +576,7 @@ public class BoardGui {
     }
 
     /**
-     * Updates the WeaponButton of the specified WeaponView and color on the board, creating and adding new ones,
+     * Updates the WeaponButton of the specified WeaponView and color on layout, creating and adding new ones,
      * clearing the older ones, translating them with pixelWeapons
      * @param weapons The PixelWeapon, from which get the position of the weapon
      * @param weaponViews The WeaponViews from which create new WeaponButton
@@ -508,7 +596,7 @@ public class BoardGui {
     }
 
     /**
-     * Update all AmmoButton, creating and adding them to the board, clearing old ones, translating them
+     * Updates all AmmoButton, creating and adding them to layout, clearing old ones, translating them
      * with pixelPositions
      * @param squareViews SquareViews from which create new AmmoButton
      */
@@ -527,7 +615,7 @@ public class BoardGui {
     }
 
     /**
-     * Creates and adds playerPositionsHBox to the board, translating them with pixelPositions
+     * Creates and adds playerPositionsHBox to layout, translating them with pixelPositions
      * @param matchView MatchView from wich creates PlayerPositionHBox
      */
     public void createPlayerPositionHBox(MatchView matchView){
@@ -541,7 +629,7 @@ public class BoardGui {
     }
 
     /**
-     * Creates and adds playerRectangles to the board, translating them with pixelPositions
+     * Creates and adds playerRectangles to layout, translating them with pixelPositions
      * @param matchView MatchView from which creates PlayerRectangle
      */
     private void createPlayerRectangle(MatchView matchView){
@@ -552,12 +640,13 @@ public class BoardGui {
     }
 
     /**
-     * Creates the SquareButton, adding them to the board and translating them with pixelPositions
+     * Creates the SquareButton, adding them, invisible, to layout and translating them with pixelPositions
      * @param matchView The MatchView from which get the coordinates of the square
      */
-    public void createSelectableRectangle(MatchView matchView){
+    public void createSquareRectangle(MatchView matchView){
+        squareRectangles = new LinkedList<>();
         for(PixelPosition pp : pixelPositions){
-            SquareRectangle newSquareRectangle = new SquareRectangle(boardWidth / SCALE_RATIO_SELECTABLE_RECTANGLE_X, boardHeight / SCALE_RATIO_SELECTABLE_RECTANGLE_Y, matchView.getLayout().getSquare(pp.getxSquare(), pp.getySquare()));
+            SquareRectangle newSquareRectangle = new SquareRectangle(boardWidth / SCALE_RATIO_SQUARE_RECTANGLE_WIDTH, boardHeight / SCALE_RATIO_SQUARE_RECTANGLE_HEIGHT, matchView.getLayout().getSquare(pp.getxSquare(), pp.getySquare()));
             newSquareRectangle.setTranslateX(boardWidth * pp.getxSelectable());
             newSquareRectangle.setTranslateY(boardHeight * pp.getySelectable());
             squareRectangles.add(newSquareRectangle);

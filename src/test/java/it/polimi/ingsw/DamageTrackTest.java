@@ -15,13 +15,24 @@ public class DamageTrackTest {
     Player second;
     Player third;
 
+    /**
+     * Prepare DamageTrackTest instantiating three damageTracks
+     */
     @BeforeEach
     public void prepareTest(){
+        final String firstName = "first";
+        final String secondName = "second";
+        final String thirdName = "third";
+
         normalDamageTrack = new NormalDamageTrack();
-        first = new Player("first");
-        second = new Player("second");
-        third = new Player("third");
+        first = new Player(firstName);
+        second = new Player(secondName);
+        third = new Player(thirdName);
     }
+
+    /**
+     * Test addMark method
+     */
     @Test
     public void addMark() {
         final int mark1 = 4;
@@ -51,6 +62,9 @@ public class DamageTrackTest {
         assertEquals(assert5, normalDamageTrack.getMarkMap().get(second));
     }
 
+    /**
+     * Test reset damage track when it reaches at least 10 damage
+     */
     @Test
     public void damageAndReset(){
         normalDamageTrack.addDamage(first, 5);
@@ -69,6 +83,9 @@ public class DamageTrackTest {
 
     }
 
+    /**
+     * Test adding damage from a player after it got marks from him
+     */
     @Test
     public void damageAndMarks(){
         normalDamageTrack.addMark(first, 2);
@@ -76,18 +93,23 @@ public class DamageTrackTest {
         assertTrue(normalDamageTrack.getDamageList().contains(second) && normalDamageTrack.getDamageList().size() == 2);
 
         normalDamageTrack.addDamage(first, 1);
+        assertTrue(normalDamageTrack.getDamageList().size() == 5);
+        assertEquals(3, normalDamageTrack.whoDamagedYou().get(first)); //one damage + two from marks
     }
 
+    /**
+     * Test getAdrenaline, when it has to returns 0
+     */
     @Test
     public void getAdrenaline(){
         normalDamageTrack.addDamage(first, 2);
-        assertEquals(0, normalDamageTrack.getAdrenaline());
+        assertEquals(0, normalDamageTrack.getAdrenaline()); //no adrenaline
 
         normalDamageTrack.addDamage(second, 3);
-        assertEquals(1, normalDamageTrack.getAdrenaline());
+        assertEquals(1, normalDamageTrack.getAdrenaline()); //first type of adrenaline
 
         normalDamageTrack.addDamage(third, 9);
-        assertEquals(2, normalDamageTrack.getAdrenaline());
+        assertEquals(2, normalDamageTrack.getAdrenaline()); //second type of adrenaline
     }
 
 }

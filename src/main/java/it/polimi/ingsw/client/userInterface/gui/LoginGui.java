@@ -39,7 +39,7 @@ public class LoginGui {
 
 
     /**
-     * Create the loginGui
+     * Create the loginGui with textFiel in which write chosen name and a button to send name to the server
      */
     public LoginGui(){
         view = new BorderPane();

@@ -10,7 +10,6 @@ public class LayoutUpdateMessage extends MessageVisitable {
     private List<String> blueWeapons;
     private List<String> redWeapons;
     private List<String> yellowWeapons;
-
     private Map<String, String> ammoTilesInSquares;
 
     public LayoutUpdateMessage(List<String> blueWeapons, List<String> redWeapons, List<String> yellowWeapons, Map<String, String> ammoTilesInSquares) {

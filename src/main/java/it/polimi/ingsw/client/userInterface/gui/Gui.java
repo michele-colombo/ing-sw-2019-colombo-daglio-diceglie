@@ -1,7 +1,6 @@
 package it.polimi.ingsw.client.userInterface.gui;
 
 import it.polimi.ingsw.client.Client;
-import it.polimi.ingsw.client.LayoutView;
 import it.polimi.ingsw.client.MatchView;
 import it.polimi.ingsw.client.userInterface.UserInterface;
 import it.polimi.ingsw.client.PlayerView;
@@ -10,7 +9,6 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -30,12 +28,22 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This Class starts GUI main, creating a window in which to choose network technology
  */
 
 public class Gui extends Application implements UserInterface {
+    /**
+     * Logger used to properly print exception message
+     */
+    private static final Logger LOGGER = Logger.getLogger(BoardGui.class.getName());
+    /**
+     * String used when exception is caught while closing window
+     */
+    private static final String WINDOWS_EVENT_EXCEPTION ="Error while closing stage";
     /**
      * Reference to the object who receives messages from server
      */
@@ -116,7 +124,7 @@ public class Gui extends Application implements UserInterface {
      * @param primaryStage
      */
     public void initialize(Stage primaryStage){
-        Gui.screenBounds = Screen.getPrimary().getBounds();
+        Gui.setScreenBounds(Screen.getPrimary().getBounds());
         Text actionTarget;
         ComboBox comboBox;
         Button btn;
@@ -177,7 +185,7 @@ public class Gui extends Application implements UserInterface {
         btn.setOnAction(event -> {
             if(comboBox.getValue() != null && !comboBox.getValue().toString().isEmpty()){
 
-                Gui.client = new Client(this);
+                Gui.setClient(new Client(this));
                 client.createConnection(comboBox.getValue().toString().toLowerCase());
             }
         });
@@ -186,16 +194,16 @@ public class Gui extends Application implements UserInterface {
         stage.setScene(scene);
         stage.show();
 
-        stage.setOnCloseRequest((WindowEvent) -> {
+        stage.setOnCloseRequest((WindowEvent we) -> {
             System.out.println("Stage is closing");
-                try {
+            try {
                 client.shutDown();
             }
-                catch (NullPointerException e){
-                //nothing to do, it's right
+            catch (NullPointerException e){
+                LOGGER.log(Level.SEVERE, WINDOWS_EVENT_EXCEPTION, e);
             }
 
-                stage.close();
+            stage.close();
         });
     }
 
@@ -206,12 +214,12 @@ public class Gui extends Application implements UserInterface {
     @Override
     public void updateStartMatch(MatchView match){
         boardGui = new BoardGui(match);
-        boardGui.createSelectableRectangle(match);
+        boardGui.createSquareRectangle(match);
         boardGui.createPlayerPositionHBox(match);
 
-        Platform.runLater(() -> {
-            changeScene(boardGui.getView());
-        });
+        Platform.runLater(() ->
+            changeScene(boardGui.getView())
+        );
     }
 
 
@@ -378,6 +386,22 @@ public class Gui extends Application implements UserInterface {
      */
     public static void setDisconnectionText(Text text){
         disconnectionText = text;
+    }
+
+    /**
+     * Sets GUI screenBounds
+     * @param screenBounds screenBounds referred to the current screen
+     */
+    public static void setScreenBounds(Rectangle2D screenBounds){
+        Gui.screenBounds = screenBounds;
+    }
+
+    /**
+     * Sets GUI client
+     * @param client new client created to connect to server
+     */
+    public static void setClient(Client client){
+        Gui.client = client;
     }
 
 }

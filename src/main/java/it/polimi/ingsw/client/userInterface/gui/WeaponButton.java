@@ -15,6 +15,9 @@ import java.io.InputStream;
  * It represent a weapon
  */
 public class WeaponButton extends Parent {
+    /**
+     * The path of the WeaponButton PNG
+     */
     private static final String WEAPON_IMAGE_FOLDER= "resources/weapon/";
 
     /**
@@ -62,9 +65,9 @@ public class WeaponButton extends Parent {
             }
         });
 
-        this.setOnMouseExited((MouseEvent t) -> {
-            weaponImageView.setEffect(null);
-        });
+        this.setOnMouseExited((MouseEvent t) ->
+            weaponImageView.setEffect(null)
+        );
 
         this.setOnMouseClicked((MouseEvent t) -> {
             try{

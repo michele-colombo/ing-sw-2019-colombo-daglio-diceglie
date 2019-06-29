@@ -15,6 +15,9 @@ import java.io.InputStream;
  * It's represent an ammo on the board
  */
 public class AmmoButton extends Parent {
+    /**
+     * The path of the AmmoButton PNG
+     */
     private static final String AMMOTILES_FOLDER= "resources/ammo/";
 
     /**

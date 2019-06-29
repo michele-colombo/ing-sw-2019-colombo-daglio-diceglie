@@ -18,7 +18,9 @@ public class CashTest {
     Cash c7;
 
 
-
+    /**
+     * Prepare variables of the test
+     */
     @BeforeEach
     public void prepareTest(){
         c1 = new Cash(1,2,3);
@@ -31,42 +33,74 @@ public class CashTest {
     }
 
 
+    /**
+     * Test greaterEqual method when it has to return true
+     */
     @Test
-    public void greaterEqual() {
+    public void greaterEqualTrue() {
         assertTrue(c2.greaterEqual(c1));
         assertTrue(c2.greaterEqual(c5));
         assertTrue(c5.greaterEqual(c2));
         assertTrue(c2.greaterEqual(c2));
         assertTrue(c2.greaterEqual(c4));
         assertTrue(c1.greaterEqual(c4));
+    }
+
+    /**
+     * Test greaterEqual method when it has to return false
+     */
+    @Test
+    public void greaterEqualFalse(){
         assertFalse(c1.greaterEqual(c2));
         assertFalse(c3.greaterEqual(c2));
         assertFalse(c2.greaterEqual(c3));
     }
 
+    /**
+     * Test lessEqual method when it has to return true
+     */
     @Test
-    public void lessEqual() {
+    public void lessEqualTrue() {
         assertTrue(c1.lessEqual(c2));
         assertTrue(c2.lessEqual(c5));
         assertTrue(c5.lessEqual(c2));
         assertTrue(c2.lessEqual(c2));
         assertTrue(c4.lessEqual(c2));
         assertTrue(c4.lessEqual(c1));
+    }
+
+    /**
+     * Test lessEqual method when it has to return false
+     */
+    @Test
+    public void lessEqualFalse(){
         assertFalse(c2.lessEqual(c1));
         assertFalse(c3.lessEqual(c2));
         assertFalse(c2.lessEqual(c3));
     }
 
+    /**
+     * Test isEqual method when it has to return true
+     */
     @Test
-    public void isEqual() {
+    public void isEqualTrue() {
         c2.set(c3);
-        c2.isEqual(c3);
-        c3.isEqual(c2);
+        assertTrue(c2.isEqual(c3));
+        assertTrue(c3.isEqual(c2));
+    }
 
+    /**
+     * Test isEqual method when it has to return false
+     */
+    @Test
+    public void isEqualFalse(){
         assertFalse(c1.isEqual(c3));
         assertFalse(c3.isEqual(c1));
     }
 
+    /**
+     * Test isEqual method when it has to return false
+     */
     @Test
     public void subtract() {
 
@@ -74,6 +108,9 @@ public class CashTest {
         assertTrue(c2.subtract(c7).isEqual(c1));
     }
 
+    /**
+     * Test sum method
+     */
     @Test
     public void sum() {
         assertTrue(c1.sum(c6).isEqual(c1));
@@ -82,21 +119,36 @@ public class CashTest {
         assertTrue(c7.sum(c1).isEqual(c2));
     }
 
+    /**
+     * Test pay method when it has to return true
+     */
     @Test
-    public void pay() {
-
-        assertFalse(c1.pay(c2));
+    public void payTrue() {
         assertTrue(c2.pay(c1));
         assertTrue(c5.pay(c1));
         assertTrue(c1.pay(c1));
     }
 
+    /**
+     * Test pay method when it has to return false
+     */
+    @Test
+    public void payFalse() {
+        assertFalse(c1.pay(c2));
+    }
+
+    /**
+     * Test deposit method
+     */
     @Test
     public void deposit() {
         c1.deposit(c2);
         assertTrue(c1.isEqual(new Cash(3,3,3)));
     }
 
+    /**
+     * Test getTotal method
+     */
     @Test
     public void getTotal() {
         assertEquals(6, c1.getTotal());
@@ -105,16 +157,29 @@ public class CashTest {
         assertEquals(0, c4.getTotal());
     }
 
+    /**
+     * Test containsColor when it has to return true
+     */
     @Test
-    public void containsColor(){
+    public void containsColorTrue(){
         assertTrue(c1.containsColor(AmmoColor.BLUE));
         assertTrue(c1.containsColor(AmmoColor.RED));
         assertTrue(c1.containsColor(AmmoColor.YELLOW));
+    }
+
+    /**
+     * Test containsColor when it has to return false
+     */
+    @Test
+    public void containsColorFalse(){
         assertFalse(c4.containsColor(AmmoColor.BLUE));
         assertFalse(c4.containsColor(AmmoColor.RED));
         assertFalse(c4.containsColor(AmmoColor.YELLOW));
     }
 
+    /**
+     * Test setZero method
+     */
     @Test
     public void setZero() {
         Cash c1 = new Cash (1,2,3);

@@ -46,9 +46,6 @@ public class SquareRectangle extends Rectangle{
      * @return boolean
      */
     public boolean equalsSquareView(SquareView squareView){
-        if(this.squareView == squareView){
-            return true;
-        }
-        return false;
+        return this.squareView == squareView;
     }
 }

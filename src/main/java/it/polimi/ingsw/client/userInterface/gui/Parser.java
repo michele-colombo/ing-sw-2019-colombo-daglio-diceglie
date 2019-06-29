@@ -12,11 +12,14 @@ import java.util.Scanner;
  * It's represent the parser who loads PixelPosition and PixelWeapon
  */
 public class Parser {
+
+    /**
+     * The path of the JSON file
+     */
+    private static final String FILE_SOURCE= "resources/";
     /**
      * The gson parser
      */
-    private static final String FILE_SOURCE= "resources/";
-
     private Gson gson;
     /**
      * The layout of the board

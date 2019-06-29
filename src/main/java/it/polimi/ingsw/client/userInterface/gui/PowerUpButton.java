@@ -13,6 +13,10 @@ import java.io.InputStream;
  */
 public class PowerUpButton extends Parent{
     /**
+     * The path of the PowerUpButton PNG
+     */
+    private static final String POWERUP_IMAGES_FOLDER= "resources/powerUp/";
+    /**
      * The image of this PowerUpButton
      */
     private final ImageView powerUpImageView;
@@ -24,8 +28,6 @@ public class PowerUpButton extends Parent{
      * It's the height of this power up
      */
     private double height;
-
-    private static final String POWERUP_IMAGES_FOLDER= "resources/powerUp/";
 
 
     /**

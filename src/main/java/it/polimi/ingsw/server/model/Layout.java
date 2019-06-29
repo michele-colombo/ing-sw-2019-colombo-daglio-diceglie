@@ -280,10 +280,10 @@ public class Layout {
         return new ArrayList<>(ammoSquares);
     }
 
-    /**
+    /*/**
      * Returns all the squares that aren't empty (i.e. with ammo or weapons)
      * @return An ArrayList with all the found squares; it could be empty
-     */
+
     public List<Square> getNotEmptySquares(){
         List<Square> s = new ArrayList<>();
         for(Square sq : getSquares()){
@@ -292,7 +292,7 @@ public class Layout {
             }
         }
         return s;
-    }
+    }*/
 
     /**
      * Returns all the squares that are empty (i.e. without ammo or weapon)

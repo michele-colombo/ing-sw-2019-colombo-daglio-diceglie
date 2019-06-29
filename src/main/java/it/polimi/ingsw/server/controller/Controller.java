@@ -13,8 +13,6 @@ import it.polimi.ingsw.server.controller.timer.InputTimer;
 import it.polimi.ingsw.server.controller.timer.LoginTimer;
 import java.util.*;
 
-import static it.polimi.ingsw.server.ServerMain.*;
-
 
 public class Controller {
 
