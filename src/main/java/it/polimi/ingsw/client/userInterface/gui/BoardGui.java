@@ -97,7 +97,7 @@ public class BoardGui {
         //board.setAlignment(Pos.TOP_LEFT);
         board.setPadding(new Insets(0,0,0,0));
 
-        InputStream boardUrl = getClass().getClassLoader().getResourceAsStream("layoutPNG/layout" + match.getLayout().getLayoutConfiguration() + ".png");
+        InputStream boardUrl = getClass().getClassLoader().getResourceAsStream(LAYOUT_PNG_FOLDER + "layout" + match.getLayout().getLayoutConfiguration() + ".png");
         Image image = new Image(boardUrl);
         ImageView imageView = new ImageView(image);
         imageView.setFitHeight(Gui.getScreenBounds().getHeight()/1.5);
