@@ -1,7 +1,7 @@
 package it.polimi.ingsw.client.userInterface.gui;
 
 import it.polimi.ingsw.client.PlayerView;
-import it.polimi.ingsw.client.WrongSelectionException;
+import it.polimi.ingsw.client.ClientExceptions.WrongSelectionException;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -34,7 +34,7 @@ public class PlayerRectangle extends Rectangle{
             try{
                 Gui.getClient().selected(playerView.getName());
             } catch(WrongSelectionException e){
-                System.out.println("Wrong selection!");
+                BoardGui.showWrongSelection();
             }
         });
     }

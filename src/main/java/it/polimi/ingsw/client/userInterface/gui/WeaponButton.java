@@ -1,7 +1,7 @@
 package it.polimi.ingsw.client.userInterface.gui;
 
 import it.polimi.ingsw.client.WeaponView;
-import it.polimi.ingsw.client.WrongSelectionException;
+import it.polimi.ingsw.client.ClientExceptions.WrongSelectionException;
 import javafx.scene.Parent;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
@@ -28,7 +28,7 @@ public class WeaponButton extends Parent {
     /**
      * Rescale ratio of shadow effect
      */
-    private static final double SCALE_RATIO_EFFECT = 3;
+    private static final double SCALE_RATIO_EFFECT = 4.5;
     /**
      * The image of this WeaponButton
      */
@@ -69,7 +69,7 @@ public class WeaponButton extends Parent {
             try{
                 Gui.getClient().selected(weaponView.getName());
             } catch(WrongSelectionException e){
-                System.out.println("Wrong selection!");
+               BoardGui.showWrongSelection();
             }
         });
     }

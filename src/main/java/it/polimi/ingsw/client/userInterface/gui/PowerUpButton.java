@@ -1,7 +1,7 @@
 package it.polimi.ingsw.client.userInterface.gui;
 
 import it.polimi.ingsw.client.PowerUpView;
-import it.polimi.ingsw.client.WrongSelectionException;
+import it.polimi.ingsw.client.ClientExceptions.WrongSelectionException;
 import javafx.scene.Parent;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -44,7 +44,7 @@ public class PowerUpButton extends Parent{
             try{
                 Gui.getClient().selected(powerUpView.toString());
             } catch(WrongSelectionException e){
-                System.out.println("Wrong selection!");
+                BoardGui.showWrongSelection();
             }
         });
     }

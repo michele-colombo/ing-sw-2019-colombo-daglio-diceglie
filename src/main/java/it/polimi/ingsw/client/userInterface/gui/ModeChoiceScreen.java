@@ -2,7 +2,7 @@ package it.polimi.ingsw.client.userInterface.gui;
 
 import it.polimi.ingsw.client.ModeView;
 import it.polimi.ingsw.client.WeaponView;
-import it.polimi.ingsw.client.WrongSelectionException;
+import it.polimi.ingsw.client.ClientExceptions.WrongSelectionException;
 import it.polimi.ingsw.server.model.enums.Command;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -136,18 +136,18 @@ public class ModeChoiceScreen {
                     try {
                         Gui.getClient().selected(mode.getTitle());
                     } catch (WrongSelectionException e) {
-                    System.out.println("Wrong exception");
+                    BoardGui.showWrongSelection();
                     }
                 });
                 buttons.getChildren().add(button);
             }
             for (Command c : commands) {
                 Button button = new Button(c.toString());
-                button.setOnMouseClicked((MouseEvent me) -> {
+                button.setOnMouseClicked((MouseEvent) -> {
                     try {
                         Gui.getClient().selected(c.toString());
                     } catch (WrongSelectionException e) {
-                        System.out.println("Wrong exception");
+                        BoardGui.showWrongSelection();
                     }
                 });
                 buttons.getChildren().add(button);
