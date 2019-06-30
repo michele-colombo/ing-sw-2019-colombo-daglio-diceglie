@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.userInterface.cli;
 
 import it.polimi.ingsw.client.*;
+import it.polimi.ingsw.client.ClientExceptions.WrongSelectionException;
 import it.polimi.ingsw.client.userInterface.UserInterface;
 import static it.polimi.ingsw.client.userInterface.cli.CliUtils.*;
 

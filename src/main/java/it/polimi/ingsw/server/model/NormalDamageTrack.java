@@ -1,11 +1,11 @@
 package it.polimi.ingsw.server.model;
 
 public class NormalDamageTrack extends DamageTrack {
-    static final int biggerScore = 8;
-    static final int firstBlood = 1;
+    static final int BIGGER_SCORE = 8;
+    static final int FIRST_BLOOD = 1;
 
     public NormalDamageTrack(){
-        super(biggerScore, firstBlood);
+        super(BIGGER_SCORE, FIRST_BLOOD);
     }
 
 

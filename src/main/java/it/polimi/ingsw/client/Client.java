@@ -2,6 +2,7 @@ package it.polimi.ingsw.client;
 
 import it.polimi.ingsw.client.ClientExceptions.ConnectionInitializationException;
 import it.polimi.ingsw.client.ClientExceptions.ForwardingException;
+import it.polimi.ingsw.client.ClientExceptions.WrongSelectionException;
 import it.polimi.ingsw.client.network.NetworkInterfaceClient;
 import it.polimi.ingsw.client.network.RmiClient;
 import it.polimi.ingsw.client.network.SocketClient;

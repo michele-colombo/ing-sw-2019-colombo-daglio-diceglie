@@ -15,17 +15,55 @@ import java.util.*;
 
 
 public class Controller {
-
+    /**
+     * The reference to he game model (central unit which contains rules of the game)
+     */
     private final GameModel gameModel;
+
+    /**
+     * The timer for login phase.
+     * It is started after the third player logins.
+     */
     private final Timer loginTimer;
+
+    /**
+     * A support boolean to keep track of the starting of the login timer
+     */
     private boolean loginTimerStarted;
+
+    /**
+     * A map to keep the input timer for each player.
+     * The timer is started only when a player has to do something and it is restarted after any interaction.
+     */
     private Map<Observer, Timer> timers;
+
+    /**
+     * The dafault duratrion of the login timer.
+     * It is overidden by the configFile and by the arguments from terminal
+     */
     private int loginTimerDuration = 15000;
+
+    /**
+     * The dafault duratrion of the iput timer.
+     * It is overidden by the configFile and by the arguments from terminal
+     */
     private int inputTimerDuration = 20000;
+
+    /**
+     * The list of server views set to disconnect.
+     */
     private List<ServerView> toDisconnectList;
+
+    /**
+     * The list of all server views
+     */
     private List<ServerView> serverViews;
 
 
+    /**
+     * Builds the controller, initializing its attributes
+     * @param gameModel sets the game model to control
+     */
     public Controller(GameModel gameModel){
         this.gameModel = gameModel;
         this.loginTimer = new Timer();
@@ -35,30 +73,52 @@ public class Controller {
         serverViews = new ArrayList<>();
     }
 
+    /**
+     * Sets a server view to be disconnected
+     * @param serverView teh server view to disconnect
+     */
     public void setToDisconnect(ServerView serverView){
         if (!toDisconnectList.contains(serverView)){
             toDisconnectList.add(serverView);
         }
     }
 
+    /**
+     * Adds a server view, checking that it is not already present
+     * @param serverView the server view to add
+     */
     public void addServerView(ServerView serverView){
         if (!serverViews.contains(serverView)){
             serverViews.add(serverView);
         }
     }
 
+    /**
+     * Stes the login timer duration
+     * @param loginTimerDuration duration in milliseconds
+     */
     public void setLoginTimerDuration(int loginTimerDuration) {
         if (loginTimerDuration > 0){
             this.loginTimerDuration = loginTimerDuration;
         }
     }
 
+    /**
+     * Sets the input timer duration
+     * @param inputTimerDuration duration in milliseconds
+     */
     public void setInputTimerDuration(int inputTimerDuration) {
         if (inputTimerDuration > 0) {
             this.inputTimerDuration = inputTimerDuration;
         }
     }
 
+    /**
+     * Creates a player and adds it to the match.
+     * Before adding checks if the name is valid.
+     * @param name teh name of the player
+     * @param serverView the corresponding server view (observer of the model)
+     */
     public synchronized void login(String name, ServerView serverView){
         LoginMessage message = new LoginMessage("Login successful!", true);
         try{
@@ -67,8 +127,6 @@ public class Controller {
             gameModel.attach(newPlayer, serverView);
             checkStart();
             System.out.println("[OK] player "+newName+" has correctly logged in");
-            //todo se ci sono 5 player e la partita non è ancora iniziata, allora deve iniziare
-            //todo se ci sono 3 player attivi e partita non iniziata, starta il countdown
         } catch(NameAlreadyTakenException e){
             message = new LoginMessage("Name already taken!", false);
         } catch(GameFullException e){
@@ -90,7 +148,12 @@ public class Controller {
         finalCleaning();
     }
 
-
+    /**
+     * Manages the selection of a square by a player.
+     * According to the state of the player, calls a proper method on the model to update it.
+     * @param selection the index of the square among the list of selectable squares of the player
+     * @param serverView the server view corresponding to the player which has made the selection
+     */
     public synchronized void squareSelected(int selection, ServerView serverView) {
         removeTimer(serverView);
         Square sq;
@@ -126,6 +189,12 @@ public class Controller {
         finalCleaning();
     }
 
+    /**
+     * Manages the selection of an action by a player.
+     * According to the state of the player, calls a proper method on the model to update it.
+     * @param selection the index of the action among the list of selectable actions of the player
+     * @param serverView the server view corresponding to the player which has made the selection
+     */
     public synchronized void actionSelected(int selection, ServerView serverView) {
         removeTimer(serverView);
         Action act;
@@ -151,6 +220,12 @@ public class Controller {
         finalCleaning();
     }
 
+    /**
+     * Manages the selection of a player by a player.
+     * According to the state of the player, calls a proper method on the model to update it.
+     * @param selection the index of the player among the list of selectable players of the player
+     * @param serverView the server view corresponding to the player which has made the selection
+     */
     public synchronized void playerSelected(int selection, ServerView serverView) {
     removeTimer(serverView);
         Player pl;
@@ -162,7 +237,6 @@ public class Controller {
                 selectionError(serverView);
                 return;
             }
-            ;
             switch (p.getState()) {
                 case SHOOT_TARGET:
                     gameModel.shootTarget(p, pl, null);
@@ -180,6 +254,12 @@ public class Controller {
         finalCleaning();
     }
 
+    /**
+     * Manages the selection of a weapon by a player.
+     * According to the state of the player, calls a proper method on the model to update it.
+     * @param selection the index of the weapon among the list of selectable weapons of the player
+     * @param serverView the server view corresponding to the player which has made the selection
+     */
     public synchronized void weaponSelected(int selection, ServerView serverView) {
         removeTimer(serverView);
         Weapon wp;
@@ -214,6 +294,12 @@ public class Controller {
         finalCleaning();
     }
 
+    /**
+     * Manages the selection of a mode by a player.
+     * According to the state of the player, calls a proper method on the model to update it.
+     * @param selection the index of the mode among the list of selectable modes of the player
+     * @param serverView the server view corresponding to the player which has made the selection
+     */
     public synchronized void modeSelected(int selection, ServerView serverView) {
         removeTimer(serverView);
         Mode mod;
@@ -239,6 +325,12 @@ public class Controller {
         finalCleaning();
     }
 
+    /**
+     * Manages the selection of a command by a player.
+     * According to the state of the player, calls a proper method on the model to update it.
+     * @param selection the index of the command among the list of selectable commands of the player
+     * @param serverView the server view corresponding to the player which has made the selection
+     */
     public synchronized void commandSelected(int selection, ServerView serverView) {
         removeTimer(serverView);
         Command cmd;
@@ -283,6 +375,12 @@ public class Controller {
         finalCleaning();
     }
 
+    /**
+     * Manages the selection of a color by a player.
+     * According to the state of the player, calls a proper method on the model to update it.
+     * @param selection the index of the color among the list of selectable colors of the player
+     * @param serverView the server view corresponding to the player which has made the selection
+     */
     public synchronized void colorSelected(int selection, ServerView serverView) {
         removeTimer(serverView);
         AmmoColor col;
@@ -308,6 +406,12 @@ public class Controller {
         finalCleaning();
     }
 
+    /**
+     * Manages the selection of a powerup by a player.
+     * According to the state of the player, calls a proper method on the model to update it.
+     * @param selection the index of the powerup among the list of selectable powerups of the player
+     * @param serverView the server view corresponding to the player which has made the selection
+     */
     public synchronized void powerUpSelected(int selection, ServerView serverView) {
         removeTimer(serverView);
         PowerUp po;
@@ -342,6 +446,11 @@ public class Controller {
         finalCleaning();
     }
 
+    /**
+     * Disconnects the server view and its corresponding player.
+     * When a player is disconnected remains in the match (can receive damages), but skips his turns.
+     * @param serverView the server view to disconnect
+     */
     public synchronized void disconnectPlayer(ServerView serverView){
         try{
             Player playerToDisconnect = gameModel.getPlayerByObserver(serverView);
@@ -362,18 +471,29 @@ public class Controller {
         }
     }
 
+    /**
+     * Checks if there are to few players and the match has to be stopped.
+     * @return true if the match has to be stopped
+     */
     private boolean checkStopMatch(){
         if(gameModel.tooFewPlayers() && gameModel.isMatchInProgress()){
-            return true;
+            //return true;
         }
         return false;
     }
 
+    /**
+     * Starts the match
+     */
     public void startMatch(){
         gameModel.startMatch();
         finalCleaning();
     }
 
+    /**
+     * Checks if the match has to be started (there are 5 players) or could start, because there are at least 3 players.
+     * In this case it starts the login timer.
+     */
     private void checkStart(){
         if(!gameModel.tooFewPlayers() && gameModel.howManyActivePlayers() < 5 && !loginTimerStarted && !gameModel.isMatchInProgress()){
             loginTimer.schedule(new LoginTimer(this), loginTimerDuration);
@@ -386,15 +506,28 @@ public class Controller {
         //todo notificare del conto alla rovescia?
     }
 
+    /**
+     * Gets the game model
+     * @return the reference to the game model
+     */
     public GameModel getGameModel() {
         return gameModel;
     }
 
+    /**
+     * Sets the flag of the login timer to false
+     */
     public void setLoginTimerStarted(){
         loginTimerStarted = false;
     }
 
-    //todo: added by michele, check!
+    /**
+     * It is the final control done after every player's interaction and update of model.
+     * Disconnect all the players set to disconnect.
+     * Checks if the player from which an interaction is expected are actually online.
+     * If this is not the case, their action is simulated.
+     * Finally it starts the timeout for players online from which an interaction is required.
+     */
     public synchronized void finalCleaning(){
         for (ServerView serverView : toDisconnectList){
             System.out.println("questa serverview " + serverView.toString() + "e' nella disconnectList");
@@ -419,7 +552,6 @@ public class Controller {
                 for (Player p : gameModel.getWaitingFor()) {
                     addTimer(gameModel.getObserver(p)); //addTimer checks if there is no timer active for the corresponding observer
                 }
-                //gameModel.getMatch().notifyFullUpdateAllPlayers();
                 gameModel.getMatch().notifySelectablesUpdateAllPlayers();
             }
         } else {
@@ -430,6 +562,10 @@ public class Controller {
         System.out.println("[OK] final cleaning done");
     }
 
+    /**
+     * Adds the input timer for a server view, only if no one was already present
+     * @param observer the server view interested by the timer
+     */
     private void addTimer(Observer observer){
         if(timers.get(observer) == null){
             Timer timer = new Timer();
@@ -438,6 +574,10 @@ public class Controller {
         }
     }
 
+    /**
+     * Removes and stops the timer for a server view
+     * @param observer the server view to which the timer belonged
+     */
     private void removeTimer(Observer observer){
         if(timers.get(observer) != null){
             timers.get(observer).cancel();
@@ -445,6 +585,12 @@ public class Controller {
         timers.remove(observer);
     }
 
+    /**
+     * Notifies and updates observers in case of a selection error.
+     * This kind of error should never be possible in normal conditions,
+     * because a player can only selects among the selectable items sent by the model.
+     * @param observer the server view responsible of the error
+     */
     private void selectionError(Observer observer){
         try {
             MessageVisitable message = new GenericMessage("Selection not permitted, retry.");

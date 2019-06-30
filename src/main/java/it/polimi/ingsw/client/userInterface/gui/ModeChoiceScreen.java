@@ -2,7 +2,7 @@ package it.polimi.ingsw.client.userInterface.gui;
 
 import it.polimi.ingsw.client.ModeView;
 import it.polimi.ingsw.client.WeaponView;
-import it.polimi.ingsw.client.WrongSelectionException;
+import it.polimi.ingsw.client.ClientExceptions.WrongSelectionException;
 import it.polimi.ingsw.server.model.enums.Command;
 import javafx.application.Platform;
 import javafx.geometry.Insets;

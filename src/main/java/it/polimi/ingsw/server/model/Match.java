@@ -173,13 +173,6 @@ public class Match {
     }
 
     /**
-     * Sets the frenzy modo on
-     */
-    private void activateFrenzy(){
-        this.frenzyOn = true;
-    }
-
-    /**
      * Returns a map containing each player and his own points
      * @return An HashMap
      */
@@ -291,7 +284,7 @@ public class Match {
             currentPlayer.addPoints(1);
         }
         if(!frenzyOn && killShotTrack.getSkulls() <= 0){
-            activateFrenzy();
+            setFrenzyOn(true);
             for(Player p : players){
                 if(players.indexOf(p) > players.indexOf(currentPlayer)){
                     p.setBeforeFirst(true);
