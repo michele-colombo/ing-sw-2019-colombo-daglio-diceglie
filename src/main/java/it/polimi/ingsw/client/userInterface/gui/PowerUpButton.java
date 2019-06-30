@@ -44,7 +44,7 @@ public class PowerUpButton extends Parent{
             try{
                 Gui.getClient().selected(powerUpView.toString());
             } catch(WrongSelectionException e){
-                System.out.println("Wrong selection!");
+                BoardGui.showWrongSelection();
             }
         });
     }

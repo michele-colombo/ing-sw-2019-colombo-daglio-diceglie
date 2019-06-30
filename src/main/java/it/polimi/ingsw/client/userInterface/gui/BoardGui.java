@@ -31,6 +31,10 @@ public class BoardGui {
      */
     private static final String LAYOUT_PNG_FOLDER = "resources/layoutPNG/layout";
     /**
+     * String showed when a wrong selection is performed
+     */
+    private static final String WRONG_SELECTION_TEXT = "Wrong selection!";
+    /**
      * File extension of the images
      */
     private static final String LAYOUT_PNG_EXTENSION = ".png";
@@ -275,7 +279,10 @@ public class BoardGui {
      * Contains skulls on killshotTrack, represented as Circles
      */
     private List<Circle> skulls;
-    private Text stateText; //todo add javadoc
+    /**
+     * Show player's state
+     */
+    private static Label stateText; //todo add javadoc
     /**
      * Width of the image used as background of layout
      */
@@ -315,7 +322,6 @@ public class BoardGui {
 
         board = new AnchorPane();
         board.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
-        //board.setPadding(new Insets(0,0,0,0));
 
         InputStream boardUrl = getClass().getClassLoader().getResourceAsStream(LAYOUT_PNG_FOLDER + match.getLayout().getLayoutConfiguration() + LAYOUT_PNG_EXTENSION);
         Image image = new Image(boardUrl);
@@ -324,13 +330,14 @@ public class BoardGui {
         imageView.setFitWidth(Gui.getScreenBounds().getWidth() / SCALE_RATIO_LAYOUT_IMAGE);
         imageView.setPreserveRatio(true);
         imageView.setSmooth(true);
-        boardWidth = imageView.boundsInParentProperty().get().getWidth();
-        boardHeight = imageView.boundsInParentProperty().get().getHeight();
+        BoardGui.setBoardWidth(imageView.boundsInParentProperty().get().getWidth());
+        BoardGui.setBoardHeight(imageView.boundsInParentProperty().get().getHeight());
 
         board.getChildren().addAll(imageView);
         GridPane.setHalignment(imageView, HPos.LEFT);
-        stateText = new Text();
-        stateText.setFill(Color.WHITE);
+
+        BoardGui.createStateText();
+        view.add(stateText, GRID_FOURTH_ROW, GRID_FIRST_COLUMN);
         view.add(board, GRID_ZERO_ROW,GRID_ZERO_COLUMN);
         view.add(weaponBox, GRID_ZERO_ROW,GRID_FIRST_COLUMN);
         view.add(powerUpBox, GRID_FIRST_ROW, GRID_FIRST_COLUMN);
@@ -442,7 +449,6 @@ public class BoardGui {
             if(Gui.getClient().getMatch().getCurrentPlayer() != null){
                 currentPlayer.setText(CURRENT_PLAYER_LABEL + Gui.getClient().getMatch().getCurrentPlayer());
             }
-            updateStateText();
         });
     }
 
@@ -489,6 +495,7 @@ public class BoardGui {
             MyPlayer me = Gui.getClient().getMatch().getMyPlayer();
             ObservableList<String> comboItemsActions = FXCollections.observableList(me.getSelectableActions());
             ObservableList<Command> comboItemsCommand = FXCollections.observableList(me.getSelectableCommands());
+
             int index= 0;
             for(String action : comboItemsActions){
                 Button button= new Button(action);
@@ -498,7 +505,7 @@ public class BoardGui {
                         Gui.getClient().selected(action);
                     }
                     catch (WrongSelectionException e){
-                        System.out.println("Wrong selection");
+                        BoardGui.showWrongSelection();
                     }
                 });
 
@@ -513,7 +520,7 @@ public class BoardGui {
                         Gui.getClient().selected(command.toString());
                     }
                     catch (WrongSelectionException e){
-                        System.out.println("Wrong selection");
+                        BoardGui.showWrongSelection();
                     }
                 });
 
@@ -531,7 +538,7 @@ public class BoardGui {
                         Gui.getClient().selected(colors.toString());
                     }
                     catch (WrongSelectionException e){
-                        System.out.println("Wrong selection");
+                        BoardGui.showWrongSelection();
                     }
                 });
                 selectables.add(button, index%SELECTABLES_INDEX, index/SELECTABLES_INDEX);
@@ -701,6 +708,7 @@ public class BoardGui {
             updateLayoutWeapon(yellowWeapons, layoutView.getYellowWeapons());
             updateLayoutWeapon(blueWeapons, layoutView.getBlueWeapons());
             updateLayoutWeapon(redWeapons, layoutView.getRedWeapons());
+            updateStateText();
         });
     }
 
@@ -773,7 +781,7 @@ public class BoardGui {
      * @param matchView The MatchView from which get the coordinates of the square
      */
     public void createSquareRectangle(MatchView matchView){
-        BoardGui.squareRectangles = new LinkedList<>();
+        createSquareList();
         for(PixelPosition pp : pixelPositions){
             SquareRectangle newSquareRectangle = new SquareRectangle(boardWidth / SCALE_RATIO_SQUARE_RECTANGLE_WIDTH, boardHeight / SCALE_RATIO_SQUARE_RECTANGLE_HEIGHT, matchView.getLayout().getSquare(pp.getxSquare(), pp.getySquare()));
             newSquareRectangle.setTranslateX(boardWidth * pp.getxSelectable());
@@ -834,7 +842,50 @@ public class BoardGui {
         return colors;
     }
 
+    /**
+     * Updates stateText
+     */
     private void updateStateText(){
-        return;
+        stateText.setTextFill(Color.WHITE);
+        stateText.setText(Client.getStateDescription(Gui.getClient().getMatch().getMyPlayer().getState()));
+    }
+
+    /**
+     * Show wrong selection text when WrongSelectionException is caught
+     */
+    public static void showWrongSelection(){
+        stateText.setText(WRONG_SELECTION_TEXT + System.lineSeparator() + Client.getStateDescription(Gui.getClient().getMatch().getMyPlayer().getState()));
+    }
+
+    /**
+     * Creates squareRectangles
+     */
+    private static void createSquareList(){
+        BoardGui.squareRectangles = new LinkedList<>();
+    }
+
+    /**
+     * Set boardWidth
+     * @param width width to be set
+     */
+    private static void setBoardWidth(double width){
+        BoardGui.boardWidth = width;
+    }
+
+    /**
+     * Set boardHeight
+     * @param height height to be set
+     */
+    private static void setBoardHeight(double height){
+        BoardGui.boardHeight = height;
+    }
+
+    /**
+     * Creates stateText
+     */
+    private static void createStateText(){
+        stateText = new Label();
+        stateText.setTextFill(Color.WHITE);
+        stateText.setWrapText(true);
     }
 }
