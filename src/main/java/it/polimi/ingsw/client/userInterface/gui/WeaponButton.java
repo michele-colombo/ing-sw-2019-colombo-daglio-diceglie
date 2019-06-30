@@ -4,21 +4,14 @@ import it.polimi.ingsw.client.WeaponView;
 import it.polimi.ingsw.client.WrongSelectionException;
 import javafx.scene.Parent;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-
-import java.io.InputStream;
 
 /**
  * It represent a weapon
  */
 public class WeaponButton extends Parent {
-    /**
-     * The path of the WeaponButton PNG
-     */
-    private static final String WEAPON_IMAGE_FOLDER= "resources/weapon/";
 
     /**
      * Rescale ratio of the image associated to this card when is shown on board
@@ -32,6 +25,10 @@ public class WeaponButton extends Parent {
      * Rescale ratio of the image associated to this card when is shown in hand
      */
     private static final double SCALE_RATIO_IN_HAND = 2.2;
+    /**
+     * Rescale ratio of shadow effect
+     */
+    private static final double SCALE_RATIO_EFFECT = 3;
     /**
      * The image of this WeaponButton
      */
@@ -51,9 +48,8 @@ public class WeaponButton extends Parent {
      * @param inHand If true, entering the mouse will create a DropShadow effect, removed when mouse is exited
      */
     public WeaponButton(WeaponView weaponView, boolean inHand){
-        InputStream weaponUrl = getClass().getClassLoader().getResourceAsStream(WEAPON_IMAGE_FOLDER + weaponView.getName() + ".png");
-        Image weaponImage = new Image(weaponUrl);
-        this.weaponImageView = new ImageView(weaponImage);
+
+        this.weaponImageView = new ImageView(Gui.getCacheImage().getWeaponButtonImage(weaponView.getName()));
         this.weaponView = weaponView;
         this.width = weaponImageView.boundsInParentProperty().get().getWidth();
         this.weaponImageView.setPreserveRatio(true);
@@ -61,7 +57,7 @@ public class WeaponButton extends Parent {
 
         this.setOnMouseEntered((MouseEvent t) -> {
             if(!inHand){
-                weaponImageView.setEffect(new DropShadow(20, Color.WHITE));
+                weaponImageView.setEffect(new DropShadow(width / SCALE_RATIO_EFFECT, Color.WHITE));
             }
         });
 

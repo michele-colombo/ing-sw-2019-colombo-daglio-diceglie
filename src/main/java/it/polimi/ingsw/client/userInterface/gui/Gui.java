@@ -39,11 +39,83 @@ public class Gui extends Application implements UserInterface {
     /**
      * Logger used to properly print exception message
      */
-    private static final Logger LOGGER = Logger.getLogger(BoardGui.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Gui.class.getName());
     /**
      * String used when exception is caught while closing window
      */
     private static final String WINDOWS_EVENT_EXCEPTION ="Error while closing stage";
+    /**
+     * String used as title
+     */
+    private static final String TITLE = "Welcome to ADRENALINE";
+    /**
+     * String used when showing connection
+     */
+    private static final String CONNECTION_SOCKET = "Socket";
+    /**
+     * String used when showing connection
+     */
+    private static final String CONNECTION_RMI = "RMI";
+    /**
+     * Chosen font of sceneTitle
+     */
+    private static final String FONT = "Tahoma";
+    /**
+     * String used in error alert
+     */
+    private static final String ERROR_ALERT = "Error";
+    /**
+     * String used when showing connection
+     */
+    private static final String CONNECTION_BUTTON = "Connection";
+    /**
+     * String used when on button to connect
+     */
+    private static final String CONNECT_BUTTON = "Connect";
+    /**
+     * Ratio to properly rescale font
+     */
+    private static final double RATIO_FONT_SIZE = 76.8;
+    /**
+     * Ratio to properly rescale combo box width
+     */
+    private static final double SCALE_RATIO_WIDTH_COMBO_BOX = 5;
+    /**
+     * Ratio to properly rescale combo box height
+     */
+    private static final double SCALE_RATIO_HEIGHT_COMBO_BOX = 25;
+    /**
+     * Ratio to properly rescale gap grid
+     */
+    private static final double SCALE_RATIO_GAP_GRID = 153.6;
+    /**
+     * Ratio to properly rescale the stage
+     */
+    private static final double SCALE_RATIO_STAGE = 2;
+    /**
+     * Row of grid in which put elements
+     */
+    private static final int GRID_ZERO_ROW = 0;
+    /**
+     * Row of grid in which put elements
+     */
+    private static final int GRID_FIRST_ROW = 1;
+    /**
+     * Column of grid in which put elements
+     */
+    private static final int GRID_SIXTH_COLUMN = 6;
+    /**
+     * Column of grid in which put elements
+     */
+    private static final int GRID_FOURTH_COLUMN = 4;
+    /**
+     * Column of grid in which put elements
+     */
+    private static final int GRID_FIRST_COLUMN = 1;
+    /**
+     * Column of grid in which put elements
+     */
+    private static final int GRID_ZERO_COLUMN = 0;
     /**
      * Reference to the object who receives messages from server
      */
@@ -76,6 +148,10 @@ public class Gui extends Application implements UserInterface {
      * Reference to the screen in which choose how to use a weapon
      */
     private ModeChoiceScreen modeChoiceScreen;
+    /**
+     * Used to properly load images from file
+     */
+    private static CacheImage cacheImage;
 
     public static void main(String[] args){
         launch(args);
@@ -112,7 +188,7 @@ public class Gui extends Application implements UserInterface {
 
     /**
      * Creates the windows into show the GUI
-     * @param primaryStage
+     * @param primaryStage the first and onyl the of the GUI
      */
     @Override
     public synchronized void start(Stage primaryStage) {
@@ -121,10 +197,11 @@ public class Gui extends Application implements UserInterface {
 
     /**
      * Creates the first scene, in which displays network technology choice
-     * @param primaryStage
+     * @param primaryStage the first and onyl the of the GUI
      */
     public void initialize(Stage primaryStage){
         Gui.setScreenBounds(Screen.getPrimary().getBounds());
+        cacheImage = new CacheImage();
         Text actionTarget;
         ComboBox comboBox;
         Button btn;
@@ -132,54 +209,53 @@ public class Gui extends Application implements UserInterface {
         boardGui = null;
         Stage stage;
         stage = primaryStage;
-        stage.setTitle("Welcome to Adrenaline!");
+        stage.setTitle(TITLE);
         stage.setFullScreen(true);
-        stage.setMinWidth(screenBounds.getWidth()/2);
-        stage.setMinHeight(screenBounds.getHeight()/2);
+        stage.setMinWidth(screenBounds.getWidth() / SCALE_RATIO_STAGE);
+        stage.setMinHeight(screenBounds.getHeight() / SCALE_RATIO_STAGE);
 
         grid = new GridPane();
         grid.setBackground(new Background(new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
-        Text sceneTitle = new Text("Welcome to ADRENALINE");
-        sceneTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
-        grid.add(sceneTitle, 1, 0, 2, 1);
+        Text sceneTitle = new Text(TITLE);
+        sceneTitle.setFont(Font.font(FONT, FontWeight.NORMAL, Gui.getScreenBounds().getWidth() / RATIO_FONT_SIZE));
+        grid.add(sceneTitle, GRID_FIRST_ROW, GRID_ZERO_COLUMN);
         GridPane.setHalignment(sceneTitle, HPos.CENTER);
         grid.setGridLinesVisible(false);
 
 
-        Label connection = new Label("Connection:");
-        grid.add(connection, 0, 1);
+        Label connection = new Label(CONNECTION_BUTTON);
+        grid.add(connection, GRID_ZERO_ROW, GRID_FIRST_COLUMN);
 
         ObservableList<String> comboItems = FXCollections.observableArrayList(
-                "RMI",
-                "Socket"
+                CONNECTION_RMI,
+                CONNECTION_SOCKET
         );
         comboBox = new ComboBox(comboItems);
-        comboBox.setMaxHeight(screenBounds.getHeight()/25);
-        comboBox.setMaxWidth(screenBounds.getWidth()/5);
+        comboBox.setMaxHeight(screenBounds.getHeight() / SCALE_RATIO_HEIGHT_COMBO_BOX);
+        comboBox.setMaxWidth(screenBounds.getWidth() / SCALE_RATIO_WIDTH_COMBO_BOX);
 
-        grid.add(comboBox, 1, 1);
+        grid.add(comboBox, GRID_FIRST_ROW, GRID_FIRST_COLUMN);
         GridPane.setHalignment(comboBox, HPos.CENTER);
 
         grid.setAlignment(Pos.CENTER);
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(0,0,0,0));
+        grid.setHgap(Gui.getScreenBounds().getWidth() / SCALE_RATIO_GAP_GRID);
+        grid.setVgap(Gui.getScreenBounds().getWidth() / SCALE_RATIO_GAP_GRID);
 
 
-        btn = new Button("Connect");
+        btn = new Button(CONNECT_BUTTON);
         btn.prefWidthProperty().bind(grid.widthProperty());
         btn.prefHeightProperty().bind(grid.heightProperty());
         btn.setMaxWidth(comboBox.getMaxWidth());
         btn.setMaxHeight(comboBox.getMaxHeight());
-        HBox hbBtn = new HBox(10);
+        HBox hbBtn = new HBox();
         hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
         hbBtn.getChildren().add(btn);
         HBox.setHgrow(btn, Priority.ALWAYS);
-        grid.add(hbBtn, 1, 4);
-        grid.add(btn,1 ,4);
+        grid.add(hbBtn, GRID_FIRST_ROW, GRID_FOURTH_COLUMN);
+        grid.add(btn,GRID_FIRST_ROW ,GRID_FOURTH_COLUMN);
 
         actionTarget = new Text();
-        grid.add(actionTarget, 1, 6);
+        grid.add(actionTarget, GRID_FIRST_ROW, GRID_SIXTH_COLUMN);
         GridPane.setHalignment(actionTarget, HPos.CENTER);
 
         btn.setOnAction(event -> {
@@ -195,7 +271,6 @@ public class Gui extends Application implements UserInterface {
         stage.show();
 
         stage.setOnCloseRequest((WindowEvent we) -> {
-            System.out.println("Stage is closing");
             try {
                 client.shutDown();
             }
@@ -358,7 +433,7 @@ public class Gui extends Application implements UserInterface {
     @Override
     public void printError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
+        alert.setTitle(ERROR_ALERT);
         alert.setHeaderText(null);
         alert.setContentText(message);
 
@@ -402,6 +477,14 @@ public class Gui extends Application implements UserInterface {
      */
     public static void setClient(Client client){
         Gui.client = client;
+    }
+
+    /**
+     *
+     * @return cacheImage
+     */
+    public static CacheImage getCacheImage(){
+        return cacheImage;
     }
 
 }

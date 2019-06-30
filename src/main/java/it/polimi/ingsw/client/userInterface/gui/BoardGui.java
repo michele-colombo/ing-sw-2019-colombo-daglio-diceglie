@@ -29,13 +29,105 @@ public class BoardGui {
     /**
      * The path of layout PNG
      */
-    private static final String LAYOUT_PNG_FOLDER = "resources/layoutPNG/";
+    private static final String LAYOUT_PNG_FOLDER = "resources/layoutPNG/layout";
     /**
-     * Ratio used to properly place a skull/kill on killshotTrack, on x axe
+     * File extension of the images
+     */
+    private static final String LAYOUT_PNG_EXTENSION = ".png";
+    /**
+     * String to properly load PixelWeapon from file
+     */
+    private static final String BLUE_WEAPONS_PARSER_NAME = "blue";
+    /**
+     * String to properly load PixelWeapon from file
+     */
+    private static final String YELLOW_WEAPONS_PARSER_NAME = "yellow";
+    /**
+     * String to properly load PixelWeapon from file
+     */
+    private static final String RED_WEAPONS_PARSER_NAME = "red";
+    /**
+     * String used in connection label
+     */
+    private static final String CONNECTION_LABEL = "PLAYERS";
+    /**
+     * String used to show current player
+     */
+    private static final String CURRENT_PLAYER_LABEL = "Current: ";
+    /**
+     * String used to show online player
+     */
+    private static final String ONLINE_PLAYER_LABEL = "online";
+    /**
+     * String used to show offline player
+     */
+    private static final String OFFLINE_PLAYER_LABEL = "offline";
+    /**
+     * Row of grid in which put elements
+     */
+    private static final int GRID_ZERO_ROW = 0;
+    /**
+     * Row of grid in which put elements
+     */
+    private static final int GRID_FIRST_ROW = 1;
+    /**
+     * Row of grid in which put elements
+     */
+    private static final int GRID_FOURTH_ROW = 4;
+    /**
+     * Column of grid in which put elements
+     */
+    private static final int GRID_FIRST_COLUMN = 1;
+    /**
+     * Column of grid in which put elements
+     */
+    private static final int GRID_ZERO_COLUMN = 0;
+    /**
+     * Column of damage track grid in which put elements
+     */
+    private static final int DMG_TRACK_ZERO_COLUMN = 0;
+    /**
+     * Column of damage track grid in which put elements
+     */
+    private static final int DMG_TRACK_ZERO_ROW = 0;
+    /**
+     * Row of connection grid in which put elements
+     */
+    private static final int CONNECTION_ZERO_ROW = 0;
+    /**
+     * Row of connection grid in which put elements
+     */
+    private static final int CONNECTION_FIRST_ROW = 1;
+    /**
+     * Column of connection grid in which put elements
+     */
+    private static final int CONNECTION_ZERO_COLUMN = 0;
+    /**
+     * Column of connection grid in which put elements
+     */
+    private static final int CONNECTION_FIRST_COLUMN = 1;
+    /**
+     * Number to properly calculate selectables row and column
+     */
+    private static final int SELECTABLES_INDEX = 3;
+    /**
+     * Max number of kills on killshotTrack
+     */
+    private static final int MAX_KILLS = 8;
+    /**
+     * Number to calculate double kill on killshotTrack
+     */
+    private static final int DOUBLE_KILL = 1;
+    /**
+     * Index of first player
+     */
+    private static final int FIRST_PLAYER = 0;
+    /**
+     * Ratio used to properly place a skull/kill on killshot track, on x axe
      */
     private static final double X_KILLSHOT_TRACK = 0.0909;
     /**
-     * Ratio used to properly place a skull/kill on killshotTrack, on y axe
+     * Ratio used to properly place a skull/kill on killshot track, on y axe
      */
     private static final double Y_KILLSHOT_TRACK = 0.0921;
     /**
@@ -55,13 +147,52 @@ public class BoardGui {
      */
     private static final double SCALE_RATIO_SQUARE_RECTANGLE_HEIGHT = 5.25;
     /**
+     * Ratio to properly rescale layout image
+     */
+    private static final double SCALE_RATIO_LAYOUT_IMAGE = 1.5;
+    /**
+     * Ratio to properly rescale hgap grid
+     */
+    private static final double SCALE_RATIO_HGAP_GRID = 307.2;
+    /**
+     * Ratio to properly rescale vgap grid
+     */
+    private static final double SCALE_RATIO_VGAP_GRID = 102.4;
+    /**
+     * Ratio to properly rescale hgap of damage track grid
+     */
+    private static final double SCALE_RATIO_HGAP_DMG_TRACKS = 307.2;
+    /**
+     * Ratio to properly rescale gap of connection grid
+     */
+    private static final double SCALE_RATIO_GAP_CONNECTION = 153.6;
+    /**
+     * Ratio to properly rescale labels of connection grid
+     */
+    private static final double SCALE_RATIO_CONNECTION_LABEL = 20;
+    /**
+     * Opacity of unloaded weapon
+     */
+    private static final double WEAPON_OPACITY = 0.5;
+    /**
+     * Ratio to properly rescale kill rectangle
+     */
+    private static final double SCALE_RATIO_KILL_RECTANGLE = 153.6;
+    /**
+     * Ratio to properly rescale player rectangle width
+     */
+    private static final double SCALE_RATIO_PLAYER_RECTANGLE_WIDTH = 307.2;
+    /**
+     * Ratio to properly rescale player rectangle height
+     */
+    private static final double SCALE_RATIO_PLAYER_RECTANGLE_HEIGHT = 76.8;
+    /**
      * Ratio used to properly create skulls on layout
      */
     private static final double SKULL_CIRCLE = 76.08;
     /**
      * Ratio used to properly create color button on board
      */
-
     private static final double COLOR_BUTTON_SIZE = Gui.getScreenBounds().getWidth() / 68;
 
     /**
@@ -168,9 +299,9 @@ public class BoardGui {
         weaponButtonList = new LinkedList<>();
         Parser parser = new Parser(match.getLayout().getLayoutConfiguration());
         pixelPositions = parser.loadAmmoResource();
-        yellowWeapons = parser.loadWeaponResource("yellow");
-        blueWeapons = parser.loadWeaponResource("blue");
-        redWeapons = parser.loadWeaponResource("red");
+        yellowWeapons = parser.loadWeaponResource(YELLOW_WEAPONS_PARSER_NAME);
+        blueWeapons = parser.loadWeaponResource(BLUE_WEAPONS_PARSER_NAME);
+        redWeapons = parser.loadWeaponResource(RED_WEAPONS_PARSER_NAME);
         playerPositions = new HashMap<>();
         playerPositionHBox = new HashMap<>();
         playerDamageTracks = new HashMap<>();
@@ -179,18 +310,18 @@ public class BoardGui {
         createPlayerRectangle(match);
 
         view.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
-        view.setHgap(5);
-        view.setVgap(15);
+        view.setHgap(Gui.getScreenBounds().getWidth() / SCALE_RATIO_HGAP_GRID);
+        view.setVgap(Gui.getScreenBounds().getWidth() / SCALE_RATIO_VGAP_GRID);
 
         board = new AnchorPane();
         board.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
-        board.setPadding(new Insets(0,0,0,0));
+        //board.setPadding(new Insets(0,0,0,0));
 
-        InputStream boardUrl = getClass().getClassLoader().getResourceAsStream(LAYOUT_PNG_FOLDER + "layout" + match.getLayout().getLayoutConfiguration() + ".png");
+        InputStream boardUrl = getClass().getClassLoader().getResourceAsStream(LAYOUT_PNG_FOLDER + match.getLayout().getLayoutConfiguration() + LAYOUT_PNG_EXTENSION);
         Image image = new Image(boardUrl);
         ImageView imageView = new ImageView(image);
-        imageView.setFitHeight(Gui.getScreenBounds().getHeight()/1.5);
-        imageView.setFitWidth(Gui.getScreenBounds().getWidth()/1.5);
+        imageView.setFitHeight(Gui.getScreenBounds().getHeight() / SCALE_RATIO_LAYOUT_IMAGE);
+        imageView.setFitWidth(Gui.getScreenBounds().getWidth() / SCALE_RATIO_LAYOUT_IMAGE);
         imageView.setPreserveRatio(true);
         imageView.setSmooth(true);
         boardWidth = imageView.boundsInParentProperty().get().getWidth();
@@ -200,9 +331,9 @@ public class BoardGui {
         GridPane.setHalignment(imageView, HPos.LEFT);
         stateText = new Text();
         stateText.setFill(Color.WHITE);
-        view.add(board, 0,0);
-        view.add(weaponBox, 0,1);
-        view.add(powerUpBox, 1, 1);
+        view.add(board, GRID_ZERO_ROW,GRID_ZERO_COLUMN);
+        view.add(weaponBox, GRID_ZERO_ROW,GRID_FIRST_COLUMN);
+        view.add(powerUpBox, GRID_FIRST_ROW, GRID_FIRST_COLUMN);
         addDamageTrack(match);
         addConnectionState(match.getAllPlayers());
         addSelectables();
@@ -225,14 +356,14 @@ public class BoardGui {
         List<Color> colors = getAllColors(match);
         GridPane damageTracks;
         damageTracks = new GridPane();
-        damageTracks.setVgap(5);
+        damageTracks.setVgap(Gui.getScreenBounds().getWidth() / SCALE_RATIO_HGAP_DMG_TRACKS);
         damageTracks.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         damageTracks.setAlignment(Pos.TOP_CENTER);
 
         DamageTrack damageTrack = new DamageTrack(colors, match.getMyPlayer());
         damageTrack.updateInfo();
         playerDamageTracks.put(match.getMyPlayer(), damageTrack);
-        damageTracks.add(damageTrack, 0, 0);
+        damageTracks.add(damageTrack, DMG_TRACK_ZERO_ROW, DMG_TRACK_ZERO_COLUMN);
 
         int i = 1;
         for(PlayerView pv : match.getAllPlayers()){
@@ -240,11 +371,11 @@ public class BoardGui {
                 DamageTrack otherDamageTrack = new DamageTrack(colors, pv);
                 otherDamageTrack.updateInfo();
                 playerDamageTracks.put(pv, otherDamageTrack);
-                damageTracks.add(otherDamageTrack, 0, i);
+                damageTracks.add(otherDamageTrack, DMG_TRACK_ZERO_ROW, i);
             }
             i++;
         }
-        view.add(damageTracks, 1,0);
+        view.add(damageTracks, GRID_FIRST_ROW,GRID_ZERO_COLUMN);
     }
 
     /**
@@ -255,24 +386,24 @@ public class BoardGui {
     private void addConnectionState(List<PlayerView> players ){
         connectionLabels = new ArrayList<>();
         connectionState = new GridPane();
-        currentPlayer = new Label("Current: " + players.get(0).getName()); //todo forse da fixare
+        currentPlayer = new Label(CURRENT_PLAYER_LABEL + players.get(0).getName()); //todo forse da fixare
         currentPlayer.setTextFill(Color.WHITE);
         currentPlayer.setWrapText(true);
-        Label connectionLabel = new Label("PLAYERS");
+        Label connectionLabel = new Label(CONNECTION_LABEL);
         connectionLabel.setTextFill(Color.GHOSTWHITE);
-        connectionState.add(connectionLabel, 0, 0);
-        connectionState.setVgap(10);
-        connectionState.setHgap(10);
+        connectionState.add(connectionLabel, CONNECTION_ZERO_ROW, CONNECTION_ZERO_COLUMN);
+        connectionState.setVgap(Gui.getScreenBounds().getWidth() / SCALE_RATIO_GAP_CONNECTION);
+        connectionState.setHgap(Gui.getScreenBounds().getWidth() / SCALE_RATIO_GAP_CONNECTION);
         connectionState.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
-        connectionState.add(currentPlayer, 0, 1);
-        view.add(connectionState, 4,0);
+        connectionState.add(currentPlayer, CONNECTION_ZERO_ROW, CONNECTION_FIRST_COLUMN);
+        view.add(connectionState, GRID_FOURTH_ROW, GRID_ZERO_COLUMN);
     }
 
     /**
      * Add selectables GridPane in view
      */
     private void addSelectables(){
-        view.add(selectables,4,1);
+        view.add(selectables,GRID_FOURTH_ROW,GRID_FIRST_COLUMN);
     }
 
     /**
@@ -290,26 +421,26 @@ public class BoardGui {
                 Label playerLabel = new Label(pv.getName());
                 playerLabel.setWrapText(true);
                 playerLabel.setTextFill(Color.valueOf(pv.getColor().toString()));
-                playerLabel.setMaxWidth(Gui.getScreenBounds().getWidth()/20);
+                playerLabel.setMaxWidth(Gui.getScreenBounds().getWidth() / SCALE_RATIO_CONNECTION_LABEL);
                 Label onlineLabel;
                 if(connections.get(pv.getName())){
-                    onlineLabel = new Label("online");
+                    onlineLabel = new Label(ONLINE_PLAYER_LABEL);
                     onlineLabel.setTextFill(Color.GREEN);
                     onlineLabel.setWrapText(true);
                 } else {
-                    onlineLabel = new Label("offline");
+                    onlineLabel = new Label(OFFLINE_PLAYER_LABEL);
                     onlineLabel.setTextFill(Color.RED);
                     onlineLabel.setWrapText(true);
                 }
-                onlineLabel.setMaxWidth(Gui.getScreenBounds().getWidth()/20);
-                connectionState.add(playerLabel, 0, i);
-                connectionState.add(onlineLabel, 1, i);
+                onlineLabel.setMaxWidth(Gui.getScreenBounds().getWidth() / SCALE_RATIO_CONNECTION_LABEL);
+                connectionState.add(playerLabel, CONNECTION_ZERO_ROW, i);
+                connectionState.add(onlineLabel, CONNECTION_FIRST_ROW, i);
                 connectionLabels.add(playerLabel);
                 connectionLabels.add(onlineLabel);
                 i++;
             }
             if(Gui.getClient().getMatch().getCurrentPlayer() != null){
-                currentPlayer.setText("Current: " + Gui.getClient().getMatch().getCurrentPlayer());
+                currentPlayer.setText(CURRENT_PLAYER_LABEL + Gui.getClient().getMatch().getCurrentPlayer());
             }
             updateStateText();
         });
@@ -320,7 +451,7 @@ public class BoardGui {
      */
     public void updateCurrentPlayer(){
         Platform.runLater(() -> {
-            currentPlayer.setText("Current: " + Gui.getClient().getMatch().getCurrentPlayer());
+            currentPlayer.setText(CURRENT_PLAYER_LABEL + Gui.getClient().getMatch().getCurrentPlayer());
             updateStateText();
         });
     }
@@ -337,7 +468,7 @@ public class BoardGui {
                     for(PowerUpView powerUpView : me.getPowerUps()){
                         PowerUpButton powerUpButton = new PowerUpButton(powerUpView);
                         powerUpBox.getChildren().add(powerUpButton);
-                        powerUpBox.setHgrow(powerUpButton, Priority.ALWAYS);
+                        powerUpBox.setHgrow(powerUpButton, Priority.ALWAYS); //forse si può togliere
                 }
             }
                 playerDamageTracks.get(player).updateInfo();
@@ -361,7 +492,7 @@ public class BoardGui {
             int index= 0;
             for(String action : comboItemsActions){
                 Button button= new Button(action);
-                button.setOnMouseClicked((MouseEvent) ->
+                button.setOnMouseClicked((MouseEvent t) ->
                 {
                     try {
                         Gui.getClient().selected(action);
@@ -371,7 +502,7 @@ public class BoardGui {
                     }
                 });
 
-                selectables.add(button, index%3, index/3);
+                selectables.add(button, index%SELECTABLES_INDEX, index/SELECTABLES_INDEX);
                 index++;
             }
             for(Command command : comboItemsCommand){
@@ -386,7 +517,7 @@ public class BoardGui {
                     }
                 });
 
-                selectables.add(button, index%3, index/3);
+                selectables.add(button, index%SELECTABLES_INDEX, index/SELECTABLES_INDEX);
                 index++;
             }
             for(AmmoColor colors: me.getSelectableColors()){
@@ -403,7 +534,7 @@ public class BoardGui {
                         System.out.println("Wrong selection");
                     }
                 });
-                selectables.add(button, index%3, index/3);
+                selectables.add(button, index%SELECTABLES_INDEX, index/SELECTABLES_INDEX);
                 index++;
             }
 
@@ -431,9 +562,7 @@ public class BoardGui {
                 for(WeaponView weaponView : Gui.getClient().getMatch().getMyPlayer().getWeapons().keySet()){
                     WeaponButton newWeapon = new WeaponButton(weaponView, true);
                     if(Gui.getClient().getMatch().getMyPlayer().getUnloadedWeapons().contains(newWeapon.getWeaponView())){
-                        newWeapon.setOpacity(0.5);
-                    } else{
-                        newWeapon.setOpacity(1);
+                        newWeapon.setOpacity(WEAPON_OPACITY);
                     }
                     newWeapon.rescaleOnHand();
                     weaponBox.getChildren().add(newWeapon);
@@ -455,10 +584,10 @@ public class BoardGui {
             killOnKillshotTrack.clear();
 
             int i;
-            for(i = 0; i < matchView.getTrack().size() && i < 8; i++){
+            for(i = 0; i < matchView.getTrack().size() && i < MAX_KILLS; i++){
                 Map<PlayerView, Integer> map = matchView.getTrack().get(i);
-                PlayerView player = new ArrayList<>(map.keySet()).get(0);
-                Rectangle kill = new Rectangle(10, 10, Color.valueOf(player.getColor().toString()));
+                PlayerView player = new ArrayList<>(map.keySet()).get(FIRST_PLAYER);
+                Rectangle kill = new Rectangle(Gui.getScreenBounds().getWidth() / SCALE_RATIO_KILL_RECTANGLE, Gui.getScreenBounds().getWidth() / SCALE_RATIO_KILL_RECTANGLE, Color.valueOf(player.getColor().toString()));
                 kill.setStrokeType(StrokeType.OUTSIDE);
                 kill.setStroke(Color.BLACK);
                 kill.setTranslateX(boardWidth * (BoardGui.X_KILLSHOT_TRACK + i * BoardGui.GAP_KILLSHOT_TRACK));
@@ -466,8 +595,8 @@ public class BoardGui {
                 killOnKillshotTrack.add(kill);
                 board.getChildren().add(kill);
 
-                if(map.get(player) > 1){
-                    kill = new Rectangle(10, 10, Color.valueOf(player.getColor().toString()));
+                if(map.get(player) > DOUBLE_KILL){
+                    kill = new Rectangle(Gui.getScreenBounds().getWidth() / SCALE_RATIO_KILL_RECTANGLE, Gui.getScreenBounds().getWidth() / SCALE_RATIO_KILL_RECTANGLE, Color.valueOf(player.getColor().toString()));
                     kill.setStrokeType(StrokeType.OUTSIDE);
                     kill.setStroke(Color.BLACK);
                     kill.setTranslateX(boardWidth * (BoardGui.X_KILLSHOT_TRACK + i * BoardGui.GAP_KILLSHOT_TRACK));
@@ -634,7 +763,7 @@ public class BoardGui {
      */
     private void createPlayerRectangle(MatchView matchView){
         for(PlayerView pv : matchView.getAllPlayers()){
-            PlayerRectangle position = new PlayerRectangle(5, 20, Color.valueOf(pv.getColor().toString()), pv);
+            PlayerRectangle position = new PlayerRectangle(Gui.getScreenBounds().getWidth() / SCALE_RATIO_PLAYER_RECTANGLE_WIDTH, Gui.getScreenBounds().getWidth() / SCALE_RATIO_PLAYER_RECTANGLE_HEIGHT, Color.valueOf(pv.getColor().toString()), pv);
             playerPositions.put(position, null);
         }
     }
@@ -644,7 +773,7 @@ public class BoardGui {
      * @param matchView The MatchView from which get the coordinates of the square
      */
     public void createSquareRectangle(MatchView matchView){
-        squareRectangles = new LinkedList<>();
+        BoardGui.squareRectangles = new LinkedList<>();
         for(PixelPosition pp : pixelPositions){
             SquareRectangle newSquareRectangle = new SquareRectangle(boardWidth / SCALE_RATIO_SQUARE_RECTANGLE_WIDTH, boardHeight / SCALE_RATIO_SQUARE_RECTANGLE_HEIGHT, matchView.getLayout().getSquare(pp.getxSquare(), pp.getySquare()));
             newSquareRectangle.setTranslateX(boardWidth * pp.getxSelectable());
@@ -671,7 +800,7 @@ public class BoardGui {
     /**
      * Sets to invisible all squareRectangles
      */
-    public synchronized static void setUnvisibleSquareRectangle(){
+    public static synchronized void setUnvisibleSquareRectangle(){
         for(SquareRectangle sr : squareRectangles){
             sr.setVisible(false);
         }
@@ -683,6 +812,13 @@ public class BoardGui {
      */
     public static double getWidth(){
         return boardWidth;
+    }
+    /**
+     *
+     * @return boardHeight
+     */
+    public static double getHeight(){
+        return boardHeight;
     }
 
     /**

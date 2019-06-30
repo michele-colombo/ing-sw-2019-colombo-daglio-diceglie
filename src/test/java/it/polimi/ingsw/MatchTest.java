@@ -262,5 +262,4 @@ public class MatchTest {
         match.getKillShotTrack().addKilled(kill);
         match.getKillShotTrack().removeSkull();
     }
-
 }

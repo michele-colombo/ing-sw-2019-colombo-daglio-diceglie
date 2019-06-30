@@ -5,6 +5,7 @@ import it.polimi.ingsw.server.controller.ParserManager;
 import it.polimi.ingsw.server.model.*;
 import it.polimi.ingsw.server.model.enums.Command;
 import it.polimi.ingsw.server.model.enums.PlayerState;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static it.polimi.ingsw.testUtils.*;
@@ -17,7 +18,7 @@ import static it.polimi.ingsw.server.model.enums.AmmoColor.*;
 
 public class WeaponTest {
 
-    @Test
+    @BeforeEach
     public void initWeaponDescription(){
         Weapon w= new Weapon("Martello ionico", new Cash(YELLOW, 1), YELLOW);
         Mode base= new Mode(false, -1, "modalità base", "Dai 2 danni a 1 bersaglio nel quadrato in cui ti trovi", new Cash());

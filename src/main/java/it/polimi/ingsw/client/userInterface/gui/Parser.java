@@ -16,7 +16,10 @@ public class Parser {
     /**
      * The path of the JSON file
      */
-    private static final String FILE_SOURCE= "resources/";
+    private static final String FILE_SOURCE = "resources/";
+    private static final String FILE_NAME_AMMO = "coord";
+    private static final String FILE_NAME_WEAPONS = "Weapons";
+    private static final String FILE_EXTENSION = ".json";
     /**
      * The gson parser
      */
@@ -40,7 +43,7 @@ public class Parser {
      * @return The List of PixelPosition loaded from file
      */
     public List<PixelPosition> loadAmmoResource(){
-        InputStream resourceUrl = getClass().getClassLoader().getResourceAsStream(FILE_SOURCE + "coord" + layout + ".json");
+        InputStream resourceUrl = getClass().getClassLoader().getResourceAsStream(FILE_SOURCE + FILE_NAME_AMMO + layout + FILE_EXTENSION);
         List<PixelPosition> pixelPositions = new LinkedList<>();
         PixelPosition[] pixelPositionArray;
         Scanner sc = new Scanner(resourceUrl);
@@ -55,7 +58,7 @@ public class Parser {
      * @return The List of PixelWeapon loaded from file
      */
     public List<PixelWeapon> loadWeaponResource(String color){
-        InputStream resourceUrl = getClass().getClassLoader().getResourceAsStream(FILE_SOURCE + color + "Weapons.json");
+        InputStream resourceUrl = getClass().getClassLoader().getResourceAsStream(FILE_SOURCE + color + FILE_NAME_WEAPONS + FILE_EXTENSION);
         List<PixelWeapon> pixelWeapons = new LinkedList<>();
         PixelWeapon[] pixelWeaponsArray;
         Scanner sc = new Scanner(resourceUrl);

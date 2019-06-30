@@ -48,6 +48,90 @@ public class DamageTrack extends Parent {
      * It's the ratio of translation on y axe of the marksBox
      */
     private static final double TRANSLATE_MARKS_BOX_Y = 0.01;
+    /**
+     * It's the ratio to properly rescale damage rectangle
+     */
+    private static final double SCALE_RATIO_DAMAGE_RECTANGLE_WIDTH = 38.4;
+    /**
+     * It's the ratio to properly rescale damage rectangle
+     */
+    private static final double SCALE_RATIO_DAMAGE_RECTANGLE_HEIGHT = 9.385;
+    /**
+     * It's the ratio to properly rescale damage rectangle gap
+     */
+    private static final double GAP_2_DAMAGE = 0.051;
+    /**
+     * It's the ratio to properly rescale damage rectangle
+     */
+    private static final double GAP_5_DAMAGE = 0.055;
+    /**
+     * It's the ratio to properly rescale damage rectangle
+     */
+    private static final double GAP_12_DAMAGE = 0.0558;
+    /**
+     * It's the ratio to properly translate damage rectangle on normal mode on x axe
+     */
+    private static final double X_DAMAGE_TRANSLATE_NORMAL = 0.107;
+    /**
+     * It's the ratio to properly translate damage rectangle on frenzy mode on x axe
+     */
+    private static final double X_DAMAGE_TRANSLATE_FRENZY_1 = 0.118;
+    /**
+     * It's the ratio to properly translate damage rectangle on normal mode on x axe
+     */
+    private static final double X_DAMAGE_TRANSLATE_FRENZY_2 = 0.115;
+    /**
+     * It's the ratio to properly translate damage rectangle on y axe
+     */
+    private static final double Y_DAMAGE_TRANSLATE = 0.48;
+    /**
+     * It's the ratio to properly translate skull on x axe
+     */
+    private static final double X_SKULL_TRANSLATE = 0.2335;
+    /**
+     * It's the ratio to properly translate skull on y axe
+     */
+    private static final double Y_SKULL_TRANSLATE = 0.85;
+    /**
+     * It's the ratio to properly rescale gap skull
+     */
+    private static final double GAP_SKULL = 0.053;
+    /**
+     * It's the ratio to properly rescale skull
+     */
+    private static final double SCALE_RATIO_SKULL = 76.8;
+    /**
+     * Max tear 1
+     */
+    private static final double MAX_TEAR_1 = 12;
+    /**
+     * Max tear 2
+     */
+    private static final double MAX_TEAR_2 = 2;
+    /**
+     * Max tear 3
+     */
+    private static final double MAX_TEAR_3 = 5;
+    /**
+     * Starting ammos value
+     */
+    private static final String STARTING_AMMOS_MARKS = "0";
+    /**
+     * String of powerup label
+     */
+    private static final String POWERUP_LABEL = "Number of PowerUps: ";
+    /**
+     * String of weapon label
+     */
+    private static final String WEAPON_LABEL = "Number of Weapons: ";
+    /**
+     * String of ammo label
+     */
+    private static final String AMMO_LABEL = "AMMO ";
+    /**
+     * String of marks label
+     */
+    private static final String MARKS_LABEL = "MARKS ";
 
     /**
      * It's the playerView associated to this DamageTrack
@@ -136,13 +220,13 @@ public class DamageTrack extends Parent {
         this.playerInfo.setVisible(false);
         ammoBox.setTranslateX(width * TRANSLATE_AMMO_BOX_X);
         ammoBox.setTranslateY(height * TRANSLATE_AMMO_BOX_Y);
-        Label ammoLabel = new Label("AMMO ");
+        Label ammoLabel = new Label(AMMO_LABEL);
         ammoLabel.setTextFill(Color.WHITE);
         ammoLabel.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         ammoBox.getChildren().add(ammoLabel);
         markBox.setTranslateX(width * TRANSLATE_MARKS_BOX_X);
         markBox.setTranslateY(height * TRANSLATE_MARKS_BOX_Y);
-        Label marksLabel = new Label("MARKS ");
+        Label marksLabel = new Label(MARKS_LABEL);
         marksLabel.setTextFill(Color.WHITE);
         marksLabel.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         markBox.getChildren().add(marksLabel);
@@ -164,12 +248,12 @@ public class DamageTrack extends Parent {
      * Create and add the labels associated to player's ammo to this DamageTrack
      */
     private void addAmmos(){
-        Label redAmmo = new Label("0");
+        Label redAmmo = new Label(STARTING_AMMOS_MARKS);
         redAmmo.setBackground(new Background(new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY)));
-        Label blueAmmo = new Label("0");
+        Label blueAmmo = new Label(STARTING_AMMOS_MARKS);
         blueAmmo.setBackground(new Background(new BackgroundFill(Color.BLUE, CornerRadii.EMPTY, Insets.EMPTY)));
         blueAmmo.setTextFill(Color.WHITE);
-        Label yellowAmmo = new Label("0");
+        Label yellowAmmo = new Label(STARTING_AMMOS_MARKS);
         yellowAmmo.setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
         ammos.put(Color.RED, redAmmo);
         ammos.put(Color.BLUE, blueAmmo);
@@ -182,29 +266,29 @@ public class DamageTrack extends Parent {
      * @param color The color of the damage to add
      */
     public void addDamage(Color color){
-        if(tears < 12){
-            Rectangle newDamage = new Rectangle(10, 10, color);
+        if(tears < MAX_TEAR_1){
+            Rectangle newDamage = new Rectangle(width / SCALE_RATIO_DAMAGE_RECTANGLE_WIDTH, height / SCALE_RATIO_DAMAGE_RECTANGLE_HEIGHT, color);
             newDamage.setStrokeType(StrokeType.OUTSIDE);
             newDamage.setStroke(Color.BLACK);
             damage.add(newDamage);
             this.getChildren().add(newDamage);
-            if(tears < 2){
+            if(tears < MAX_TEAR_2){
                 if(playerView.isFrenzy()){
-                    newDamage.setTranslateX(width * (0.118 + tears * 0.051));
+                    newDamage.setTranslateX(width * (X_DAMAGE_TRANSLATE_FRENZY_1 + tears * GAP_2_DAMAGE));
                 } else {
-                    newDamage.setTranslateX(width * (0.107 + tears * 0.051));
+                    newDamage.setTranslateX(width * (X_DAMAGE_TRANSLATE_NORMAL + tears * GAP_2_DAMAGE));
                 }
-                newDamage.setTranslateY(height * 0.48);
-            } else if(tears < 5){
+                newDamage.setTranslateY(height * Y_DAMAGE_TRANSLATE);
+            } else if(tears < MAX_TEAR_3){
                 if(playerView.isFrenzy()){
-                    newDamage.setTranslateX(width * (0.115 + tears * 0.055));
+                    newDamage.setTranslateX(width * (X_DAMAGE_TRANSLATE_FRENZY_2 + tears * GAP_5_DAMAGE));
                 } else {
-                    newDamage.setTranslateX(width * (0.107 + tears * 0.055));
+                    newDamage.setTranslateX(width * (X_DAMAGE_TRANSLATE_NORMAL + tears * GAP_5_DAMAGE));
                 }
-                newDamage.setTranslateY(height * 0.48);
+                newDamage.setTranslateY(height * Y_DAMAGE_TRANSLATE);
             } else {
-                newDamage.setTranslateX(width * (0.107 + tears * 0.0558));
-                newDamage.setTranslateY(height * 0.48);
+                newDamage.setTranslateX(width * (X_DAMAGE_TRANSLATE_NORMAL + tears * GAP_12_DAMAGE));
+                newDamage.setTranslateY(height * Y_DAMAGE_TRANSLATE);
             }
         }
     }
@@ -214,7 +298,7 @@ public class DamageTrack extends Parent {
      */
     private void addMarkLabels(List<Color> colors){
         for(Color color : colors){
-            Label markLabel = new Label("0");
+            Label markLabel = new Label(STARTING_AMMOS_MARKS);
             markLabel.setBackground(new Background(new BackgroundFill(color, CornerRadii.EMPTY, Insets.EMPTY)));
             marks.put(color, markLabel);
             markBox.getChildren().add(markLabel);
@@ -255,9 +339,9 @@ public class DamageTrack extends Parent {
             unloadedWeapon.rescaleUnloaded(width);
             playerInfo.getChildren().add(unloadedWeapon);
         }
-        Label numberPu = new Label("Number of PowerUps: " + playerView.getNumPowerUps());
+        Label numberPu = new Label(POWERUP_LABEL + playerView.getNumPowerUps());
         numberPu.setTextFill(Color.YELLOWGREEN);
-        Label numberWeapons = new Label("Number of Weapons: " + (playerView.getUnloadedWeapons().size() + playerView.getNumLoadedWeapons()));
+        Label numberWeapons = new Label(WEAPON_LABEL + (playerView.getUnloadedWeapons().size() + playerView.getNumLoadedWeapons()));
         numberWeapons.setTextFill(Color.YELLOWGREEN);
         infos.getChildren().addAll(numberPu, numberWeapons);
         playerInfo.getChildren().add(infos);
@@ -290,10 +374,10 @@ public class DamageTrack extends Parent {
      * @param skullNumber It's represent the number of skulls on this board, in order to place properly the next one
      */
     public void addSkull(int skullNumber){
-        Circle newSkull = new Circle(5);
+        Circle newSkull = new Circle(width / SCALE_RATIO_SKULL);
         newSkull.setFill(Color.RED);
-        newSkull.setTranslateX(width * (0.2335 + skullNumber * 0.053));
-        newSkull.setTranslateY(height * 0.85);
+        newSkull.setTranslateX(width * (X_SKULL_TRANSLATE + skullNumber * GAP_SKULL));
+        newSkull.setTranslateY(height * Y_SKULL_TRANSLATE);
         this.getChildren().add(newSkull);
         skulls.add(newSkull);
     }

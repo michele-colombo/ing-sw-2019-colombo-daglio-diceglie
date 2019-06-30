@@ -3,31 +3,21 @@ package it.polimi.ingsw.client.userInterface.gui;
 import it.polimi.ingsw.client.PowerUpView;
 import it.polimi.ingsw.client.WrongSelectionException;
 import javafx.scene.Parent;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import java.io.InputStream;
 
 /**
  * It represents a power up card
  */
 public class PowerUpButton extends Parent{
     /**
-     * The path of the PowerUpButton PNG
+     * String used to properly load image
      */
-    private static final String POWERUP_IMAGES_FOLDER= "resources/powerUp/";
+    private static final String FILE_IMAGE_SPACE = " ";
     /**
-     * The image of this PowerUpButton
+     * Ratio to properly rescale image
      */
-    private final ImageView powerUpImageView;
-    /**
-     * It's the width of this power up
-     */
-    private double width;
-    /**
-     * It's the height of this power up
-     */
-    private double height;
+    private static final double SCALE_IMAGE = 6;
 
 
     /**
@@ -35,16 +25,12 @@ public class PowerUpButton extends Parent{
      * @param powerUpView The powerUpView associated to this PowerUpButton
      */
     public PowerUpButton(PowerUpView powerUpView){
-        InputStream powerUpUrl = getClass().getClassLoader().getResourceAsStream(POWERUP_IMAGES_FOLDER + powerUpView.getName() + " " + powerUpView.getColor().toString().toLowerCase() + ".png");
-        Image powerUpImage = new Image(powerUpUrl);
-        this.powerUpImageView = new ImageView(powerUpImage);
-        this.width = powerUpImageView.boundsInParentProperty().get().getWidth() / 1.5;
-        this.height = powerUpImageView.boundsInParentProperty().get().getHeight() / 1.5;
-        this.powerUpImageView.setFitWidth(width);
-        this.powerUpImageView.setFitHeight(height);
+        ImageView powerUpImageView = new ImageView(Gui.getCacheImage().getPowerUpButtonImage(powerUpView.getName() + FILE_IMAGE_SPACE + powerUpView.getColor().toString().toLowerCase()));
+        powerUpImageView.setFitWidth(BoardGui.getWidth() / SCALE_IMAGE);
+        powerUpImageView.setPreserveRatio(true);
         this.getChildren().add(powerUpImageView);
 
-        this.powerUpImageView.setOnMouseEntered((MouseEvent t) -> {
+        /*this.powerUpImageView.setOnMouseEntered((MouseEvent t) -> {
             powerUpImageView.setFitWidth(width * 1.2);
             powerUpImageView.setFitHeight(height * 1.2);
         });
@@ -52,7 +38,7 @@ public class PowerUpButton extends Parent{
         this.setOnMouseExited((MouseEvent t) -> {
             powerUpImageView.setFitWidth(width);
             powerUpImageView.setFitHeight(height);
-        });
+        });*/
 
         this.setOnMouseClicked((MouseEvent t) -> {
             try{
