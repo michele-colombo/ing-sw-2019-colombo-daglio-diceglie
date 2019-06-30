@@ -136,18 +136,18 @@ public class ModeChoiceScreen {
                     try {
                         Gui.getClient().selected(mode.getTitle());
                     } catch (WrongSelectionException e) {
-                    System.out.println("Wrong exception");
+                    BoardGui.showWrongSelection();
                     }
                 });
                 buttons.getChildren().add(button);
             }
             for (Command c : commands) {
                 Button button = new Button(c.toString());
-                button.setOnMouseClicked((MouseEvent me) -> {
+                button.setOnMouseClicked((MouseEvent) -> {
                     try {
                         Gui.getClient().selected(c.toString());
                     } catch (WrongSelectionException e) {
-                        System.out.println("Wrong exception");
+                        BoardGui.showWrongSelection();
                     }
                 });
                 buttons.getChildren().add(button);

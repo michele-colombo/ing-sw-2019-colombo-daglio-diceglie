@@ -34,7 +34,7 @@ public class PlayerRectangle extends Rectangle{
             try{
                 Gui.getClient().selected(playerView.getName());
             } catch(WrongSelectionException e){
-                System.out.println("Wrong selection!");
+                BoardGui.showWrongSelection();
             }
         });
     }

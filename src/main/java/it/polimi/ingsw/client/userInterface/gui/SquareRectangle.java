@@ -35,7 +35,7 @@ public class SquareRectangle extends Rectangle{
                 Gui.getClient().selected(squareView.toString());
                 BoardGui.setUnvisibleSquareRectangle();
             } catch(WrongSelectionException e){
-                System.out.println("Wrong selection!");
+                BoardGui.showWrongSelection();
             }
         });
     }

@@ -404,16 +404,13 @@ public class Gui extends Application implements UserInterface {
         PlayerView me= client.getMatch().getMyPlayer();
 
         if(me.getState() == PlayerState.CHOOSE_MODE){
-            System.out.println("Selecting modes, si deve aprire");
 
             if(modeChoiceScreen == null){
-                System.out.println("Creating and updating modeSelection");
                 modeChoiceScreen= new ModeChoiceScreen();
                 Platform.runLater( () ->  changeScene(modeChoiceScreen.getParent()));
 
             }
             else{
-                System.out.println("updating modeSelection");
                 modeChoiceScreen.update();
             }
         }
