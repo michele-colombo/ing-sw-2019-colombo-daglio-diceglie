@@ -130,6 +130,7 @@ public class Cli implements UserInterface {
         window.show();
     }
 
+    @Override
     public void printLoginMessage(String text, boolean loginSuccessful){
         if (loginSuccessful){
             Window window = new TitleAndTextWindow(30, 10,
@@ -147,6 +148,7 @@ public class Cli implements UserInterface {
         }
     }
 
+    @Override
     public void showAndAskSelection(){
         selectableIds.clear();
         playingWindow.fullUpdate(client.getMatch());

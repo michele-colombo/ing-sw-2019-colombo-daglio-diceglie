@@ -25,7 +25,11 @@ public class ClientMain{
     /**
      * the configuration for the client
      */
-    public static ClientConfig config;
+    private static ClientConfig config;
+
+    public static ClientConfig getConfig(){
+        return config;
+    }
 
     public static void main(String[] args) throws IOException {
         config = new ClientConfig();

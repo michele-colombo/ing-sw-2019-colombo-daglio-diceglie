@@ -47,8 +47,8 @@ public class RmiClient extends NetworkInterfaceClient{
     public RmiClient(Client cl) throws ConnectionInitializationException{
         super(cl);
 
-        String ip= ClientMain.config.getIp();
-        int port= ClientMain.config.getPort();
+        String ip= ClientMain.getConfig().getIp();
+        int port= ClientMain.getConfig().getPort();
         int rmiPort= port + 1;
 
         try {

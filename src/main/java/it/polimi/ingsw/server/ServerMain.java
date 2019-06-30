@@ -45,14 +45,21 @@ public class ServerMain {
      * starts the server
      */
     public void start(){
-        ExecutorService executor = Executors.newCachedThreadPool();
-        ServerSocket serverSocket = null;
-        try{
-            serverSocket = new ServerSocket(port);
-        } catch(IOException e){
-            System.out.println("Error while initializing the server");
-            e.printStackTrace();
-        }
+        Thread socketListener= new Thread(()-> {
+            try(ServerSocket serverSocket= new ServerSocket(port)){
+                while(true){
+                    Socket socket = serverSocket.accept();
+                    socket.setSoTimeout((int) CommonProperties.PING_PONG_DELAY*2);
+
+                    System.out.println("A new client has connected");
+                    new SocketServer(socket, controller);
+                }
+            }
+            catch (IOException e){
+                System.out.println("Error while initializing the server or accepting sockets");
+            }
+        });
+        socketListener.start();
 
         try {
 
@@ -80,22 +87,6 @@ public class ServerMain {
 
 
         System.out.println("Server ready!");
-        while(true){  //sara' finche'  i giocatori sono meno di cinque o piu' di tre ed e' scattato il timer
-            try{
-                Socket socket = serverSocket.accept();
-
-                socket.setSoTimeout((int) CommonProperties.PING_PONG_DELAY*2);
-
-                System.out.println("A new client has connected");
-                SocketServer socketServer = new SocketServer(socket, controller);
-                //executor.submit(socketServer);
-                //todo: viene chiamato un metodo createServerView(NetworkInterfaceServer socketServer)
-                //CREARE IL THREAD
-            } catch (IOException e){
-                break;
-            }
-        }
-        executor.shutdown();
     }
 
     public static void main(String[] args){

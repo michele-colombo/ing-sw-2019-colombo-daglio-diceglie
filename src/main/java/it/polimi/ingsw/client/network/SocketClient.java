@@ -52,8 +52,8 @@ public class SocketClient extends NetworkInterfaceClient implements EventVisitor
     public SocketClient(Client client) throws ConnectionInitializationException{
         super(client);
 
-        String ip= ClientMain.config.getIp();
-        int port= ClientMain.config.getPort();
+        String ip= ClientMain.getConfig().getIp();
+        int port= ClientMain.getConfig().getPort();
 
         try {
 
