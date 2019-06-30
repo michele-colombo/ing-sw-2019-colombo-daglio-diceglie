@@ -11,8 +11,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
-import static it.polimi.ingsw.server.model.enums.Border.OPEN;
+import static it.polimi.ingsw.server.ServerMain.*;
 
 public class ParserManager {
     private static final String SERVER_CONFIG_FILE= "resources/serverConfig.json";
@@ -21,9 +22,10 @@ public class ParserManager {
     private static final String POWERUPS_FILE= "resources/powerUps.json";
     private static final String AMMOTILES_FILE= "resources/ammoTiles.json";
 
-
     private static final String BACKUP_NAME = "currentBackup";
     private static final String BACKUP_EXTENSION = ".json";
+
+    private static final Logger logger = Logger.getLogger(ParserManager.class.getName());
 
     private Layout[] layouts;
     private StackManager stackManager;
@@ -80,10 +82,10 @@ public class ParserManager {
     public boolean saveOnSameDirectory(Backup backup, String fileName){
 
         String jarPath = "";
-        System.out.println("Writing data...");
+        logger.info(SAVING_BACKUP);
         try {
             jarPath = URLDecoder.decode(getClass().getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
-            System.out.println(jarPath);
+            logger.info("backup path:" + jarPath);
         } catch (UnsupportedEncodingException e1) {
             e1.printStackTrace();
         }
@@ -101,9 +103,9 @@ public class ParserManager {
             fw.close();
             return true;
         } catch (IOException e){
-            System.out.println("Cannot write backup file");
+            logger.warning(CANNOT_WRITE_BACKUP_FILE);
         }
-        System.out.println("backup file written [OK]");
+        logger.info(BACKUP_FILE_WRITTEN);
 
         return false;
     }
@@ -120,7 +122,7 @@ public class ParserManager {
             serverConfig= gson.fromJson(sc.nextLine(), ServerConfig.class);
         }
         catch (NullPointerException e){
-            System.out.println("Configuration file not found");
+            logger.warning(SERVER_CONFIG_NOT_FOUND);
         }
     }
 
@@ -163,15 +165,15 @@ public class ParserManager {
         }
         catch (UnsupportedEncodingException e){
             backup= null;
-            System.out.println("Unsupported encoding exception while parsing currBackup");
+            logger.warning(UNSUPPORTED_ENCODING_PARSING_BACKUP);
         }
         catch (IOException e){
             backup= null;
-            System.out.println("File not found or error while closing stream");
+            logger.warning(IO_EXCEPTION_FILE);
         }
         catch (JsonSyntaxException e){
             backup= null;
-            System.out.println("Backup file is non correctly written");
+            logger.warning(BACKUP_SYNTAX_ERROR);
         }
     }
 
@@ -230,10 +232,10 @@ public class ParserManager {
             stackManager= new StackManager(weapons, powerUps, ammoTiles);
         }
         catch (IOException e){
-            System.out.println("Problems while closing inputStream");
+            logger.warning(PROBLEM_CLOSING_INPUT_STREAM);
         }
         catch (NullPointerException e){
-            System.out.println("NO FILE DETECTED FOR STACKS");
+            logger.warning(NO_FILE_DETECTED_FOR_STACKS);
         }
 
 

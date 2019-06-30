@@ -11,9 +11,13 @@ import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Logger;
 
 public class ServerView implements Observer, EventVisitor {
 
+    public static final String ERROR_UPDATING_VIEW = "Error while updating view!";
+    public static final String SERVER_VIEW_SET_TO_DISCONNECT = "Server view set to disconnect:";
+    public static final String PLAYER_COMPLETELY_DISCONNECTED = "Player completely disconnected";
     /**
      * the network class that send/receive messages and events
      */
@@ -23,6 +27,8 @@ public class ServerView implements Observer, EventVisitor {
      * the controller of the game
      */
     private Controller controller;
+
+    private static final Logger logger = Logger.getLogger(ServerView.class.getName());
 
 
     /**
@@ -53,9 +59,9 @@ public class ServerView implements Observer, EventVisitor {
         try{
             network.forwardMessage(messageVisitable);
         } catch(IOException e){
-            System.out.println("Error while updating view!");
+            logger.warning(ERROR_UPDATING_VIEW);
             controller.setToDisconnect(this);
-            System.out.println("Server view "+this+" set to disconnect");
+            logger.info(SERVER_VIEW_SET_TO_DISCONNECT + this);
         }
     }
 
@@ -67,7 +73,7 @@ public class ServerView implements Observer, EventVisitor {
         //todo: perde il lock su controller. Fare un metodo setToDisconnectAndClean(this) ?
         controller.setToDisconnect(this);
         controller.finalCleaning();
-        System.out.println("[OK] I've completely disconnected a player");
+        logger.info(PLAYER_COMPLETELY_DISCONNECTED);
     }
 
 

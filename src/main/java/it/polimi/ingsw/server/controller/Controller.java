@@ -12,9 +12,16 @@ import it.polimi.ingsw.server.observer.Observer;
 import it.polimi.ingsw.server.controller.timer.InputTimer;
 import it.polimi.ingsw.server.controller.timer.LoginTimer;
 import java.util.*;
+import java.util.logging.Logger;
 
 
 public class Controller {
+    public static final String CORRECTLY_LOGGED_IN = " has correctly logged in";
+    public static final String PLAYER_ALREADY_DISCONNECTED = "Player already disconnected!";
+    public static final String PLAYER_DISCONNECTED_OK = "a player has been disconnected";
+    public static final String FINAL_CLEANING_DONE = "final cleaning done";
+    public static final String WRONG_SELECTION_FROM_PLAYER = "wrong selection from player ";
+    public static final String WRONG_SELECTION_PLAYER_NOT_EXIST = "wrong selection, player does not exist";
     /**
      * The reference to he game model (central unit which contains rules of the game)
      */
@@ -58,6 +65,8 @@ public class Controller {
      * The list of all server views
      */
     private List<ServerView> serverViews;
+
+    private static final Logger logger = Logger.getLogger(Controller.class.getName());
 
 
     /**
@@ -126,7 +135,7 @@ public class Controller {
             Player newPlayer = gameModel.addPlayer(newName);
             gameModel.attach(newPlayer, serverView);
             checkStart();
-            System.out.println("[OK] player "+newName+" has correctly logged in");
+            logger.info(newName+ CORRECTLY_LOGGED_IN);
         } catch(NameAlreadyTakenException e){
             message = new LoginMessage("Name already taken!", false);
         } catch(GameFullException e){
@@ -457,17 +466,15 @@ public class Controller {
             gameModel.deactivate(playerToDisconnect);
             gameModel.detach(serverView);
             serverViews.remove(serverView);
+            logger.info(PLAYER_DISCONNECTED_OK);
         } catch(NoSuchObserverException e){
-            System.out.println("Player already disconnected!");
+            logger.warning(PLAYER_ALREADY_DISCONNECTED);
         } finally {
             serverView.shutDown();
             removeTimer(serverView);
             if(checkStopMatch()){
                 gameModel.endGame();
             }
-
-            System.out.println("I'm in controller.disconnectPlayer");
-
         }
     }
 
@@ -530,7 +537,6 @@ public class Controller {
      */
     public synchronized void finalCleaning(){
         for (ServerView serverView : toDisconnectList){
-            System.out.println("questa serverview " + serverView.toString() + "e' nella disconnectList");
             disconnectPlayer(serverView);
         }
         toDisconnectList.clear();
@@ -559,7 +565,7 @@ public class Controller {
                 disconnectPlayer(serverView);
             }
         }
-        System.out.println("[OK] final cleaning done");
+        logger.info(FINAL_CLEANING_DONE);
     }
 
     /**
@@ -595,9 +601,9 @@ public class Controller {
         try {
             MessageVisitable message = new GenericMessage("Selection not permitted, retry.");
             gameModel.notify(message, observer);
-            System.out.println("[WARNING] wrong selection from player " + gameModel.getPlayerByObserver(observer).getName());
+            logger.warning(WRONG_SELECTION_FROM_PLAYER + gameModel.getPlayerByObserver(observer).getName());
         } catch (NoSuchObserverException e){
-            System.out.println("[WARNING] wrong selection, player does not exist");
+            logger.warning(WRONG_SELECTION_PLAYER_NOT_EXIST);
         }
         gameModel.getMatch().notifyFullUpdateAllPlayers();
     }
