@@ -18,8 +18,8 @@ public class AmmoTile{
 
     /**
      * Constructs the ammoTile setting ammos and the presence of powerUP
-     * @param ammos
-     * @param hasPowerUp
+     * @param ammos the contained ammos
+     * @param hasPowerUp true if it contains a powerUp
      */
     public AmmoTile(Cash ammos, boolean hasPowerUp) {
         this.ammos = new Cash(ammos);

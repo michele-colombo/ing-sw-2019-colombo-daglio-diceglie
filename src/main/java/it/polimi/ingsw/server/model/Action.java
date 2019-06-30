@@ -193,7 +193,7 @@ public class Action {
 
     /**
      * Setter for the current spawnSquare
-     * @param currSpawnSquare
+     * @param currSpawnSquare the spawn square to set
      */
     public void setCurrSpawnSquare(SpawnSquare currSpawnSquare) {
         this.currSpawnSquare = currSpawnSquare;
@@ -201,7 +201,7 @@ public class Action {
 
     /**
      * Setter for the current weapon
-     * @param currWeapon
+     * @param currWeapon the weapon to set
      */
     public void setCurrWeapon(Weapon currWeapon) {
         this.currWeapon = currWeapon;
@@ -209,7 +209,7 @@ public class Action {
 
     /**
      * Setter for the current powerUp
-     * @param po
+     * @param po the powerup to set
      */
     public void setCurrPowerUp(PowerUp po){
         this.currPowerUp = po;
@@ -217,7 +217,7 @@ public class Action {
 
     /**
      * getter for the current powerUp
-     * @return
+     * @return current powerup
      */
     public PowerUp getCurrPowerUp() {
         return currPowerUp;
@@ -225,7 +225,7 @@ public class Action {
 
     /**
      * Sets the current effects
-     * @param currEffects
+     * @param currEffects the effects to set
      */
     public void setCurrEffects(List<Effect> currEffects) {
         this.currEffects = currEffects;
@@ -262,7 +262,7 @@ public class Action {
 
     /**
      * Gets the chosen square during shooting
-     * @return
+     * @return chosen square
      */
     public Square getChosenSquare() {
         return chosenSquare;
@@ -270,7 +270,7 @@ public class Action {
 
     /**
      * Gets the chosen player during shooting
-     * @return
+     * @return chosen player
      */
     public Player getChosenPlayer() {
         return chosenPlayer;
@@ -278,7 +278,7 @@ public class Action {
 
     /**
      * Sets the chosen square. Used for shooting.
-     * @param chosenSquare
+     * @param chosenSquare chosen square
      */
     public void setChosenSquare(Square chosenSquare) {
         this.chosenSquare = chosenSquare;
@@ -286,7 +286,7 @@ public class Action {
 
     /**
      * Sets the chosen player. used for shooting.
-     * @param chosenPlayer
+     * @param chosenPlayer chosen player
      */
     public void setChosenPlayer(Player chosenPlayer) {
         this.chosenPlayer = chosenPlayer;

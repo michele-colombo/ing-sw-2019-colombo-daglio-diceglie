@@ -41,7 +41,7 @@ public class KillShotTrack {
 
     /**
      * Returns the ordinal position of killing of hte specified player
-     * @param p
+     * @param p the player interested
      * @return An integer representing the ordinal position. 0 is the first.
      */
     public int getKillingOrder(Player p){
@@ -51,7 +51,7 @@ public class KillShotTrack {
     /**
      * Returns the number of drops of the specified player on the killshot track
      * If a player overkills someone, it is counted twice
-     * @param p
+     * @param p the player interested
      * @return An integer representing the number of drops on the killshot track
      */
     public int getKillingOf(Player p){
@@ -136,35 +136,53 @@ public class KillShotTrack {
 
     /**
      * Decreases the number of skulls on the killshot track
-     * @return True if the skull was the last
      */
-    public boolean removeSkull(){
+    public void removeSkull(){
         skulls--;
         if (skulls <= 0) {
             skulls = 0;
-            return true;
         }
-        return false;
     }
 
+    /**
+     * clears the killing counter
+     */
     public void clearKillingCounter() {
         killingCounter.clear();
     }
 
+    /**
+     * clears the killing order
+     */
     public void clearKillingOrder() {
         killingOrder.clear();
     }
 
+    /**
+     * clears the kill shot track
+     */
     public void clearTrack(){track.clear();}
 
+    /**
+     * Getter for the track
+     * @return the reference to the actual track
+     */
     public List<Map<Player, Integer>> getTrack() {
         return track;
     }
 
+    /**
+     * Sets the number of skulls currently on the killshot track
+     * @param skulls number of skulls
+     */
     public void setSkulls(int skulls) {
         this.skulls = skulls;
     }
 
+    /**
+     * Sets the track
+     * @param track the new track to set
+     */
     public void setTrack(List<Map<Player, Integer>> track) {
         this.track = track;
     }

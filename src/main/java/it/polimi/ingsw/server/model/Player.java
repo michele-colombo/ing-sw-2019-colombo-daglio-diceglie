@@ -46,7 +46,6 @@ public class Player {
      * Weapons owned by a player, with their load status. Can be empty.
      * Contains maximum 3 weapons, or temporary 4 (before discarding).
      */
-    //private List<Weapon> weapons;
     private Map<Weapon, Boolean> weapons;
     /**
      * PowerUps owned by a player. can be empty.
@@ -134,7 +133,8 @@ public class Player {
     private boolean hasAnotherTurn;
 
     /**
-     * Sets name and color. Instantiate attributes and sets default values.
+     * Builds a player of the specified name. Instantiate attributes and sets default values.
+     * Color is not set.
      * @param name Uniqueness checked by constructor caller
      */
     public Player(String name) {
@@ -163,30 +163,45 @@ public class Player {
         selectableCommands = new ArrayList<>();
     }
 
+    /**
+     * Test-only constructor. Builds a player with the specified name and color.
+     * Name and color uniqueness checked by caller.
+     * @param name the name of the player
+     * @param color the color of the player
+     */
     public Player(String name, PlayerColor color){
         this(name);
         setColor(color);
     }
 
     /**
-     * Test only constructor. Uses default name and color.
+     * Sets the color of the player. Uniqueness of the caller is checked by the caller.
+     * @param color the playerColor to set
      */
-    public Player(){        //TEST constructor
-        this("Nome di prova", GREY);
-    }
-
     public void setColor(PlayerColor color) {
         this.color = color;
     }
 
+    /**
+     * Gets the name of the player
+     * @return the string of the name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Gets the color of the player
+     * @return an element of the enum PlayerColor
+     */
     public PlayerColor getColor() {
         return color;
     }
 
+    /**
+     * Gets the points of the player
+     * @return the number of points
+     */
     public int getPoints() {
         return points;
     }
@@ -196,30 +211,53 @@ public class Player {
      * @param increment Non-negative integer
      */
     public void addPoints(int increment) {
-        assert (increment >= 0) : "trying to add negative points to a player";
         points += increment;
     }
 
+    /**
+     * Gets the state of the player
+     * @return the state of the player
+     */
     public PlayerState getState() {
         return state;
     }
 
+    /**
+     * Sets the state of the player
+     * @param state the state to set
+     */
     public void setState(PlayerState state) {
         this.state = state;
     }
 
+    /**
+     * Gets the next state (after payment) of the player
+     * @return the next state
+     */
     public PlayerState getNextState() {
         return nextState;
     }
 
+    /**
+     * Sets the nest state of the player
+     * @param nextState the state to set
+     */
     public void setNextState(PlayerState nextState) {
         this.nextState = nextState;
     }
 
+    /**
+     * Checks if the player is the first player of the match
+     * @return true if it is the first player
+     */
     public boolean isFirstPlayer() {
         return isFirstPlayer;
     }
 
+    /**
+     * Sets the flag of first player
+     * @param firstPlayer the value to set
+     */
     public void setFirstPlayer(boolean firstPlayer) {
         isFirstPlayer = firstPlayer;
     }
@@ -232,10 +270,18 @@ public class Player {
         return squarePosition;
     }
 
+    /**
+     * Sets the square in which is currently the player.
+     * @param squarePosition the square to set
+     */
     public void setSquarePosition(Square squarePosition) {
         this.squarePosition = squarePosition;
     }
 
+    /**
+     * Gets the list of selectable weapons
+     * @return the reference to the actual list (can be modified)
+     */
     public List<Weapon> getSelectableWeapons() {
         return selectableWeapons;
     }
@@ -250,6 +296,10 @@ public class Player {
         this.selectableWeapons.addAll(selectableWeapons);
     }
 
+    /**
+     * Gets the list of selectable squares
+     * @return  the reference to the actual list (can be modified)
+     */
     public List<Square> getSelectableSquares() {
         return selectableSquares;
     }
@@ -264,6 +314,10 @@ public class Player {
         this.selectableSquares.addAll(selectableSquares);
     }
 
+    /**
+     * Gets the list of selectable players
+     * @return  the reference to the actual list (can be modified)
+     */
     public List<Player> getSelectablePlayers() {
         return selectablePlayers;
     }
@@ -278,6 +332,10 @@ public class Player {
         this.selectablePlayers.addAll(selectablePlayers);
     }
 
+    /**
+     * Gets the list of selectable modes
+     * @return the reference to the actual list (can be modified)
+     */
     public List<Mode> getSelectableModes() {
         return selectableModes;
     }
@@ -292,6 +350,10 @@ public class Player {
         this.selectableModes.addAll(selectableModes);
     }
 
+    /**
+     * Gets the list of selectable actions
+     * @return the reference to the actual list (can be modified)
+     */
     public List<Action> getSelectableActions() {
         return selectableActions;
     }
@@ -306,6 +368,10 @@ public class Player {
         this.selectableActions.addAll(selectableActions);
     }
 
+    /**
+     * Gets the list of selectable colors
+     * @return  the reference to the actual list (can be modified)
+     */
     public List<AmmoColor> getSelectableColors() {
         return selectableColors;
     }
@@ -320,6 +386,10 @@ public class Player {
         this.selectableColors.addAll(selectableColors);
     }
 
+    /**
+     * Gets the list of selectable powerups
+     * @return the reference to the actual list (can be modified)
+     */
     public List<PowerUp> getSelectablePowerUps() {
         return selectablePowerUps;
     }
@@ -334,16 +404,29 @@ public class Player {
         this.selectablePowerUps.addAll(selectablePowerUps);
     }
 
-
+    /**
+     * Gets the list of selectables commanda
+     * @return the reference to the actual list (can be modified)
+     */
     public List<Command> getSelectableCommands() {
         return selectableCommands;
     }
 
+    /**
+     * Sets a clone of the parameter as the commands selectable by the player in a specific moment
+     * Objects in the list are the reference to the actual (external) object
+     * @param selectableCommands a clone of the list is created and then set
+     */
     public void setSelectableCommands(List<Command> selectableCommands) {
         this.selectableCommands = new ArrayList<>();
         this.selectableCommands.addAll(selectableCommands);
     }
 
+    /**
+     * Create a list with the parameter and sets it as the command selectable by the player in a specific moment
+     * Objects in the list are the reference to the actual (external) object
+     * @param co a list containing this command is created and then set
+     */
     public void setSelectableCommands(Command co){
         this.selectableCommands = new ArrayList<>();
         this.selectableCommands.add(co);
@@ -385,28 +468,24 @@ public class Player {
      * @return a clone of the list (modifies do not affect weapons of the player)
      */
     public List<Weapon> getWeapons() {
-        List<Weapon> result = new ArrayList<>();
-        result.addAll(weapons.keySet());
-        return result;
+        return new ArrayList<>(weapons.keySet());
     }
 
+    /**
+     * Gets the map of weapons with their charge status
+     * @return a map with all the weapons
+     */
     public Map<Weapon, Boolean> getWeaponAsMap(){
         return weapons;
     }
 
     /**
-     * Adds a weapon to the player.
-     * @param w the weapon to be added
-     * //throws MustDiscardWeaponException if the player has 4 weapons after adding (weapon added anyway)
+     * Adds a weapon to the player. The maximum number of weapon is managed by the caller.
+     * @param w the weapon to add
      */
     public void addWeapon (Weapon w) {
-        if (w != null && getWeapons().indexOf(w) == -1){
+        if (w != null && !getWeapons().contains(w)){
             weapons.put(w, true);
-            if (getWeapons().size() > 3) {
-                //throw new MustDiscardWeaponException();
-            }
-        } else {
-            assert(false): "trying to add null or already present weapon";
         }
     }
 
@@ -449,8 +528,8 @@ public class Player {
     }
 
     /**
-     * Gets the powerup currently hold by the player
-     * @return reference to the actual list of PowerUp
+     * Gets the powerups currently hold by the player
+     * @return reference to the actual list of PowerUps
      */
     public List<PowerUp> getPowerUps() {
         return powerUps;
@@ -462,26 +541,19 @@ public class Player {
      */
     public void addPowerUp(PowerUp po){
         if (po != null && !powerUps.contains(po)){
-            if (!powerUps.contains(po)){
-                powerUps.add(po);
-            } else {
-                assert (false): "trying to add a duplicate powerUp";
-            }
-        } else {
-            assert(false): "trying to add a null powerup";
+            powerUps.add(po);
         }
     }
 
     /**
      * Removes a powerup from the player, if it is present
      * @param po powerup to remove
-     * @return false if the powerup was absent
+     * @return false if the powerup was already absent
      */
     public boolean removePowerUp(PowerUp po){
         if (po != null){
             return powerUps.remove(po);
         } else {
-            assert (false) : "trying to remove null powerup";
             return false;
         }
     }
@@ -510,10 +582,18 @@ public class Player {
         return credit;
     }
 
+    /**
+     * Sets the pending ammos of the player (ammos he has to pay at the moment)
+     * @param pending the cash he has to pay
+     */
     public void setPending(Cash pending) {
         this.pending = new Cash(pending);
     }
 
+    /**
+     * Sets the credit ammos of the player (ammos he has already paid in powerups)
+     * @param credit
+     */
     public void setCredit(Cash credit) {
         this.credit = new Cash(credit);
     }
@@ -523,7 +603,7 @@ public class Player {
      * @param amount payment amount
      * @return true if the player could afford that payment
      */
-    public boolean canAfford(Cash amount){       //tells you if the total cash of a player (ammos + powerUps) are more than a certain sum
+    public boolean canAfford(Cash amount){
         Cash temp = new Cash();
         for (PowerUp po : powerUps){
             temp = temp.sum(new Cash(po.getColor(), 1));
@@ -550,21 +630,34 @@ public class Player {
         return damageTrack;
     }
 
+    /**
+     * Checks if the player is ever born
+     * @return true if the player has spawned at least once
+     */
     public boolean isBorn() {
         return isBorn;
     }
 
+    /**
+     * Sets the flag isBorn for the player
+     * @param born the value to set
+     */
     public void setBorn(boolean born) {
         isBorn = born;
     }
 
+    /**
+     * Checks  if the player is before the first player
+     * @return true if it is before the first player
+     */
     public boolean isBeforeFirst() {
         return isBeforeFirst;
     }
 
     /**
+     * Sets the frenzy mode for this player
      * It is set when switching to final frenzy
-     * @param beforeFirst
+     * @param beforeFirst value to set
      */
     public void setBeforeFirst(boolean beforeFirst) {
         isBeforeFirst = beforeFirst;
@@ -572,8 +665,8 @@ public class Player {
 
     /**
      * Returns the number of power ups of a specified type owned by the player
-     * @param type
-     * @return
+     * @param type the type of powerups
+     * @return the number of powerups owned
      */
     public int howManyPowerUps(PowerUpType type){
         int result = 0;
@@ -583,6 +676,10 @@ public class Player {
         return result;
     }
 
+    /**
+     * Checks if the player is currently alive (it is born and not dead)
+     * @return true if it is alive
+     */
     public boolean isAlive(){
         if(getDamageTrack().getDamageList().size() < 11){
             return true;
@@ -590,11 +687,18 @@ public class Player {
         return false;
     }
 
+    /**
+     * Checks if the player has at least an item selectable at the moment
+     * @return true if the player has at least one selectable item
+     */
     public boolean hasSelectables(){
         return howManySelectables()>0;
     }
 
-    //test-only method!
+    /**
+     * Test-only method. It returns a description of the selectables of the player.
+     * @return A string with al the selectable items.
+     */
     public String selectablesToString(){
         StringBuilder result = new StringBuilder();
         if (!selectableSquares.isEmpty()) {
@@ -657,6 +761,11 @@ public class Player {
         return result.toString();
     }
 
+    /**
+     * Checks if the specified weapon is loaded
+     * @param w the interested weapon
+     * @return true if the weapon is loaded
+     */
     public boolean isLoaded(Weapon w){
         if (getWeapons().contains(w)){
             return weapons.get(w);
@@ -664,10 +773,20 @@ public class Player {
         else return false;
     }
 
+    /**
+     * Set the load status of a weapon owned by the player
+     * @param w the interested weapon
+     * @param load teh value of charge to set
+     */
     public void setLoad(Weapon w, boolean load){
         weapons.replace(w, load);
     }
 
+    /**
+     * Gets all the powerups of the specified color owned by the player
+     * @param colors the interested color
+     * @return the list of powerups
+     */
     public List<PowerUp> getPowerUpsOfColors(Cash colors){
         List<PowerUp> result = new ArrayList<>();
         for (PowerUp po : powerUps){
@@ -678,6 +797,11 @@ public class Player {
         return result;
     }
 
+    /**
+     * Gets all the powerups of the specified type owned by the player
+     * @param type the interested type
+     * @return the list of powerups
+     */
     public List<PowerUp> getPowerUpsOfType(PowerUpType type){
         List<PowerUp> result = new ArrayList<>();
         for (PowerUp po : powerUps){
@@ -688,32 +812,60 @@ public class Player {
         return result;
     }
 
+    /**
+     * Sets points of the player
+     * @param points the value to set
+     */
     public void setPoints(int points){
         this.points = points;
     }
 
+    /**
+     * Sets the weapons of the player, with their charge status
+     * @param weapons the map of weapon/charge to set
+     */
     public void setWeapons(Map<Weapon, Boolean> weapons){
         this.weapons = weapons;
     }
 
+    /**
+     * Set the powerups owned by the player
+     * @param powerUps the list of powerups to set
+     */
     public void setPowerUps(List<PowerUp> powerUps){
         this.powerUps = powerUps;
     }
 
-    public void setDamageTrack(DamageTrack newDamegeTrack){
+    /**
+     * Sets the damage track of the player
+     * @param newDamageTrack the damage track to set
+     */
+    public void setDamageTrack(DamageTrack newDamageTrack){
         if (damageTrack != null){
-            damageTrack = newDamegeTrack;
+            damageTrack = newDamageTrack;
         }
     }
 
+    /**
+     * Checks if the player has another turn in the match
+     * @return true if it has another turn
+     */
     public boolean hasAnotherTurn() {
         return hasAnotherTurn;
     }
 
+    /**
+     * Sets the value of the flag hasAnotherTurn
+     * @param anotherTurn the value to set
+     */
     public void setAnotherTurn(boolean anotherTurn) {
         this.hasAnotherTurn = anotherTurn;
     }
 
+    /**
+     * Gets a string with the name of the player
+     * @return the name of the player
+     */
     @Override
     public String toString() {
         return name;

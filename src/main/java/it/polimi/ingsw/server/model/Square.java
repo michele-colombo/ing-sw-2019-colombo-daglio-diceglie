@@ -67,6 +67,16 @@ public abstract class Square {
         this.room = room;
     }
 
+    /**
+     * Constructor with all parameters.
+     * @param x x coordinate of square
+     * @param y y coordinate of square
+     * @param north type of border at north
+     * @param east type of border at east
+     * @param south type of border at south
+     * @param west type of border at west
+     * @param color color of the square
+     */
     public Square(int x, int y, Border north, Border east, Border south, Border west, AmmoColor color){
         this.x = x;
         this.y = y;

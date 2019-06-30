@@ -6,10 +6,18 @@ import it.polimi.ingsw.server.model.enums.PlayerState;
 import it.polimi.ingsw.server.model.enums.PowerUpType;
 
 public class UseTargeting implements MicroAction {
-    public UseTargeting() {
+    /**
+     * Builds the micro action for using the targeting scope.
+     * It can be included as part of a shooting action.
+     */
+    public UseTargeting() {}
 
-    }
-
+    /**
+     * Checks if the targeting scope can be used. If so, it puts the powerups as selectable and OK to skip.
+     * @param match the current match
+     * @param p the player which is taking the action
+     * @throws NextMicroActionException if the next micro action has to be started immediately, without any further interaction by the player
+     */
     @Override
     public void act(Match match, Player p) throws NextMicroActionException {
         if (p.howManyPowerUps(PowerUpType.TARGETING_SCOPE)>0 && !match.getCurrentAction().getDamaged().isEmpty()) {
@@ -22,6 +30,10 @@ public class UseTargeting implements MicroAction {
         }
     }
 
+    /**
+     * Gets an empty string,
+     * since the presence of this microaction does not modify the action from the player's point of view.
+     */
     @Override
     public String toString() {
         return "";

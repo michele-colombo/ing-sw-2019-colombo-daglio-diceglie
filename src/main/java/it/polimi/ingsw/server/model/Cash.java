@@ -7,8 +7,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static it.polimi.ingsw.server.model.enums.AmmoColor.BLUE;
-
 public class Cash implements Serializable {
     /**
      * amount of blue ammos
@@ -76,8 +74,8 @@ public class Cash implements Serializable {
     }
 
     /**
-     * Gets a string describing the cash
-     * @return
+     * Gets a string describing the content of the cash
+     * @return a string in the form: b:x|r:y|y:z, where x, y, z are integers
      */
     @Override
     public String toString(){
@@ -86,7 +84,7 @@ public class Cash implements Serializable {
 
     /**
      * Gets blue ammos
-     * @return
+     * @return the number of blue ammos
      */
     public int getBlue() {
         return blue;
@@ -94,7 +92,7 @@ public class Cash implements Serializable {
 
     /**
      * Gets red ammos
-     * @return
+     * @return the number of red amoms
      */
     public int getRed() {
         return red;
@@ -102,7 +100,7 @@ public class Cash implements Serializable {
 
     /**
      * gets yellow ammos
-     * @return
+     * @return the number of yellow ammos
      */
     public int getYellow() {
         return yellow;

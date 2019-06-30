@@ -1,7 +1,6 @@
 package it.polimi.ingsw.server.model;
 
 import it.polimi.ingsw.communication.message.ConnectionUpdateMessage;
-import it.polimi.ingsw.server.ServerMain;
 import it.polimi.ingsw.server.controller.ParserManager;
 import it.polimi.ingsw.server.exceptions.*;
 import it.polimi.ingsw.communication.message.MessageVisitable;
@@ -167,8 +166,6 @@ public class GameModel implements Observable {
      * Force to start a new match, even if a valid backup is present
      */
     public void startNewMatch(){
-        //match = new Match(layoutConfig, skulls);
-        //match= new Match(pm.getLayoutConfig(), pm.getSkullNumberConfig());
 
         match = new Match(pm.getLayout(), pm.getSkullNumberConfig(), pm.getStackManager());
 
@@ -192,7 +189,7 @@ public class GameModel implements Observable {
     }
 
     /**
-     * Resume a saved match from the URL of a backup file.
+     * Resume a saved match from the URL of a backup file. Used to easily set up a match for tests.
      * @param url URL of the saved match
      */
     public void resumeMatchFromFile(InputStream url){
@@ -204,6 +201,7 @@ public class GameModel implements Observable {
                 Player newPlayer = addPlayer(playerName);
                 match.addPlayer(newPlayer);
             } catch(NameAlreadyTakenException | AlreadyLoggedException | GameFullException | NameNotFoundException | NameEmptyException e){
+                System.out.println("[WARNING] error in loading backup: can't add a player");
             }
         }
         savedBackup.restore(match);
@@ -223,11 +221,6 @@ public class GameModel implements Observable {
             p.addPowerUp(match.getStackManager().drawPowerUp());
         }
         match.addWaitingFor(p);
-        /*
-        if (!activePlayers.contains(p)){
-            match.addToFakeList(p);
-        }
-        */
         if (!spawningPlayers.contains(p)) spawningPlayers.add(p);
         p.setState(SPAWN);
         p.resetSelectables();
@@ -446,8 +439,6 @@ public class GameModel implements Observable {
             if (!hasMandatoryToSelect){
                 p.setSelectableCommands(Command.OK);
             }
-
-
             match.notifyPlayerUpdate(p);
         } else {
             p.setNextState(CHOOSE_MODE);
@@ -467,7 +458,7 @@ public class GameModel implements Observable {
         try {
             match.getCurrentAction().getCurrEffects().get(0).start(p, match);
         } catch (ApplyEffectImmediatelyException e){
-            shootTarget(p, null, null); //todo: check
+            shootTarget(p, null, null);
         }
 
         match.notifyWeaponsUpdate(p);
@@ -475,7 +466,7 @@ public class GameModel implements Observable {
     }
 
     /**
-     * Shoot to the selected target during a shoot. Either targetP or targetS is null
+     * Shoot to the selected target during a shoot. Either targetP or targetS is null.
      * @param p the player which is shooting
      * @param targetP the target which is receiving the shoot
      * @param targetS the square which is receiving the shoot
@@ -495,11 +486,17 @@ public class GameModel implements Observable {
             try {
                 effects.get(0).start(p, match);
             } catch (ApplyEffectImmediatelyException e){
-                shootTarget(p, null, null); //todo: check
+                shootTarget(p, null, null);
             }
         }
     }
 
+    /**
+     * Checks if the player can complete the payment with what he has already paid (with powerups) and prepare selectables.
+     * If a payment can be completed OK is selectable, otherwise he can choose only powerUps.
+     * Total affordability (including powerUps) is a precondition.
+     * @param p the player who is paying
+     */
     private void setupForPaying(Player p){
         p.setState(PAYING);
         p.resetSelectables();
@@ -518,6 +515,11 @@ public class GameModel implements Observable {
         match.notifyPaymentUpdate(p);
     }
 
+    /**
+     * Adds the color of the powerUp to the credit of the player
+     * @param p the player who is paying
+     * @param po the powerUp to discard for paying
+     */
     public void payWith(Player p, PowerUp po){
         p.setCredit(p.getCredit().sum(new Cash(po.getColor(), 1)));
         p.removePowerUp(po);
@@ -527,6 +529,10 @@ public class GameModel implements Observable {
         match.notifyPowerUpUpdate(p);
     }
 
+    /**
+     * Complete a payment by paying what is lefting with ammos
+     * @param p the player which is paying
+     */
     public void completePayment(Player p){
         if ((p.getPending().subtract(p.getCredit())).lessEqual(p.getWallet())){
             p.getWallet().pay(p.getPending().subtract(p.getCredit()));
@@ -543,12 +549,16 @@ public class GameModel implements Observable {
                 addMode(p, match.getCurrentAction().getCurrMode());
                 break;
         }
-
         match.notifyPaymentUpdate(p);
         match.notifyPlayerUpdate(p);
 
     }
 
+    /**
+     * Reloads the selected weapon, after checking for payment
+     * @param p the player which is reloading
+     * @param w the weapon to reload
+     */
     public void reloadWeapon(Player p, Weapon w){
         p.setPending(w.getCost());
         if (p.getCredit().isEqual(p.getPending())){
@@ -565,6 +575,11 @@ public class GameModel implements Observable {
         }
     }
 
+    /**
+     * Starts the use of a powerUp for a player by setting up selectables.
+     * @param p the player which is using the powerUp
+     * @param po the powerUp used
+     */
     public void usePowerUp (Player p, PowerUp po){
         p.removePowerUp(po);
         match.getStackManager().discardPowerUp(po);
@@ -585,7 +600,6 @@ public class GameModel implements Observable {
                 } catch (ApplyEffectImmediatelyException e){
                     po.getEffects().get(0).applyOn(p, null, null, match);
                     //calls applyOn and not ChoosePowerUpTarget() because tagback always has just one effect
-                    //or like that: po.getEffects().get(0).applyOn(p, match.getCurrentPlayer(), null, match);
                 }
                 if (match.getWaitingFor().isEmpty()){
                     match.addWaitingFor(match.getCurrentPlayer());
@@ -605,6 +619,11 @@ public class GameModel implements Observable {
         match.notifyPowerUpUpdate(p);
     }
 
+    /**
+     * Pays a powerUp for the targeting scope
+     * @param p the player using the targeting scope
+     * @param po the powerup to pay
+     */
     public void payAny(Player p, PowerUp po){
         p.removePowerUp(po);
         match.getStackManager().discardPowerUp(po);
@@ -616,6 +635,11 @@ public class GameModel implements Observable {
         match.notifyPowerUpUpdate(p);
     }
 
+    /**
+     * Pays a color for the targeting scope
+     * @param p the player using the targeting scope
+     * @param c the ammo color to pay
+     */
     public void payAny(Player p, AmmoColor c){
         p.getWallet().pay(new Cash(c, 1));
         p.setState(USE_POWERUP);
@@ -625,7 +649,11 @@ public class GameModel implements Observable {
         match.notifyPlayerUpdate(p);
     }
 
-    public void useCurrentPowerUp(Player p){
+    /**
+     * Uses the current powerup (by starting its effects)
+     * @param p the player using the powerup
+     */
+    private void useCurrentPowerUp(Player p){
         match.getCurrentAction().setCurrEffects(match.getCurrentAction().getCurrPowerUp().getEffects());
         try {
             match.getCurrentAction().getCurrEffects().get(0).start(p, match);
@@ -634,6 +662,12 @@ public class GameModel implements Observable {
         }
     }
 
+    /**
+     * Applies the effect of a powerup on a terget (either a player or a square)
+     * @param p the player using the powerup
+     * @param targetP the player receiving the effect
+     * @param targetS the square receiving the effect
+     */
     public void choosePowerUpTarget(Player p, Player targetP, Square targetS){
         List<Effect> effects = match.getCurrentAction().getCurrEffects();
         Effect temp = effects.get(0).applyOn(p, targetP, targetS, match);
@@ -654,6 +688,10 @@ public class GameModel implements Observable {
         }
     }
 
+    /**
+     * Skips the use of powerup for the player. It is used also when player is disconnected.
+     * @param p the player which does not want to use the powerup
+     */
     public void dontUsePowerUp(Player p){
         //if the current player  is (not) using the targeting scope, at this point he is certainly active (because otherwise the match would have been restored)
         //even if it were inactive, either the next microAction would have been a 'receive tagback grenade' (which is possibile even for an inactive current player)
@@ -671,6 +709,9 @@ public class GameModel implements Observable {
         match.notifyPlayerUpdate(p);
     }
 
+    /**
+     * Removes the current micro action and starts the next one, if present. Otherwise it completes the action
+     */
     public void nextMicroAction(){
         List<MicroAction> temp = match.getCurrentAction().getMicroActions();
         temp.remove(0);
@@ -683,10 +724,11 @@ public class GameModel implements Observable {
                 nextMicroAction();
             }
         }
-
-        //todo: update player state
     }
 
+    /**
+     * Checks if the player is still active and has other actions to perform in the turn. If that is the case, it prepares its selectable actions.
+     */
     public void actionCompleted(){
         Player p = match.getCurrentPlayer();
         for (Player player : allPlayers()){
@@ -710,25 +752,19 @@ public class GameModel implements Observable {
             match.notifyPlayerUpdate(p);
         }
     }
-/*
+
+    /**
+     * Saves a snapshot of the specified match in a file
+     * @param match the match to save
+     */
     private void saveSnapshot(Match match){
-        currBackup = new Backup(match);
-        currBackup.saveOnFile(BACKUP_NAME);
-    }
-    */
-
-
-    //new made by Giuseppe
-    public void saveSnapshot(Match match){
         currBackup = new Backup(match);
         pm.saveOnSameDirectory(currBackup, BACKUP_NAME);
     }
-    //finished
 
-    public Backup createMatchBackup(){
-        return new Backup(match);
-    }
-
+    /**
+     * Restores the match to the state saved in the backup.
+     */
     public void restore(){
         currBackup.restore(match);
         actionCompleted();
@@ -736,6 +772,9 @@ public class GameModel implements Observable {
         match.notifyFullUpdateAllPlayers();
     }
 
+    /**
+     * Ends the turn of the current player and prepares dead players for respawning
+     */
     public void endTurn(){
         match.setAlreadyCompleted(true);
         saveSnapshot(match);
@@ -753,14 +792,14 @@ public class GameModel implements Observable {
             for (Player p : deadPlayers) {
                 prepareForSpawning(p, false);
             }
-            /*
-            for (Player p : match.getToFakeList()){
-                fakeAction(p);
-            }
-            */
         }
     }
 
+    /**
+     * Checks if the specified name already exists in the current game
+     * @param name the name to check
+     * @return true if it already exists
+     */
     private boolean nameTaken(String name){
         List<Player> allPlayers = allPlayers();
         for(Player p : allPlayers){
@@ -771,6 +810,11 @@ public class GameModel implements Observable {
         return false;
     }
 
+    /**
+     * Checks if the specified color has been already taken in the current game
+     * @param color the color to check
+     * @return true if it has been already taken
+     */
     private boolean colorTaken(PlayerColor color){
         List<Player> allPlayers = allPlayers();
         for(Player p : allPlayers){
@@ -781,33 +825,42 @@ public class GameModel implements Observable {
         return false;
     }
 
+    /**
+     * Gets the number of all players of the match (also if the match has not already started)
+     * @return the number of all players
+     */
     public int getNumberOfPlayers(){
-        return activePlayers.size();
+        return allPlayers().size();
     }
 
+    /**
+     * Adds a new observer, associating it to the corresponding player
+     * @param player the corresponding player
+     * @param observer the observer associated to player
+     */
     public void attach(Player player, Observer observer){
         observers.put(player, observer);
-        /*
-        if(observers.containsKey(player)){
-            observers.replace(player, observer);
-            activePlayers.add(player);
-            inactivePlayers.remove(player);
-        } else {
-            observers.put(player, observer);
-        }
-        */
     }
 
+    /**
+     * Removes the observer of a player
+     * @param observer the observer to remove
+     */
     public void detach(Observer observer){
         try{
             Player tempPlayer = getPlayerByObserver(observer);
             observers.remove(tempPlayer);
         } catch(NoSuchObserverException e){
-            System.out.println("Trying to remove an absent observer");
+            System.out.println("[WARNING] trying to remove an absent observer");
         }
-        //todo: add check players.size and throw exception
     }
 
+    /**
+     * Gets a player from the corresponding observer
+     * @param observer the observer of the player
+     * @return the reference to the actual player
+     * @throws NoSuchObserverException if no player is associated to the observer
+     */
     public Player getPlayerByObserver(Observer observer) throws NoSuchObserverException {
         for (Map.Entry<Player, Observer> entry : observers.entrySet()){
             if (observer == entry.getValue()){
@@ -817,10 +870,19 @@ public class GameModel implements Observable {
         throw new NoSuchObserverException();
     }
 
+    /**
+     * Gets the observer of a player
+     * @param p the interested player
+     * @return the observer or null if the player has no observer
+     */
     public Observer getObserver(Player p){
         return observers.get(p);
     }
 
+    /**
+     * Sets a player as inactive
+     * @param player the player to deactivate
+     */
     public void deactivate(Player player){
         activePlayers.remove(player);
         if (isMatchInProgress()){
@@ -828,6 +890,11 @@ public class GameModel implements Observable {
         }
     }
 
+    /**
+     * Checks if a player is active
+     * @param name the player to check
+     * @return true if the player is active
+     */
     public boolean alreadyActive(String name){
         for(Player p : activePlayers){
             if(p.getName().equals(name)){
@@ -837,6 +904,10 @@ public class GameModel implements Observable {
         return false;
     }
 
+    /**
+     * Returns a list of all players, both active and inactive
+     * @return a clone list fo all players
+     */
     public List<Player> allPlayers(){
         List<Player> allPlayers = new ArrayList<>();
         allPlayers.addAll(activePlayers);
@@ -844,7 +915,15 @@ public class GameModel implements Observable {
         return allPlayers;
     }
 
-    public Player login(String name) throws NameAlreadyTakenException, GameFullException, NameEmptyException{
+    /**
+     * Used if a match has still to start. Checks the validity of name and then creates a new player.
+     * @param name the chosen name for the player
+     * @return the reference to the new player created
+     * @throws NameAlreadyTakenException if the name is already taken by another player
+     * @throws GameFullException if the game is full and no other player can join
+     * @throws NameEmptyException if the name is empty
+     */
+    private Player login(String name) throws NameAlreadyTakenException, GameFullException, NameEmptyException{
         Player newPlayer;
         if((activePlayers.size() < 5)){
             if(name.length() == 0){
@@ -861,7 +940,16 @@ public class GameModel implements Observable {
         }
     }
 
-    public Player relogin(String name) throws NameNotFoundException, AlreadyLoggedException, GameFullException{
+
+    /**
+     * Used if a match is already in progress. Checks the validity of name and then retrieves the corresponding player.
+     * @param name the name of player which wants to relogin
+     * @return the reference to the corresponding player
+     * @throws NameNotFoundException if there is no player with such name in the match
+     * @throws AlreadyLoggedException if someone is already logged with this player
+     * @throws GameFullException if all the players are currently logged
+     */
+    private Player relogin(String name) throws NameNotFoundException, AlreadyLoggedException, GameFullException{
         Player oldPlayer;
         if(inactivePlayers.isEmpty()){
             throw new GameFullException();
@@ -869,7 +957,7 @@ public class GameModel implements Observable {
             if (!nameTaken(name)) {
                 throw new NameNotFoundException();
             } else if (alreadyActive(name)) {
-                throw new AlreadyLoggedException(); //todo tirare eccezione non puoi loggarti se active.size() == player in match
+                throw new AlreadyLoggedException();
             } else {
                 oldPlayer = getPlayerByName(name);
                 inactivePlayers.remove(oldPlayer);
@@ -879,6 +967,11 @@ public class GameModel implements Observable {
         return oldPlayer;
     }
 
+    /**
+     * Retrieves the player with the specified name, if exists
+     * @param name the name of the player
+     * @return the reference to the player or null, if no player has that name
+     */
     public Player getPlayerByName(String name){
         List<Player> allPlayers = allPlayers();
         for(Player p : allPlayers){
@@ -889,9 +982,11 @@ public class GameModel implements Observable {
         return null;
     }
 
-
-
-    public List<String> getAllPlayerNames(){
+    /**
+     * Returns the names of all the players
+     * @return a list with all names
+     */
+    private List<String> getAllPlayerNames(){
         List<String> result = new ArrayList<>();
         for (Player p : allPlayers()){
             result.add(p.getName());
@@ -899,36 +994,69 @@ public class GameModel implements Observable {
         return result;
     }
 
+    /**
+     * Gets the list of player from which an interaction is expected
+     * @return the reference to the actual list (can be modified)
+     */
     public List<Player> getWaitingFor() {
         return match.getWaitingFor();
     }
 
+    /**
+     * Gets the list of active players
+     * @return the reference to the actual list (can be modified)
+     */
     public List<Player> getActivePlayers() {
         return activePlayers;
     }
 
+    /**
+     * Gets the list of inactive players
+     * @return the reference to the actual list (can be modified)
+     */
     public List<Player> getInactivePlayers() {
         return inactivePlayers;
     }
 
+
+    /**
+     * Gets the list of spawning players (both never born or killed)
+     * @return the reference to the actual list (can be modified)
+     */
     public List<Player> getSpawningPlayers() {
         return spawningPlayers;
     }
 
+    /**
+     * Notifies an observer with the passed message.
+     * @param messageVisitable the message to send
+     * @param observer the receiving observer
+     */
     public void notify(MessageVisitable messageVisitable, Observer observer){
         observer.update(messageVisitable);
     }
 
+    /**
+     * Notifies all the observers with the passed message
+     * @param messageVisitable the message to send
+     */
     public void notifyAll(MessageVisitable messageVisitable){
         for(Player p : activePlayers){
             observers.get(p).update(messageVisitable);
         }
     }
 
+    /**
+     * Checks if the number of player is lower than the minimum allowed for the match to continue
+     * @return true if the players are too few
+     */
     public boolean tooFewPlayers(){
         return activePlayers.size() < 3;
     }
 
+    /**
+     * Ends tha game, manages the final point assignment and notifies observers.
+     */
     public void endGame(){
         gameOver = true;
         matchInProgress = false;
@@ -940,23 +1068,40 @@ public class GameModel implements Observable {
 
         try{
             String jarPath = URLDecoder.decode(Backup.class.getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
-            String filePath = jarPath.substring(0, jarPath.lastIndexOf("/")) + File.separator + "backups"+ File.separator + BACKUP_NAME + ".json";
+            String filePath = jarPath.substring(0, jarPath.lastIndexOf('/')) + File.separator + "backups"+ File.separator + BACKUP_NAME + ".json";
             File backupFile = new File(filePath);
-            backupFile.delete();
+            if (backupFile.delete()){
+                System.out.println("[OK] backup deleted successfully");
+            } else {
+                System.out.println("[WARNING] Could not delete backup file");
+            }
         } catch (IOException e) {
-            System.out.println("[WARNING] Couldn't delete backup file");
-            e.printStackTrace();
+            System.out.println("[WARNING] Could not delete backup file");
         }
     }
 
+    /**
+     * Checks if the match is ended
+     * @return true if the match is ended
+     */
     public boolean isGameOver() {
         return gameOver;
     }
 
+    /**
+     * Returns the number of active players
+     * @return the number of players currently active
+     */
     public int howManyActivePlayers(){
         return activePlayers.size();
     }
 
+    /**
+     * It brings back the state of match to a consistent one (if necessary) and fakes the action of a certain player.
+     * It acts like the player is acting, while he is actually inactive.
+     * Default choices are: not use tagback and spawn on the last drawn powerup.
+     * @param p the player of which fake the action
+     */
     public void fakeAction(Player p){
         if (p == match.getCurrentPlayer()){
             if (match.getWaitingFor().contains(p)){
@@ -990,16 +1135,20 @@ public class GameModel implements Observable {
         }
     }
 
+    /**
+     * Notifies all players of the state of connection of all the players
+     */
     public void notifyConnectionUpdate(){
         Map<String, Boolean> connectionStates = new HashMap<>();
         for (Player p : allPlayers()){
             connectionStates.put(p.getName(), activePlayers.contains(p));
         }
 
-        //todo: check if o is null
         for (Observer o : observers.values()){
-            ConnectionUpdateMessage message = new ConnectionUpdateMessage(connectionStates);
-            o.update(message);
+            if (o != null) {
+                ConnectionUpdateMessage message = new ConnectionUpdateMessage(connectionStates);
+                o.update(message);
+            }
         }
     }
 }

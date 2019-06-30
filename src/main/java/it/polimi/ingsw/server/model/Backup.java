@@ -6,9 +6,6 @@ import it.polimi.ingsw.server.model.enums.PlayerColor;
 import it.polimi.ingsw.server.model.enums.PlayerState;
 
 import java.io.*;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URLDecoder;
 import java.util.*;
 
 
@@ -213,7 +210,7 @@ public class Backup {
         /**
          * checks equality between the backups of two players
          * @param obj the object to compare
-         * @return
+         * @return true if it is equal
          */
         @Override
         public boolean equals(Object obj) {
@@ -226,7 +223,6 @@ public class Backup {
             if (hasAnotherTurn != other.hasAnotherTurn) return false;
             if (points != other.points) return false;
             if (state != other.state) return false;
-            //if (nextState != other.nextState) return false;
             if (isFirstPlayer != other.isFirstPlayer) return false;
             if (squarePosition == null){
                 if (other.squarePosition != null) return false;
@@ -318,7 +314,7 @@ public class Backup {
         /**
          * checks equality between two killshot track backups
          * @param obj the object to compare
-         * @return
+         * @return treu if it is equal
          */
         @Override
         public boolean equals(Object obj) {
@@ -435,7 +431,7 @@ public class Backup {
         /**
          * chacks equality between two stack managers
          * @param obj the object to compare
-         * @return
+         * @return true if it is equal
          */
         @Override
         public boolean equals(Object obj) {
@@ -575,10 +571,13 @@ public class Backup {
 
         @Override
         public int hashCode() {
-            int blueHash, redHash, yellowHash, ammoHash;
-            blueHash = new HashSet<String>(blueWeapons).hashCode();
-            redHash = new HashSet<String>(redWeapons).hashCode();
-            yellowHash = new HashSet<String>(yellowWeapons).hashCode();
+            int blueHash;
+            int redHash;
+            int yellowHash;
+            int ammoHash;
+            blueHash = new HashSet<>(blueWeapons).hashCode();
+            redHash = new HashSet<>(redWeapons).hashCode();
+            yellowHash = new HashSet<>(yellowWeapons).hashCode();
             ammoHash = ammosTilesInSquares.hashCode();
             return layoutConfiguration +
                     blueHash * 63 +
@@ -661,13 +660,12 @@ public class Backup {
             match.setTurnCompletable(turnCompletable);
             match.setAlreadyCompleted(alreadyCompleted);
             match.setCurrentPlayer(match.getPlayerFromName(currentPlayer));
-            //todo: restore waitingFor or not (it is recreated when resuming game)
         }
 
         /**
          * checks equality between two match backups
          * @param obj teh object to compare
-         * @return
+         * @return true if it is equal
          */
         @Override
         public boolean equals(Object obj) {
@@ -749,7 +747,7 @@ public class Backup {
     /**
      * Creates a backup from its name. Test-only method.
      * @param name name of the file with the saved backup
-     * @return
+     * @return the backup created
      */
     public static Backup initFromFile(String name){
         InputStream url= Backup.class.getClassLoader().getResourceAsStream(FILE_PATH + name + EXTENSION);
@@ -760,7 +758,7 @@ public class Backup {
      * Creates a backup from a input stream.
      * It is used to set up a proper match for weapon tests.
      * @param url the url of the file with the backup
-     * @return
+     * @return the backup created
      */
     public static Backup initFromFile(InputStream url){
         Gson gson = new Gson();
@@ -773,7 +771,7 @@ public class Backup {
         url.close();
         }
         catch (IOException e){
-            System.out.println("Error while processing file");
+            System.out.println("[WARNING] could not create the backup from file");
             return null;
         }
 
@@ -800,7 +798,7 @@ public class Backup {
 
     /**
      * Gets the layout config from the backup
-     * @return integer coresponding to layout config
+     * @return integer corresponding to layout config
      */
     public int getLayoutConfig(){
         return layoutBackup.layoutConfiguration;
@@ -832,19 +830,18 @@ public class Backup {
      * Checks equality between two backups (by recursively checking equality of subparts)
      * It is used in tests, to compare the actual and the expected situation
      * @param obj the object to compare
-     * @return
+     * @return ture if it is equal
      */
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof Backup)) return false;
         Backup other = (Backup)obj;
 
-        boolean result = playerBackups.equals(other.playerBackups) &&
+        return playerBackups.equals(other.playerBackups) &&
                 killShotTrackBackup.equals((other.killShotTrackBackup)) &&
                 layoutBackup.equals(other.layoutBackup) &&
                 stackManagerBackup.equals(other.stackManagerBackup) &&
                 matchBackup.equals(other.matchBackup);
-        return result;
     }
 
     @Override

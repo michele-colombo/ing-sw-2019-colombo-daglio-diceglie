@@ -7,10 +7,21 @@ import it.polimi.ingsw.server.model.enums.PowerUpType;
 
 public class ReceiveTagback implements MicroAction {
 
+    /**
+     * Builds the micro action for receiving the tagback grenade.
+     * It can be included as part of a shooting action.
+     */
     public ReceiveTagback() {
 
     }
 
+    /**
+     * Checks if someone can apply tagback.
+     * If so, sets the tagback powerups and the OK command as selectable.
+     * @param match the current match
+     * @param p the player which is taking the action
+     * @throws NextMicroActionException if the next micro action has to be started immediately, without any further interaction by the player
+     */
     @Override
     public void act(Match match, Player p) throws NextMicroActionException {
         match.clearWaitingFor();
@@ -35,6 +46,10 @@ public class ReceiveTagback implements MicroAction {
         }
     }
 
+    /**
+     * Gets an empty string,
+     * since the presence of this microaction does not modify the action from the player's point of view.
+     */
     @Override
     public String toString() {
         return "";

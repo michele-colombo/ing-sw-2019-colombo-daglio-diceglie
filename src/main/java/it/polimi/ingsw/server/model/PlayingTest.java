@@ -17,7 +17,7 @@ public class PlayingTest {
         GameModel gm = new GameModel();
 
 
-        System.out.println("Do you want to checkStart a new game or resume one from file?");
+        System.out.println("Do you want to start a new game or resume one from file?");
         System.out.println("type new or resume");
         String choice = new Scanner(System.in).nextLine();
         if(choice.toLowerCase().equals("new")){

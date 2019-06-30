@@ -7,10 +7,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Reload implements MicroAction {
+    /**
+     * Builds the micro action
+     */
     public Reload() {
 
     }
 
+    /**
+     * It prepares the selectable items of the player with the reloadable weapons.
+     * It also activates OK, to skip the reloading.
+     * @param match the current match
+     * @param p the player which is taking the action
+     */
     @Override
     public void act(Match match, Player p) {
         p.setState(PlayerState.RELOAD);
@@ -25,6 +34,10 @@ public class Reload implements MicroAction {
         p.setSelectableCommands(Command.OK);
     }
 
+    /**
+     * Gets a string that uniquely describes this microaction
+     * @return a unique string
+     */
     @Override
     public String toString(){
         return "R";

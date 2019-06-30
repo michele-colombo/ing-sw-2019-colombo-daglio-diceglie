@@ -30,7 +30,7 @@ public class AmmoSquare extends Square{
 
     /**
      * Gets a description of the content of the square
-     * @return
+     * @return a string with description (contains \n)
      */
     @Override
     public String getFullDescription(){
@@ -49,7 +49,7 @@ public class AmmoSquare extends Square{
      * Gives the player p the content of this square
      * @param p player who collects
      * @param m reference to the current match
-     * @return
+     * @return true, because microaction is concluded
      */
     @Override
     public boolean collect(Player p, Match m){

@@ -364,7 +364,7 @@ public class Controller {
 
     private boolean checkStopMatch(){
         if(gameModel.tooFewPlayers() && gameModel.isMatchInProgress()){
-            //return true;
+            return true;
         }
         return false;
     }
