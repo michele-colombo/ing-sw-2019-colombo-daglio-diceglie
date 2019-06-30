@@ -16,76 +16,13 @@ public class DecksView {
     private List<PowerUpView> originalPowerUps;
     private List<AmmoTile> originalAmmoTiles;
 
-    private static final String WEAPONS_PATH = "resources/weapons.json";
-    private static final String POWERUPS_PATH = "resources/powerUps.json";
-    private static final String POWERUPS_DESCRIPTION_PATH = "resources/powerUpsDescription.json";
-    private static final String AMMOTILES_PATH = "resources/ammoTiles.json";
 
-
-
-    public DecksView() {
-        originalWeaponArsenal= loadOriginalWeaponArsenal();
-        originalPowerUps= loadOriginalPowerups();
-        originalAmmoTiles= loadOriginalAmmoTiles();
+    public DecksView(List<WeaponView> originalWeaponArsenal, List<PowerUpView> originalPowerUps, List<AmmoTile> originalAmmoTiles) {
+        this.originalWeaponArsenal = originalWeaponArsenal;
+        this.originalPowerUps = originalPowerUps;
+        this.originalAmmoTiles = originalAmmoTiles;
     }
 
-    private List<WeaponView> loadOriginalWeaponArsenal(){
-        Gson gson= new Gson();
-        List<WeaponView> result;
-
-        InputStream url= getClass().getClassLoader().getResourceAsStream(WEAPONS_PATH);
-        Scanner sc= new Scanner(url);
-        result= Arrays.asList( gson.fromJson(sc.nextLine(), WeaponView[].class));
-
-        return result;
-    }
-
-    private List<PowerUpView> loadOriginalPowerups(){
-        Gson gson= new Gson();
-        List<PowerUpView> result;
-
-        InputStream url= getClass().getClassLoader().getResourceAsStream(POWERUPS_PATH);
-        Scanner sc= new Scanner(url);
-        result= Arrays.asList( gson.fromJson(sc.nextLine(), PowerUpView[].class));
-
-        url = getClass().getClassLoader().getResourceAsStream(POWERUPS_DESCRIPTION_PATH);
-        sc = new Scanner(url);
-        JsonObject o = (JsonObject) new JsonParser().parse(sc.nextLine());
-        String tagbackDescription =  o.get("Tagback grenade").getAsString();
-        String targetingDescription =  o.get("Targeting scope").getAsString();
-        String teleporterDescription =  o.get("Teleporter").getAsString();
-        String newtonDescription =  o.get("Newton").getAsString();
-
-        for (PowerUpView p : result){
-            switch (p.getName()){
-                case "Tagback grenade":
-                    p.setDescription(tagbackDescription);
-                    break;
-                case "Targeting scope":
-                    p.setDescription(targetingDescription);
-                    break;
-                case "Teleporter":
-                    p.setDescription(teleporterDescription);
-                    break;
-                case "Newton":
-                    p.setDescription(newtonDescription);
-                    break;
-            }
-        }
-
-        return result;
-    }
-
-    private List<AmmoTile> loadOriginalAmmoTiles(){
-        Gson gson = new Gson();
-        List<AmmoTile> result;
-
-        InputStream url= getClass().getClassLoader().getResourceAsStream(AMMOTILES_PATH);
-        Scanner sc= new Scanner(url);
-        result= Arrays.asList( gson.fromJson(sc.nextLine(), AmmoTile[].class));
-
-        return result;
-    }
 
     public PowerUpView getPowerUpFromString(String string){
         for (PowerUpView po : originalPowerUps){

@@ -19,10 +19,14 @@ public class MatchView {
     private List<Map<PlayerView, Integer>> track;
     private boolean frenzyOn;
 
+    private ClientParser parser;
+
     public MatchView(String myName, int layoutConfig, List<String> players, List<PlayerColor> colors, Map<String, Boolean> connections) {
-        decks = new DecksView();
-        layout = new LayoutView();
-        layout.initLayout(layoutConfig);
+        parser= new ClientParser();
+
+        decks= new DecksView(parser.getWeapons(), parser.getPowerUps(), parser.getAmmoTiles());
+        layout= parser.getLayout(layoutConfig);
+
         allPlayers = new ArrayList<>();
         int i = 0;
         for (String name : players){

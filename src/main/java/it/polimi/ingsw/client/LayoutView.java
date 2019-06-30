@@ -10,6 +10,8 @@ import java.util.Scanner;
 
 public class LayoutView {
     private static final String LAYPUT_IMAGES_FOLDER= "resources/layoutConfig/";
+    private static final int WIDTH= 4;
+    private static final int HEIGHT= 3;
 
     /**
      * Contains all squares of the selected layout; max size is 12
@@ -31,20 +33,32 @@ public class LayoutView {
     private List<WeaponView> yellowWeapons;
 
     /**
-     * Create square as a new ArrayList and set every cell of existingSquare to zero
+     * Create sa layout from squares
      */
-    public LayoutView(){
-        squares = new ArrayList<>();
-        existingSquare = new int[4][3];
-        for(int row = 0; row < 4; row++){
-            for(int column = 0; column < 3; column++){
+    public LayoutView(List<SquareView> squares, int config){
+        this.squares= new ArrayList<>();
+        this.squares.addAll(squares);
+
+        layoutConfiguration= config;
+
+        existingSquare= new int[4][3];
+        for(int row = 0; row < WIDTH; row++){
+            for(int column = 0; column < HEIGHT; column++){
                 existingSquare[row][column] = 0;
             }
         }
+
         blueWeapons = new ArrayList<>();
         redWeapons = new ArrayList<>();
         yellowWeapons = new ArrayList<>();
+
+
+        for(SquareView sv: squares){
+            existingSquare[sv.getX()][sv.getY()] = 1;
+        }
+
     }
+
 
     /**
      * Returns a reference to the square with x and y coordinates
@@ -89,46 +103,7 @@ public class LayoutView {
         return false;
     }
 
-    /**
-     * le configurazioni del tabellone riferite al manuale di gioco sono:
-     * -0 == piccola "ottima per 4 o 5 giocatori"
-     * -1 == quella grande che e' disegnata su entrambe le pagine
-     * -2 == piccola "ottima per qualsiasi numero di giocatori
-     * -3 == picoola "ottima per 3 o 4 giocatori"
-     *
-     * @param config configuration code
-     * @return true if the configuration exists, false otherwise
-     */
-    public boolean initLayout(int config){
 
-        Gson gson= new Gson();
-
-        List<SquareView> ammoSquares= new ArrayList<>();
-
-        String configFilePath;
-
-        if(config < 0 || config>3){
-            return false;
-        }
-
-        layoutConfiguration = config;
-
-        List<SquareView> tempSquares;
-        InputStream url = getClass().getClassLoader().getResourceAsStream(LAYPUT_IMAGES_FOLDER + "layoutConfig" + config + ".json");
-        Scanner sc = new Scanner(url);
-        tempSquares = new ArrayList<>(Arrays.asList(gson.fromJson(sc.nextLine(), SquareView[].class)));
-        tempSquares.addAll(Arrays.asList(gson.fromJson(sc.nextLine(), SquareView[].class)));
-
-        this.squares.clear();
-        for(int i=0; i< this.existingSquare.length; i++){
-            for(int j=0; j< this.existingSquare[0].length; j++){
-                this.existingSquare[i][j]= 0;
-            }
-        }
-        squares.addAll(tempSquares);
-
-        return true;
-    }
 
     public SquareView getSquareFromString(String square){
         for (SquareView s : squares){
