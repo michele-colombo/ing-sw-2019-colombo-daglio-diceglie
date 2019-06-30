@@ -152,11 +152,10 @@ public class ParserManager {
 
             if(file.exists()) {
 
-                InputStream url = new FileInputStream(filePath);
-                Scanner sc = new Scanner(url);
-                backup = gson.fromJson(sc.nextLine(), Backup.class);
-                sc.close();
-                url.close();
+                try(InputStream url = new FileInputStream(filePath);
+                    Scanner sc = new Scanner(url)) {
+                    backup = gson.fromJson(sc.nextLine(), Backup.class);
+                }
             } else {
                 backup= null;
             }

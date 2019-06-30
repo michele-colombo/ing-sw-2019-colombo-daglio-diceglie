@@ -170,7 +170,7 @@ public class RmiServer extends UnicastRemoteObject implements NetworkInterfaceSe
                 try {
                     wait();
                 } catch (InterruptedException e) {
-                    //nothing
+                    Thread.currentThread().interrupt();
                 }
             }
             else {
@@ -243,6 +243,7 @@ public class RmiServer extends UnicastRemoteObject implements NetworkInterfaceSe
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
+                Thread.currentThread().interrupt();
             }
 
             return coda.remove(0);
