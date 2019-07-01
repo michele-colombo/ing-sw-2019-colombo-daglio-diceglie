@@ -7,8 +7,8 @@ import com.google.gson.JsonParser;
 
 
 import it.polimi.ingsw.client.network.NetworkInterfaceClient;
-import it.polimi.ingsw.client.userInterface.cli.Cli;
-import it.polimi.ingsw.client.userInterface.gui.Gui;
+import it.polimi.ingsw.client.user_interface.cli.Cli;
+import it.polimi.ingsw.client.user_interface.gui.Gui;
 import it.polimi.ingsw.communication.CommonProperties;
 import javafx.application.Application;
 

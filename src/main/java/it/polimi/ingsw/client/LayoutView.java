@@ -1,18 +1,28 @@
 package it.polimi.ingsw.client;
 
-import com.google.gson.Gson;
-
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
 
+/**
+ * Represents Layout on client, in order to properly load it in user interface
+ */
 public class LayoutView {
-    private static final String LAYPUT_IMAGES_FOLDER= "resources/layoutConfig/";
+    /**
+     * Represent the width of layouts
+     */
     private static final int WIDTH= 4;
+    /**
+     * Represent he height of layouts
+     */
     private static final int HEIGHT= 3;
-
+    /**
+     * Represent if a squareView doesn't exist in the chosen layout
+     */
+    private static final int NOT_EXISTING_SQUARE = 0;
+    /**
+     * Represent if a squareView exists in the chosen layout
+     */
+    private static final int EXISTING_SQUARE = 1;
     /**
      * Contains all squares of the selected layout; max size is 12
      */
@@ -27,13 +37,24 @@ public class LayoutView {
      * an integer representing the chosen layoutConfiguration
      */
     private int layoutConfiguration;
-
+    /**
+     * List of WeaponView on blue spaces of layout
+     */
     private List<WeaponView> blueWeapons;
+    /**
+     * List of WeaponView on red spaces of layout
+     */
     private List<WeaponView> redWeapons;
+    /**
+     * List of WeaponView on yellow spaces of layout
+     */
     private List<WeaponView> yellowWeapons;
 
+
     /**
-     * Create sa layout from squares
+     * Creates layoutView from squareViews, according to config and initialize existingSquareView to 0 value
+     * @param squares List of squares to be loaded from file
+     * @param config Chosen layouts
      */
     public LayoutView(List<SquareView> squares, int config){
         this.squares= new ArrayList<>();
@@ -41,10 +62,10 @@ public class LayoutView {
 
         layoutConfiguration= config;
 
-        existingSquare= new int[4][3];
+        existingSquare= new int[WIDTH][HEIGHT];
         for(int row = 0; row < WIDTH; row++){
             for(int column = 0; column < HEIGHT; column++){
-                existingSquare[row][column] = 0;
+                existingSquare[row][column] = NOT_EXISTING_SQUARE;
             }
         }
 
@@ -54,17 +75,17 @@ public class LayoutView {
 
 
         for(SquareView sv: squares){
-            existingSquare[sv.getX()][sv.getY()] = 1;
+            existingSquare[sv.getX()][sv.getY()] = EXISTING_SQUARE;
         }
 
     }
 
 
     /**
-     * Returns a reference to the square with x and y coordinates
+     * Returns a reference to the squareView with x and y coordinates
      * @param x Selected coordinate x
      * @param y Selected coordinate y
-     * @return The selected square: if the square doesn't exist, it's null;
+     * @return The selected squareView: if the squareView doesn't exist, it's null;
      */
     public SquareView getSquare(int x, int y){
         SquareView found = null;
@@ -77,34 +98,10 @@ public class LayoutView {
     }
 
     /**
-     * Return true if the square is added, otherwise false
-     * @param s It's the square to be added
-     * @return A boolean
+     * Looks for SquareView corresponding to square
+     * @param square Name of squareView searched
+     * @return The SquareView corresponding to square, if exists, else null
      */
-    public boolean addSquare(SquareView s){
-        if(!existSquare(s.getX(), s.getY()) && squares.size() < 12){
-            squares.add(s);
-            existingSquare[s.getX()][s.getY()] = 1;
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Returns true if existingSquare[x][y] is 1, otherwise it returns false
-     * @param x Coordinate x of the square
-     * @param y Coordinate y of the square
-     * @return A boolean
-     */
-    public boolean existSquare(int x, int y){
-        if(existingSquare[x][y] == 1){
-            return true;
-        }
-        return false;
-    }
-
-
-
     public SquareView getSquareFromString(String square){
         for (SquareView s : squares){
             if (s.toString().equals(square)){
@@ -114,34 +111,66 @@ public class LayoutView {
         return null;
     }
 
+    /**
+     *
+     * @return layoutConfiguration
+     */
     public int getLayoutConfiguration() {
         return layoutConfiguration;
     }
 
+    /**
+     *
+     * @return blueWeapons
+     */
     public List<WeaponView> getBlueWeapons() {
         return blueWeapons;
     }
 
+    /**
+     *
+     * @return redWeapons
+     */
     public List<WeaponView> getRedWeapons() {
         return redWeapons;
     }
 
+    /**
+     *
+     * @return yellowWeapons
+     */
     public List<WeaponView> getYellowWeapons() {
         return yellowWeapons;
     }
 
+    /**
+     *
+     * @param blueWeapons Sets blueWeapons
+     */
     public void setBlueWeapons(List<WeaponView> blueWeapons) {
         this.blueWeapons = blueWeapons;
     }
 
+    /**
+     *
+     * @param redWeapons Sets redWeapons
+     */
     public void setRedWeapons(List<WeaponView> redWeapons) {
         this.redWeapons = redWeapons;
     }
 
+    /**
+     *
+     * @param yellowWeapons set yellowWeapons
+     */
     public void setYellowWeapons(List<WeaponView> yellowWeapons) {
         this.yellowWeapons = yellowWeapons;
     }
 
+    /**
+     *
+     * @return A new List, containing all elements of squares
+     */
     public List<SquareView> getSquares() {
         return new ArrayList<>(squares);
     }

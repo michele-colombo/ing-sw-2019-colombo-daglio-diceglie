@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import it.polimi.ingsw.server.model.AmmoTile;
-import it.polimi.ingsw.server.model.Weapon;
 
 import java.io.IOException;
 import java.io.InputStream;

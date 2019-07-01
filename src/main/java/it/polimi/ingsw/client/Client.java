@@ -6,7 +6,7 @@ import it.polimi.ingsw.client.ClientExceptions.WrongSelectionException;
 import it.polimi.ingsw.client.network.NetworkInterfaceClient;
 import it.polimi.ingsw.client.network.RmiClient;
 import it.polimi.ingsw.client.network.SocketClient;
-import it.polimi.ingsw.client.userInterface.UserInterface;
+import it.polimi.ingsw.client.user_interface.UserInterface;
 import it.polimi.ingsw.communication.MessageVisitor;
 import it.polimi.ingsw.communication.events.*;
 import it.polimi.ingsw.communication.message.*;
@@ -124,7 +124,7 @@ public class Client implements MessageVisitor {
      */
     @Override
     public synchronized void visit(GenericMessage message){
-        //userInterface.printDisconnectionMessage(message.toString());
+        //user_interface.printDisconnectionMessage(message.toString());
     }
 
     /**

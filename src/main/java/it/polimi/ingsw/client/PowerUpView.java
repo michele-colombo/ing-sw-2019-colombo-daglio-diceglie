@@ -3,9 +3,6 @@ package it.polimi.ingsw.client;
 import it.polimi.ingsw.server.model.enums.AmmoColor;
 import it.polimi.ingsw.server.model.enums.PowerUpType;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class PowerUpView {
     private AmmoColor color;
     private PowerUpType type;
