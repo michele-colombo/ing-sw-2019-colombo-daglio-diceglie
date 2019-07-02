@@ -31,7 +31,6 @@ public class ParserManager {
     private StackManager stackManager;
     private Backup backup;
 
-    private ServerConfig serverConfig;
 
     private Gson gson;
 
@@ -45,10 +44,6 @@ public class ParserManager {
         parseStack();
 
         parseBackup();
-
-        parseServerConfig();
-
-
     }
 
     public Backup getBackup(){
@@ -57,26 +52,6 @@ public class ParserManager {
 
     public StackManager getStackManager() {
         return stackManager;
-    }
-
-    public int getLayoutConfig(){
-        return serverConfig.layoutConfig;
-    }
-
-    public int getPortConfig() {
-        return serverConfig.port;
-    }
-
-    public int getLoginTimerConfig() {
-        return serverConfig.loginTimer;
-    }
-
-    public int getInputTimerConfig() {
-        return serverConfig.inputTimer;
-    }
-
-    public int getSkullNumberConfig() {
-        return serverConfig.skullNumber;
     }
 
     public boolean saveOnSameDirectory(Backup backup, String fileName){
@@ -110,22 +85,6 @@ public class ParserManager {
         return false;
     }
 
-
-
-    private void parseServerConfig(){
-
-        try {
-            InputStream url= ServerMain.class.getClassLoader().getResourceAsStream(SERVER_CONFIG_FILE);
-            Scanner sc= new Scanner(url);
-
-            Gson gson= new Gson();
-            serverConfig= gson.fromJson(sc.nextLine(), ServerConfig.class);
-        }
-        catch (NullPointerException e){
-            logger.warning(SERVER_CONFIG_NOT_FOUND);
-        }
-    }
-
     /**
      * le configurazioni del tabellone riferite al manuale di gioco sono:
      * -0 == piccola "ottima per 4 o 5 giocatori"
@@ -140,10 +99,6 @@ public class ParserManager {
             return layouts[configNumber];
         }
         return null;
-    }
-
-    public Layout getLayout(){
-        return layouts[getLayoutConfig()];
     }
 
     private void parseBackup(){
@@ -238,15 +193,6 @@ public class ParserManager {
         }
 
 
-    }
-
-
-    private static class ServerConfig{
-        private int port;
-        private int loginTimer;
-        private int inputTimer;
-        private int skullNumber;
-        private int layoutConfig;
     }
 
 }

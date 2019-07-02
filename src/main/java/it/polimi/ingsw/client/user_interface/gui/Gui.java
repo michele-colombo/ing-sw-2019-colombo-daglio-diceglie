@@ -4,6 +4,7 @@ import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.client.MatchView;
 import it.polimi.ingsw.client.user_interface.UserInterface;
 import it.polimi.ingsw.client.PlayerView;
+import it.polimi.ingsw.server.model.enums.Border;
 import it.polimi.ingsw.server.model.enums.PlayerState;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -15,10 +16,7 @@ import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -27,6 +25,8 @@ import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -148,6 +148,8 @@ public class Gui extends Application implements UserInterface {
      */
     private ModeChoiceScreen modeChoiceScreen;
 
+    private static Stage stage;
+
     /**
      * main of GUI
      * @param args args
@@ -204,7 +206,7 @@ public class Gui extends Application implements UserInterface {
         Button btn;
         loginGui = null;
         boardGui = null;
-        Stage stage;
+
         stage = primaryStage;
         stage.setTitle(TITLE);
         stage.setFullScreen(true);
@@ -268,14 +270,7 @@ public class Gui extends Application implements UserInterface {
         stage.show();
 
         stage.setOnCloseRequest((WindowEvent we) -> {
-            try {
-                client.shutDown();
-            }
-            catch (NullPointerException e){
-                LOGGER.info(WINDOW_EVENT);
-            }
-
-            stage.close();
+            shutDown();
         });
     }
 
@@ -438,6 +433,22 @@ public class Gui extends Application implements UserInterface {
 
     @Override
     public void showGameOver(Map<PlayerView, Integer> rank, Map<PlayerView, Integer> points) {
+        client.shutDown();
+
+        Map<String, Integer> rankString= new HashMap<>();
+        Map<String, Integer> pointsString= new HashMap<>();
+
+        for(Map.Entry<PlayerView, Integer> entry: rank.entrySet()){
+            rankString.put(entry.getKey().getName(), entry.getValue());
+        }
+
+        for(Map.Entry<PlayerView, Integer> entry: rank.entrySet()){
+            pointsString.put(entry.getKey().getName(), entry.getValue());
+        }
+
+        GameOverGui gameOverScreen= new GameOverGui(rankString, pointsString);
+
+        Platform.runLater( () -> changeScene(gameOverScreen.getParent()));
 
     }
 
@@ -471,5 +482,14 @@ public class Gui extends Application implements UserInterface {
      */
     public static void setClient(Client client){
         Gui.client = client;
+    }
+
+    public static void shutDown(){
+        client.shutDown();
+        Platform.runLater( () -> stage.close());
+    }
+
+    public static void restart() {
+        client.restart();
     }
 }
