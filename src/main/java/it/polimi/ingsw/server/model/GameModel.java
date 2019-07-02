@@ -1,6 +1,7 @@
 package it.polimi.ingsw.server.model;
 
 import it.polimi.ingsw.communication.message.ConnectionUpdateMessage;
+import it.polimi.ingsw.server.ServerMain;
 import it.polimi.ingsw.server.controller.ParserManager;
 import it.polimi.ingsw.server.exceptions.*;
 import it.polimi.ingsw.communication.message.MessageVisitable;
@@ -69,9 +70,17 @@ public class GameModel implements Observable {
     private static final int DEFAULT_SKULLS= 8;
 
     /**
+     * default layout configuration
+     */
+    private static final int DEFAULT_LAYOUT= 0;
+
+    /**
      * reference to the parserManager, used to get resources from file
      */
     private ParserManager pm;
+
+    private int layoutConfig;
+    private int skullsNumber;
 
 
     /**
@@ -91,6 +100,32 @@ public class GameModel implements Observable {
         gameOver = false;
 
         pm= new ParserManager();
+
+        layoutConfig= DEFAULT_LAYOUT;
+        skullsNumber= DEFAULT_SKULLS;
+    }
+
+    /**
+     * builds the game model. set attributes to default values and layoutConfig and skullsConfig to chosen values
+     * @param layoutConfig number config of layout [-1, 3]
+     * @param skullsNumber number of skulls [5,8]
+     */
+    public GameModel(int layoutConfig, int skullsNumber){
+        activePlayers = new ArrayList<>();
+        activePlayers.clear();
+        inactivePlayers = new ArrayList<>();
+        inactivePlayers.clear();
+        spawningPlayers = new ArrayList<>();
+        spawningPlayers.clear();
+        match = null;
+        matchInProgress = false;
+        currBackup = null;
+        observers = new HashMap<>();
+        gameOver = false;
+        pm= new ParserManager();
+
+        this.layoutConfig= layoutConfig;
+        this.skullsNumber= skullsNumber;
     }
 
     /**
@@ -166,8 +201,16 @@ public class GameModel implements Observable {
      * Force to start a new match, even if a valid backup is present
      */
     public void startNewMatch(){
+        int lc;
+        if(layoutConfig != -1){
+            lc= layoutConfig;
+        }
+        else {
+            Random rand= new Random();
+            lc= Math.abs( rand.nextInt()%4 );
+        }
 
-        match = new Match(pm.getLayout(), pm.getSkullNumberConfig(), pm.getStackManager());
+        match = new Match(pm.getLayout(lc), skullsNumber, pm.getStackManager());
 
 
         for (Player p : allPlayers()){ //activePlayers only? or all players?
