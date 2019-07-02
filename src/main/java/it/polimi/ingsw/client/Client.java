@@ -115,7 +115,7 @@ public class Client implements MessageVisitor {
      */
     @Override
     public synchronized void visit(LoginMessage message){
-        userInterface.printLoginMessage(message.toString(), message.getLoginSuccessful());
+        userInterface.printLoginMessage(message.getResponse(), message.getLoginSuccessful());
     }
 
     /**

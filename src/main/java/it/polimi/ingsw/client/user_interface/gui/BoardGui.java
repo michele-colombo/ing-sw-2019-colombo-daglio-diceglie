@@ -298,7 +298,9 @@ public class BoardGui {
      * Height of the image used as background of layout
      */
     private static double boardHeight;
-
+    /**
+     * Parse used to load BoardGui resources
+     */
     private static Parser parser;
 
     /**
@@ -855,9 +857,11 @@ public class BoardGui {
      * Updates payment
      */
     public void updatePayment(){
-        MyPlayer me = Gui.getClient().getMatch().getMyPlayer();
-        stateText.setTextFill(Color.WHITE);
-        stateText.setText(Client.getStateDescription(Gui.getClient().getMatch().getMyPlayer().getState()) + System.lineSeparator() + PENDING + me.getPending().toString() + System.lineSeparator() + CREDIT + me.getCredit().toString());
+        Platform.runLater(() -> {
+            MyPlayer me = Gui.getClient().getMatch().getMyPlayer();
+            stateText.setTextFill(Color.WHITE);
+            stateText.setText(Client.getStateDescription(Gui.getClient().getMatch().getMyPlayer().getState()) + System.lineSeparator() + PENDING + me.getPending().toString() + System.lineSeparator() + CREDIT + me.getCredit().toString());
+        });
     }
 
     /**
@@ -900,10 +904,18 @@ public class BoardGui {
         stateText.setWrapText(true);
     }
 
+    /**
+     * Creates parser with chosen layout
+     * @param layout chosen layout
+     */
     private static void createParser(int layout){
         parser = new Parser(layout);
     }
 
+    /**
+     *
+     * @return parser
+     */
     public static Parser getParser(){
         return parser;
     }

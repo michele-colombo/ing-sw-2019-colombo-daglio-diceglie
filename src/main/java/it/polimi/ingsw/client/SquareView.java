@@ -5,7 +5,7 @@ import it.polimi.ingsw.server.model.enums.AmmoColor;
 import it.polimi.ingsw.server.model.enums.Border;
 
 /**
- * Represent a Square on client
+ * Represents a Square on client
  */
 public class SquareView {
     /**
