@@ -117,6 +117,7 @@ public class LoginGui {
 
         view.setBackground(new Background(new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
         GridPane.setHalignment(loginGrid, HPos.CENTER);
+
         loginGrid.setAlignment(Pos.CENTER);
         loginGrid.setBackground(new Background(new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
         loginGrid.setHgap(Gui.getScreenBounds().getWidth() / SCALE_RATIO_GAP_GRID);
@@ -164,6 +165,16 @@ public class LoginGui {
         loginButton.setOnAction(event ->
             Gui.getClient().chooseName(userTextField.getText())
         );
+
+        HBox buttonBox= new HBox();
+        ExitButton exit= new ExitButton();
+
+        DisconnectButton disconnect= new DisconnectButton();
+
+        buttonBox.getChildren().addAll(exit, disconnect);
+
+        view.getChildren().add(buttonBox);
+        BorderPane.setAlignment(buttonBox, Pos.TOP_CENTER);
     }
 
     /**

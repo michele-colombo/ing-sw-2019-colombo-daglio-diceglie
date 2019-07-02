@@ -4,7 +4,6 @@ import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.client.MatchView;
 import it.polimi.ingsw.client.user_interface.UserInterface;
 import it.polimi.ingsw.client.PlayerView;
-import it.polimi.ingsw.server.model.enums.Border;
 import it.polimi.ingsw.server.model.enums.PlayerState;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -81,7 +80,7 @@ public class Gui extends Application implements UserInterface {
      */
     private static final double SCALE_RATIO_HEIGHT_COMBO_BOX = 25;
     /**
-     * Ratio to properly rescale gap grid
+     * Ratio to properly rescale gap view
      */
     private static final double SCALE_RATIO_GAP_GRID = 153.6;
     /**
@@ -89,27 +88,27 @@ public class Gui extends Application implements UserInterface {
      */
     private static final double SCALE_RATIO_STAGE = 2;
     /**
-     * Row of grid in which put elements
+     * Row of view in which put elements
      */
     private static final int GRID_ZERO_ROW = 0;
     /**
-     * Row of grid in which put elements
+     * Row of view in which put elements
      */
     private static final int GRID_FIRST_ROW = 1;
     /**
-     * Column of grid in which put elements
+     * Column of view in which put elements
      */
     private static final int GRID_SIXTH_COLUMN = 6;
     /**
-     * Column of grid in which put elements
+     * Column of view in which put elements
      */
     private static final int GRID_FOURTH_COLUMN = 4;
     /**
-     * Column of grid in which put elements
+     * Column of view in which put elements
      */
     private static final int GRID_FIRST_COLUMN = 1;
     /**
-     * Column of grid in which put elements
+     * Column of view in which put elements
      */
     private static final int GRID_ZERO_COLUMN = 0;
     /**
@@ -123,7 +122,7 @@ public class Gui extends Application implements UserInterface {
     /**
      * GridPane who contains the element of the current scene
      */
-    private GridPane grid;
+    private StackPane view;
     /**
      * The current scene displayed on the stage
      */
@@ -160,7 +159,7 @@ public class Gui extends Application implements UserInterface {
      */
     @Override
     public void showConnectionSelection() {
-        changeScene(grid);
+        changeScene(view);
     }
 
     /**
@@ -210,17 +209,19 @@ public class Gui extends Application implements UserInterface {
         stage.setMinWidth(screenBounds.getWidth());
         stage.setMinHeight(screenBounds.getHeight());
 
-        grid = new GridPane();
-        grid.setBackground(new Background(new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
+        GridPane selectionDialog;
+
+        selectionDialog = new GridPane();
+        selectionDialog.setBackground(new Background(new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
         Text sceneTitle = new Text(TITLE);
         sceneTitle.setFont(Font.font(FONT, FontWeight.NORMAL, Gui.getScreenBounds().getWidth() / RATIO_FONT_SIZE));
-        grid.add(sceneTitle, GRID_FIRST_ROW, GRID_ZERO_COLUMN);
+        selectionDialog.add(sceneTitle, GRID_FIRST_ROW, GRID_ZERO_COLUMN);
         GridPane.setHalignment(sceneTitle, HPos.CENTER);
-        grid.setGridLinesVisible(false);
+        selectionDialog.setGridLinesVisible(false);
 
 
         Label connection = new Label(CONNECTION_BUTTON);
-        grid.add(connection, GRID_ZERO_ROW, GRID_FIRST_COLUMN);
+        selectionDialog.add(connection, GRID_ZERO_ROW, GRID_FIRST_COLUMN);
 
         ObservableList<String> comboItems = FXCollections.observableArrayList(
                 CONNECTION_RMI,
@@ -230,28 +231,28 @@ public class Gui extends Application implements UserInterface {
         comboBox.setMaxHeight(screenBounds.getHeight() / SCALE_RATIO_HEIGHT_COMBO_BOX);
         comboBox.setMaxWidth(screenBounds.getWidth() / SCALE_RATIO_WIDTH_COMBO_BOX);
 
-        grid.add(comboBox, GRID_FIRST_ROW, GRID_FIRST_COLUMN);
+        selectionDialog.add(comboBox, GRID_FIRST_ROW, GRID_FIRST_COLUMN);
         GridPane.setHalignment(comboBox, HPos.CENTER);
 
-        grid.setAlignment(Pos.CENTER);
-        grid.setHgap(Gui.getScreenBounds().getWidth() / SCALE_RATIO_GAP_GRID);
-        grid.setVgap(Gui.getScreenBounds().getWidth() / SCALE_RATIO_GAP_GRID);
+        selectionDialog.setAlignment(Pos.CENTER);
+        selectionDialog.setHgap(Gui.getScreenBounds().getWidth() / SCALE_RATIO_GAP_GRID);
+        selectionDialog.setVgap(Gui.getScreenBounds().getWidth() / SCALE_RATIO_GAP_GRID);
 
 
         btn = new Button(CONNECT_BUTTON);
-        btn.prefWidthProperty().bind(grid.widthProperty());
-        btn.prefHeightProperty().bind(grid.heightProperty());
+        btn.prefWidthProperty().bind(selectionDialog.widthProperty());
+        btn.prefHeightProperty().bind(selectionDialog.heightProperty());
         btn.setMaxWidth(comboBox.getMaxWidth());
         btn.setMaxHeight(comboBox.getMaxHeight());
         HBox hbBtn = new HBox();
         hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
         hbBtn.getChildren().add(btn);
         HBox.setHgrow(btn, Priority.ALWAYS);
-        grid.add(hbBtn, GRID_FIRST_ROW, GRID_FOURTH_COLUMN);
-        grid.add(btn,GRID_FIRST_ROW ,GRID_FOURTH_COLUMN);
+        selectionDialog.add(hbBtn, GRID_FIRST_ROW, GRID_FOURTH_COLUMN);
+        selectionDialog.add(btn,GRID_FIRST_ROW ,GRID_FOURTH_COLUMN);
 
         actionTarget = new Text();
-        grid.add(actionTarget, GRID_FIRST_ROW, GRID_SIXTH_COLUMN);
+        selectionDialog.add(actionTarget, GRID_FIRST_ROW, GRID_SIXTH_COLUMN);
         GridPane.setHalignment(actionTarget, HPos.CENTER);
 
         btn.setOnAction(event -> {
@@ -263,9 +264,17 @@ public class Gui extends Application implements UserInterface {
         });
 
 
+        view= new StackPane();
+        ExitButton exit= new ExitButton();
+
+        view.getChildren().addAll(selectionDialog, exit);
+        StackPane.setAlignment(selectionDialog, Pos.CENTER);
+        StackPane.setAlignment(exit, Pos.TOP_RIGHT);
 
 
-        scene = new Scene(grid);
+
+
+        scene = new Scene(view);
         stage.setScene(scene);
         stage.show();
 

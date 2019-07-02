@@ -24,7 +24,7 @@ public class GameOverGui {
     public static final String PLAYER_TEXT = "Player";
     public static final String POINTS_TEXT = "Points";
 
-    private BorderPane view;
+    private StackPane view;
 /*
     public GameOverGui(Map<String, Integer> rank, Map<String, Integer> points){
         view= new BorderPane();
@@ -65,26 +65,27 @@ public class GameOverGui {
     }
 */
     public GameOverGui(Map<String, Integer> rank, Map<String, Integer> points){
-        view = new BorderPane();
+        view = new StackPane();
 
-        GridPane loginGrid = new GridPane();
-        view.setCenter(loginGrid);
+        GridPane gridRank = new GridPane();
+        view.getChildren().add(gridRank);
+        StackPane.setAlignment(gridRank, Pos.CENTER);
 
         view.setBackground(new Background(new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
-        GridPane.setHalignment(loginGrid, HPos.CENTER);
-        loginGrid.setAlignment(Pos.CENTER);
-        loginGrid.setBackground(new Background(new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
-        loginGrid.setHgap(GAP_SIZE);
-        loginGrid.setVgap(GAP_SIZE);
+        GridPane.setHalignment(gridRank, HPos.CENTER);
+        gridRank.setAlignment(Pos.CENTER);
+        gridRank.setBackground(new Background(new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
+        gridRank.setHgap(GAP_SIZE);
+        gridRank.setVgap(GAP_SIZE);
 
 
         Text positionTitle= new Text(POSITION_TEXT); positionTitle.setFont(FONT);
         Text playerTitle= new Text(PLAYER_TEXT); playerTitle.setFont(FONT);
         Text pointsTitle= new Text(POINTS_TEXT); pointsTitle.setFont(FONT);
 
-        loginGrid.add(positionTitle, POS_COL_INDEX, 0);
-        loginGrid.add(playerTitle, PLAYER_COL_INDEX, 0);
-        loginGrid.add(pointsTitle, POINTS_COL_INDEX, 0);
+        gridRank.add(positionTitle, POS_COL_INDEX, 0);
+        gridRank.add(playerTitle, PLAYER_COL_INDEX, 0);
+        gridRank.add(pointsTitle, POINTS_COL_INDEX, 0);
 
 
         int i=1;
@@ -96,16 +97,15 @@ public class GameOverGui {
             Text score= new Text(String.valueOf( points.get(s) ));
             score.setFont(FONT);
 
-            loginGrid.add(position, POS_COL_INDEX, i);
-            loginGrid.add(player, PLAYER_COL_INDEX, i);
-            loginGrid.add(score, POINTS_COL_INDEX, i);
+            gridRank.add(position, POS_COL_INDEX, i);
+            gridRank.add(player, PLAYER_COL_INDEX, i);
+            gridRank.add(score, POINTS_COL_INDEX, i);
 
             i++;
         }
 
         HBox buttonBox= new HBox();
-        Button quit= new Button("Quit");
-        quit.setOnMouseClicked( mouseEvent -> Gui.shutDown());
+        ExitButton quit= new ExitButton();
 
         buttonBox.getChildren().add(quit);
 
@@ -113,11 +113,13 @@ public class GameOverGui {
         playAgain.setOnMouseClicked(mouseEvent -> Gui.restart() );
 
         buttonBox.getChildren().add(playAgain);
+        buttonBox.setAlignment(Pos.TOP_RIGHT);
 
-        buttonBox.setAlignment(Pos.CENTER);
 
 
-        loginGrid.addRow(i, buttonBox);
+        //gridRank.addRow(i, buttonBox);
+        view.getChildren().add(buttonBox);
+        StackPane.setAlignment(buttonBox, Pos.TOP_RIGHT);
 
 
 

@@ -356,6 +356,18 @@ public class BoardGui {
         addConnectionState(match.getAllPlayers());
         addSelectables();
         updateConnection(match.readConnections());
+
+
+        HBox buttons= new HBox();
+        ExitButton exit= new ExitButton();
+        DisconnectButton disconnect= new DisconnectButton();
+
+        buttons.getChildren().addAll(exit, disconnect);
+        buttons.setAlignment(Pos.TOP_RIGHT);
+
+
+        view.add(buttons, view.getColumnCount(), 0);
+        GridPane.setHalignment(buttons, HPos.RIGHT);
     }
 
     /**
