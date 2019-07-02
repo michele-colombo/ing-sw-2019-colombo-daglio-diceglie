@@ -32,7 +32,7 @@ public class MatchView {
      */
     private PlayerView currentPlayer;
     /**
-     * Players' connection state during the match
+     * Players' connection state during the match: true if online, false if offline
      */
     private Map<String, Boolean> connections;
     /**

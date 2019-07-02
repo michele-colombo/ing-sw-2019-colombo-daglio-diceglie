@@ -147,10 +147,13 @@ public class Gui extends Application implements UserInterface {
 
     private static Stage stage;
 
+    /**
+     * main of GUI
+     * @param args args
+     */
     public static void main(String[] args){
         launch(args);
     }
-
 
     /**
      * Makes GUI to return to the connection selection window
@@ -355,8 +358,7 @@ public class Gui extends Application implements UserInterface {
 
     @Override
     public void updatePayment() {
-        Platform.runLater(() ->
-                boardGui.updatePayment());
+        boardGui.updatePayment();
     }
 
     /**

@@ -5,29 +5,64 @@ import it.polimi.ingsw.server.model.enums.AmmoColor;
 
 import java.util.List;
 
+/**
+ * Represents a weapon on client
+ */
 public class WeaponView {
+    /**
+     * Name of the WeaponView
+     */
     private String name;
+    /**
+     * Costs (in ammos) of the WeaponView
+     */
     private Cash cost;
+    /**
+     * Color ot the WeaponView
+     */
     private AmmoColor color;
+    /**
+     * ModeViews of the WeaponViews
+     */
     private List<ModeView> myModes;
     private String imageName;
 
+    /**
+     *
+     * @return name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     *
+     * @return cost
+     */
     public Cash getCost() {
         return cost;
     }
 
+    /**
+     *
+     * @return color
+     */
     public AmmoColor getColor() {
         return color;
     }
 
+    /**
+     *
+     * @return myModes
+     */
     public List<ModeView> getMyModes() {
         return myModes;
     }
 
+    /**
+     *
+     * @return discounted cost (i.e. cost less first ammos of color of WeaponView)
+     */
     public Cash getDiscountedCost() {
         return cost.subtract(new Cash(color, 1));
     }
@@ -37,6 +72,12 @@ public class WeaponView {
     }
 
     //TEST
+
+    /**
+     *
+     * @return String description of this WeaponView, containing name, buying cost, full cost and
+     * titles and description of her ModeViews
+     */
     public String getDescription(){
         StringBuilder result= new StringBuilder();
         result.append(name.toUpperCase());
@@ -49,6 +90,11 @@ public class WeaponView {
         return result.toString();
     }
 
+    /**
+     *
+     * @param str title of searched ModeView
+     * @return ModeView corresponding to given str
+     */
     public ModeView getModeFromString(String str){
         for (ModeView m : myModes){
             if (m.getTitle().equals(str)){

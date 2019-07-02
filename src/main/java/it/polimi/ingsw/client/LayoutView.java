@@ -12,11 +12,11 @@ public class LayoutView {
      */
     private static final int WIDTH= 4;
     /**
-     * Represent he height of layouts
+     * Represent the height of layouts
      */
     private static final int HEIGHT= 3;
     /**
-     * Represent if a squareView doesn't exist in the chosen layout
+     * Represents if a SquareView doesn't exist in the chosen layout
      */
     private static final int NOT_EXISTING_SQUARE = 0;
     /**
@@ -34,7 +34,7 @@ public class LayoutView {
     private int[][] existingSquare;
 
     /**
-     * an integer representing the chosen layoutConfiguration
+     * Chosen configuration of layout
      */
     private int layoutConfiguration;
     /**
