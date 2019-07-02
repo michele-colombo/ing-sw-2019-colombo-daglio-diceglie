@@ -405,6 +405,7 @@ public class Client implements MessageVisitor {
      */
     @Override
     public synchronized void visit(GameOverMessage gameOverMessage) {
+
         Map<PlayerView, Integer> rank = new HashMap<>();
         Map<PlayerView, Integer> points = new HashMap<>();
         if (match != null){
@@ -415,6 +416,7 @@ public class Client implements MessageVisitor {
                 points.put(match.getPlayerFromName(entry.getKey()), entry.getValue());
             }
             userInterface.showGameOver(rank, points);
+            shutDown();
         } else {
             System.out.println("[ERROR] end without start");
         }

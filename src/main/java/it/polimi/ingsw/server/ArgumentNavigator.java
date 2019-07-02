@@ -1,15 +1,19 @@
 package it.polimi.ingsw.server;
 
-import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * util to get arguments from commandline. Linux style
+ */
 public class ArgumentNavigator {
-    private String[] args;
+    /**
+     * map of argument-keys and argument-values
+     * (fieldPrefix)argumentKew argumentValue
+     */
     private Map<String, String> argumentMap;
 
     public ArgumentNavigator(String[] args, String fieldPrefix){
-        this.args= args;
         argumentMap= new HashMap<>();
 
         int i= 0;
@@ -31,6 +35,13 @@ public class ArgumentNavigator {
         }
     }
 
+    /**
+     *
+     * @param fieldKey argument kew
+     * @param def default return value
+     * @return the argument value
+     * @throws NumberFormatException if the argument value is not a integer
+     */
     public int getFieldAsIntOrDefault(String fieldKey, int def) throws NumberFormatException{
         String value= argumentMap.get(fieldKey);
         if(value != null){
@@ -47,6 +58,13 @@ public class ArgumentNavigator {
         return def;
     }
 
+
+    /**
+     *
+     * @param fieldKey argument kew
+     * @param def default return value
+     * @return argument value
+     */
     public String getFieldAsStringorDefault(String fieldKey, String def){
         return argumentMap.getOrDefault(fieldKey, def);
     }

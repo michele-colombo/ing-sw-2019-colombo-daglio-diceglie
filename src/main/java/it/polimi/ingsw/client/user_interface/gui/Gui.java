@@ -10,10 +10,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.HPos;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
+import javafx.geometry.*;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -262,6 +259,9 @@ public class Gui extends Application implements UserInterface {
             }
         });
 
+
+
+
         scene = new Scene(grid);
         stage.setScene(scene);
         stage.show();
@@ -431,7 +431,6 @@ public class Gui extends Application implements UserInterface {
 
     @Override
     public void showGameOver(Map<PlayerView, Integer> rank, Map<PlayerView, Integer> points) {
-        client.shutDown();
 
         Map<String, Integer> rankString= new HashMap<>();
         Map<String, Integer> pointsString= new HashMap<>();
@@ -483,7 +482,12 @@ public class Gui extends Application implements UserInterface {
     }
 
     public static void shutDown(){
-        client.shutDown();
+        try {
+            client.shutDown();
+        }
+        catch (NullPointerException e){
+            //nothing to do id client is null
+        }
         Platform.runLater( () -> stage.close());
     }
 
