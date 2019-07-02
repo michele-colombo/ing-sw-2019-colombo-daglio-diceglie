@@ -18,6 +18,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class GameModelTest {
 
+    /**
+     * Support method to check if the match in the specified gameModel is a new one (just started)
+     * @param gm the gameModel to check
+     * @return true if the match in it has just started
+     */
     public boolean isNewMatch(GameModel gm){
         //no players is born
         for (Player p : gm.allPlayers()){
@@ -46,6 +51,10 @@ public class GameModelTest {
         return true;
     }
 
+    /**
+     * Tests the next player method by providing a player and checking the returned one.
+     * Tets with five players.
+     */
     @Test
     public void nextActivePlayerWithFivePlayers() {
 
@@ -92,6 +101,10 @@ public class GameModelTest {
         }
     }
 
+    /**
+     * Tests the next player method by providing a player and checking the returned one.
+     * Tets with four players.
+     */
     @Test
     public void nextActivePlayerWithFourPlayers() {
 
@@ -136,6 +149,10 @@ public class GameModelTest {
         }
     }
 
+    /**
+     * Tests the next player method by providing a player and checking the returned one.
+     * Tets with five players, but shuffling them after adding.
+     */
     @Test
     public void nextActivePlayerWithActivePlayersInADifferentOrder(){
         try {
@@ -185,6 +202,10 @@ public class GameModelTest {
         }
     }
 
+    /**
+     * Tests the next player method by providing a player and checking the returned one.
+     * Tets with five players. Players are added and removed (simulating connection and disconnection) during the test
+     */
     @Test
     public void nextActivePlayerWithActivePlayersVarying() {
         try {
@@ -265,6 +286,9 @@ public class GameModelTest {
         }
     }
 
+    /**
+     * Simulates the action of grabbing from an ammoSquare and tests intermediate results
+     */
     @Test
     public void grabFromAmmoSquares(){
         try {
@@ -332,6 +356,9 @@ public class GameModelTest {
         }
     }
 
+    /**
+     * Tests the throwing of exceptions in name adding.
+     */
     @Test
     public void exceptionTest(){
         GameModel gm = new GameModel();
@@ -357,6 +384,9 @@ public class GameModelTest {
         assertThrows(GameFullException.class, () -> gm.addPlayer("last"));
     }
 
+    /**
+     * Tests the starting of a new match, by checking the immediately after situation
+     */
     @Test
     public void StartNewMatchTest(){
         GameModel gm = new GameModel();
@@ -395,7 +425,9 @@ public class GameModelTest {
         assertTrue(isNewMatch(gm));
     }
 
-
+    /**
+     * Tests the actions of grabbing and moving of four players, in a match with five players.
+     */
     @Test
     public void GrabAndMoveTestFivePlayers(){
         GameModel gm = new GameModel();
@@ -491,6 +523,15 @@ public class GameModelTest {
 
     }
 
+    /**
+     * Tests the resuming of a previous match (because names of the new game match with the previous ones)
+     * Starts a match, does som actions. Then stop the match.
+     * Then creates five players with identical names (in the same order)
+     * and tests that the old match is resumed.
+     * Then does some other actions.
+     * Then stops it and creates players with the same names but in a different order.
+     * Then restarts teh match and check that it is resumed, again.
+     */
     @Test
     public void StartMatchTwoTimesWithValidBackup(){
         GameModel gm = new GameModel();
@@ -664,16 +705,16 @@ public class GameModelTest {
             assertFalse(p35.isBorn());
             assertEquals(PlayerState.SPAWN, p35.getState());
             assertEquals(2, p35.getSelectablePowerUps().size());
-        } catch (Exception e){
+        } catch (Exception e){  /**
+     *
+     */
             assertTrue(false);
         }
     }
 
-    private InputStream searchInTestResources(String name){
-        InputStream result= getClass().getClassLoader().getResourceAsStream("savedGamesForTests/" + name + ".json");
-        return result;
-    }
-
+    /**
+     * Tests that a completely new match is started even if there is a valid backup, because players names are different
+     */
     @Test
     public void startMatchWithDifferentPlayers(){
         //players were: antonio, gianfranco, enrico, matteo, evila
@@ -699,6 +740,9 @@ public class GameModelTest {
         }
     }
 
+    /**
+     * Tests the resuming of a match from a backup file.
+     */
     @Test
     public void startMatchWithSamePlayers(){
         //players were: antonio, gianfranco, enrico, matteo, evila
@@ -725,6 +769,9 @@ public class GameModelTest {
         assertEquals(new Backup(gm.getMatch()), new Backup(gm2.getMatch()));
     }
 
+    /**
+     * Tests teh match from a backup file, with players with the same name, but in a different order.
+     */
     @Test
     public void startMatchSamePlayersDifferentOrder(){
         //players were: antonio, gianfranco, enrico, matteo, evila
@@ -751,6 +798,9 @@ public class GameModelTest {
         assertEquals(new Backup(gm.getMatch()), new Backup(gm2.getMatch()));
     }
 
+    /**
+     * Tests that the match is not resumed because players are different.
+     */
     @Test
     public void startMatchDifferentPlayersDifferentOrder(){
         //players were: antonio, gianfranco, enrico, matteo, evila
@@ -775,6 +825,9 @@ public class GameModelTest {
         assertTrue(isNewMatch(gm2));
     }
 
+    /**
+     * Tests that the match is not resumed because there is one less player (even if other are equal)
+     */
     @Test
     public void startMatchOnePlayerLess(){
         //players were: antonio, gianfranco, enrico, matteo, evila
@@ -802,6 +855,9 @@ public class GameModelTest {
         }
     }
 
+    /**
+     * Tests the action of grabbing a weapon.
+     */
     @Test
     public void grabWeaponTest(){
         //first has wallet: 100 + yellow powerup. In bluespawnpoint there are: shockwave (000), machine gun (010) e railgun (101).
@@ -867,6 +923,9 @@ public class GameModelTest {
             assertEquals(second, match.getCurrentPlayer());
     }
 
+    /**
+     * Tests the action of grabbing a weapon when the player has already three weapons (one must be discarded)
+     */
     @Test
     public void grabWeaponWithDiscarding() {
         //second has wallet: 220 without powerups and 3 weapons. In yellow spawnpoint there are: plasma gun (001), thor (010), rocket launcher(010).
@@ -923,6 +982,9 @@ public class GameModelTest {
             assertEquals(new Cash(2, 1,0), second.getWallet());
     }
 
+    /**
+     * Tests that a player cannot grab weapon he cannot afford and that he can roll back in this case.
+     */
     @Test
     public void cantGrabAnythingTest(){
         //third has wallet: 000 + yellow powerup. In redspawnpoin there are: zx-2 (010), furnace (100), power glove (100).
@@ -960,6 +1022,9 @@ public class GameModelTest {
             assertEquals(Backup.initFromFile(searchInTestResources("cantGrabAnythingBefore")), new Backup(gm.getMatch()));
     }
 
+    /**
+     * Tests that the turn is correctly passed when a player disconnects and he is the current player.
+     */
     @Test
     public void currentPlayerDisconnectsDuringAction(){
         GameModel gm = new GameModel();
@@ -976,25 +1041,25 @@ public class GameModelTest {
             printSituation(match);
 
         gm.performAction(first, first.getSelectableActions().get(1));//grab
-        startTimers(gm);
+        finalCleaning(gm);
 
             assertTrue(first.getSelectableSquares().contains(layout.getSquare(2,2)));
 
         gm.grabThere(first, layout.getSquare(2,2));
-        startTimers(gm);
+        finalCleaning(gm);
 
             printSel(first);
             assertTrue(first.getSelectableWeapons().contains(sm.getWeaponFromName("Heatseeker")));
 
         gm.grabWeapon(first, sm.getWeaponFromName("Heatseeker"));
-        startTimers(gm);
+        finalCleaning(gm);
 
             assertTrue(first.getSelectablePowerUps().contains(sm.getPowerUpFromString("16-Tagback grenade-YELLOW")));
 
         gm.payWith(first, sm.getPowerUpFromString("16-Tagback grenade-YELLOW"));
-        startTimers(gm);
+        finalCleaning(gm);
         disconnectPlayer(gm, first);
-        startTimers(gm);
+        finalCleaning(gm);
 
             assertEquals(second, match.getCurrentPlayer());
             assertEquals(IDLE, first.getState());

@@ -86,7 +86,7 @@ public class Controller {
      * Sets a server view to be disconnected
      * @param serverView teh server view to disconnect
      */
-    public void setToDisconnect(ServerView serverView){
+    public synchronized void setToDisconnect(ServerView serverView){
         if (!toDisconnectList.contains(serverView)){
             toDisconnectList.add(serverView);
         }
@@ -134,7 +134,9 @@ public class Controller {
             String newName = name.trim();
             Player newPlayer = gameModel.addPlayer(newName);
             gameModel.attach(newPlayer, serverView);
-            checkStart();
+            if (!gameModel.isMatchInProgress()){
+                checkStart();
+            }
             logger.info(newName+ CORRECTLY_LOGGED_IN);
         } catch(NameAlreadyTakenException e){
             message = new LoginMessage("Name already taken!", false);
@@ -484,7 +486,7 @@ public class Controller {
      */
     private boolean checkStopMatch(){
         if(gameModel.tooFewPlayers() && gameModel.isMatchInProgress()){
-            //return true;
+            return true;
         }
         return false;
     }
@@ -536,9 +538,19 @@ public class Controller {
      * Finally it starts the timeout for players online from which an interaction is required.
      */
     public synchronized void finalCleaning(){
+        /*
         for (ServerView serverView : toDisconnectList){
             disconnectPlayer(serverView);
         }
+        */
+
+        int i = 0;
+        while (i<toDisconnectList.size()){
+            disconnectPlayer(toDisconnectList.get(i));
+            i++;
+        }
+
+
         toDisconnectList.clear();
 
         if (!gameModel.isGameOver()) {
@@ -570,7 +582,7 @@ public class Controller {
 
     /**
      * Adds the input timer for a server view, only if no one was already present
-     * @param observer the server view interested by the timer
+     * @param observer the server view involved by the timer
      */
     private void addTimer(Observer observer){
         if(timers.get(observer) == null){

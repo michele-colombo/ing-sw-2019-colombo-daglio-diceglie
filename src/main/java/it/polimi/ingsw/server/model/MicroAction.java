@@ -2,6 +2,9 @@ package it.polimi.ingsw.server.model;
 
 import it.polimi.ingsw.server.exceptions.NextMicroActionException;
 
+/**
+ * Represents the elementary tasks that compose a complete action.
+ */
 public interface MicroAction {
     /**
      * Prepares selectable items for the micro action (grabbing, moving, shooting, etc) to be executed

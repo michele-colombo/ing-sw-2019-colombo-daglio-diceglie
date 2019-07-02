@@ -63,7 +63,7 @@ public class Client implements MessageVisitor {
      * Create the connectoin for this client
      * @param connection type of connection: socket or rmi
      */
-    public void createConnection(String connection){
+    public void createConnection(String connection){    //todo: synchronized?
         try {
             switch (connection.toLowerCase()) {
 
@@ -94,7 +94,7 @@ public class Client implements MessageVisitor {
      * Log in with a name
      * @param name name chosen
      */
-    public void chooseName(String name){
+    public void chooseName(String name){    //todo: synchronized?
         this.name = name;
         try{
             EventVisitable loginEvent = new LoginEvent(name);
@@ -424,7 +424,7 @@ public class Client implements MessageVisitor {
      * send an event through the network
      * @param event Event to send
      */
-    private void sendEvent(EventVisitable event){
+    private void sendEvent(EventVisitable event){   //todo: synchronized?
         try {
             network.forward(event);
         } catch (ForwardingException e){
@@ -443,110 +443,109 @@ public class Client implements MessageVisitor {
         EventVisitable event;
         boolean found = false;
 
-        WeaponView weapon = match.getDecks().getWeaponFromName(selected);
-        if (weapon != null){
-            indexSel = match.getMyPlayer().getSelectableWeapons().indexOf(weapon);
-            if (indexSel<0) {
-                throw new WrongSelectionException();
+        if (match != null) {
+            WeaponView weapon = match.getDecks().getWeaponFromName(selected);
+            if (weapon != null) {
+                indexSel = match.getMyPlayer().getSelectableWeapons().indexOf(weapon);
+                if (indexSel < 0) {
+                    throw new WrongSelectionException();
+                } else {
+                    event = new WeaponSelectedEvent(indexSel);
+                    found = true;
+                    sendEvent(event);
+                }
             }
-            else {
-                event = new WeaponSelectedEvent(indexSel);
-                found = true;
-                sendEvent(event);
-            }
-        }
 
-        SquareView square = match.getLayout().getSquareFromString(selected);
-        if (square != null){
-            indexSel = match.getMyPlayer().getSelectableSquares().indexOf(square);
-            if (indexSel<0) {
-                throw new WrongSelectionException();
+            SquareView square = match.getLayout().getSquareFromString(selected);
+            if (square != null) {
+                indexSel = match.getMyPlayer().getSelectableSquares().indexOf(square);
+                if (indexSel < 0) {
+                    throw new WrongSelectionException();
+                } else {
+                    event = new SquareSelectedEvent(indexSel);
+                    found = true;
+                    sendEvent(event);
+                }
             }
-            else {
-                event = new SquareSelectedEvent(indexSel);
-                found = true;
-                sendEvent(event);
-            }
-        }
 
-        if (match.getMyPlayer().getState() == PlayerState.CHOOSE_MODE){
-            WeaponView currWeapon = match.getMyPlayer().getCurrWeapon();
-            if (currWeapon != null){
-                ModeView mode = currWeapon.getModeFromString(selected);
-                if (mode != null){
-                    indexSel = match.getMyPlayer().getSelectableModes().indexOf(mode);
-                    if (indexSel<0){
-                        throw new WrongSelectionException();
-                    } else {
-                        event = new ModeSelectedEvent(indexSel);
-                        found = true;
-                        sendEvent(event);
+            if (match.getMyPlayer().getState() == PlayerState.CHOOSE_MODE) {
+                WeaponView currWeapon = match.getMyPlayer().getCurrWeapon();
+                if (currWeapon != null) {
+                    ModeView mode = currWeapon.getModeFromString(selected);
+                    if (mode != null) {
+                        indexSel = match.getMyPlayer().getSelectableModes().indexOf(mode);
+                        if (indexSel < 0) {
+                            throw new WrongSelectionException();
+                        } else {
+                            event = new ModeSelectedEvent(indexSel);
+                            found = true;
+                            sendEvent(event);
+                        }
                     }
                 }
             }
-        }
 
-        try {
-            Command command = Command.valueOf(selected);
-            indexSel = match.getMyPlayer().getSelectableCommands().indexOf(command);
-            if (indexSel<0) {
-                throw new WrongSelectionException();
+            try {
+                Command command = Command.valueOf(selected);
+                indexSel = match.getMyPlayer().getSelectableCommands().indexOf(command);
+                if (indexSel < 0) {
+                    throw new WrongSelectionException();
+                } else {
+                    event = new CommandSelectedEvent(indexSel);
+                    found = true;
+                    sendEvent(event);
+                }
+            } catch (IllegalArgumentException e) {
             }
-            else {
-                event = new CommandSelectedEvent(indexSel);
+
+            indexSel = match.getMyPlayer().getSelectableActions().indexOf(selected);
+            if (indexSel >= 0) {
+                event = new ActionSelectedEvent(indexSel);
                 found = true;
                 sendEvent(event);
             }
-        } catch (IllegalArgumentException e ){}
 
-        indexSel = match.getMyPlayer().getSelectableActions().indexOf(selected);
-        if (indexSel >= 0) {
-            event = new ActionSelectedEvent(indexSel);
-            found = true;
-            sendEvent(event);
-        }
+            try {
+                AmmoColor color = AmmoColor.valueOf(selected);
+                indexSel = match.getMyPlayer().getSelectableColors().indexOf(color);
+                if (indexSel < 0) {
+                    throw new WrongSelectionException();
+                } else {
+                    event = new ColorSelectedEvent(indexSel);
+                    found = true;
+                    sendEvent(event);
+                }
+            } catch (IllegalArgumentException e) {
+            }
 
-        try {
-            AmmoColor color = AmmoColor.valueOf(selected);
-            indexSel = match.getMyPlayer().getSelectableColors().indexOf(color);
-            if (indexSel<0) {
+            PlayerView player = match.getPlayerFromName(selected);
+            if (player != null) {
+                indexSel = match.getMyPlayer().getSelectablePlayers().indexOf(player);
+                if (indexSel < 0) {
+                    throw new WrongSelectionException();
+                } else {
+                    event = new PlayerSelectedEvent(indexSel);
+                    found = true;
+                    sendEvent(event);
+                }
+            }
+
+            PowerUpView powerUp = match.getDecks().getPowerUpFromString(selected);
+            if (powerUp != null) {
+                indexSel = match.getMyPlayer().getSelectablePowerUps().indexOf(powerUp);
+                if (indexSel < 0) {
+                    throw new WrongSelectionException();
+                } else {
+                    event = new PowerUpSelectedEvent(indexSel);
+                    found = true;
+                    sendEvent(event);
+                }
+            }
+
+
+            if (!found){
                 throw new WrongSelectionException();
             }
-            else {
-                event = new ColorSelectedEvent(indexSel);
-                found = true;
-                sendEvent(event);
-            }
-        } catch (IllegalArgumentException e ){}
-
-        PlayerView player = match.getPlayerFromName(selected);
-        if (player != null){
-            indexSel = match.getMyPlayer().getSelectablePlayers().indexOf(player);
-            if (indexSel<0) {
-                throw new WrongSelectionException();
-            }
-            else {
-                event = new PlayerSelectedEvent(indexSel);
-                found = true;
-                sendEvent(event);
-            }
-        }
-
-        PowerUpView powerUp = match.getDecks().getPowerUpFromString(selected);
-        if (powerUp != null){
-            indexSel = match.getMyPlayer().getSelectablePowerUps().indexOf(powerUp);
-            if (indexSel<0) {
-                throw new WrongSelectionException();
-            }
-            else {
-                event = new PowerUpSelectedEvent(indexSel);
-                found = true;
-                sendEvent(event);
-            }
-        }
-
-        if (!found){
-            throw new WrongSelectionException();
         }
     }
 
@@ -577,7 +576,7 @@ public class Client implements MessageVisitor {
     /**
      * restart the client (from connection selection)
      */
-    public void restart(){
+    public void restart(){  //todo: synchronized?
         shutDown();
         userInterface.showConnectionSelection();
     }

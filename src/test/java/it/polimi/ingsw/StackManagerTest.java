@@ -12,7 +12,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class StackManagerTest {
-@Test
+    /**
+     * Tests lists initilization
+     */
+    @Test
     public void initTest(){
         StackManager sm= new ParserManager().getStackManager();
 
@@ -41,6 +44,10 @@ public class StackManagerTest {
     }
 
 
+    /**
+     * Tests that ammo tiles discarded are resumed once the ammo tile stack gets empty.
+     * (So ammo tiles are actually infinite)
+     */
     @Test
     public void testRiciclo(){
         List<AmmoTile> l= new ArrayList<AmmoTile>();
@@ -73,6 +80,10 @@ public class StackManagerTest {
 
     }
 
+    /**
+     * Tests that once weapon stack gets empty is not possible to draw weapons anymore
+     * (Weapons can run out)
+     */
     @Test
     public void testRicicloImpossibileWeapon(){
     StackManager s= new ParserManager().getStackManager();
@@ -94,28 +105,9 @@ public class StackManagerTest {
 
     }
 
-
-    @Test
-    public void proveConArrayList(){
-    List<AmmoColor> lista= new ArrayList<>();
-    AmmoColor uno= AmmoColor.RED;
-    AmmoColor due= AmmoColor.BLUE;
-    AmmoColor tre= AmmoColor.YELLOW;
-    AmmoColor quattro= AmmoColor.GREEN;
-
-    lista.add(uno);
-    lista.add(due);
-    lista.add(tre);
-    lista.add(quattro);
-
-    assertEquals(lista.get(0), uno);
-    assertEquals(lista.size(), 4);
-    lista.remove(uno);
-    assertEquals(lista.get(0), due);
-    assertEquals(lista.size(), 3);
-
-    }
-
+    /**
+     * Tests the initializations of stacks (of weapons, ammo tiles and powerups) from json file
+     */
     @Test
     public void buildingStacks(){
     StackManager sm= new ParserManager().getStackManager();
@@ -146,6 +138,9 @@ public class StackManagerTest {
     assertEquals(sm.getPowerUpActiveStack().size(), 23);
     }
 
+    /**
+     * Tests the loading of powerups from json
+     */
     @Test
     public void powerUpsLoadingTest(){
     StackManager sm= new ParserManager().getStackManager();
@@ -158,6 +153,9 @@ public class StackManagerTest {
 
     }
 
+    /**
+     * Tests the loading of weaopons from json
+     */
     @Test
     public void weaponsLoadingTest(){
     StackManager sm= new ParserManager().getStackManager();

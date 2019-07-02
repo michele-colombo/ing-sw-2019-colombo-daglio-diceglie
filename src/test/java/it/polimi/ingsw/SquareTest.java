@@ -16,6 +16,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 public class SquareTest {
+    /**
+     * Really simple test to get used to gson.
+     * Further tests on square in gameModelTest and layoutTest
+     */
     @Test
     public void testgson() {
 

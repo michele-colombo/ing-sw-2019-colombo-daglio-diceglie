@@ -3,6 +3,11 @@ package it.polimi.ingsw.server.model;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a complete action that a player can perform in his turn.
+ * It can be composed of different elementary tasks, the MicroActions.
+ * It also contains some supports variable to keep track of user's choices while completing it.
+ */
 public class Action {
     /**
      * List of microActions composing the current action

@@ -13,27 +13,27 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class KillShotTrackTest {
-    private KillShotTrack killShotTrack;
-    private Player first;
-    private Player second;
-    private Player third;
 
-    @BeforeEach
-    public void prepareTest(){
-        final int skulls = 8;
 
-        killShotTrack = new KillShotTrack(skulls);
-        first = new Player("first");
-        second = new Player("second");
-        third = new Player("third");
-    }
-
+    /**
+     * Tests adding of killing and scoring of points in trivial conditions
+     */
     @Test
     public void SimpleAddingAndScoring() {
+        KillShotTrack killShotTrack;
+        Player first;
+        Player second;
+        Player third;
+
         final Integer kill = 1;
         final int order1 = 0;
         final int order2 = 1;
         final int skulls = 5;
+
+        killShotTrack = new KillShotTrack(8);
+        first = new Player("first");
+        second = new Player("second");
+        third = new Player("third");
 
         Map<Player, Integer> shot1 = new HashMap<>();
         shot1.put(first, kill);
@@ -57,6 +57,10 @@ public class KillShotTrackTest {
         assertEquals(skulls, killShotTrack.getSkulls());
     }
 
+    /**
+     * Tests adding of killing and scoring.
+     * Checks also that killing order and killing counter is correct
+     */
     @Test
     public void NoKillingReturs0() {
         KillShotTrack k = new KillShotTrack(8);
@@ -84,6 +88,10 @@ public class KillShotTrackTest {
         assertEquals(6, (int)k.score().get(p2));
     }
 
+    /**
+     * Tests adding of killing and scoring.
+     * Checks also that killing order and killing counter is correct
+     */
     @Test
     public void SimpleAddingAndScoring3() {
         KillShotTrack k = new KillShotTrack(8);
@@ -128,6 +136,10 @@ public class KillShotTrackTest {
         assertEquals(4, (int)k.score().get(p1));
     }
 
+    /**
+     * Tests adding of killing and scoring.
+     * Checks also that killing order and killing counter is correct
+     */
     @Test
     public void FiveKillers() {
         KillShotTrack k = new KillShotTrack(8);
@@ -189,7 +201,5 @@ public class KillShotTrackTest {
 
         assertEquals(2, k.getSkulls());
     }
-
-    //More test will be added
 
 }

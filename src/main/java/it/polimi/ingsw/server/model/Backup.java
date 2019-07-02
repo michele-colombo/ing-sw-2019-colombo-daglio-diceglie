@@ -7,12 +7,16 @@ import it.polimi.ingsw.server.model.enums.PlayerState;
 
 import java.io.*;
 import java.util.*;
+import java.util.logging.Logger;
 
 
 /**
  * It contains information in order to make a rollback during a match or to resume a match from file
  */
 public class Backup {
+
+    private static final Logger logger = Logger.getLogger(Backup.class.getName());
+    public static final String ERROR_BACKUP_FROM_FILE = "could not create the backup from file";
 
     /**
      * Contains the backup of a player
@@ -771,7 +775,7 @@ public class Backup {
         url.close();
         }
         catch (IOException e){
-            System.out.println("[WARNING] could not create the backup from file");
+            logger.warning(ERROR_BACKUP_FROM_FILE);
             return null;
         }
 

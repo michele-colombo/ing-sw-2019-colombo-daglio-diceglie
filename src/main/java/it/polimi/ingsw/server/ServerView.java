@@ -15,9 +15,9 @@ import java.util.logging.Logger;
 
 public class ServerView implements Observer, EventVisitor {
 
-    public static final String ERROR_UPDATING_VIEW = "Error while updating view!";
-    public static final String SERVER_VIEW_SET_TO_DISCONNECT = "Server view set to disconnect:";
-    public static final String PLAYER_COMPLETELY_DISCONNECTED = "Player completely disconnected";
+    public static final String ERROR_UPDATING_VIEW = "error while updating view!";
+    public static final String SERVER_VIEW_SET_TO_DISCONNECT = "server view set to disconnect:";
+    public static final String PLAYER_COMPLETELY_DISCONNECTED = "player completely disconnected";
     /**
      * the network class that send/receive messages and events
      */
@@ -41,14 +41,6 @@ public class ServerView implements Observer, EventVisitor {
         this.controller = controller;
         controller.addServerView(this);
     }
-/*
-    public void receiveEvent(EventVisitable event){
-        //todo: remove next line
-        System.out.println("sto per fare la accept di un evento");
-        event.accept(this);
-        System.out.println("ho appena finito la accept di un evento");
-    }
-*/
 
 
     /**

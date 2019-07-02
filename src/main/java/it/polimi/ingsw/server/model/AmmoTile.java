@@ -1,5 +1,8 @@
 package it.polimi.ingsw.server.model;
 
+/**
+ * Represents the ammo tile: those tiles placed on the map, containg some ammos (up to 3) and an optional powerUp
+ */
 public class AmmoTile{
     /**
      * The ammos contained (2 or 3 in total)

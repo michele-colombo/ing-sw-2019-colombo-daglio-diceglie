@@ -12,7 +12,7 @@ import static it.polimi.ingsw.server.model.enums.Border.*;
 import static it.polimi.ingsw.server.model.enums.Direction.*;
 
 /**
- * This class represents the layout of the game
+ * This class represents the layout (intended as map) of the game
  */
 public class Layout {
     /**

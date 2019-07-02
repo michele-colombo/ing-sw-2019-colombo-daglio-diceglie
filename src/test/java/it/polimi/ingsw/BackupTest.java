@@ -11,6 +11,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BackupTest {
 
+    /**
+     * Tests the loading of backups and a trivial application of the equals method
+     */
     @Test
     public void equalsBetweenBackupsFromIdenticalFiles(){
         //backup_1 and backup_1b contain exactly the same text
@@ -23,6 +26,9 @@ class BackupTest {
         assertTrue(backup_a.equals(backup_b));
     }
 
+    /**
+     * Tests the loading of backups and the difference detecting of equals method
+     */
     @Test
     public void equalsBetweenDifferentBackups(){
         //backup_1 and backup_1b differs from
@@ -35,6 +41,10 @@ class BackupTest {
         assertNotEquals(backup_a, backup_b);
     }
 
+    /**
+     * Tests the loading of backups and the equals method
+     * Backups are equals even if the weapons are in a different order
+     */
     @Test
     public void equalsWeaponsInDifferentOrder(){
         //backup_1 and backup_1c differs by the order of weapons in players
@@ -49,6 +59,10 @@ class BackupTest {
         assertEquals(backup_a, backup_b);
     }
 
+    /**
+     * Tests the loading of backups and the equals method
+     * The match state is different if weapons have different states of charge
+     */
     @Test
     public void equalsWeaponsDifferentlyLoaded(){
         //backup_1 and backup_1d differs by the state of load of weapons
@@ -63,6 +77,11 @@ class BackupTest {
         assertNotEquals(backup_a, backup_b);
     }
 
+    /**
+     * Tests the loading of backups and the equals method.
+     * The two backups contains some things in different order, where order is not relevant,
+     * therefore they are equal
+     */
     @Test
     public void equalsDifferentOrder(){
         //backup_1e contains many things in different order, but it is equal to backup_1
@@ -76,9 +95,12 @@ class BackupTest {
         assertEquals(backup_a, backup_b);
     }
 
+    /**
+     * Tests the loading of backups and the equals method.
+     * Players are in a different order (relevant for equality) so backups are different
+     */
     @Test
     public void equalsPlayerDifferentOrder(){
-        //players are in a different order (relevant for equality) so backups are different
 
         InputStream url1= getClass().getClassLoader().getResourceAsStream("backupTest/backup_1.json");
         InputStream url1f= getClass().getClassLoader().getResourceAsStream("backupTest/backup_1f.json");
@@ -89,9 +111,12 @@ class BackupTest {
         assertNotEquals(backup_a, backup_b);
     }
 
+    /**
+     * Tests the loading of backups and the equals method.
+     * Damages are in a different order (relevant for equality), therefore backups are different
+     */
     @Test
     public void equalsDifferentDamageList(){
-        //damages are in a different order (relevant for equality), therefore backups are different
 
         InputStream url1= getClass().getClassLoader().getResourceAsStream("backupTest/backup_1.json");
         InputStream url1g= getClass().getClassLoader().getResourceAsStream("backupTest/backup_1g.json");
@@ -102,9 +127,12 @@ class BackupTest {
         assertNotEquals(backup_a, backup_b);
     }
 
+    /**
+     * Tests the loading of backups and the equals method.
+     * There is one name different, therefore backups are different
+     */
     @Test
     public void equalsDifferentName(){
-        //a name is different, therefore backups are different
 
         InputStream url1= getClass().getClassLoader().getResourceAsStream("backupTest/backup_1.json");
         InputStream url1h= getClass().getClassLoader().getResourceAsStream("backupTest/backup_1h.json");
@@ -115,6 +143,10 @@ class BackupTest {
         assertNotEquals(backup_a, backup_b);
     }
 
+    /**
+     * Tests the loading of backups and the equals method.
+     * Two backups differing only for not relevant things, they are equal
+     */
     @Test
     public void anotherEqualsTest(){
         //another 'random' equals test
@@ -128,6 +160,9 @@ class BackupTest {
         assertEquals(backup_a, backup_b);
     }
 
+    /**
+     * Tests the resuming of a backup, with particular attention on the resuming of the killshot track
+     */
     @Test
     public void resumeBackupWithoutKillingOrderAndKillingCounter(){
         GameModel gm = new GameModel();

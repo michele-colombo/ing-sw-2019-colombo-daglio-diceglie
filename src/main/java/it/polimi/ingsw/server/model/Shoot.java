@@ -3,6 +3,9 @@ package it.polimi.ingsw.server.model;
 import it.polimi.ingsw.server.model.enums.Command;
 import it.polimi.ingsw.server.model.enums.PlayerState;
 
+/**
+ * Represents is the task of shooting with a weapon
+ */
 public class Shoot implements MicroAction {
     /**
      * Builds the micro action

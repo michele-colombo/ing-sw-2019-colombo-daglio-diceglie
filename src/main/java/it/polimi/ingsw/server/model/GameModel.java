@@ -14,11 +14,25 @@ import it.polimi.ingsw.server.observer.Observer;
 import java.io.*;
 import java.net.URLDecoder;
 import java.util.*;
+import java.util.logging.Logger;
 
 
 import static it.polimi.ingsw.server.model.enums.PlayerState.*;
 
+/**
+ * Is the center of the game, which embeds most of the game rules.
+ * It is updated by the controller by quite general methods that represents events of the game,
+ * then it knows how to transform these calls in actual modifications on data.
+ * It is not aware of concepts like network and timers, but it does make distinction between two possible players' states: active and inactive.
+ */
 public class GameModel implements Observable {
+    public static final String PREVIOUS_MATCH_STARTED = "match from a previous backup started";
+    public static final String CANNOT_OPEN_SAVED_BACKUP = "cannot open saved backup";
+    public static final String NEW_MATCH_STARTED = "new match started";
+    public static final String BACKUP_CANNOT_ADD_PLAYER = "error in loading backup: can't add a player";
+    public static final String REMOVING_ABSENT_OBSERVER = "trying to remove an absent observer";
+    public static final String BACKUP_DELETED_SUCCESSFULLY = "backup deleted successfully";
+    public static final String COULD_NOT_DELETE_BACKUP_FILE = "could not delete backup file";
     /**
      * List containing the active players (not disconnected) of the match
      */
@@ -81,6 +95,8 @@ public class GameModel implements Observable {
 
     private int layoutConfig;
     private int skullsNumber;
+
+    private final static Logger logger = Logger.getLogger(GameModel.class.getName());
 
 
     /**
@@ -179,7 +195,7 @@ public class GameModel implements Observable {
                     }
                     match.setObservers(observers);
                     tempBackup.restore(match);
-                    System.out.println("[OK] match from a previous backup started");
+                    logger.info(PREVIOUS_MATCH_STARTED);
                     match.notifyStartMatchUpdate();
                     match.notifyFullUpdateAllPlayers();
                     matchInProgress = true;
@@ -190,7 +206,7 @@ public class GameModel implements Observable {
                     startNewMatch();
                 }
             } catch (NullPointerException | NoSuchElementException e){
-                System.out.println("[WARNING] Cannot open saved backup, a new match will start");
+                logger.warning(CANNOT_OPEN_SAVED_BACKUP);
                 startNewMatch();
                 return true;
             }
@@ -225,7 +241,7 @@ public class GameModel implements Observable {
         }
         match.getFirstPlayer().setFirstPlayer(true);
         matchInProgress = true;
-        System.out.println("[OK] new match started");
+        logger.info(NEW_MATCH_STARTED);
         match.notifyStartMatchUpdate();
         match.notifyFullUpdateAllPlayers();
         beginNextTurn();
@@ -244,7 +260,7 @@ public class GameModel implements Observable {
                 Player newPlayer = addPlayer(playerName);
                 match.addPlayer(newPlayer);
             } catch(NameAlreadyTakenException | AlreadyLoggedException | GameFullException | NameNotFoundException | NameEmptyException e){
-                System.out.println("[WARNING] error in loading backup: can't add a player");
+                logger.warning(BACKUP_CANNOT_ADD_PLAYER);
             }
         }
         savedBackup.restore(match);
@@ -894,7 +910,7 @@ public class GameModel implements Observable {
             Player tempPlayer = getPlayerByObserver(observer);
             observers.remove(tempPlayer);
         } catch(NoSuchObserverException e){
-            System.out.println("[WARNING] trying to remove an absent observer");
+            logger.warning(REMOVING_ABSENT_OBSERVER);
         }
     }
 
@@ -915,7 +931,7 @@ public class GameModel implements Observable {
 
     /**
      * Gets the observer of a player
-     * @param p the interested player
+     * @param p the involved player
      * @return the observer or null if the player has no observer
      */
     public Observer getObserver(Player p){
@@ -1114,12 +1130,12 @@ public class GameModel implements Observable {
             String filePath = jarPath.substring(0, jarPath.lastIndexOf('/')) + File.separator + "backups"+ File.separator + BACKUP_NAME + ".json";
             File backupFile = new File(filePath);
             if (backupFile.delete()){
-                System.out.println("[OK] backup deleted successfully");
+                logger.info(BACKUP_DELETED_SUCCESSFULLY);
             } else {
-                System.out.println("[WARNING] Could not delete backup file");
+                logger.warning(COULD_NOT_DELETE_BACKUP_FILE);
             }
         } catch (IOException e) {
-            System.out.println("[WARNING] Could not delete backup file");
+            logger.warning(COULD_NOT_DELETE_BACKUP_FILE);
         }
     }
 

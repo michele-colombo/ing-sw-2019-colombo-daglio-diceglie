@@ -5,7 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
+/**
+ * Is (part of) the of each player, it contains the damages and marks received.
+ * This abstract class is extended by the two kind of board one can have: the normal one and the frenzy one.
+ * Different extensions differ by the way they deal reset and point calculation.
+ */
 public abstract class DamageTrack {
     /**
      * Ordered list of damages.

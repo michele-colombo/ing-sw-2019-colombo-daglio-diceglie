@@ -3,6 +3,9 @@ package it.polimi.ingsw.server.model;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a mode of a weapon. It is composed of some elementary effects.
+ */
 public class Mode {
     /**
      * index of the mode that must come before this. -1 if this is a standalone mode

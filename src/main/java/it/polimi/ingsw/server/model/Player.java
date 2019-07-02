@@ -763,7 +763,7 @@ public class Player {
 
     /**
      * Checks if the specified weapon is loaded
-     * @param w the interested weapon
+     * @param w the involved weapon
      * @return true if the weapon is loaded
      */
     public boolean isLoaded(Weapon w){
@@ -775,7 +775,7 @@ public class Player {
 
     /**
      * Set the load status of a weapon owned by the player
-     * @param w the interested weapon
+     * @param w the involved weapon
      * @param load teh value of charge to set
      */
     public void setLoad(Weapon w, boolean load){
@@ -784,7 +784,7 @@ public class Player {
 
     /**
      * Gets all the powerups of the specified color owned by the player
-     * @param colors the interested color
+     * @param colors the involved color
      * @return the list of powerups
      */
     public List<PowerUp> getPowerUpsOfColors(Cash colors){
@@ -799,7 +799,7 @@ public class Player {
 
     /**
      * Gets all the powerups of the specified type owned by the player
-     * @param type the interested type
+     * @param type the involved type
      * @return the list of powerups
      */
     public List<PowerUp> getPowerUpsOfType(PowerUpType type){

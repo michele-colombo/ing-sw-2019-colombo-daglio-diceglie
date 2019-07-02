@@ -17,6 +17,9 @@ public class FrenzyDamageTrackTest {
     private Player first;
 
 
+    /**
+     * preares a damageTrack (in frenzy mode) for the tests
+     */
     @BeforeEach
     public void prepareTest(){
         final int mark1 = 2;
@@ -29,6 +32,9 @@ public class FrenzyDamageTrackTest {
     }
 
 
+    /**
+     * Tests the adding of a mark
+     */
     @Test
     public void frenzyFromNormal(){
         final int mark1 = 2;
@@ -36,6 +42,9 @@ public class FrenzyDamageTrackTest {
         assertTrue(frenzyDamageTrack.getMarkMap().get(first) == mark1);
     }
 
+    /**
+     * Tests adding of damages and reset
+     */
     @Test
     public void reset(){
         final int damage1 = 6;

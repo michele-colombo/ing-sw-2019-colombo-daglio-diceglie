@@ -9,9 +9,7 @@ public class GeneralInfoBox extends MiniBox {
 
     @Override
     public void update(MatchView match) {
-        String title = "ADRENALINA";
+        String title = "ADRENALINE";
         insertText(title, (width-title.length())/2, 1);
-        insertText("A line to display server messages", 1, 2);
-        insertText("A line for other messages", 1, 3);
     }
 }

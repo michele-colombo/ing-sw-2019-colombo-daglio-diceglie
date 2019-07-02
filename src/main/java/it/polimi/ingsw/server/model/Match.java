@@ -17,7 +17,10 @@ import java.util.Map;
 import static it.polimi.ingsw.server.model.enums.PowerUpType.*;
 
 /**
- * It represents the current match
+ * Represents a specific match.
+ * It contains all the players, the map, the killshot track and the stacks of the current match.
+ * It also contains turn-related information.
+ * It embeds the logic for point calculation after killing and creation of possible actions during a turn.
  */
 public class Match {
     /**
@@ -810,7 +813,7 @@ public class Match {
 
     /**
      * Updates all observers about the weapons of the specified player.
-     * Unload weapons are send to everyone, while the loaded ones are sent explicitly only to the observer of the interested player,
+     * Unload weapons are send to everyone, while the loaded ones are sent explicitly only to the observer of the involved player,
      * other observers only know the number. Weapons are sent as string of the name.
      * @param player the player subject of the update
      */

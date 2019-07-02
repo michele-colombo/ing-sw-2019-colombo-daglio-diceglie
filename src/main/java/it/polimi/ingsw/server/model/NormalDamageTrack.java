@@ -1,5 +1,10 @@
 package it.polimi.ingsw.server.model;
 
+/**
+ * Is (part of) the board of a player when he is in frenzy mode.
+ * Maximum points given are 8 and there is a bonus point for the first damager.
+ * It contains skulls and has different level of adrenaline.
+ */
 public class NormalDamageTrack extends DamageTrack {
     static final int BIGGER_SCORE = 8;
     static final int FIRST_BLOOD = 1;
