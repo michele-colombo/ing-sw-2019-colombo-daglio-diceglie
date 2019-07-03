@@ -565,6 +565,9 @@ public class BoardGui {
             }
             updatePayment();
         });
+
+        //attempt to check
+        updateConnection(Gui.getClient().getMatch().readConnections());
     }
 
 
