@@ -95,8 +95,8 @@ public class Client implements MessageVisitor {
      * Log in with a name
      * @param name name chosen
      */
-    public synchronized void chooseName(String name){    //todo: synchronized?
-        //this.name = name;
+    public synchronized void chooseName(String name){
+        this.name = name.trim();
         EventVisitable loginEvent = new LoginEvent(name);
         sendEvent(loginEvent);
     }
@@ -147,7 +147,6 @@ public class Client implements MessageVisitor {
             match = new MatchView(name, startMatchUpdateMessage.getLayoutConfiguration(), startMatchUpdateMessage.getNames(), startMatchUpdateMessage.getColors(), connections);
         }
         userInterface.updateStartMatch(match);
-        //todo
     }
 
     /**
@@ -421,7 +420,7 @@ public class Client implements MessageVisitor {
      * send an event through the network
      * @param event Event to send
      */
-    private synchronized void sendEvent(EventVisitable event){   //todo: synchronized?
+    private synchronized void sendEvent(EventVisitable event){
         if (network != null) {
             try {
                 network.forward(event);
@@ -577,7 +576,7 @@ public class Client implements MessageVisitor {
     /**
      * restart the client (from connection selection)
      */
-    public synchronized void restart(){  //todo: synchronized?
+    public synchronized void restart(){
         shutDown();
         userInterface.showConnectionSelection();
     }
