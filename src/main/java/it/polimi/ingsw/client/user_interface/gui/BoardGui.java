@@ -871,6 +871,7 @@ public class BoardGui {
     public void updatePayment(){
         Platform.runLater(() -> {
             MyPlayer me = Gui.getClient().getMatch().getMyPlayer();
+
             stateText.setTextFill(Color.WHITE);
             stateText.setText(Client.getStateDescription(Gui.getClient().getMatch().getMyPlayer().getState()) + System.lineSeparator() + PENDING + me.getPending().toString() + System.lineSeparator() + CREDIT + me.getCredit().toString());
         });
@@ -912,6 +913,8 @@ public class BoardGui {
      */
     private static void createStateText(){
         stateText = new Label();
+        stateText.setMaxWidth(Gui.getScreenBounds().getWidth() / 6);
+        stateText.setMinWidth(Gui.getScreenBounds().getWidth() / 6);
         stateText.setTextFill(Color.WHITE);
         stateText.setWrapText(true);
     }

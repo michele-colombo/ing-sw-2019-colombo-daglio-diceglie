@@ -109,10 +109,6 @@ public class GameOverGui {
 
         buttonBox.getChildren().add(quit);
 
-        Button playAgain= new Button("Play again");
-        playAgain.setOnMouseClicked(mouseEvent -> Gui.restart() );
-
-        buttonBox.getChildren().add(playAgain);
         buttonBox.setAlignment(Pos.TOP_RIGHT);
 
 
