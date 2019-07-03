@@ -34,6 +34,7 @@ public class ParserManager {
     private static final String BACKUP_EXTENSION = ".json";
 
     private static final Logger logger = Logger.getLogger(ParserManager.class.getName());
+    public static final String BACKUPS_FOLDER = "backups";
 
     private Layout[] layouts;
     private StackManager stackManager;
@@ -43,6 +44,9 @@ public class ParserManager {
     private Gson gson;
 
 
+    /**
+     * builds the parser manager and parse all
+     */
     public ParserManager(){
         gson= new Gson();
         layouts= new Layout[4];
@@ -54,14 +58,28 @@ public class ParserManager {
         parseBackup();
     }
 
+    /**
+     * get te backup
+     * @return the backup or null if it does not exists
+     */
     public Backup getBackup(){
         return backup;
     }
 
+    /**
+     *
+     * @return stack manager (powerups, weapons and ammotiles)
+     */
     public StackManager getStackManager() {
         return stackManager;
     }
 
+    /**
+     * save a backup file in the same directory of the generated jar
+     * @param backup backup to json-fy
+     * @param fileName nome for the file
+     * @return true if everything goes right
+     */
     public boolean saveOnSameDirectory(Backup backup, String fileName){
 
         String jarPath = "";
@@ -73,7 +91,7 @@ public class ParserManager {
             e1.printStackTrace();
         }
         // construct a File within the same folder of this jar, or of this class.
-        String dirPath = jarPath.substring(0, jarPath.lastIndexOf("/")) + File.separator + "backups";
+        String dirPath = jarPath.substring(0, jarPath.lastIndexOf("/")) + File.separator + BACKUPS_FOLDER;
         File dir = new File(dirPath);
         if (!dir.exists()){
             dir.mkdir();
@@ -94,11 +112,11 @@ public class ParserManager {
     }
 
     /**
-     * le configurazioni del tabellone riferite al manuale di gioco sono:
-     * -0 == piccola "ottima per 4 o 5 giocatori"
-     * -1 == quella grande che e' disegnata su entrambe le pagine
-     * -2 == piccola "ottima per qualsiasi numero di giocatori
-     * -3 == picoola "ottima per 3 o 4 giocatori"
+     * layout configuration ffrom the manual are:
+     * -0 == small "good for 4 or 5 players"
+     * -1 == big one drawn on 2 whole pages
+     * -2 == small "good for every number of players"
+     * -3 == small "good for 3 or 4 players
      *
      * @param configNumber configuration code
      */
@@ -109,10 +127,13 @@ public class ParserManager {
         return null;
     }
 
+    /*
+    generate a backup fron the json
+     */
     private void parseBackup(){
         try{
             String jarPath = URLDecoder.decode(Backup.class.getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
-            String filePath = jarPath.substring(0, jarPath.lastIndexOf("/")) + File.separator + "backups" + File.separator + BACKUP_NAME + ".json";
+            String filePath = jarPath.substring(0, jarPath.lastIndexOf("/")) + File.separator + BACKUPS_FOLDER + File.separator + BACKUP_NAME + ".json";
             File file= new File(filePath);
 
             if(file.exists()) {
@@ -139,6 +160,10 @@ public class ParserManager {
         }
     }
 
+    /**
+     * generate a layaout from json file
+     * @param num configuration code of the layout
+     */
     private void parseLayout(int num){
         List<AmmoSquare> ammoSquares= new ArrayList<>();
         List<SpawnSquare> spawnSquares= new ArrayList<>();
@@ -162,6 +187,9 @@ public class ParserManager {
         layouts[num]= layout;
     }
 
+    /**
+     * generate a stackmanager from json files
+     */
     private void parseStack(){
         List<Weapon> weapons;
         List<PowerUp> powerUps;

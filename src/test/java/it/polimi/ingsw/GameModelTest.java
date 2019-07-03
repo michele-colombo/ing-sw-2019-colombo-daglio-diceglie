@@ -1066,4 +1066,78 @@ public class GameModelTest {
             printSituation(match);
             boolean result = Backup.initFromFile(searchInTestResources("currentPlayerDisconnectsDuringActionAfter")).equals(new Backup(gm.getMatch()));
     }
+
+    /**
+     * Tests killing of some players, and turn check method of Match and switch to final frenzy
+     */
+    @Test
+    public void endTurnCheckTestAndFrenzy(){
+        GameModel gm = new GameModel();
+        gm.resumeMatchFromFile(searchInTestResources("FinalFrenzyBefore"));
+        Match match = gm.getMatch();
+        Layout layout = gm.getMatch().getLayout();
+        StackManager sm = gm.getMatch().getStackManager();
+
+        Player first = gm.getPlayerByName("first");
+        Player second = gm.getPlayerByName("second");
+        Player third = gm.getPlayerByName("third");
+        Player fourth = gm.getPlayerByName("fourth");
+
+        gm.performAction(first, first.getSelectableActions().get(2));   //shoot
+        gm.moveMeThere(first, layout.getSquare(2, 2));
+        gm.shootWeapon(first, sm.getWeaponFromName("Machine gun"));
+        gm.addMode(first, first.getSelectableModes().get(0));
+        gm.addMode(first, first.getSelectableModes().get(0));
+        gm.completePayment(first);
+        gm.confirmModes(first);
+        gm.shootTarget(first, second, null);
+        gm.shootTarget(first, third, null);
+        gm.shootTarget(first, third,  null);
+        gm.dontUsePowerUp(first);
+        gm.usePowerUp(third, sm.getPowerUpFromString("4-Tagback grenade-BLUE"));
+
+            assertEquals(12, second.getDamageTrack().getDamageList().size());
+            assertEquals(11, third.getDamageTrack().getDamageList().size());
+            assertEquals(1, first.getDamageTrack().getMarkMap().get(second));
+            assertEquals(1, first.getDamageTrack().getMarkMap().get(third));
+
+        gm.performAction(first, first.getSelectableActions().get(2));   //shoot
+        gm.moveMeThere(first, layout.getSquare(2, 2));
+        gm.shootWeapon(first, sm.getWeaponFromName("Railgun"));
+        gm.addMode(first, first.getSelectableModes().get(0));
+        gm.confirmModes(first);
+        gm.shootTarget(first, fourth, null);
+        gm.dontUsePowerUp(first);
+        gm.performAction(first, first.getSelectableActions().get(0));   //reload
+        gm.reloadWeapon(first, sm.getWeaponFromName("Machine gun"));
+        gm.completePayment(first);
+
+            assertEquals(10, fourth.getDamageTrack().getDamageList().size());
+            assertFalse(match.isFrenzyOn());
+
+        gm.endTurn();
+
+            assertEquals(2, first.getDamageTrack().getMarkMap().get(second));
+            assertTrue(match.isFrenzyOn());
+            assertTrue(second.getDamageTrack().isFrenzy());
+            assertEquals(0, second.getDamageTrack().getDamageList().size());
+            assertEquals(1, second.getDamageTrack().getMarkMap().get(fourth));
+            assertTrue(third.getDamageTrack().isFrenzy());
+            assertEquals(0, third.getDamageTrack().getDamageList().size());
+            assertFalse(fourth.getDamageTrack().isFrenzy());
+            assertEquals(10, fourth.getDamageTrack().getDamageList().size());
+            assertEquals(SPAWN, second.getState());
+            assertEquals(SPAWN, third.getState());
+            assertEquals(35, first.getPoints());
+            assertEquals(18, second.getPoints());
+            assertEquals(4, third.getPoints());
+            assertEquals(14, fourth.getPoints());
+
+
+
+        printSel(first);
+        printSel(second);
+        printSel(third);
+        printSel(fourth);
+    }
 }

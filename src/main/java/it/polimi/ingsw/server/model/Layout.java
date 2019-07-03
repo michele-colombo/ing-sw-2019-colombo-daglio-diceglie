@@ -414,6 +414,9 @@ public class Layout {
 
     }
 
+    /**
+     * initiate room from square list
+     */
     public void instantiateRooms(){
         List<Square> squaresWithNoRoomYet= new ArrayList<>();
 
@@ -457,13 +460,22 @@ public class Layout {
 
     }
 
+    /**
+     * refill layout with ammos and weapons
+     * @param sm stack manager
+     */
     public void refillAll(StackManager sm){
         for (Square s : getSquares()){
             s.refill(sm);
         }
     }
 
-    //added by Giuseppe Diceglie
+    /**
+     * get further squares than @distMin from a starting point
+     * @param startingSquare starting point
+     * @param distMin minimum distance
+     * @return list of further squares
+     */
     public List<Square> getFurtherSquares(Square startingSquare, int distMin){
         List<Square> result= new ArrayList<>();
         result.addAll( getSquares());
@@ -474,14 +486,30 @@ public class Layout {
         return result;
     }
 
+
+    /**get closer squares than @distMin from a starting point
+     *
+     * @param startingSquare starting point
+     * @param distMax maximum distance
+     * @return list of closer squares
+     */
     public List<Square> getCloserSquares(Square startingSquare, int distMax){
         return getSquaresInDistanceRange(startingSquare, 0, distMax);
     }
 
+    /**
+     * get the layoute config code
+     * @return config code
+     */
     public int getLayoutConfiguration() {
         return layoutConfiguration;
     }
 
+    /**
+     * get a square from its identificator
+     * @param square identificator (x, y)
+     * @return the square
+     */
     public Square getSquareFromString(String square){
         for (Square s : getSquares()){
             if (s.toString().equals(square)){

@@ -10,41 +10,38 @@ import java.util.Map;
  */
 public interface UserInterface {
 
-    /**
-     * Notifys the starting of the match
-     * @param matchView update of Match
-     */
     void updateStartMatch(MatchView matchView);
 
     /**
-     * Shows connection selection, at the starting of Cli/Gui
+     * Show selection of connection (socket or rmi)
      */
     void showConnectionSelection();
 
     /**
-     * Shows login interface
+     * Show login dialog and ask username
      */
     void showLogin();
 
     /**
-     * Shows LoginMessage received from server, after an attempting of login
-     * @param text content of the message
-     * @param loginSuccessful true if login is ok, else false
+     * Shows the login response of the server
+     * @param text text of message
+     * @param loginSuccessful true if login goes right
      */
     void printLoginMessage(String text, boolean loginSuccessful);
 
     /**
-     * Actives user interface, so that a player can make a choice
+     * Sets everything up, so that the user can make a selection
+     * (renders the complete view of match, display selectables, activates user interaction, ...)
      */
     void showAndAskSelection();
 
     /**
-     * Updates players' connection state
+     * Updates state of connections of all the players
      */
     void updateConnection();
 
     /**
-     * Updates layout
+     * Updates layout status
      */
     void updateLayout();
 
@@ -54,7 +51,7 @@ public interface UserInterface {
     void updateKillshotTrack();
 
     /**
-     * Updates current player
+     * update  who is the current player
      */
     void updateCurrentPlayer();
 
@@ -88,18 +85,18 @@ public interface UserInterface {
     void updateDamage(PlayerView player);
 
     /**
-     * Updates list of selectables of the client
+     * Updates selectable lists
      */
     void updateSelectables();
 
     /**
-     * Show error
-     * @param message text to be shown
+     * show a error
+     * @param message the text of the error
      */
     void printError(String message);
 
     /**
-     * Shows final ranks
+     * show ranking grid
      * @param rank maps each playerView her final rank
      * @param points maps each playerView with her points
      */

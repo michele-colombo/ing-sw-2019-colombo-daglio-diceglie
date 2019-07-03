@@ -13,6 +13,11 @@ public class ArgumentNavigator {
      */
     private Map<String, String> argumentMap;
 
+    /**
+     * build an argument navigator
+     * @param args
+     * @param fieldPrefix
+     */
     public ArgumentNavigator(String[] args, String fieldPrefix){
         argumentMap= new HashMap<>();
 

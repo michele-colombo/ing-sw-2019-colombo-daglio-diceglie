@@ -14,8 +14,16 @@ import java.net.Socket;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Logger;
+
+import static it.polimi.ingsw.communication.events.EventVisitable.*;
+import static it.polimi.ingsw.communication.message.MessageVisitable.*;
 
 public class SocketServer implements NetworkInterfaceServer, MessageVisitor {
+    private final static Logger logger = Logger.getLogger(SocketServer.class.getName());
+    public static final String CONNECTION_IMPOSSIBLE = "impossible to initiate connection";
+    public static final String SOCKET_ALREADY_CLOSED = "Socket already closed";
+
     /**
      * socket to send and receive through tcp
      */
@@ -67,7 +75,7 @@ public class SocketServer implements NetworkInterfaceServer, MessageVisitor {
             asker.start();
         }
         catch (IOException e){
-            System.out.println("Impossible to start connection");
+            logger.info(CONNECTION_IMPOSSIBLE);
         }
 
     }
@@ -97,7 +105,7 @@ public class SocketServer implements NetworkInterfaceServer, MessageVisitor {
        try {
            this.socket.close();
        } catch (IOException e) {
-           System.out.println("Socket already closed");
+           logger.info(SOCKET_ALREADY_CLOSED);
        }
    }
 
@@ -107,7 +115,7 @@ public class SocketServer implements NetworkInterfaceServer, MessageVisitor {
      */
     @Override
     public void visit(LoginMessage loginMessage) {
-        messagePrefix= "#LOGIN#";
+        messagePrefix= LOGIN_MESSAGE_PREFIX;
     }
 
     /**
@@ -116,7 +124,7 @@ public class SocketServer implements NetworkInterfaceServer, MessageVisitor {
      */
     @Override
     public void visit(GenericMessage genericMessage) {
-        messagePrefix= "#GENERIC#";
+        messagePrefix= GENERIC_MESSAGE_PREFIX;
 
     }
 
@@ -126,7 +134,7 @@ public class SocketServer implements NetworkInterfaceServer, MessageVisitor {
      */
     @Override
     public void visit(LayoutUpdateMessage layoutUpdateMessage) {
-        messagePrefix= "#LAYOUTUPDATE#";
+        messagePrefix= LAYOUTUPDATE_MESSAGE_PREFIX;
 
     }
 
@@ -136,7 +144,7 @@ public class SocketServer implements NetworkInterfaceServer, MessageVisitor {
      */
     @Override
     public void visit(KillshotTrackUpdateMessage killshotTrackUpdate) {
-        messagePrefix= "#KILLSHOTUPDATE#";
+        messagePrefix= KILLSHOTUPDATE_MESSAGE_PREFIX;
 
     }
 
@@ -146,7 +154,7 @@ public class SocketServer implements NetworkInterfaceServer, MessageVisitor {
      */
     @Override
     public void visit(CurrentPlayerUpdateMessage currentPlayerUpdate) {
-        messagePrefix= "#CURRENTPLAYERUPDATE#";
+        messagePrefix= CURRENTPLAYERUPDATE_MESSAGE_PREFIX;
 
     }
 
@@ -156,7 +164,7 @@ public class SocketServer implements NetworkInterfaceServer, MessageVisitor {
      */
     @Override
     public void visit(StartMatchUpdateMessage startMatchUpdateMessage) {
-        messagePrefix= "#STARTMATCHUPDATE#";
+        messagePrefix= STARTMATCHUPDATE_MESSAGE_PREFIX;
 
     }
 
@@ -166,7 +174,7 @@ public class SocketServer implements NetworkInterfaceServer, MessageVisitor {
      */
     @Override
     public void visit(PlayerUpdateMessage playerUpdateMessage) {
-        messagePrefix= "#PLAYERUPDATEMESSAGE#";
+        messagePrefix= PLAYERUPDATEMESSAGE_MESSAGE_PREFIX;
 
     }
 
@@ -176,7 +184,7 @@ public class SocketServer implements NetworkInterfaceServer, MessageVisitor {
      */
     @Override
     public void visit(PaymentUpdateMessage paymentUpdateMessage) {
-        messagePrefix= "#PAYMENTUPDATE#";
+        messagePrefix= PAYMENTUPDATE_MESSAGE_PREFIX;
 
     }
 
@@ -186,7 +194,7 @@ public class SocketServer implements NetworkInterfaceServer, MessageVisitor {
      */
     @Override
     public void visit(WeaponsUpdateMessage weaponsUpdateMessage) {
-        messagePrefix= "#WEAPONSUPDATE#";
+        messagePrefix= WEAPONSUPDATE_MESSAGE_PREFIX;
 
     }
 
@@ -196,7 +204,7 @@ public class SocketServer implements NetworkInterfaceServer, MessageVisitor {
      */
     @Override
     public void visit(PowerUpUpdateMessage powerUpUpdateMessage) {
-        messagePrefix= "#POWERUPUPDATE#";
+        messagePrefix= POWERUPUPDATE_MESSAGE_PREFIX;
 
     }
 
@@ -206,7 +214,7 @@ public class SocketServer implements NetworkInterfaceServer, MessageVisitor {
      */
     @Override
     public void visit(SelectablesUpdateMessage selectablesUpdateMessage) {
-        messagePrefix= "#SELECTABLESUPDATE#";
+        messagePrefix= SELECTABLESUPDATE_MESSAGE_PREFIX;
 
     }
 
@@ -216,7 +224,7 @@ public class SocketServer implements NetworkInterfaceServer, MessageVisitor {
      */
     @Override
     public void visit(DamageUpdateMessage damageUpdateMessage) {
-        messagePrefix= "#DAMAGEUPDATE#";
+        messagePrefix= DAMAGEUPDATE_MESSAGE_PREFIX;
 
     }
 
@@ -226,7 +234,7 @@ public class SocketServer implements NetworkInterfaceServer, MessageVisitor {
      */
     @Override
     public void visit(ConnectionUpdateMessage connectionUpdateMessage) {
-        messagePrefix= "#CONNECTIONUPDATE#";
+        messagePrefix= CONNECTIONUPDATE_MESSAGE_PREFIX;
 
     }
 
@@ -236,7 +244,7 @@ public class SocketServer implements NetworkInterfaceServer, MessageVisitor {
      */
     @Override
     public void visit(GameOverMessage gameOverMessage) {
-        messagePrefix = "#GAMEOVER#";
+        messagePrefix = GAMEOVER_MESSAGE_PREFIX;
     }
 
     /**
@@ -253,15 +261,15 @@ public class SocketServer implements NetworkInterfaceServer, MessageVisitor {
 
         EventVisitable result= null;
         switch (prefix){
-            case "#LOGIN#": result= gson.fromJson(eventText, LoginEvent.class); break;
-            case "#SQUARESELECTED#": result= gson.fromJson(eventText, SquareSelectedEvent.class); break;
-            case "#ACTIONSELECTED#": result= gson.fromJson(eventText, ActionSelectedEvent.class); break;
-            case "#PLAYERSELECTED#": result= gson.fromJson(eventText, PlayerSelectedEvent.class); break;
-            case "#WEAPONSELECTED#": result= gson.fromJson(eventText, WeaponSelectedEvent.class); break;
-            case "#MODESELECTED#": result= gson.fromJson(eventText, ModeSelectedEvent.class); break;
-            case "#COMMANDSELECTED#": result= gson.fromJson(eventText, CommandSelectedEvent.class); break;
-            case "#COLORSELECTED#": result= gson.fromJson(eventText, ColorSelectedEvent.class); break;
-            case "#POWERUPSELECTED#": result= gson.fromJson(eventText, PowerUpSelectedEvent.class); break;
+            case LOGIN_PREFIX: result= gson.fromJson(eventText, LoginEvent.class); break;
+            case SQUARESELECTED_PREFIX: result= gson.fromJson(eventText, SquareSelectedEvent.class); break;
+            case ACTIONSELECTED_PREFIX: result= gson.fromJson(eventText, ActionSelectedEvent.class); break;
+            case PLAYERSELECTED_PREFIX: result= gson.fromJson(eventText, PlayerSelectedEvent.class); break;
+            case WEAPONSELECTED_PREFIX: result= gson.fromJson(eventText, WeaponSelectedEvent.class); break;
+            case MODESELECTED_PREFIX: result= gson.fromJson(eventText, ModeSelectedEvent.class); break;
+            case COMMANDSELECTED_PREFIX: result= gson.fromJson(eventText, CommandSelectedEvent.class); break;
+            case COLORSELECTED_PREFIX: result= gson.fromJson(eventText, ColorSelectedEvent.class); break;
+            case POWERUPSELECTED_PREFIX: result= gson.fromJson(eventText, PowerUpSelectedEvent.class); break;
         }
         return result;
     }
@@ -307,15 +315,14 @@ public class SocketServer implements NetworkInterfaceServer, MessageVisitor {
                     }
                 }
             } catch(NoSuchElementException e){
-                System.out.println("Client disconnected");
+                logger.info("Client disconnected");
                 serverView.disconnectPlayer();
                 //todo passare al prossimo player ed eventualmente annullare l'azione(se match è iniziato)
             }
             catch (IOException e){
-                System.out.println("Eccezione sull'input");
+                logger.info("Eccezione sull'input");
             } catch (Exception e){
-                System.out.println("there's another exception");
-                e.printStackTrace();
+                logger.info("there's another exception");
             }
         }
 

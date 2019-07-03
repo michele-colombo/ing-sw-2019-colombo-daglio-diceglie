@@ -15,10 +15,12 @@ import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
-import java.rmi.RemoteException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static it.polimi.ingsw.communication.events.EventVisitable.*;
+import static it.polimi.ingsw.communication.message.MessageVisitable.*;
 
 public class SocketClient extends NetworkInterfaceClient implements EventVisitor {
     /**
@@ -108,20 +110,20 @@ public class SocketClient extends NetworkInterfaceClient implements EventVisitor
         MessageVisitable result= null;
 
         switch (prefix){
-            case "#LOGIN#": result= gson.fromJson(messageText, LoginMessage.class); break;
-            case "#GENERIC#": result= gson.fromJson(messageText, GenericMessage.class); break;
-            case "#LAYOUTUPDATE#": result= gson.fromJson(messageText, LayoutUpdateMessage.class); break;
-            case "#KILLSHOTUPDATE#": result= gson.fromJson(messageText, KillshotTrackUpdateMessage.class); break;
-            case "#CURRENTPLAYERUPDATE#": result= gson.fromJson(messageText, CurrentPlayerUpdateMessage.class); break;
-            case "#STARTMATCHUPDATE#": result= gson.fromJson(messageText, StartMatchUpdateMessage.class); break;
-            case "#PLAYERUPDATEMESSAGE#": result= gson.fromJson(messageText, PlayerUpdateMessage.class); break;
-            case "#PAYMENTUPDATE#": result= gson.fromJson(messageText, PaymentUpdateMessage.class); break;
-            case "#WEAPONSUPDATE#": result= gson.fromJson(messageText, WeaponsUpdateMessage.class); break;
-            case "#POWERUPUPDATE#": result= gson.fromJson(messageText, PowerUpUpdateMessage.class); break;
-            case "#SELECTABLESUPDATE#": result= gson.fromJson(messageText, SelectablesUpdateMessage.class); break;
-            case "#DAMAGEUPDATE#": result= gson.fromJson(messageText, DamageUpdateMessage.class); break;
-            case "#CONNECTIONUPDATE#": result= gson.fromJson(messageText, ConnectionUpdateMessage.class); break;
-            case "#GAMEOVER#": result = gson.fromJson(messageText, GameOverMessage.class); break;
+            case LOGIN_MESSAGE_PREFIX: result= gson.fromJson(messageText, LoginMessage.class); break;
+            case GENERIC_MESSAGE_PREFIX: result= gson.fromJson(messageText, GenericMessage.class); break;
+            case LAYOUTUPDATE_MESSAGE_PREFIX: result= gson.fromJson(messageText, LayoutUpdateMessage.class); break;
+            case KILLSHOTUPDATE_MESSAGE_PREFIX: result= gson.fromJson(messageText, KillshotTrackUpdateMessage.class); break;
+            case CURRENTPLAYERUPDATE_MESSAGE_PREFIX: result= gson.fromJson(messageText, CurrentPlayerUpdateMessage.class); break;
+            case STARTMATCHUPDATE_MESSAGE_PREFIX: result= gson.fromJson(messageText, StartMatchUpdateMessage.class); break;
+            case PLAYERUPDATEMESSAGE_MESSAGE_PREFIX: result= gson.fromJson(messageText, PlayerUpdateMessage.class); break;
+            case PAYMENTUPDATE_MESSAGE_PREFIX: result= gson.fromJson(messageText, PaymentUpdateMessage.class); break;
+            case WEAPONSUPDATE_MESSAGE_PREFIX: result= gson.fromJson(messageText, WeaponsUpdateMessage.class); break;
+            case POWERUPUPDATE_MESSAGE_PREFIX: result= gson.fromJson(messageText, PowerUpUpdateMessage.class); break;
+            case SELECTABLESUPDATE_MESSAGE_PREFIX: result= gson.fromJson(messageText, SelectablesUpdateMessage.class); break;
+            case DAMAGEUPDATE_MESSAGE_PREFIX: result= gson.fromJson(messageText, DamageUpdateMessage.class); break;
+            case CONNECTIONUPDATE_MESSAGE_PREFIX: result= gson.fromJson(messageText, ConnectionUpdateMessage.class); break;
+            case GAMEOVER_MESSAGE_PREFIX: result = gson.fromJson(messageText, GameOverMessage.class); break;
             default: break;
         }
 
@@ -158,7 +160,7 @@ public class SocketClient extends NetworkInterfaceClient implements EventVisitor
      */
     @Override
     public void visit(LoginEvent loginEvent) {
-        eventPrefix= "#LOGIN#";
+        eventPrefix= LOGIN_PREFIX;
 
     }
 
@@ -168,7 +170,7 @@ public class SocketClient extends NetworkInterfaceClient implements EventVisitor
      */
     @Override
     public void visit(SquareSelectedEvent squareSelectedEvent) {
-        eventPrefix= "#SQUARESELECTED#";
+        eventPrefix= SQUARESELECTED_PREFIX;
 
     }
 
@@ -178,7 +180,7 @@ public class SocketClient extends NetworkInterfaceClient implements EventVisitor
      */
     @Override
     public void visit(ActionSelectedEvent actionSelectedEvent) {
-        eventPrefix= "#ACTIONSELECTED#";
+        eventPrefix= ACTIONSELECTED_PREFIX;
 
     }
 
@@ -189,7 +191,7 @@ public class SocketClient extends NetworkInterfaceClient implements EventVisitor
 
     @Override
     public void visit(PlayerSelectedEvent playerSelectedEvent) {
-        eventPrefix= "#PLAYERSELECTED#";
+        eventPrefix= PLAYERSELECTED_PREFIX;
 
     }
 
@@ -199,7 +201,7 @@ public class SocketClient extends NetworkInterfaceClient implements EventVisitor
      */
     @Override
     public void visit(WeaponSelectedEvent weaponSelectedEvent) {
-        eventPrefix= "#WEAPONSELECTED#";
+        eventPrefix= WEAPONSELECTED_PREFIX;
 
     }
 
@@ -209,7 +211,7 @@ public class SocketClient extends NetworkInterfaceClient implements EventVisitor
      */
     @Override
     public void visit(ModeSelectedEvent modeSelectedEvent) {
-        eventPrefix= "#MODESELECTED#";
+        eventPrefix= MODESELECTED_PREFIX;
 
     }
 
@@ -219,7 +221,7 @@ public class SocketClient extends NetworkInterfaceClient implements EventVisitor
      */
     @Override
     public void visit(CommandSelectedEvent commandSelectedEvent) {
-        eventPrefix= "#COMMANDSELECTED#";
+        eventPrefix= COMMANDSELECTED_PREFIX;
 
     }
 
@@ -229,7 +231,7 @@ public class SocketClient extends NetworkInterfaceClient implements EventVisitor
      */
     @Override
     public void visit(ColorSelectedEvent colorSelectedEvent) {
-        eventPrefix= "#COLORSELECTED#";
+        eventPrefix= COLORSELECTED_PREFIX;
 
     }
 
@@ -239,7 +241,7 @@ public class SocketClient extends NetworkInterfaceClient implements EventVisitor
      */
     @Override
     public void visit(PowerUpSelectedEvent powerUpSelectedEvent) {
-        eventPrefix= "#POWERUPSELECTED#";
+        eventPrefix= POWERUPSELECTED_PREFIX;
     }
 
 
@@ -276,9 +278,6 @@ public class SocketClient extends NetworkInterfaceClient implements EventVisitor
                 }
             }
             catch (NoSuchElementException nsee){
-                //it is very important because i get to this exception in every case i want to disconnect
-                //client.restart();
-
                 System.out.println("Server has stopped. Relogin");
                 if(client.isConnected()) {
                     client.restart();
@@ -287,7 +286,6 @@ public class SocketClient extends NetworkInterfaceClient implements EventVisitor
             }
             catch (IOException e) {
                 System.out.println("Error while receiving messages!");
-                // qui mi sa che e' meglio spegnere tutto
             }
             catch (Exception e){
                 System.out.println("eccezione sconosciuta");

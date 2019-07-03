@@ -6,6 +6,7 @@ import it.polimi.ingsw.communication.message.GenericMessage;
 import it.polimi.ingsw.communication.message.MessageVisitable;
 import it.polimi.ingsw.server.ServerView;
 import it.polimi.ingsw.server.controller.Controller;
+import it.polimi.ingsw.server.model.GameModel;
 
 import java.io.IOException;
 import java.rmi.NoSuchObjectException;
@@ -13,8 +14,14 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Logger;
 
 public class RmiServer extends UnicastRemoteObject implements NetworkInterfaceServer, RmiServerRemoteInterface{
+    private final static Logger logger = Logger.getLogger(RmiServer.class.getName());
+
+    private static final String OBJECT_UNEXPORTED = "object unexported";
+    public static final String OBJECT_UNEXPORT_ERROR = "Unable to unexport object. NoSuchObjectException";
+    public static final String PONG_NOT_ARRIVED = "pong not arrived";
     /**
      * the owner of this connection
      */
@@ -95,10 +102,10 @@ public class RmiServer extends UnicastRemoteObject implements NetworkInterfaceSe
 
         try {
             UnicastRemoteObject.unexportObject(this, true);
-            System.out.println("object unexported");
+            logger.info(OBJECT_UNEXPORTED);
         }
         catch (NoSuchObjectException e){
-            System.out.println("Unable to unexport object. NoSuchObjectException");
+            logger.info(OBJECT_UNEXPORT_ERROR);
         }
     }
 
@@ -136,7 +143,7 @@ public class RmiServer extends UnicastRemoteObject implements NetworkInterfaceSe
         disconnectionTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                System.out.println("finito");
+                logger.info(PONG_NOT_ARRIVED);
                 serverView.disconnectPlayer();
             }
         }, CommonProperties.PING_PONG_DELAY*2);
@@ -196,7 +203,6 @@ public class RmiServer extends UnicastRemoteObject implements NetworkInterfaceSe
             while(active.get()) {
                 eat();
             }
-            System.out.println("run finished");
 
         }
 
@@ -242,7 +248,7 @@ public class RmiServer extends UnicastRemoteObject implements NetworkInterfaceSe
                     wait();
                 }
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logger.info(e.getMessage());
                 Thread.currentThread().interrupt();
             }
 

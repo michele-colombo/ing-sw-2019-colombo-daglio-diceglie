@@ -11,6 +11,53 @@ import java.util.logging.Logger;
 
 public class Effect {
 
+    public static final int WHO_TO_DAMAGE_SEL_PLAYER = 0;
+    public static final int STARTING_POINT_ME = 0;
+    public static final int STARTING_POINT_LAST_DAMAGED = 1;
+    public static final int STARTING_POINT_TEMP_SQUARE = 2;
+    public static final int STARTING_POINT_TEMP_PLAYER = 3;
+    public static final int DONT_CARE = -1;
+    public static final int RECIPROCAL_POS_NOT_VISIBLE = 0;
+    public static final int RECIPROCAL_POS_VISIBLE = 1;
+    public static final int RECIPROCAL_POS_CARDINAL_DIR = 2;
+    public static final int RECIPROCAL_POS_LINE_LAST_DAM = 3;
+    public static final int DIVERSITY_ALREADY_DAM = 0;
+    public static final int DIVERSITY_NOT_DAM_YET_PLAYERS = 1;
+    public static final int DIVERSITY_NOT_DAM_YET_SQUARES = 2;
+    public static final int DIVERSITY_NOT_MY_ROOM = 3;
+    public static final int WHAT_NOTHING_TO_SEL_NO_LIMIT = -1;
+    public static final int WHAT_SQUARE_NO_LIMIT = 0;
+    public static final int WHAT_PLAYER_NO_LIMIT = 1;
+    public static final int WHAT_NOTHING_TO_SEL_SOMEONE_ON_MY_SQUARE = 2;
+    public static final int WHAT_SQUARE_SOMEONE_IN_ROOM = 3;
+    public static final int WHAT_SQUARE_SOMEONE_ON_IT = 4;
+    public static final int WHAT_NOTHING_SOMEONE_NEAR_ME = 5;
+    public static final int SET_TEMP_SQUARE_DONT = -1;
+    public static final int SET_TEMP_SQUARE_SEL_SQ = 0;
+    public static final int SET_TEMP_SQUARE_SEL_PLAYERS_SQ = 1;
+    public static final int SEL_TEMP_SQUARE_MY_SQ = 2;
+    public static final int WHO_TO_MOVE_NOBODY = -1;
+    public static final int WHO_TO_MOVE_ME = 0;
+    public static final int WHO_TO_MOVE_SEL_PLAYER = 1;
+    public static final int WHO_TO_MOVE_LAST_DAMAGED = 2;
+    public static final int WHO_TO_MOVE_CHOSEN_PLAYER = 3;
+    public static final int WHARE_TO_MOVE_NOWHERE = -1;
+    public static final int WHERE_TO_MOVE_SEL_SQ = 0;
+    public static final int WHERE_TO_MOVE_SEL_PLAYERS_SQ = 1;
+    public static final int WHERE_TO_MOVE_TEMP_SQUARE = 2;
+    public static final int WHERE_TO_MOVE_MY_SQUARE = 3;
+    public static final int WHO_TO_DAMAGE_NOBODY = -1;
+    public static final int WHO_TO_DAMAGE_ALL_IN_SEL_SQ = 1;
+    public static final int WHO_TO_DAMAGE_ALL_IN_SEL_ROOM = 2;
+    public static final int WHO_TO_DAMAGE_LAST_DAMAGED = 3;
+    public static final int WHO_TO_DAMAGE_ALL_IN_MY_SQUARE = 4;
+    public static final int WHO_TO_DAMAGE_ALL_IN_TEMP_SQ = 5;
+    public static final int WHO_TO_DAMAGE_ALL_NEAR_ME = 6;
+    public static final int WHO_TO_DAMAGE_ALL_TEMP_SQ_EXCPT_LAST_DAM = 7;
+    public static final int WHO_TO_DAMAGE_SHOOTER = 8;
+    public static final int SET_TEMP_PLAYER_DONT = -1;
+    public static final int SET_TEMP_PLAYER_SEL_PLAYER = 0;
+    public static final int SET_TEMP_PLAYER_ME = 1;
     /**
      * point from where you calculate selectable targets
      */
@@ -86,6 +133,22 @@ public class Effect {
 
     private static final Logger logger =  Logger.getLogger(Effect.class.getName());
 
+    /**
+     * builds an effect from all its attributes
+     * @param startingPoint
+     * @param reciprocalPosition
+     * @param distMin
+     * @param distMax
+     * @param diversity
+     * @param what
+     * @param optionality
+     * @param whoToMove
+     * @param whereToMove
+     * @param whoToDamage
+     * @param damageNumber
+     * @param markNumber
+     * @param setTempSquare
+     */
     public Effect(int startingPoint, int reciprocalPosition, int distMin, int distMax, int diversity, int what, int optionality, int whoToMove, int whereToMove, int whoToDamage, int damageNumber, int markNumber, int setTempSquare) {
         this.startingPoint = startingPoint;
         this.reciprocalPosition = reciprocalPosition;
@@ -106,27 +169,7 @@ public class Effect {
         this.effectToAdd = null;
     }
 
-    public Effect(int startingPoint, int reciprocalPosition, int distMin, int distMax, int diversity, int what, int optionality, int whoToMove, int whereToMove, int whoToDamage, int damageNumber, int markNumber, int setTempSquare, Effect effectToAdd) {
-        this.startingPoint = startingPoint;
-        this.reciprocalPosition = reciprocalPosition;
-        this.distMin = distMin;
-        this.distMax = distMax;
-        this.diversity = diversity;
-        this.what = what;
-        this.optionality = optionality;
-        this.whoToMove = whoToMove;
-        this.whereToMove = whereToMove;
-        this.whoToDamage = whoToDamage;
-        this.damageNumber = damageNumber;
-        this.markNumber = markNumber;
-        this.setTempSquare = setTempSquare;
-        this.effectToAdd = effectToAdd;
-    }
-
-    public void setSetTempPlayer(int setTempPlayer) {
-        this.setTempPlayer = setTempPlayer;
-    }
-
+    @Override
     public String toString(){
         StringBuilder sb= new StringBuilder();
         sb.append(startingPoint + " ; ");
@@ -146,6 +189,10 @@ public class Effect {
         return sb.toString();
     }
 
+    /**
+     * generate a string humanly readable
+     * @return the string tat describes thee effect
+     */
     public String humanString(){
         StringBuilder sb= new StringBuilder();
 
@@ -269,6 +316,12 @@ public class Effect {
 
     }
 
+    /**
+     * starts the effect and sets selectable lists from effect's criteria
+     * @param p player "source" of the effect
+     * @param m match of the game
+     * @throws ApplyEffectImmediatelyException if effect has to apply itself
+     */
     public void start(Player p, Match m) throws ApplyEffectImmediatelyException {
 
         m.getCurrentPlayer().resetSelectables();
@@ -281,9 +334,9 @@ public class Effect {
 
         switch (startingPoint){
             //ME
-            case 0: startingSquare= p.getSquarePosition(); break;
+            case STARTING_POINT_ME: startingSquare= p.getSquarePosition(); break;
             //LAST DAMAGED
-            case 1:
+            case STARTING_POINT_LAST_DAMAGED:
                 if(m.getCurrentAction().getLastDamaged() != null){
                     startingSquare= m.getCurrentAction().getLastDamaged().getSquarePosition();
                 }
@@ -292,7 +345,7 @@ public class Effect {
                 }
                 break;
             //TEMP SQUARE
-            case 2:
+            case STARTING_POINT_TEMP_SQUARE:
                 if(m.getCurrentAction().getChosenSquare() != null){
                     startingSquare= m.getCurrentAction().getChosenSquare();
                 }
@@ -301,7 +354,7 @@ public class Effect {
                 }
                 break;
             //TEMP PLAYER
-            case 3:
+            case STARTING_POINT_TEMP_PLAYER:
                 if(m.getCurrentAction().getChosenPlayer() != null){
                     startingSquare= m.getCurrentAction().getChosenPlayer().getSquarePosition();
                 }
@@ -319,24 +372,24 @@ public class Effect {
 
         switch (reciprocalPosition){
             //DON'T CARE
-            case -1:
+            case DONT_CARE:
                 selectableSquares.addAll(m.getLayout().getSquares());
                 break;
             //NOT VISIBLE
-            case 0:
+            case RECIPROCAL_POS_NOT_VISIBLE:
                 selectableSquares.addAll(m.getLayout().getSquares());
                 selectableSquares.removeAll(m.getLayout().getVisibleSquares(startingSquare));
                 break;
             //VISIBLE
-            case 1:
+            case RECIPROCAL_POS_VISIBLE:
                 selectableSquares.addAll(m.getLayout().getVisibleSquares(startingSquare));
                 break;
             //CARDINAL DIRECTION
-            case 2:
+            case RECIPROCAL_POS_CARDINAL_DIR:
                 selectableSquares.addAll(m.getLayout().getCardinalSquares(startingSquare));
                 break;
             //LINE WITH LAST DAMAGED
-            case 3:
+            case RECIPROCAL_POS_LINE_LAST_DAM:
                 if(m.getCurrentAction().getLastDamaged() != null){
                     selectableSquares.addAll(m.getLayout().getSquaresInDirection(startingSquare, m.getCurrentAction().getLastDamaged().getSquarePosition()));
                 }
@@ -348,11 +401,11 @@ public class Effect {
 
         }
 
-        if(distMin > -1){
+        if(distMin > DONT_CARE){
             selectableSquares.retainAll(m.getLayout().getFurtherSquares(startingSquare, distMin));
         }
 
-        if(distMax > -1){
+        if(distMax > DONT_CARE){
             selectableSquares.retainAll(m.getLayout().getCloserSquares(startingSquare, distMax));
         }
 
@@ -361,17 +414,17 @@ public class Effect {
 
         switch (diversity){
             //DON'T CARE
-            case -1: break;
+            case DONT_CARE: break;
             //ALREADY DAMAGED
-            case 0:
+            case DIVERSITY_ALREADY_DAM:
                 selectablePlayers.retainAll(m.getCurrentAction().getDamaged());
                 break;
             //NOT DAMAGED YET PLAYERS
-            case 1:
+            case DIVERSITY_NOT_DAM_YET_PLAYERS:
                 selectablePlayers.removeAll(m.getCurrentAction().getDamaged());
                 break;
             //NOT DAMAGED YET SQUARES
-            case 2:
+            case DIVERSITY_NOT_DAM_YET_SQUARES:
                 List<Square> damagedSquares= new ArrayList<>();
                 for(Player dam: m.getCurrentAction().getDamaged()){
                     damagedSquares.add(dam.getSquarePosition());
@@ -381,7 +434,7 @@ public class Effect {
                 selectablePlayers.retainAll(m.getPlayersOn(selectableSquares));
                 break;
             //NOT MY ROOM
-            case 3:
+            case DIVERSITY_NOT_MY_ROOM:
                 selectableSquares.removeAll(p.getSquarePosition().getRoom().getSquaresInRoom());
                 selectablePlayers.clear();
                 selectablePlayers.addAll(m.getPlayersOn(selectableSquares));
@@ -394,10 +447,10 @@ public class Effect {
 
         switch (what){
             //NOTHING TO SELECT WITH NO LIMITATIONS
-            case -1: // throw exception
+            case WHAT_NOTHING_TO_SEL_NO_LIMIT: // throw exception
                 throw new ApplyEffectImmediatelyException();
             //SQUARE WITH NO LIMITATIONS
-            case 0:
+            case WHAT_SQUARE_NO_LIMIT:
                 if(selectableSquares.isEmpty()){
                     selectableCommands.add(Command.BACK);
                 }
@@ -406,7 +459,7 @@ public class Effect {
                 }
                 break;
             //PLAYER
-            case 1:
+            case WHAT_PLAYER_NO_LIMIT:
                 if (selectablePlayers.isEmpty()){
                     selectableCommands.add(Command.BACK);
                 }
@@ -415,7 +468,7 @@ public class Effect {
                 }
                 break;
             //NOTHING TO SELECT, SOMEONE ON MY SQUARE
-            case 2:
+            case WHAT_NOTHING_TO_SEL_SOMEONE_ON_MY_SQUARE:
                 if(m.getPlayersOn(Collections.singletonList( m.getCurrentPlayer().getSquarePosition()) ).equals(Collections.singletonList(m.getCurrentPlayer()))){
                     selectableCommands.add(Command.BACK);
                 }
@@ -425,7 +478,7 @@ public class Effect {
                 break;
 
             //SQUARE, SOMEONE IN SELECTED ROOM
-            case 3:
+            case WHAT_SQUARE_SOMEONE_IN_ROOM:
                 List<Square> toRemove= new ArrayList<>();
                 for(Square s: selectableSquares){
                     if(m.getPlayersOn(s.getRoom().getSquaresInRoom()).equals(Collections.singletonList(m.getCurrentPlayer())) || m.getPlayersOn(s.getRoom().getSquaresInRoom()).isEmpty()){
@@ -442,7 +495,7 @@ public class Effect {
                 }
                 break;
             //SQUARE, SOMEONE ON IT
-            case 4:
+            case WHAT_SQUARE_SOMEONE_ON_IT:
                 List<Square> tempToRemove= new ArrayList<>();
                 for(Square s: selectableSquares){
                     if(m.getPlayersOn(Collections.singletonList(s)).equals(Collections.singletonList(m.getCurrentPlayer())) || m.getPlayersOn(Collections.singletonList(s)).isEmpty()){
@@ -458,7 +511,7 @@ public class Effect {
                 }
                 break;
             //NOTHING, SOMEONE NEAR ME
-            case 5:
+            case WHAT_NOTHING_SOMEONE_NEAR_ME:
                 if(m.getPlayersOn( m.getLayout().getSquaresInDistanceRange(p.getSquarePosition(), 1, 1) ).isEmpty()){
                     selectableCommands.add(Command.BACK);
                 }
@@ -481,6 +534,14 @@ public class Effect {
 
     }
 
+    /**
+     * applyes from source to target player or square the effect
+     * @param source source of the effect
+     * @param targetP nullable player target
+     * @param targetS nullable square target
+     * @param m match
+     * @return effect to add to effect list
+     */
     public Effect applyOn(Player source, Player targetP, Square targetS, Match m) {
         Player movingPlayer= null;
         Square destination= null;
@@ -489,43 +550,43 @@ public class Effect {
 
         switch (setTempSquare){
             //DON'T SET
-            case -1: break;
+            case SET_TEMP_SQUARE_DONT: break;
             //SELECTED SQUARE
-            case 0: m.getCurrentAction().setChosenSquare(targetS); break;
+            case SET_TEMP_SQUARE_SEL_SQ: m.getCurrentAction().setChosenSquare(targetS); break;
             //SELECTED PLAYER'S SQUARE
-            case 1:
+            case SET_TEMP_SQUARE_SEL_PLAYERS_SQ:
                 if(targetP != null) {
                     m.getCurrentAction().setChosenSquare(targetP.getSquarePosition());
                 }
                 break;
             //MY SQUARE
-            case 2: m.getCurrentAction().setChosenSquare(source.getSquarePosition()); break;
+            case SEL_TEMP_SQUARE_MY_SQ: m.getCurrentAction().setChosenSquare(source.getSquarePosition()); break;
 
             default: System.out.println("NUMERO SBAGLIATO SETTEMPSQUARE");
         }
 
         switch (whoToMove){
             //NOBODY
-            case -1: break;
+            case WHO_TO_MOVE_NOBODY: break;
             //ME
-            case 0: movingPlayer= source; break;
+            case WHO_TO_MOVE_ME: movingPlayer= source; break;
             //SELECTED PLAYER
-            case 1: movingPlayer= targetP; break;
+            case WHO_TO_MOVE_SEL_PLAYER: movingPlayer= targetP; break;
             //LAST DAMAGED
-            case 2: movingPlayer= m.getCurrentAction().getLastDamaged(); break;
+            case WHO_TO_MOVE_LAST_DAMAGED: movingPlayer= m.getCurrentAction().getLastDamaged(); break;
             //chosen player
-            case 3: movingPlayer= m.getCurrentAction().getChosenPlayer(); break;
+            case WHO_TO_MOVE_CHOSEN_PLAYER: movingPlayer= m.getCurrentAction().getChosenPlayer(); break;
 
             default: System.out.println("NUMERO SBAGLIATO WHOTOMOVE"); break;
         }
 
         switch (whereToMove){
             //NOWHERE
-            case -1: break;
+            case WHARE_TO_MOVE_NOWHERE: break;
             //SELECTED SQUARE
-            case 0: destination= targetS; break;
+            case WHERE_TO_MOVE_SEL_SQ: destination= targetS; break;
             //SELECTED PLAYER'S SQUARE
-            case 1:
+            case WHERE_TO_MOVE_SEL_PLAYERS_SQ:
                 if(targetP != null){
                     destination= targetP.getSquarePosition();
                 }
@@ -534,11 +595,11 @@ public class Effect {
                 }
                 break;
              //TEMP SQUARE
-            case 2:
+            case WHERE_TO_MOVE_TEMP_SQUARE:
                 destination= m.getCurrentAction().getChosenSquare();
                 break;
             //MY SQUARE
-            case 3:
+            case WHERE_TO_MOVE_MY_SQUARE:
                 destination= source.getSquarePosition();
                 break;
             default:
@@ -555,48 +616,48 @@ public class Effect {
 
         switch (whoToDamage){
             //NOBODY
-            case  -1: break;
+            case WHO_TO_DAMAGE_NOBODY: break;
             //SELECTED PLAYER
-            case 0:
+            case WHO_TO_DAMAGE_SEL_PLAYER:
                 if(targetP != null){
                     playersToShoot.add(targetP);
                 }
                 break;
             //ALL IN SELECTED SQUARE
-            case 1:
+            case WHO_TO_DAMAGE_ALL_IN_SEL_SQ:
                 if(targetS != null){
                     playersToShoot.addAll(m.getPlayersOn(new ArrayList<Square>(Arrays.asList(targetS))));
                 }
                 break;
             //ALL IN SELECTED ROOM
-            case 2:
+            case WHO_TO_DAMAGE_ALL_IN_SEL_ROOM:
                 if(targetS!= null){
                     playersToShoot.addAll(m.getPlayersOn(targetS.getRoom().getSquaresInRoom()));
                 }
                 break;
             //LAST DAMAGED
-            case 3:
+            case WHO_TO_DAMAGE_LAST_DAMAGED:
                 if (m.getCurrentAction().getLastDamaged() != null ){
                     playersToShoot.add(m.getCurrentAction().getLastDamaged());
                 }
                 break;
             //ALL IN MY SQUARE
-            case 4:
+            case WHO_TO_DAMAGE_ALL_IN_MY_SQUARE:
                 playersToShoot.addAll(m.getPlayersOn(new ArrayList<Square>(Arrays.asList(source.getSquarePosition()))));
                 playersToShoot.remove(source);
                 break;
             //ALL IN TEMP SQUARE
-            case 5:
+            case WHO_TO_DAMAGE_ALL_IN_TEMP_SQ:
                 if(m.getCurrentAction().getChosenSquare() != null){
                     playersToShoot.addAll(m.getPlayersOn(new ArrayList<Square>(Arrays.asList(m.getCurrentAction().getChosenSquare()))));
                 }
                 break;
             //ALL NEAR ME
-            case 6:
+            case WHO_TO_DAMAGE_ALL_NEAR_ME:
                 playersToShoot.addAll(m.getPlayersOn(m.getLayout().getSquaresInDistanceRange(source.getSquarePosition(), 1, 1)));
                 break;
             //ALL IN TEMP SQUARE EXCEPT LAST DAMAGED
-            case 7:
+            case WHO_TO_DAMAGE_ALL_TEMP_SQ_EXCPT_LAST_DAM:
                 if(m.getCurrentAction().getChosenSquare() != null){
                     playersToShoot.addAll(m.getPlayersOn(new ArrayList<Square>(Arrays.asList(m.getCurrentAction().getChosenSquare()))));
                 }
@@ -604,7 +665,7 @@ public class Effect {
                 break;
 
             //SHOOTER
-            case 8:
+            case WHO_TO_DAMAGE_SHOOTER:
                 playersToShoot.clear();
                 playersToShoot.add(m.getCurrentPlayer());
                 break;
@@ -633,23 +694,11 @@ public class Effect {
             }
         }
 
-      /*
-        switch (setTempSquare){
-            case -1: break;//sb.append("don't set");
-            case 0: m.getCurrentAction().setChosenSquare(targetS); break; //sb.append("selected square");
-            case 1:
-                m.getCurrentAction().setChosenSquare(targetP.getSquarePosition());
-
-                break; //sb.append("selected player's square");
-            case 2: m.getCurrentAction().setChosenSquare(source.getSquarePosition()); break; //sb.append("my square");
-            default: System.out.println("NUMERO SBAGLIATO SETTEMPSQUARE"); break;
-        }
-        */
 
         switch (setTempPlayer){
-            case -1: break; //don't set
-            case 0: m.getCurrentAction().setChosenPlayer(targetP); break; //selected player
-            case 1: m.getCurrentAction().setChosenPlayer(source); break; //me
+            case SET_TEMP_PLAYER_DONT: break; //don't set
+            case SET_TEMP_PLAYER_SEL_PLAYER: m.getCurrentAction().setChosenPlayer(targetP); break; //selected player
+            case SET_TEMP_PLAYER_ME: m.getCurrentAction().setChosenPlayer(source); break; //me
             default: System.out.println("NUMERO SBAGLIATO SETTEMPPLAYER"); break;
         }
 
