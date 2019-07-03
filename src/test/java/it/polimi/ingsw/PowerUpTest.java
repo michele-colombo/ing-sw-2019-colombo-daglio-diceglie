@@ -6,7 +6,6 @@ import it.polimi.ingsw.server.model.enums.Command;
 import it.polimi.ingsw.server.model.enums.PowerUpType;
 import org.junit.jupiter.api.Test;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,12 +15,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class PowerUpTest {
 
-    private InputStream searchInTestResources(String name){
-        InputStream result= getClass().getClassLoader().getResourceAsStream("savedGamesForTests/" + name + ".json");
-        return result;
-    }
 
-
+    /**
+     * Tests the use of the powerup "tagback grenade" by simulating a shooting action.
+     */
     @Test
     public void tagbackGrenadeTest(){
         //first shoots to fourth (which has a tagback, but can't see first) and fifth (which has a tagback and sees first)
@@ -90,6 +87,12 @@ public class PowerUpTest {
 
     }
 
+    /**
+     * Tests the use of the powerup "tagback grenade" by simulating a shooting action.
+     * During the action two players disconnects.
+     * Of course disconnection here is intended from a model point of view (no network involved),
+     * which means the players become inactive
+     */
     @Test
     public void tagbackGrenadeTestWithDisconnection(){
         //first shoots to fourth (which has a tagback, but can't see first) and fifth (which has a tagback and sees first)
@@ -108,26 +111,26 @@ public class PowerUpTest {
             printSel(first);
 
         gm.performAction(first, first.getSelectableActions().get(2));   //he shoots
-        startTimers(gm);
+        finalCleaning(gm);
 
             printSel(first);
 
         gm.shootWeapon(first, sm.getWeaponFromName("Machine gun"));
-        startTimers(gm);
+        finalCleaning(gm);
 
             printSel(first);
 
         gm.addMode(first, first.getSelectableModes().get(0));
-        startTimers(gm);
+        finalCleaning(gm);
         disconnectPlayer(gm, fifth);
-        startTimers(gm);
+        finalCleaning(gm);
         disconnectPlayer(gm, third);
-        startTimers(gm);
+        finalCleaning(gm);
 
             printSel(first);
 
         gm.confirmModes(first);
-        startTimers(gm);
+        finalCleaning(gm);
 
             printSel(first);
             List<Player> temp = new ArrayList<>();
@@ -139,7 +142,7 @@ public class PowerUpTest {
             assertTrue(temp.containsAll(first.getSelectablePlayers()));
 
         gm.shootTarget(first, fifth, null);
-        startTimers(gm);
+        finalCleaning(gm);
 
             printSel(first);
             temp.remove(fifth);
@@ -147,7 +150,7 @@ public class PowerUpTest {
             assertTrue(temp.containsAll(first.getSelectablePlayers()));
 
         gm.shootTarget(first, fourth, null);
-        startTimers(gm);
+        finalCleaning(gm);
 
             printList(match.getWaitingFor());
             printList(gm.getActivePlayers());
@@ -162,6 +165,10 @@ public class PowerUpTest {
             assertFalse(first.getDamageTrack().getMarkMap().containsKey(fifth));
     }
 
+    /**
+     * Tests the use of the powerup "tagback grenade" by simulating a shooting action.
+     * In this case two players decide to use tagback.
+     */
     @Test
     public void testTwoPlayersUseTagback(){
         //first shoots to third (which has a tagback and sees first) and fifth (which has a tagback and sees first)
@@ -241,6 +248,13 @@ public class PowerUpTest {
 
     }
 
+    /**
+     * Tests the use of the powerup "tagback grenade" by simulating a shooting action.
+     * Fifth player could use tagback, but it disconnects before, so its decision is faked.
+     *
+     * Of course disconnection here is intended from a model point of view (no network involved),
+     * which means the player simply becomes inactive
+     */
     @Test
     public void testWithTagbackAvailableWithOneDisconnection(){
         //first shoots to third (which has a tagback and sees first) and fifth (which has a tagback and sees first)
@@ -258,15 +272,15 @@ public class PowerUpTest {
         Player fifth = gm.getPlayerByName("fifth");
 
         gm.performAction(first, first.getSelectableActions().get(2));   //he shoots
-        startTimers(gm);
+        finalCleaning(gm);
         gm.shootWeapon(first, sm.getWeaponFromName("Machine gun"));
-        startTimers(gm);
+        finalCleaning(gm);
         gm.addMode(first, first.getSelectableModes().get(0));
-        startTimers(gm);
+        finalCleaning(gm);
         disconnectPlayer(gm, fifth);
-        startTimers(gm);
+        finalCleaning(gm);
         gm.confirmModes(first);
-        startTimers(gm);
+        finalCleaning(gm);
 
             List<Player> temp = new ArrayList<>();
             temp.add(second);
@@ -277,14 +291,14 @@ public class PowerUpTest {
             assertTrue(temp.containsAll(first.getSelectablePlayers()));
 
         gm.shootTarget(first, fifth, null);
-        startTimers(gm);
+        finalCleaning(gm);
 
             temp.remove(fifth);
             assertTrue(first.getSelectablePlayers().containsAll(temp));
             assertTrue(temp.containsAll(first.getSelectablePlayers()));
 
         gm.shootTarget(first, third, null);
-        startTimers(gm);
+        finalCleaning(gm);
 
             assertEquals(1, fifth.howManyPowerUps(PowerUpType.TAGBACK_GRENADE));
             assertFalse(first.getDamageTrack().getMarkMap().containsKey(fifth));
@@ -293,7 +307,7 @@ public class PowerUpTest {
             assertFalse(fifth.hasSelectables());
 
         gm.usePowerUp(third, third.getSelectablePowerUps().get(0));
-        startTimers(gm);
+        finalCleaning(gm);
 
             assertEquals(0, third.howManyPowerUps(PowerUpType.TAGBACK_GRENADE));
             assertEquals(2, first.getDamageTrack().getMarkMap().get(third));
@@ -302,6 +316,10 @@ public class PowerUpTest {
             assertFalse(third.hasSelectables());
     }
 
+    /**
+     * Tests the use of the powerup "tagback grenade" by simulating a shooting action.
+     * In this case both players that could use it disconnect
+     */
     @Test
     public void testWithTagbackAvailableWithTwoDisconnections(){
         //first shoots to third (which has a tagback and sees first) and fifth (which has a tagback and sees first)
@@ -319,15 +337,15 @@ public class PowerUpTest {
         Player fifth = gm.getPlayerByName("fifth");
 
         gm.performAction(first, first.getSelectableActions().get(2));   //he shoots
-        startTimers(gm);
+        finalCleaning(gm);
         gm.shootWeapon(first, sm.getWeaponFromName("Machine gun"));
-        startTimers(gm);
+        finalCleaning(gm);
         gm.addMode(first, first.getSelectableModes().get(0));
-        startTimers(gm);
+        finalCleaning(gm);
         disconnectPlayer(gm, fifth);
-        startTimers(gm);
+        finalCleaning(gm);
         gm.confirmModes(first);
-        startTimers(gm);
+        finalCleaning(gm);
 
             List<Player> temp = new ArrayList<>();
             temp.add(second);
@@ -338,16 +356,16 @@ public class PowerUpTest {
             assertTrue(temp.containsAll(first.getSelectablePlayers()));
 
         gm.shootTarget(first, fifth, null);
-        startTimers(gm);
+        finalCleaning(gm);
         disconnectPlayer(gm, third);
-        startTimers(gm);
+        finalCleaning(gm);
 
             temp.remove(fifth);
             assertTrue(first.getSelectablePlayers().containsAll(temp));
             assertTrue(temp.containsAll(first.getSelectablePlayers()));
 
         gm.shootTarget(first, third, null);
-        startTimers(gm);
+        finalCleaning(gm);
 
             assertEquals(1, fifth.howManyPowerUps(PowerUpType.TAGBACK_GRENADE));
             assertFalse(first.getDamageTrack().getMarkMap().containsKey(fifth));
@@ -361,6 +379,10 @@ public class PowerUpTest {
         printSel(first);
     }
 
+    /**
+     * Tests the use of the powerup "tagback grenade" by simulating a shooting action.
+     * Only one player chooses to use it.
+     */
     @Test
     public void onlyOnePlayerOutOfTwoUsesTagback(){
         //first shoots to third (which has a tagback and sees first) and fifth (which has a tagback and sees first)
@@ -426,6 +448,10 @@ public class PowerUpTest {
             assertFalse(third.hasSelectables());
     }
 
+    /**
+     * Tests the use of the powerup "tagback grenade" by simulating a shooting action.
+     * The current player disconnects while he is receiving tagback grenade.
+     */
     @Test
     public void currentPlayerDisconnectsWhileReceivingPowerUp(){
         //first shoots to third (which has a tagback and sees first) and fifth (which has a tagback and sees first)
@@ -444,17 +470,17 @@ public class PowerUpTest {
         Player fifth = gm.getPlayerByName("fifth");
 
         gm.performAction(first, first.getSelectableActions().get(2));   //he shoots
-        startTimers(gm);
+        finalCleaning(gm);
         gm.shootWeapon(first, sm.getWeaponFromName("Machine gun"));
-        startTimers(gm);
+        finalCleaning(gm);
         gm.addMode(first, first.getSelectableModes().get(0));
-        startTimers(gm);
+        finalCleaning(gm);
         gm.confirmModes(first);
-        startTimers(gm);
+        finalCleaning(gm);
         gm.shootTarget(first, fifth, null);
-        startTimers(gm);
+        finalCleaning(gm);
         gm.shootTarget(first, third, null);
-        startTimers(gm);
+        finalCleaning(gm);
 
             assertEquals(USE_POWERUP, first.getState());
             assertFalse(first.hasSelectables());
@@ -468,9 +494,9 @@ public class PowerUpTest {
             assertEquals(1, first.getDamageTrack().getMarkMap().get(third));
 
         disconnectPlayer(gm, first);
-        startTimers(gm);
+        finalCleaning(gm);
         gm.dontUsePowerUp(fifth);
-        startTimers(gm);
+        finalCleaning(gm);
 
             assertEquals(1, fifth.howManyPowerUps(PowerUpType.TAGBACK_GRENADE));
             assertFalse(first.getDamageTrack().getMarkMap().containsKey(fifth));
@@ -479,7 +505,7 @@ public class PowerUpTest {
             assertFalse(fifth.hasSelectables());
 
         gm.usePowerUp(third, third.getSelectablePowerUps().get(0));
-        startTimers(gm);
+        finalCleaning(gm);
 
             assertEquals(0, third.howManyPowerUps(PowerUpType.TAGBACK_GRENADE));
             assertEquals(2, first.getDamageTrack().getMarkMap().get(third));
@@ -493,6 +519,9 @@ public class PowerUpTest {
             printSel(second);
     }
 
+    /**
+     * Tests the use of the powerups "tagback grenade" ban "targeting scope" by simulating a shooting action.
+     */
     @Test
     public void tagbackAndTargeting(){
         //first shoots to third (which has a tagback and sees first) and fifth (which has a tagback and sees first)
@@ -600,6 +629,10 @@ public class PowerUpTest {
             assertTrue(b1.equals(b2));
     }
 
+    /**
+     * Tests the use of the powerups "tagback grenade" and "targeting scope" by simulating a shooting action.
+     * Both damaged players use the tagback, while damager does not use the targeting scope
+     */
     @Test
     public void tagbackButRefusingTargeting(){
         //first shoots to third (which has a tagback and sees first) and fifth (which has a tagback and sees first)

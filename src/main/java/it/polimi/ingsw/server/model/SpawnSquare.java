@@ -8,6 +8,9 @@ import it.polimi.ingsw.server.model.enums.PlayerState;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Extends square and represents the spawn points, which also contains weapons to collect
+ */
 public class SpawnSquare extends Square{
     /**
      * the list of weapons in the spawn point

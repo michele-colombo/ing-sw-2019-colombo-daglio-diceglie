@@ -7,6 +7,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents the equivalent of money and costs in adrenaline: a triple of blue, red and yellow ammos.
+ */
 public class Cash implements Serializable {
     /**
      * amount of blue ammos

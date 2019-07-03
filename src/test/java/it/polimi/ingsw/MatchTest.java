@@ -21,6 +21,9 @@ public class MatchTest {
         return new Match(pm.getLayout( layoutConfig ), skulls, pm.getStackManager());
     }
 
+    /**
+     * Tests getPlayersOn method of match (retrieves the players currently on a set of squares)
+     */
     @Test
     public void getPlayersOn() {
         Match match = createMatch(3, 8);
@@ -49,6 +52,9 @@ public class MatchTest {
         assertEquals(3, match.getPlayersOn(squaresOccupied).size());
     }
 
+    /**
+     * Tests winner calculation with only one winner (no ties)
+     */
     @Test
     public void justOneWinner() {
         Match match = createMatch(0, 8);
@@ -87,10 +93,13 @@ public class MatchTest {
         printMap(match.getAllPoints());
 
 
-        assertEquals(1, Collections.frequency(match.getRank().values(), 1));
+        assertEquals(1, Collections.frequency(match.getRank().values(), 1)); //there is only one winner
         assertEquals(1, match.getRank().get(p1));
     }
 
+    /**
+     * Tests winner calculation
+     */
     @Test
     public void theWinnerKilledALot(){
         Match match = createMatch(0, 8);
@@ -129,10 +138,13 @@ public class MatchTest {
         printMap(match.getRank());
         printMap(match.getAllPoints());
 
-        assertEquals(1, Collections.frequency(match.getRank().values(), 1));
+        assertEquals(1, Collections.frequency(match.getRank().values(), 1));    //there is only one winner
         assertEquals(1, match.getRank().get(p1));
     }
 
+    /**
+     * Tests the wining calculation when there is a tie
+     */
     @Test
     public void tie(){
         Match match = createMatch(0, 8);
@@ -164,11 +176,14 @@ public class MatchTest {
         printMap(match.getRank());
         printMap(match.getAllPoints());
 
-        assertEquals(2, Collections.frequency(match.getRank().values(), 1));
+        assertEquals(2, Collections.frequency(match.getRank().values(), 1));    //there are two winners
         assertEquals(1, match.getRank().get(p1));
         assertEquals(1, match.getRank().get(p2));
     }
 
+    /**
+     * Tests the complete rank and points calculation in a more complete context
+     */
     @Test
     public void rankTest1(){
         Match match = createMatch(0, 8);
@@ -215,6 +230,10 @@ public class MatchTest {
         assertEquals(23, match.getAllPoints().get(p5));
     }
 
+    /**
+     * Tests the complete rank and points calculation
+     * when there is a tie between players not in the killshot track
+     */
     @Test
     public void tieBetweenPlayersNotInKillshotTrack(){
         Match match = createMatch(0, 8);
@@ -256,6 +275,12 @@ public class MatchTest {
     }
 
 
+    /**
+     * Support method for adding a killing
+     * @param match the target match
+     * @param p the killer
+     * @param n 1 for normal kill, 2 for overkill
+     */
     private void addKilling(Match match, Player p, int n) {
         Map<Player, Integer> kill = new HashMap<>();
         kill.put(p, n);

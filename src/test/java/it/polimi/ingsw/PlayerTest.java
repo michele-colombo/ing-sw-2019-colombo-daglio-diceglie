@@ -15,6 +15,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class PlayerTest {
 
+    /**
+     * Tests canAfford method of player with different costs
+     */
     @Test
     public void canAfford() {
         Player p = new Player("SignorTest", PlayerColor.GREY);
@@ -39,7 +42,9 @@ public class PlayerTest {
         assertTrue(p.canAfford(new Cash(0,0,2)));
     }
 
-
+    /**
+     * Tests the permanence of marks and the resetting of damages when switching to frenzy track
+     */
     @Test
     public void switchToFrenzy() {
         Player p1 = new Player("Aleksej", PlayerColor.GREY);

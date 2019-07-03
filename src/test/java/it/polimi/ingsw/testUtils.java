@@ -9,6 +9,7 @@ import it.polimi.ingsw.server.model.Match;
 import it.polimi.ingsw.server.model.Player;
 import it.polimi.ingsw.server.model.Weapon;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -17,12 +18,32 @@ public class testUtils {
     public static final String SAVED_GAMES_FOR_TESTS = "./src/test/resources/savedGamesForTests/";
     public static final String BACKUP_TEST = "./src/test/resources/backupTest/";
 
+    /**
+     * Support method to get an InputStream from the name of the saved game
+     * @param name teh name of the saved backup to resume
+     * @return an inputStream of the file
+     */
+    public static InputStream searchInTestResources(String name){
+        InputStream result= testUtils.class.getClassLoader().getResourceAsStream("savedGamesForTests/" + name + ".json");
+        return result;
+    }
+
+    /**
+     * Prints the selectable item of a player
+     * @param p the involved player
+     */
     public static void printSel(Player p){
         System.out.println("\n"+p.getName()+":");
         System.out.println(p.getState());
         System.out.println(p.selectablesToString());
     }
 
+    /**
+     * Creates a human readable string of a list of objects
+     * @param list the list to stringify
+     * @param <T> parametric type of the list's objects
+     * @return a human readable string
+     */
     public static <T> String listToString(List<T> list){
         StringBuilder result = new StringBuilder();
         for (T t : list){
@@ -35,11 +56,23 @@ public class testUtils {
         return result.toString();
     }
 
+    /**
+     * Prints a list in a human readable way
+     * @param list the list to print
+     * @param <T> the type of list's objects
+     */
     public static <T> void printList(List<T> list){
         System.out.println();
         System.out.println(listToString(list));
     }
 
+    /**
+     * Creates a human readable string of a map of objects
+     * @param map the map to stringify
+     * @param <K> parametric type of the key objects
+     * @param <V> parametric type of the value objects
+     * @return
+     */
     public static <K, V> String mapToString(Map<K, V> map){
         StringBuilder result = new StringBuilder();
         for (Map.Entry<K, V> entry : map.entrySet()){
@@ -51,24 +84,23 @@ public class testUtils {
         return result.toString();
     }
 
+    /**
+     * print a map in a human readable way
+     * @param map the map to print
+     * @param <K> the type of the map's keys
+     * @param <V> the type of the map's values
+     */
     public static <K, V> void printMap(Map<K, V> map){
         System.out.println();
         System.out.println(mapToString(map));
     }
 
-    public static List<Player> addPlayers(GameModel gm, List<String> names){
-        List<Player> newPlayers = new ArrayList<>();
-        for (String name : names){
-            try {
-                 newPlayers.add(gm.addPlayer(name));
-            } catch (Exception  e){
-
-            }
-        }
-        return newPlayers;
-    }
-
-    //this is a fake method to emulete what the real controller does
+    /**
+     * It sets a player as disconnected.
+     * this is a fake method to emulate what the real controller does.
+     * @param gameModel the involved game model
+     * @param disconnected the player to disconnect
+     */
     public static void disconnectPlayer(GameModel gameModel, Player disconnected){
         if(gameModel.getActivePlayers().contains(disconnected)){    //should always be true, right?
             gameModel.getActivePlayers().remove(disconnected);
@@ -79,8 +111,13 @@ public class testUtils {
         }
     }
 
-    //this is a fake method to emulate what the real controller does
-    public static void startTimers(GameModel gameModel){
+    /**
+     * Checks that all player from which an interaction is required are actually active.
+     * If this is not the case it simulates their action.
+     * this is a fake method to emulate what the real controller does
+     * @param gameModel
+     */
+    public static void finalCleaning(GameModel gameModel){
         while (!gameModel.getActivePlayers().containsAll(gameModel.getWaitingFor())){
             List<Player> toFakeList = new ArrayList<>();
             for (Player p : gameModel.getWaitingFor()){
@@ -98,6 +135,10 @@ public class testUtils {
         }
     }
 
+    /**
+     * Prints the global situation of a match
+     * @param match the involved match
+     */
     public static void printSituation(Match match){
         for (Player tempPlayer : match.getPlayers()){
             System.out.println();

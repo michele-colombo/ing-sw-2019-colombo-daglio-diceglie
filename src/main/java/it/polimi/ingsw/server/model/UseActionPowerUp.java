@@ -4,6 +4,9 @@ import it.polimi.ingsw.server.exceptions.NextMicroActionException;
 import it.polimi.ingsw.server.model.enums.PlayerState;
 import it.polimi.ingsw.server.model.enums.PowerUpType;
 
+/**
+ * Represents the task of using a powerup of the type ACTION_POWER_UP (teleporter and newton).
+ */
 public class UseActionPowerUp implements MicroAction {
     /**
      * Builds the micro action for using the action powerups (teleporter and newton)

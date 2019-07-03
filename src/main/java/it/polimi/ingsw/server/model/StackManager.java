@@ -2,6 +2,10 @@ package it.polimi.ingsw.server.model;
 
 import java.util.*;
 
+/**
+ * Represents a common point of access to all the decks of the game, that allows drawing and discarding of all the cards.
+ * The "original" complete decks (i.e. the full set of cards) are passed as constructor parameter.
+ */
 public class StackManager {
 
     // STIAMO USANDO LE ARRAYLIST. LA "TESTA" DEL MAZZO E' L'INDICE ZERO

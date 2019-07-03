@@ -5,6 +5,9 @@ import it.polimi.ingsw.server.model.enums.Command;
 import it.polimi.ingsw.server.model.enums.PlayerState;
 import it.polimi.ingsw.server.model.enums.PowerUpType;
 
+/**
+ * Represents the task of using the targeeting scope powerup
+ */
 public class UseTargeting implements MicroAction {
     /**
      * Builds the micro action for using the targeting scope.

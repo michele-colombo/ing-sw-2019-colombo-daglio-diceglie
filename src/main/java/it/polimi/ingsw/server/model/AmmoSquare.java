@@ -3,6 +3,9 @@ package it.polimi.ingsw.server.model;
 import it.polimi.ingsw.server.model.enums.AmmoColor;
 import it.polimi.ingsw.server.model.enums.Border;
 
+/**
+ * Extends square and represents those square which contain ammoTiles (opposite to spawn points)
+ */
 public class AmmoSquare extends Square{
     /**
      * Contains the ammoTile of the square. Is null when no ammoTile is present

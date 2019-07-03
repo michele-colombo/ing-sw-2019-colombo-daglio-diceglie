@@ -10,17 +10,75 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+/**
+ * The command line user interface
+ */
 public class Cli implements UserInterface {
+
+    /**
+     * width of the 'window' where the game is displayed
+     */
+    public static final int PLAYING_WINDOW_WIDTH = 150;
+
+    /**
+     * height of the 'window' where the game is displayed
+     */
+    public static final int PLAYING_WINDOW_HEIGHT = 39;
+    public static final String QUIT = "quit";
+    public static final String DISCONNECT = "disconnect";
+    public static final String SOCKET = "socket";
+    public static final String RMI = "rmi";
+    public static final String CHOOSE_CONNECTION_ERROR_MESSAGE = "Please insert either 'socket' or 'rmi'";
+    public static final String WAIT_MESSAGE = "Wait for other players to join";
+    public static final String MANUAL_NOT_AVAILABLE = "manual not available for the inserted item";
+    public static final String INVALID_SELECTION = "invalid selection, retry!";
+    public static final String YOU_CAN_SELECT_A_SQUARE = "You can select a square specifying coordinates to separate integers or";
+    public static final String INSERT_SELECTION_NUMBER = "insert the selection number";
+    public static final String WELCOME_TO_ADRENALINE = "welcome to Adrenaline";
+    public static final String INSERT_CONNECTION_TYPE = "please insert the type of connection: socket or rmi";
+    public static final String LOGIN = "login";
+    public static final String INSERT_NICKNAME = "Please insert your nickname. If you want to reconnect, make sure you insert the previous nickname.";
+
+    /**
+     * the possible states in which the cli can be
+     */
     private enum CliState{
         ASK_CONNECTION, ASK_LOGIN, LOGGED, IDLE, PLAY
     }
+
+    /**
+     * Reference to the client
+     */
     private Client client;
+
+    /**
+     * the window where the game is displayed
+     */
     private PlayingWindow playingWindow;
+
+    /**
+     * a list with the unique IDs of selectable items. Used to send the user's selection to the server
+     */
     private List<String> selectableIds;
+
+    /**
+     * the runnable used to get input from the user
+     */
     private Runnable reader;
+
+    /**
+     * flag that contains the state of activity of the cli
+     */
     private boolean isActive;
+
+    /**
+     * the current state of cli
+     */
     private CliState state;
 
+    /**
+     * Builds a cli and runs the reader of user's input
+     */
     public Cli(){
         state = CliState.IDLE;
 
@@ -32,23 +90,21 @@ public class Cli implements UserInterface {
         reader = new Runnable() {
             @Override
             public void run() {
-                boolean accepted = false;
                 Scanner scanner = new Scanner(System.in);
                 while (isActive){
                     String input = scanner.nextLine();
-                    if ("quit".equalsIgnoreCase(input)){
+                    if (QUIT.equalsIgnoreCase(input)){
                         client.shutDown();
                         isActive= false;
-                    } else if ("disconnect".equalsIgnoreCase(input)){
+                    } else if (DISCONNECT.equalsIgnoreCase(input)){
                         client.shutDown();
-                        showConnectionSelection();
                     } else {
                         switch (state) {
                             case ASK_CONNECTION:
-                                if (input.equalsIgnoreCase("socket") || input.equalsIgnoreCase("rmi")) {
+                                if (input.equalsIgnoreCase(SOCKET) || input.equalsIgnoreCase(RMI)) {
                                     client.createConnection(input);
                                 } else {
-                                    System.out.println("Please insert either 'socket' or 'rmi'");
+                                    System.out.println(CHOOSE_CONNECTION_ERROR_MESSAGE);
                                 }
                                 break;
                             case ASK_LOGIN:
@@ -57,7 +113,7 @@ public class Cli implements UserInterface {
                                 state = CliState.IDLE;    //in order to prevent a player sends a login event twice
                                 break;
                             case LOGGED:
-                                System.out.println("Wait for other players to join");
+                                System.out.println(WAIT_MESSAGE);
                                 break;
                             case IDLE:
                                 break;
@@ -67,6 +123,13 @@ public class Cli implements UserInterface {
                                     WeaponView w = client.getMatch().getDecks().getWeaponFromName(input.substring(4).trim());
                                     if (w != null){
                                         System.out.println(getPrettyManWeapon(w));
+                                    } else {
+                                        PowerUpView po = client.getMatch().getDecks().getPowerUpFromString(input.substring(4).trim());
+                                        if (po != null){
+                                            System.out.println(po.getDescription());
+                                        } else {
+                                            System.out.println(MANUAL_NOT_AVAILABLE);
+                                        }
                                     }
                                 } else {
                                     try {
@@ -83,14 +146,14 @@ public class Cli implements UserInterface {
                                                 client.selected(square.toString());
                                             }
                                         } catch (WrongSelectionException e2) {
-                                            System.out.println("invalid selection, retry!");
+                                            System.out.println(INVALID_SELECTION);
                                         } catch (NumberFormatException | IndexOutOfBoundsException e2) {
-                                            System.out.println("You can select a square specifying coordinates to separate integers or");
+                                            System.out.println(YOU_CAN_SELECT_A_SQUARE);
                                         }
-                                        System.out.println("insert the selection number");
+                                        System.out.println(INSERT_SELECTION_NUMBER);
                                     } catch (WrongSelectionException | IndexOutOfBoundsException e) {
                                         playingWindow.show();
-                                        System.out.println("invalid selection, retry!");
+                                        System.out.println(INVALID_SELECTION);
                                     }
                                 }
                         }
@@ -104,8 +167,8 @@ public class Cli implements UserInterface {
     @Override
     public void showConnectionSelection() {
         Window window = new TitleAndTextWindow(30, 10,
-                "welcome to Adrenaline", BLUE,
-                "please insert the type of connection: socket or rmi");
+                WELCOME_TO_ADRENALINE, BLUE,
+                INSERT_CONNECTION_TYPE);
         window.show();
         state = CliState.ASK_CONNECTION;
     }
@@ -113,8 +176,8 @@ public class Cli implements UserInterface {
     @Override
     public void showLogin() {
         Window window = new TitleAndTextWindow(30, 10,
-                "login", BLUE,
-                "Please insert your nickname. If you want to reconnect, make sure you insert the previous nickname.");
+                LOGIN, BLUE,
+                INSERT_NICKNAME);
         window.show();
         state = CliState.ASK_LOGIN;
     }
@@ -258,84 +321,8 @@ public class Cli implements UserInterface {
 
     @Override
     public void updateStartMatch(MatchView matchView) {
-        playingWindow = new PlayingWindow(150, 37, matchView, this);
+        playingWindow = new PlayingWindow(PLAYING_WINDOW_WIDTH, PLAYING_WINDOW_HEIGHT, matchView, this);
         state = CliState.PLAY;
     }
 
-    //TEST-ONLY METHOD
-    public void showSituation(){
-        MatchView match = client.getMatch();
-        System.out.println("OTHER PLAYERS:");
-        for (PlayerView otherPlayer : match.getOtherPlayers()){
-            if (match.getCurrentPlayer() != null && match.getCurrentPlayer().getName().equals(otherPlayer.getName())) System.out.print("-> ");
-            else System.out.print("   ");
-            System.out.println(otherPlayer.getName()+" in "+otherPlayer.getSquarePosition() + " with " + otherPlayer.getWallet() + " state: " + otherPlayer.getState());
-            System.out.println("        powerups: "+otherPlayer.getNumPowerUps());
-            System.out.print("        unloaded weapons:");
-            for (WeaponView w : otherPlayer.getUnloadedWeapons()){
-                System.out.print("    - "+w.getName());
-            }
-            System.out.println();
-            System.out.println("        Damages: " + listToString(otherPlayer.getDamageList()));
-            System.out.println("        Marks: "+ mapToString(otherPlayer.getMarkMap()));
-        }
-
-        MyPlayer me = match.getMyPlayer();
-        System.out.println("\n\nME:");
-        if (match.getCurrentPlayer() != null &&match.getCurrentPlayer().getName().equals(me.getName())) System.out.println("It's my turn!");
-        System.out.println(me.getName()+" in "+me.getSquarePosition() + " with " + me.getWallet() + " state: " + me.getState() + " points: " + me.getPoints());
-        if (!me.getPending().toString().equals("b:0|r:0|y:0")) System.out.println("You have to pay "+me.getPending()+" (you have already paid "+me.getCredit()+")");
-        System.out.println("        powerups: "+listToString(me.getPowerUps()));
-        System.out.print("        weapons:");
-        for (Map.Entry<WeaponView, Boolean> entry : me.getWeapons().entrySet()){
-            if (entry.getValue() == true) System.out.print("\t- "+entry.getKey().getName()+"(LOADED)");
-            else System.out.print("\t- "+entry.getKey().getName()+"(UNLOADED)");
-        }
-        System.out.println();
-        System.out.println("        Damages: " + listToString(me.getDamageList()));
-        System.out.println("        Marks: "+ mapToString(me.getMarkMap()));
-
-        StringBuilder result = new StringBuilder();
-        if (!me.getSelectableSquares().isEmpty()) {
-            result.append("sq:");
-            result.append(listToString(me.getSelectableSquares()));
-            result.append("\n");
-        }
-        if (!me.getSelectableWeapons().isEmpty()) {
-            result.append("wp:");
-            result.append(listToString(me.getSelectableWeapons()));
-            result.append("\n");
-        }
-        if (!me.getSelectablePowerUps().isEmpty()) {
-            result.append("pow:\n");
-            result.append(listToString(me.getSelectablePowerUps()));
-            result.append("\n");
-        }
-        if (!me.getSelectablePlayers().isEmpty()) {
-            result.append("pl:\n");
-            result.append(listToString(me.getSelectablePlayers()));
-            result.append("\n");
-        }
-        if (!me.getSelectableCommands().isEmpty()) {
-            result.append("cmd:\n");
-            result.append(listToString(me.getSelectableCommands()));
-            result.append("\n");
-        }
-        if (!me.getSelectableModes().isEmpty()) {
-            result.append("mod:\n");
-            result.append(listToString(me.getSelectableModes()));
-            result.append("\n");
-        }
-        if (!me.getSelectableActions().isEmpty()) {
-            result.append("act:\n");
-            result.append(listToString(me.getSelectableActions()));
-            result.append("\n");
-        }
-        if (!me.getSelectableColors().isEmpty()) {
-            result.append("col:\n");
-            result.append(listToString(me.getSelectableColors()));
-            result.append("\n");
-        }
-        System.out.print(result.toString());
-    }
 }

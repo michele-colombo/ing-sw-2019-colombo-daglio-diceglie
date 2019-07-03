@@ -7,10 +7,18 @@ import it.polimi.ingsw.server.model.enums.Command;
 import it.polimi.ingsw.server.model.enums.PlayerColor;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class EffectTest {
 
+    /**
+     * Tests creation and application of a basic effect
+     */
     @Test
-    private Match inizializza(){
+    public void startTest(){
+        Effect effect= new Effect(0, 1, -1, -1, -1, 1, 1, -1, -1, 0, 2, 2, -1);
+
         ParserManager pm= new ParserManager();
         Match m = new Match(pm.getLayout(0), 5, pm.getStackManager());
         Layout layout= m.getLayout();
@@ -37,82 +45,31 @@ public class EffectTest {
         m.setCurrentPlayer(anna);
         m.setCurrentAction(new Action(false, false));
 
-        return m;
-    }
-
-    @Test
-    private String selectableLists(Match m){
-        String result;
-        result= "SELECTABLE PLAYERS\n";
-
-        for(Player selp: m.getCurrentPlayer().getSelectablePlayers()) {
-            result+= selp.getName() + "\n";
-        }
-        result+= "SELECTABLE SQUARES\n";
-        for(Square sq: m.getCurrentPlayer().getSelectableSquares()){
-            result+= sq.getX() + ";" + sq.getY() + "\n";
-        }
-
-        result+= "SELECTABLE COMMANDS";
-        for(Command selc: m.getCurrentPlayer().getSelectableCommands()){
-            result+= selc.toString() + "\n";
-        }
-
-        return result;
-
-
-    }
-
-    @Test
-    private String damaged(Match m){
-        String res= "";
-        for(int i=0; i< m.getCurrentAction().getDamaged().size(); i++){
-            res+= m.getCurrentAction().getDamaged().get(i).getName() + "\n";
-        }
-
-        return res;
-
-    }
-
-    @Test
-    public void startTest(){
-        Effect effect= new Effect(0, 1, -1, -1, -1, 1, 1, -1, -1, 0, 2, 2, -1);
-        Match m= inizializza();
-
         Player sparatore= m.getCurrentPlayer();
         try {
             effect.start(sparatore, m);
         } catch (ApplyEffectImmediatelyException e){}
 
-        System.out.println(selectableLists(m));
+        assertTrue(sparatore.getSelectablePlayers().contains(gianni));
 
-        Player gianni= m.getCurrentPlayer().getSelectablePlayers().get(0);
         effect.applyOn(sparatore, gianni, null, m);
 
-        System.out.println(damaged(m));
 
         Effect opt= new Effect(0, 1, -1, -1, 1, 1, 0, -1, -1, 0, 1, 0, -1);
         try {
             opt.start(sparatore, m);
         } catch (ApplyEffectImmediatelyException e){}
-        System.out.println(selectableLists(m));
 
         opt.applyOn(sparatore, null, null, m);
-        System.out.println(damaged(m));
+        assertEquals(1, m.getCurrentAction().getDamaged().size());
+        assertTrue(m.getCurrentAction().getDamaged().contains(gianni));
 
-        System.out.println("Danni");
-        for(Player p: gianni.getDamageTrack().getDamageList()){
-            System.out.println(p.getName());
-        }
-
-        System.out.println("Marchi");
-        for(Player p: gianni.getDamageTrack().getMarkMap().keySet()){
-            System.out.println(p.getName());
-            System.out.println(gianni.getDamageTrack().getMarkMap().get(p));
-        }
+        assertEquals(2, gianni.getDamageTrack().getDamageList().size());
+        assertTrue(gianni.getDamageTrack().getDamageList().contains(anna));
 
 
-
+        assertTrue(gianni.getDamageTrack().getMarkMap().containsKey(anna));
+        assertEquals(2, gianni.getDamageTrack().getMarkMap().get(anna));
 
     }
 

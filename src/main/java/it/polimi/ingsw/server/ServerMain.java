@@ -21,14 +21,6 @@ import java.util.Scanner;
 import java.util.logging.Logger;
 
 public class ServerMain {
-    public static final String SAVING_BACKUP = "Saving backup to file";
-    public static final String CANNOT_WRITE_BACKUP_FILE = "Cannot write backup file";
-    public static final String BACKUP_FILE_WRITTEN = "backup file written";
-    public static final String UNSUPPORTED_ENCODING_PARSING_BACKUP = "Unsupported encoding exception while parsing currBackup";
-    public static final String IO_EXCEPTION_FILE = "File not found or error while closing stream";
-    public static final String BACKUP_SYNTAX_ERROR = "Backup file is not correctly written";
-    public static final String PROBLEM_CLOSING_INPUT_STREAM = "problem while closing inputStream";
-    public static final String NO_FILE_DETECTED_FOR_STACKS = "no file detected for stacks";
 
     public static final String SERVER_READY = "Server ready";
     public static final String ERROR_INIT_SERVER_SOCKET = "Error while initializing the server";
@@ -106,7 +98,7 @@ public class ServerMain {
                     Socket socket = serverSocket.accept();
                     socket.setSoTimeout((int) CommonProperties.PING_PONG_DELAY*2);
 
-                    System.out.println(SOCKET_CLIENT_HAS_CONNECTED);
+                    logger.info(SOCKET_CLIENT_HAS_CONNECTED);
                     new SocketServer(socket, controller);
                 }
             }
@@ -133,8 +125,6 @@ public class ServerMain {
         }
 
         logger.info(SERVER_READY);
-
-        System.out.println("Server ready!");
     }
 
     public static void restart(){

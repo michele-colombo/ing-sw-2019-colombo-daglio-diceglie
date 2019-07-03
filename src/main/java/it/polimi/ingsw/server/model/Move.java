@@ -2,6 +2,9 @@ package it.polimi.ingsw.server.model;
 
 import it.polimi.ingsw.server.model.enums.PlayerState;
 
+/**
+ * Represents the task of moving to a certain square.
+ */
 public class Move implements MicroAction {
     /**
      * the number of movements allowed on the map in this single move

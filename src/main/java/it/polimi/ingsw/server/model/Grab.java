@@ -4,6 +4,10 @@ import it.polimi.ingsw.server.model.enums.PlayerState;
 
 import java.util.List;
 
+/**
+ * Represents the task of grabbing, which involves movement to a certain square.
+ * Actual grabbing is demanded to the collect method of squares.
+ */
 public class Grab implements MicroAction {
     /**
      * number of movements (on the map) allowed before grabbing

@@ -5,6 +5,9 @@ import it.polimi.ingsw.server.model.enums.Command;
 import it.polimi.ingsw.server.model.enums.PlayerState;
 import it.polimi.ingsw.server.model.enums.PowerUpType;
 
+/**
+ * Represents the task of receiving a tagback grenade.
+ */
 public class ReceiveTagback implements MicroAction {
 
     /**

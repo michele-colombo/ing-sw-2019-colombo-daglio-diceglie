@@ -18,25 +18,18 @@ import static it.polimi.ingsw.server.model.enums.AmmoColor.*;
 
 public class WeaponTest {
 
-    @BeforeEach
-    public void initWeaponDescription(){
-        Weapon w= new Weapon("Martello ionico", new Cash(YELLOW, 1), YELLOW);
-        Mode base= new Mode(false, -1, "modalità base", "Dai 2 danni a 1 bersaglio nel quadrato in cui ti trovi", new Cash());
-
-        Mode alt= new Mode(false, 0, "modalita' polverizzare", "dai 3 danni a 1 bersaglio nel quadrato in cui ti trovi, poi muovi quel bersaglio di 0, 1, 2 quadrati in una direzione", new Cash());
-
-        w.addMode(base);
-        w.addMode(alt);
-
-        System.out.println(w.getDescription());
-    }
-
+    /**
+     * Tests the correct calculation of the buying cost of a weapon
+     */
     @Test
     public void discounted(){
         Weapon arma = new Weapon("Gingillo", new Cash(2, 0, 0), BLUE);
         assertTrue(arma.getDiscountedCost().isEqual(new Cash(1, 0, 0)));
     }
 
+    /**
+     * Tests that selectable modes are created correctly
+     */
     @Test
     public void selectableModes(){
         Weapon arma= new Weapon("Gingillo", new Cash(1, 1, 0), BLUE);
@@ -60,6 +53,9 @@ public class WeaponTest {
 
     }
 
+    /**
+     * Tests that weapons and modes are correctly loaded from the json file
+     */
     @Test
     public void selectableModesFromBuilder(){
         StackManager sm = new ParserManager().getStackManager();
@@ -94,6 +90,9 @@ public class WeaponTest {
     }
 
 
+    /**
+     * Tests that selectable modes of ZX-2 are created correctly
+     */
     @Test
     public void ancoraSelectableModesZX(){
 
@@ -116,6 +115,9 @@ public class WeaponTest {
 
     }
 
+    /**
+     * Tests that selectable modes of "spada fotonica" are created correctly
+     */
     @Test
     public void selectableModesspadaFotonica(){
         StackManager sm = new ParserManager().getStackManager();
@@ -154,12 +156,9 @@ public class WeaponTest {
         assertEquals(z.getSelectableModes(alreadySelected), foundByHand);
     }
 
-
-    private InputStream searchInTestResources(String name){
-        InputStream result= getClass().getClassLoader().getResourceAsStream("savedGamesForTests/" + name + ".json");
-        return result;
-    }
-
+    /**
+     * Tests the effects of lock rifle by simulating a shooting action
+     */
     @Test
     public void testLockRifle1(){
         GameModel gm = new GameModel();
@@ -208,6 +207,9 @@ public class WeaponTest {
         assertTrue(check != currentState);
     }
 
+    /**
+     * Tests the effects of machine gun by simulating a shooting action
+     */
     @Test
     public void testMachineGun() {
         GameModel gm = new GameModel();
@@ -292,7 +294,9 @@ public class WeaponTest {
     }
 
 
-
+    /**
+     * Tests the effects of machine by simulating a shooting action
+     */
     @Test
     public void testMachineGunSecondScenario(){
         Gson gson= new Gson();
@@ -316,14 +320,6 @@ public class WeaponTest {
         }
 
         printSel(gianni);
-        //todo it will pass when everything works
-/*
-        Backup check = Backup.initFromFile(SAVED_GAMES_FOR_TESTS, "machineGunTestBefore");
-        Backup currentState = new Backup((gm.getMatch()));
-
-        System.out.println(gson.toJson(currentState));
-        assertTrue(check.equals(currentState));
-*/
 
         gm.performAction(gianni, gianni.getSelectableActions().get(2));  // I wanna shoot
         assertEquals(gianni.getSelectableWeapons().size(), 3);
@@ -349,6 +345,9 @@ public class WeaponTest {
 
     }
 
+    /**
+     * Tests the effects of thor by simulating a shooting action
+     */
     @Test
     public void testTHOR(){
         GameModel gm = new GameModel();
@@ -435,6 +434,9 @@ public class WeaponTest {
 
     }
 
+    /**
+     * Tests the effects of plasma gun by simulating a shooting action
+     */
     @Test
     public void testPlasmaGun(){
         GameModel gm = new GameModel();
@@ -529,6 +531,9 @@ public class WeaponTest {
 
     }
 
+    /**
+     * Tests the effects of whisper by simulating a shooting action
+     */
     @Test
     public void testWhisper(){
         GameModel gm = new GameModel();
@@ -578,7 +583,9 @@ public class WeaponTest {
 
     }
 
-
+    /**
+     * Tests the effects of electroscythe by simulating a shooting action
+     */
     @Test
     public void testElectroScythe(){
         GameModel gm = new GameModel();
@@ -645,7 +652,9 @@ public class WeaponTest {
 
     }
 
-
+    /**
+     * Tests the effects of electroscythe by simulating a shooting action
+     */
     @Test
     public void testElectroScytheSecondMode(){
         GameModel gm = new GameModel();
@@ -712,7 +721,9 @@ public class WeaponTest {
 
     }
 
-
+    /**
+     * Tests the effects of tractor beam by simulating a shooting action
+     */
     @Test
     public void testTractorBeam(){
         GameModel gm = new GameModel();
@@ -771,6 +782,9 @@ public class WeaponTest {
         assertTrue(check.equals(currentState));
     }
 
+    /**
+     * Tests the effects of tractor beam by simulating a shooting action
+     */
     @Test
     public void testTractorBeamSecondMode(){
 
@@ -830,6 +844,9 @@ public class WeaponTest {
 
     }
 
+    /**
+     * Tests the effects of vortex cannon by simulating a shooting action
+     */
     @Test
     public void testVortexCannon(){
         GameModel gm = new GameModel();
@@ -906,6 +923,9 @@ public class WeaponTest {
 
     }
 
+    /**
+     * Tests the effects of furnace by simulating a shooting action
+     */
     @Test
     public void testFurnace(){
         GameModel gm = new GameModel();
@@ -952,6 +972,9 @@ public class WeaponTest {
 
     }
 
+    /**
+     * Tests the effects of heat seeker by simulating a shooting action
+     */
     @Test
     public void testHeatSeeker() {
         GameModel gm = new GameModel();
@@ -991,7 +1014,9 @@ public class WeaponTest {
 
     }
 
-
+    /**
+     * Tests the effects of flame thrower by simulating a shooting action
+     */
     @Test
     public void testFlameThrower() {
         GameModel gm = new GameModel();
@@ -1039,7 +1064,9 @@ public class WeaponTest {
 
     }
 
-
+    /**
+     * Tests the effects of flame thrower by simulating a shooting action
+     */
     @Test
     public void testFlameThrowerSecondMode() {
         GameModel gm = new GameModel();
@@ -1094,7 +1121,9 @@ public class WeaponTest {
 
     }
 
-
+    /**
+     * Tests the effects of rocket launcher by simulating a shooting action
+     */
     @Test
     public void tesRocketLauncher() {
         GameModel gm = new GameModel();
@@ -1194,6 +1223,9 @@ public class WeaponTest {
         assertTrue(check.equals(currentState));
     }
 
+    /**
+     * Tests the effects of rail gun by simulating a shooting action
+     */
     @Test
     public void tesRailGun() {
         GameModel gm = new GameModel();
@@ -1235,6 +1267,9 @@ public class WeaponTest {
 
     }
 
+    /**
+     * Tests the effects of electro scythe by simulating a shooting action, when nothing is damageble
+     */
     @Test
     public void electroschyteNothingToDamageTest(){
 
@@ -1287,7 +1322,9 @@ public class WeaponTest {
 
     }
 
-
+    /**
+     * Tests the effects of furnace by simulating a shooting action, when nothing is damageble
+     */
     @Test
     public void furnaceNothingToSelect(){
         GameModel gm = new GameModel();
@@ -1344,6 +1381,9 @@ public class WeaponTest {
 
     }
 
+    /**
+     * Tests the effects of shock wave by simulating a shooting action
+     */
     @Test
     public void shockWaveTest(){
         GameModel gm = new GameModel();

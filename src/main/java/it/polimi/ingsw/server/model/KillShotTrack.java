@@ -5,6 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Is the part of board that keeps track of kills and remaining skulls.
+ * It embeds part of the logic for final point calculation.
+ */
 public class KillShotTrack {
     /**
      * keeps the number of skulls currently remaining in the match
@@ -41,7 +45,7 @@ public class KillShotTrack {
 
     /**
      * Returns the ordinal position of killing of hte specified player
-     * @param p the player interested
+     * @param p the player involved
      * @return An integer representing the ordinal position. 0 is the first.
      */
     public int getKillingOrder(Player p){
@@ -51,7 +55,7 @@ public class KillShotTrack {
     /**
      * Returns the number of drops of the specified player on the killshot track
      * If a player overkills someone, it is counted twice
-     * @param p the player interested
+     * @param p the player involved
      * @return An integer representing the number of drops on the killshot track
      */
     public int getKillingOf(Player p){

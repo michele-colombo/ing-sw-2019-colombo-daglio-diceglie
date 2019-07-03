@@ -6,6 +6,9 @@ import it.polimi.ingsw.server.model.enums.PlayerState;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents the task of reloading a weapon
+ */
 public class Reload implements MicroAction {
     /**
      * Builds the micro action

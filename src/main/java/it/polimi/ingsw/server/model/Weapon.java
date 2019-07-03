@@ -5,6 +5,9 @@ import it.polimi.ingsw.server.model.enums.AmmoColor;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Is teh weapon object, it is made out of modes which contains elementary effects.
+ */
 public class Weapon{
     /**
      * the name of the weapon

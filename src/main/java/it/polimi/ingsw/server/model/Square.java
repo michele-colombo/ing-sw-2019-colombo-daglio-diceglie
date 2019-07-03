@@ -3,6 +3,10 @@ package it.polimi.ingsw.server.model;
 import it.polimi.ingsw.server.model.enums.AmmoColor;
 import it.polimi.ingsw.server.model.enums.Border;
 
+/**
+ * Is the abstract class of squares, which completely describes it as object of the map.
+ * Collection (in the sense of grabbing on it) is left to concrete extensions.
+ */
 public abstract class Square {
     protected int x;
     protected int y;

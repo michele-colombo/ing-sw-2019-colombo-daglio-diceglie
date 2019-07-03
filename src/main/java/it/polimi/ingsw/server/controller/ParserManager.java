@@ -16,6 +16,14 @@ import java.util.logging.Logger;
 import static it.polimi.ingsw.server.ServerMain.*;
 
 public class ParserManager {
+    private static final String SAVING_BACKUP = "Saving backup to file";
+    private static final String CANNOT_WRITE_BACKUP_FILE = "Cannot write backup file";
+    private static final String BACKUP_FILE_WRITTEN = "backup file written";
+    private static final String UNSUPPORTED_ENCODING_PARSING_BACKUP = "Unsupported encoding exception while parsing currBackup";
+    private static final String IO_EXCEPTION_FILE = "File not found or error while closing stream";
+    private static final String BACKUP_SYNTAX_ERROR = "Backup file is not correctly written";
+    private static final String PROBLEM_CLOSING_INPUT_STREAM = "problem while closing inputStream";
+    private static final String NO_FILE_DETECTED_FOR_STACKS = "no file detected for stacks";
     private static final String SERVER_CONFIG_FILE= "resources/serverConfig.json";
     private static final String LAYOUT_CONFIG_FOLDER= "resources/layoutConfig/";
     private static final String WEAPONS_FILE= "resources/weapons.json";
@@ -76,11 +84,11 @@ public class ParserManager {
             FileWriter fw = new FileWriter(file);
             gson.toJson(backup, fw);
             fw.close();
+            logger.info(BACKUP_FILE_WRITTEN);
             return true;
         } catch (IOException e){
             logger.warning(CANNOT_WRITE_BACKUP_FILE);
         }
-        logger.info(BACKUP_FILE_WRITTEN);
 
         return false;
     }

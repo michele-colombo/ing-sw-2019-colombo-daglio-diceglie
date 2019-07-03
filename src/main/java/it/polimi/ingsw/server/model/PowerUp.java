@@ -6,6 +6,10 @@ import it.polimi.ingsw.server.model.enums.PowerUpType;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Is the powerUp card, which contains a list of effects.
+ * Each powerup has its unique ID (an integer)
+ */
 public class PowerUp{
     /**
      * the color of the powerUp (on of the three spawn point colors)

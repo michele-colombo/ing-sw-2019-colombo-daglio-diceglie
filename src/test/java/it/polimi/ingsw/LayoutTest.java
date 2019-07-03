@@ -309,6 +309,9 @@ public class LayoutTest {
         assertFalse(layout.existSquare(X2, Y2));
     }
 
+    /**
+     * Tests neighbours retrieval and distance calculation on layout configuration 0
+     */
     @Test
     public void initTest(){
         Layout layout= pm.getLayout(0);
@@ -332,15 +335,12 @@ public class LayoutTest {
 
         assertEquals(layout.getNeighbours(layout.getSquare(1,1)), vicini);
 
-
         assertTrue(layout.getSquare(3,1).getColor() == YELLOW);
-
-
-
-
-
     }
 
+    /**
+     * Tests getDistance, getSpawnPoint, getHorizontalSquareLine, getDistance onf layout configuration 2 and 3
+     */
     @Test
     public void testConfig2and3(){
         Layout layout= pm.getLayout(2);
@@ -377,6 +377,9 @@ public class LayoutTest {
 
     }
 
+    /**
+     * Tests the correct retrieving of resources
+     */
     @Test
     public void provareGetClassResources(){
 
@@ -387,6 +390,9 @@ public class LayoutTest {
 
     }
 
+    /**
+     * Tests the correct initialization of rooms on layout configuration 3
+     */
     @Test
     public void whatHappenToRoom(){
         Layout l= pm.getLayout(3);
@@ -410,12 +416,11 @@ public class LayoutTest {
 
         assertFalse(l.getSquare(0,1).getRoom() == l.getSquare(2,0).getRoom());
 
-
-
-
-
     }
 
+    /**
+     * Tests the retrieval of visible sqaure son layout configuration 3
+     */
     @Test
     public void testVisibility(){
         Layout l= pm.getLayout(2);
@@ -430,6 +435,9 @@ public class LayoutTest {
         assertTrue(l.getVisibleSquares(l.getSquare(3,2)).size() == 8);
     }
 
+    /**
+     * Tests getCloserSqaures and getFurtherSquares on layout configuration 0
+     */
     @Test
     public void furthercloser(){
         Layout l= pm.getLayout(0);
@@ -454,6 +462,9 @@ public class LayoutTest {
 
     }
 
+    /**
+     * Tests the retrieval of visible squares on layout configuration 2
+     */
     @Test
     public void visibleSquares(){
         Layout l= pm.getLayout(2);
@@ -475,6 +486,9 @@ public class LayoutTest {
         }
     }
 
+    /**
+     * Tests distance calculation on layout configuration 3
+     */
     @Test
     public void distanceTest(){
         Layout l= pm.getLayout(3);

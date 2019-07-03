@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 public class Effect {
 
@@ -27,6 +28,8 @@ public class Effect {
     private int setTempPlayer;
 
     private Effect effectToAdd;
+
+    private static final Logger logger =  Logger.getLogger(Effect.class.getName());
 
     public Effect(int startingPoint, int reciprocalPosition, int distMin, int distMax, int diversity, int what, int optionality, int whoToMove, int whereToMove, int whoToDamage, int damageNumber, int markNumber, int setTempSquare) {
         this.startingPoint = startingPoint;
