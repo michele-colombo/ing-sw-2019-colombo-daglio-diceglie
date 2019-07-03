@@ -4,6 +4,7 @@ import it.polimi.ingsw.client.*;
 import it.polimi.ingsw.client.ClientExceptions.WrongSelectionException;
 import it.polimi.ingsw.server.model.enums.AmmoColor;
 import it.polimi.ingsw.server.model.enums.Command;
+import it.polimi.ingsw.server.model.enums.PlayerState;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -201,6 +202,7 @@ public class BoardGui {
      * Ratio used to properly create color button on board
      */
     private static final double COLOR_BUTTON_SIZE = Gui.getScreenBounds().getWidth() / 68;
+    public static final int ROW_2_INDEX = 2;
     /**
      * The main part of the stage
      */
@@ -225,10 +227,6 @@ public class BoardGui {
      * Contains label of connectionState
      */
     private List<Label> connectionLabels;
-    /**
-     * It's the label that show the current player
-     */
-    private Label currentPlayer;
     /**
      * Contains selectables button
      */
@@ -341,13 +339,20 @@ public class BoardGui {
         GridPane.setHalignment(imageView, HPos.LEFT);
 
         BoardGui.createStateText();
-        view.add(stateText, GRID_FOURTH_ROW, GRID_FIRST_COLUMN);
+        //view.add(stateText, GRID_FOURTH_ROW, ROW_2_INDEX);
         view.add(board, GRID_ZERO_ROW,GRID_ZERO_COLUMN);
         view.add(weaponBox, GRID_ZERO_ROW,GRID_FIRST_COLUMN);
         view.add(powerUpBox, GRID_FIRST_ROW, GRID_FIRST_COLUMN);
         addDamageTrack(match);
         addConnectionState(match.getAllPlayers());
-        addSelectables();
+
+        //view.add(selectables,GRID_FOURTH_ROW,GRID_FIRST_COLUMN);
+
+        VBox controls= new VBox();
+        controls.getChildren().addAll(selectables, stateText);
+
+        view.add(controls, GRID_FOURTH_ROW, GRID_FIRST_ROW);
+
         updateConnection(match.readConnections());
 
 
@@ -408,24 +413,13 @@ public class BoardGui {
     private void addConnectionState(List<PlayerView> players ){
         connectionLabels = new ArrayList<>();
         connectionState = new GridPane();
-        currentPlayer = new Label(CURRENT_PLAYER_LABEL + players.get(0).getName()); //todo forse da fixare
-        currentPlayer.setTextFill(Color.WHITE);
-        currentPlayer.setWrapText(true);
         Label connectionLabel = new Label(CONNECTION_LABEL);
         connectionLabel.setTextFill(Color.GHOSTWHITE);
         connectionState.add(connectionLabel, CONNECTION_ZERO_ROW, CONNECTION_ZERO_COLUMN);
         connectionState.setVgap(Gui.getScreenBounds().getWidth() / SCALE_RATIO_GAP_CONNECTION);
         connectionState.setHgap(Gui.getScreenBounds().getWidth() / SCALE_RATIO_GAP_CONNECTION);
         connectionState.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
-        connectionState.add(currentPlayer, CONNECTION_ZERO_ROW, CONNECTION_FIRST_COLUMN);
         view.add(connectionState, GRID_FOURTH_ROW, GRID_ZERO_COLUMN);
-    }
-
-    /**
-     * Add selectables GridPane in view
-     */
-    private void addSelectables(){
-        view.add(selectables,GRID_FOURTH_ROW,GRID_FIRST_COLUMN);
     }
 
     /**
@@ -440,7 +434,15 @@ public class BoardGui {
             connectionLabels.clear();
             int i = 2;
             for(PlayerView pv : Gui.getClient().getMatch().getAllPlayers()){
-                Label playerLabel = new Label(pv.getName());
+                String at;
+                if(pv.getState().equals(PlayerState.IDLE)){
+                    at= "   ";
+                }
+                else {
+                    at= "@  ";
+                }
+
+                Label playerLabel = new Label(at + pv.getName());
                 playerLabel.setWrapText(true);
                 playerLabel.setTextFill(Color.valueOf(pv.getColor().toString()));
                 playerLabel.setMaxWidth(Gui.getScreenBounds().getWidth() / SCALE_RATIO_CONNECTION_LABEL);
@@ -461,9 +463,6 @@ public class BoardGui {
                 connectionLabels.add(onlineLabel);
                 i++;
             }
-            if(Gui.getClient().getMatch().getCurrentPlayer() != null){
-                currentPlayer.setText(CURRENT_PLAYER_LABEL + Gui.getClient().getMatch().getCurrentPlayer());
-            }
         });
     }
 
@@ -471,10 +470,7 @@ public class BoardGui {
      * Update currentPlayer with the name of the current one
      */
     public void updateCurrentPlayer(){
-        Platform.runLater(() -> {
-            currentPlayer.setText(CURRENT_PLAYER_LABEL + Gui.getClient().getMatch().getCurrentPlayer());
-            updatePayment();
-        });
+        //
     }
 
     /**

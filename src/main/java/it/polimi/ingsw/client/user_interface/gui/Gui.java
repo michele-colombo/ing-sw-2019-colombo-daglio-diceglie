@@ -480,7 +480,7 @@ public class Gui extends Application implements UserInterface {
             rankString.put(entry.getKey().getName(), entry.getValue());
         }
 
-        for(Map.Entry<PlayerView, Integer> entry: rank.entrySet()){
+        for(Map.Entry<PlayerView, Integer> entry: points.entrySet()){
             pointsString.put(entry.getKey().getName(), entry.getValue());
         }
 
