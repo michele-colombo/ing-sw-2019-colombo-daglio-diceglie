@@ -278,6 +278,7 @@ public class Match {
                 for (Map.Entry<Player, Integer> entry : p.getDamageTrack().howDoTheyKilledYou().entrySet()){
                     if (entry.getValue() == 2){
                         entry.getKey().getDamageTrack().addMark(p, 1);
+                        notifyDamageUpdate(entry.getKey());
                     }
                 }
             }

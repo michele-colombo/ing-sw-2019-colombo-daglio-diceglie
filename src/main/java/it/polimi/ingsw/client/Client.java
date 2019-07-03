@@ -412,7 +412,7 @@ public class Client implements MessageVisitor {
             userInterface.showGameOver(rank, points);
             shutDown();
         } else {
-            System.out.println("[ERROR] end without start");
+            System.out.println("[WARNING] end without start");
         }
     }
 
