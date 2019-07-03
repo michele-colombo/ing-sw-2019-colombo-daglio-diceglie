@@ -161,7 +161,9 @@ public class RmiClient extends NetworkInterfaceClient{
             }
             catch (RemoteException e){
                 System.out.println("Connection down");
-                client.restart();
+                if( client.isConnected()) {
+                    client.restart();
+                }
             }
         }
 

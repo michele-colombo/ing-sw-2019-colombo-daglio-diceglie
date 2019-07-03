@@ -13,6 +13,9 @@ import javafx.geometry.*;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -25,6 +28,8 @@ import javafx.stage.WindowEvent;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
+
+import static java.awt.image.ImageObserver.WIDTH;
 
 /**
  * This Class starts GUI main, creating a window in which to choose network technology
@@ -111,6 +116,7 @@ public class Gui extends Application implements UserInterface {
      * Column of view in which put elements
      */
     private static final int GRID_ZERO_COLUMN = 0;
+
     /**
      * Reference to the object who receives messages from server
      */
@@ -191,6 +197,25 @@ public class Gui extends Application implements UserInterface {
         initialize(primaryStage);
     }
 
+
+    //temporaneo
+    private static ImageView exitButton;
+    private static ImageView disconnectButton;
+
+    public static ImageView getExitButton() {
+        return exitButton;
+    }
+
+    public static ImageView getDisconnectButton() {
+        return disconnectButton;
+    }
+
+    @Override
+    public void stop(){
+        LOGGER.info("closing Application");
+        System.exit(0);
+    }
+
     /**
      * Creates the first scene, in which displays network technology choice
      * @param primaryStage the first and only the of the GUI
@@ -206,7 +231,7 @@ public class Gui extends Application implements UserInterface {
         stage = primaryStage;
         stage.setTitle(TITLE);
         stage.setFullScreen(true);
-        stage.setResizable(false);
+        stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 
         GridPane selectionDialog;
 
@@ -263,15 +288,21 @@ public class Gui extends Application implements UserInterface {
         });
 
 
+        exitButton= new ImageView(new Image(getClass().getClassLoader().getResourceAsStream("resources/exit_icon.png")));
+        exitButton.setPreserveRatio(true);
+        exitButton.setFitWidth(screenBounds.getWidth() / 32);
+        exitButton.setOnMouseClicked(mouseEvent -> shutDown() );
+        disconnectButton= new ImageView(new Image(getClass().getClassLoader().getResourceAsStream("resources/disconnect_icon.png")));
+        disconnectButton.setPreserveRatio(true);
+        disconnectButton.setFitWidth(screenBounds.getWidth() / 32);
+        disconnectButton.setOnMouseClicked(mouseEvent -> restart() );
+
+
         view= new StackPane();
-        ExitButton exit= new ExitButton();
 
-        view.getChildren().addAll(selectionDialog, exit);
+        view.getChildren().addAll(selectionDialog, exitButton);
         StackPane.setAlignment(selectionDialog, Pos.CENTER);
-        StackPane.setAlignment(exit, Pos.TOP_RIGHT);
-
-
-
+        StackPane.setAlignment(exitButton, Pos.TOP_RIGHT);
 
         scene = new Scene(view);
         stage.setScene(scene);
@@ -491,19 +522,11 @@ public class Gui extends Application implements UserInterface {
         Gui.client = client;
     }
 
-    public static void shutDown(){
-        try {
+    public void shutDown(){
+        if(client!=null){
             client.shutDown();
-            try {
-                stage.close();
-            } catch (NullPointerException e){
-                LOGGER.info(WINDOW_EVENT);
-            }
         }
-        catch (NullPointerException e){
-            //nothing to do id client is null
-            LOGGER.info(WINDOW_EVENT);
-        }
+        stop();
     }
 
     public static void restart() {

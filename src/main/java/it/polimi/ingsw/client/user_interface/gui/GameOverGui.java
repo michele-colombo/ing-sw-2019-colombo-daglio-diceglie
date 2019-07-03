@@ -24,46 +24,16 @@ public class GameOverGui {
     public static final String PLAYER_TEXT = "Player";
     public static final String POINTS_TEXT = "Points";
 
+    /**
+     * main pane of screen
+     */
     private StackPane view;
-/*
-    public GameOverGui(Map<String, Integer> rank, Map<String, Integer> points){
-        view= new BorderPane();
 
-        HBox horizontal= new HBox();
-        VBox positionCol= new VBox();
-        VBox playerCol= new VBox();
-        VBox pointsCol= new VBox();
-
-
-        positionCol.getChildren().add(new Text("Position"));
-        playerCol.getChildren().add(new Text("Player"));
-        pointsCol.getChildren().add(new Text("Points"));
-
-        int i=1;
-        for(String s: rank.keySet()){
-            Text position= new Text(String.valueOf( rank.get(s) ));
-            position.setFont(FONT);
-            Text player= new Text(s);
-            player.setFont(FONT);
-            Text score= new Text(String.valueOf( points.get(s) ));
-            score.setFont(FONT);
-
-            positionCol.getChildren().add(position);
-            playerCol.getChildren().add(player);
-            pointsCol.getChildren().add(score);
-
-            i++;
-        }
-
-        horizontal.getChildren().addAll(positionCol, playerCol, pointsCol);
-        BorderPane.setAlignment(horizontal, Pos.CENTER);
-
-        horizontal.setBorder(new Border(new BorderStroke(Color.BLUE, BorderStrokeStyle.SOLID, null, null)));
-        horizontal.setMinWidth(Gui.getScreenBounds().getWidth() / 2);
-
-        view.setCenter(horizontal);
-    }
-*/
+    /**
+     * builds a game over screen
+     * @param rank
+     * @param points
+     */
     public GameOverGui(Map<String, Integer> rank, Map<String, Integer> points){
         view = new StackPane();
 
@@ -105,10 +75,8 @@ public class GameOverGui {
         }
 
         HBox buttonBox= new HBox();
-        ExitButton quit= new ExitButton();
 
-        buttonBox.getChildren().add(quit);
-
+        buttonBox.getChildren().add(Gui.getExitButton());
         buttonBox.setAlignment(Pos.TOP_RIGHT);
 
 
@@ -121,6 +89,10 @@ public class GameOverGui {
 
     }
 
+    /**
+     *
+     * @return the main pane of the screen
+     */
     public Parent getParent(){
         return view;
     }

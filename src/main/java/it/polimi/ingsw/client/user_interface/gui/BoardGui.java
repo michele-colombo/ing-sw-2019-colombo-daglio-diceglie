@@ -352,10 +352,9 @@ public class BoardGui {
 
 
         HBox buttons= new HBox();
-        ExitButton exit= new ExitButton();
-        DisconnectButton disconnect= new DisconnectButton();
 
-        buttons.getChildren().addAll(exit, disconnect);
+
+        buttons.getChildren().addAll(Gui.getExitButton(), Gui.getDisconnectButton());
         buttons.setAlignment(Pos.TOP_RIGHT);
 
 

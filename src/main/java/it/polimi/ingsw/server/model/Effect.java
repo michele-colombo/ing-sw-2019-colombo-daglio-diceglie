@@ -11,22 +11,77 @@ import java.util.logging.Logger;
 
 public class Effect {
 
+    /**
+     * point from where you calculate selectable targets
+     */
     private int startingPoint;
+
+    /**
+     * reciprocal position between starting point and target
+     */
     private int reciprocalPosition;
+
+    /**
+     * minimum distance from startingpoint and target
+     */
     private int distMin;
+    /**
+     * maximum distance from starting point and target
+     */
     private int distMax;
+
+    /**
+     * constraint for selectionability of target
+     */
     private int diversity;
+    /**
+     * the nature of the target
+     */
     private int what;
+    /**
+     * optionality of the effect
+     */
     private int optionality;
 
+
+    /**
+     * player to move
+     */
     private int whoToMove;
+
+    /**
+     * final square of the moving target
+     */
     private int whereToMove;
+
+    /**
+     * players that will be damaged
+     */
     private int whoToDamage;
+
+    /**
+     * number of damages to give
+     */
     private int damageNumber;
+
+    /**
+     * number of marks to give
+     */
     private int markNumber;
+
+    /**
+     * set a temporary square for next effects
+     */
     private int setTempSquare;
+
+    /**
+     * set a temporary player for next effects
+     */
     private int setTempPlayer;
 
+    /**
+     * effect to add after current effect
+     */
     private Effect effectToAdd;
 
     private static final Logger logger =  Logger.getLogger(Effect.class.getName());
@@ -253,6 +308,7 @@ public class Effect {
                 else{
                     System.out.println("MANCA IL TEMP PLAYER");
                 }
+                break;
 
 
 

@@ -167,11 +167,8 @@ public class LoginGui {
         );
 
         HBox buttonBox= new HBox();
-        ExitButton exit= new ExitButton();
 
-        DisconnectButton disconnect= new DisconnectButton();
-
-        buttonBox.getChildren().addAll(exit, disconnect);
+        buttonBox.getChildren().addAll(Gui.getExitButton(), Gui.getDisconnectButton());
 
         view.getChildren().add(buttonBox);
         BorderPane.setAlignment(buttonBox, Pos.TOP_CENTER);

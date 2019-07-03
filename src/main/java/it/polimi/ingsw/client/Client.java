@@ -63,7 +63,8 @@ public class Client implements MessageVisitor {
      * Create the connectoin for this client
      * @param connection type of connection: socket or rmi
      */
-    public synchronized void createConnection(String connection){    //todo: synchronized?
+    public synchronized void createConnection(String connection){
+        match= null;
         try {
             switch (connection.toLowerCase()) {
 
@@ -586,7 +587,6 @@ public class Client implements MessageVisitor {
      */
     public synchronized void shutDown(){
         System.out.println("I'm in Client.shutDown()");
-        match = null;
         connected = false;
         if(network != null) {
             network.closeConnection();

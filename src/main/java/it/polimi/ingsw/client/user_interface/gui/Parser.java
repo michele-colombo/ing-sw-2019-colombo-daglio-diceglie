@@ -2,6 +2,7 @@ package it.polimi.ingsw.client.user_interface.gui;
 
 import com.google.gson.Gson;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 import java.io.InputStream;
 import java.util.*;
@@ -48,6 +49,7 @@ public class Parser {
      * Map powerUps names with their images
      */
     private Map<String, Image> powerUpButtonImages;
+
     /**
      * The path of the JSON file
      */
@@ -75,6 +77,7 @@ public class Parser {
         powerUpButtonImages = new HashMap<>();
         this.layout = layout;
     }
+
 
     /**
      * Load PixelPosition from file

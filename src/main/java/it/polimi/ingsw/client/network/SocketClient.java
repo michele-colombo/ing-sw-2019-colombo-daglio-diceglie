@@ -280,7 +280,9 @@ public class SocketClient extends NetworkInterfaceClient implements EventVisitor
                 //client.restart();
 
                 System.out.println("Server has stopped. Relogin");
-                client.restart();
+                if(client.isConnected()) {
+                    client.restart();
+                }
 
             }
             catch (IOException e) {
