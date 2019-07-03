@@ -15,7 +15,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -24,7 +23,6 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
 
-import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -641,6 +639,9 @@ public class BoardGui {
                 j++;
             }
             updatePayment();
+            for(Map.Entry<PlayerView, DamageTrack> entry : playerDamageTracks.entrySet()){ //todo spero funzioni il fix
+                entry.getValue().checkSwitchToFrenzy();
+            }
         });
     }
 

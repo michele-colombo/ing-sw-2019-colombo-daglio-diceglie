@@ -235,12 +235,28 @@ public class DamageTrack extends Parent {
         addAmmos();
         addMarkLabels(markColors);
 
-        this.setOnMouseEntered((MouseEvent t) ->
-            playerInfo.setVisible(true)
+        this.setOnMouseEntered((MouseEvent t) ->{
+            playerInfo.setVisible(true);
+            for (Rectangle damage : damage){
+                damage.setVisible(false);
+            }
+            for (Circle skull : skulls){
+                skull.setVisible(false);
+            }
+                }
+
         );
 
-        this.setOnMouseExited((MouseEvent t) ->
-            playerInfo.setVisible(false)
+        this.setOnMouseExited((MouseEvent t) ->{
+            playerInfo.setVisible(false);
+            for (Rectangle damage : damage){
+                damage.setVisible(true);
+            }
+            for (Circle skull : skulls){
+                skull.setVisible(true);
+            }
+                }
+
         );
     }
 

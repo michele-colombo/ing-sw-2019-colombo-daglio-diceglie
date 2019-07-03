@@ -5,49 +5,48 @@ import it.polimi.ingsw.client.PlayerView;
 
 import java.util.Map;
 
+/**
+ * Implemented by Cli and Gui, make them updates
+ */
 public interface UserInterface {
 
-    /**
-     * update when match starts
-     * @param matchView match of the game
-     */
     void updateStartMatch(MatchView matchView);
 
     /**
-     * show selection of connection (socket or rmi)
+     * Show selection of connection (socket or rmi)
      */
     void showConnectionSelection();
 
     /**
-     * show login dialog and ask username
+     * Show login dialog and ask username
      */
     void showLogin();
 
     /**
-     * show the login response of the server
+     * Shows the login response of the server
      * @param text text of message
      * @param loginSuccessful true if login goes right
      */
     void printLoginMessage(String text, boolean loginSuccessful);
 
     /**
-     * sets everything up, so that the user can make a selection
+     * Sets everything up, so that the user can make a selection
      * (renders the complete view of match, display selectables, activates user interaction, ...)
      */
     void showAndAskSelection();
 
     /**
-     * update state of connections of all the players
+     * Updates state of connections of all the players
      */
     void updateConnection();
 
     /**
-     * update layout status
+     * Updates layout status
      */
     void updateLayout();
 
     /**
-     * update killshot track
+     * Updates killshot track
      */
     void updateKillshotTrack();
 
@@ -57,49 +56,49 @@ public interface UserInterface {
     void updateCurrentPlayer();
 
     /**
-     * update attributes of a player
-     * @param updated the player to update
+     * Updates given PlayerView
+     * @param updated playerView to be updated
      */
     void updatePlayer(PlayerView updated);
 
     /**
-     * update a payment
+     * Updates what this client has to pay and what has already paid
      */
     void updatePayment();
 
     /**
-     * update weapons of a player
-     * @param player
+     * Updates player's weapons
+     * @param player playerView to be updated
      */
     void updateWeapons(PlayerView player);
 
     /**
-     * update powerup of a player
-     * @param player
+     * Updates player's power ups
+     * @param player playerView to be updated
      */
     void updatePowerUp(PlayerView player);
 
     /**
-     * update a damage track of a player
-     * @param player
+     * Updates player's damage track
+     * @param player playerView to be updated
      */
     void updateDamage(PlayerView player);
 
     /**
-     * update selectable lists
+     * Updates selectable lists
      */
     void updateSelectables();
 
     /**
-     * show a erron
+     * show a error
      * @param message the text of the error
      */
     void printError(String message);
 
     /**
      * show ranking grid
-     * @param rank
-     * @param points
+     * @param rank maps each playerView her final rank
+     * @param points maps each playerView with her points
      */
     void showGameOver(Map<PlayerView, Integer> rank, Map<PlayerView, Integer> points);
 

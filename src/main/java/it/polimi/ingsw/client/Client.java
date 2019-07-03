@@ -17,7 +17,74 @@ import it.polimi.ingsw.server.model.enums.PlayerState;
 import java.util.*;
 
 public class Client implements MessageVisitor {
-
+    /**
+     * Used to create a socket connection
+     */
+    private static final String SOCKET_CHOICE = "socket";
+    /**
+     * Used to create a RMI connection
+     */
+    private static final String RMI_CHOICE = "rmi";
+    /**
+     * String representation of idle state
+     */
+    private static final String IDLE_STATE = "You can't do anything at the moment.";
+    /**
+     * String representation of choose action state
+     */
+    private static final String CHOOSE_ACTION_STATE = "Choose an action to do.";
+    /**
+     * String representation of move there state
+     */
+    private static final String MOVE_THERE_STATE = "Choose a square to move into.";
+    /**
+     * String representation of discard weapon state
+     */
+    private static final String DISCARD_WEAPON_STATE = "You must discard one of your weapon: choose one.";
+    /**
+     * String representation of reload state
+     */
+    private static final String RELOAD_STATE = "Choose a weapon to reload, or select OK to skip.";
+    /**
+     * String representation of paying state
+     */
+    private static final String PAYING_STATE = "You have to pay for something. Select a powerUp(s) or press OK to pay with ammos.";
+    /**
+     * String representation of paying any state state
+     */
+    private static final String PAYING_ANY_STATE = "Choose an ammo (or powerup) to pay";
+    /**
+     * String representation of shoot weapon state
+     */
+    private static final String SHOOT_WEAPON_STATE = "Choose a weapon to shoot with";
+    /**
+     * String representation of choose mode state
+     */
+    private static final String CHOOSE_MODE_STATE = "Select a mode to build the shoot. When you have done, select OK.";
+    /**
+     * String representation of shoot target state state
+     */
+    private static final String SHOOT_TARGET_STATE = "Choose a target (either a player or a square) to shoot";
+    /**
+     * String representation of spawn state state state
+     */
+    private static final String SPAWN_STATE = "Choose a powerup to discard (and spawn on the corresponding spawn point)";
+    /**
+     * String representation of use power up state state
+     */
+    private static final String USE_POWERUP_STATE = "Choose a powerup to use or select OK to skip";
+    /**
+     * String representation of grab there state
+     */
+    private static final String GRAB_THERE_STATE = "Choose a square to grab from.";
+    /**
+     * String representation of grab weapon state
+     */
+    private static final String GRAB_WEAPON_STATE = "Choose a weapon to grab.";
+    /**
+     * String representation of default state
+     */
+    private static final String DEFAULT = "";
     /**
      * the client's network
      */
@@ -68,11 +135,11 @@ public class Client implements MessageVisitor {
         try {
             switch (connection.toLowerCase()) {
 
-                case "socket":
+                case SOCKET_CHOICE:
                     network = new SocketClient(this);
 
                     break;
-                case "rmi":
+                case RMI_CHOICE:
                     network = new RmiClient(this);
                 break;
 
@@ -134,7 +201,7 @@ public class Client implements MessageVisitor {
         for (Map.Entry<String, Boolean> entry : connectionUpdateMessage.getConnectionStates().entrySet()){
             connections.put(entry.getKey(), entry.getValue());
         }
-        userInterface.updateConnection(); //aggiunta per la Gui, potrebbe non funzionare per la Cli
+        userInterface.updateConnection();
     }
 
     /**
@@ -594,52 +661,52 @@ public class Client implements MessageVisitor {
     }
 
     public static String getStateDescription(PlayerState state){
-        String result = "";
+        String result;
         switch (state){
             case IDLE:
-                result = "You can't do anything at the moment.";
+                result = IDLE_STATE;
                 break;
             case CHOOSE_ACTION:
-                result = "Choose an action to do.";
+                result = CHOOSE_ACTION_STATE;
                 break;
             case MOVE_THERE:
-                result = "Choose a square to move into.";
+                result = MOVE_THERE_STATE;
                 break;
             case GRAB_THERE:
-                result = "Choose a square to grab from.";
+                result = GRAB_THERE_STATE;
                 break;
             case GRAB_WEAPON:
-                result = "Choose a weapon to grab.";
+                result = GRAB_WEAPON_STATE;
                 break;
             case DISCARD_WEAPON:
-                result = "You must discard one of your weapon: choose one.";
+                result = DISCARD_WEAPON_STATE;
                 break;
             case RELOAD:
-                result = "Choose a weapon to reload, or select OK to skip.";
+                result = RELOAD_STATE;
                 break;
             case PAYING:
-                result = "You have to pay for something. Select a powerUp(s) or press OK to pay with ammos.";
+                result = PAYING_STATE;
                 break;
             case PAYING_ANY:
-                result = "Choose an ammo (or powerup) to pay";
+                result = PAYING_ANY_STATE;
                 break;
             case SHOOT_WEAPON:
-                result = "Choose a weapon to shoot with";
+                result = SHOOT_WEAPON_STATE;
                 break;
             case CHOOSE_MODE:
-                result = "Select a mode to build the shoot. When you have done, select OK.";
+                result = CHOOSE_MODE_STATE;
                 break;
             case SHOOT_TARGET:
-                result = "Choose a target (either a player or a square) to shoot";
+                result = SHOOT_TARGET_STATE;
                 break;
             case SPAWN:
-                result = "Choose a powerup to discard (and spawn on the corresponding spawn point)";
+                result = SPAWN_STATE;
                 break;
             case USE_POWERUP:
-                result = "Choose a powerup to use or select OK to skip";
+                result = USE_POWERUP_STATE;
                 break;
             default:
-                result = "";
+                result = DEFAULT;
         }
         return result;
     }
