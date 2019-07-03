@@ -2,6 +2,7 @@ package it.polimi.ingsw.server.controller;
 
 import it.polimi.ingsw.communication.message.GenericMessage;
 import it.polimi.ingsw.communication.message.MessageVisitable;
+import it.polimi.ingsw.server.ServerMain;
 import it.polimi.ingsw.server.ServerView;
 import it.polimi.ingsw.server.exceptions.*;
 import it.polimi.ingsw.communication.message.LoginMessage;
@@ -96,7 +97,7 @@ public class Controller {
      * Adds a server view, checking that it is not already present
      * @param serverView the server view to add
      */
-    public void addServerView(ServerView serverView){
+    public synchronized void addServerView(ServerView serverView){
         if (!serverViews.contains(serverView)){
             serverViews.add(serverView);
         }
@@ -129,7 +130,7 @@ public class Controller {
      * @param serverView the corresponding server view (observer of the model)
      */
     public synchronized void login(String name, ServerView serverView){
-        LoginMessage message = new LoginMessage("Login successful!", true);
+        LoginMessage message = new LoginMessage("Login failed", false, "");
         try{
             String newName = name.trim();
             Player newPlayer = gameModel.addPlayer(newName);
@@ -138,16 +139,17 @@ public class Controller {
                 checkStart();
             }
             logger.info(newName+ CORRECTLY_LOGGED_IN);
+            message = new LoginMessage("Login successful!", true, newName);
         } catch(NameAlreadyTakenException e){
-            message = new LoginMessage("Name already taken!", false);
+            message = new LoginMessage("Name already taken!", false, "");
         } catch(GameFullException e){
-            message = new LoginMessage("Game full!", false);
+            message = new LoginMessage("Game full!", false, "");
         } catch(NameNotFoundException e){
-            message = new LoginMessage("Name not found!", false);
+            message = new LoginMessage("Name not found!", false, "");
         } catch(AlreadyLoggedException e){
-            message = new LoginMessage("Player already logged", false);
+            message = new LoginMessage("Player already logged", false, "");
         } catch(NameEmptyException e){
-            message = new LoginMessage("Empty name not allowed!", false);
+            message = new LoginMessage("Empty name not allowed!", false, "");
         }
         finally {
             serverView.update(message);
@@ -494,9 +496,11 @@ public class Controller {
     /**
      * Starts the match
      */
-    public void startMatch(){
-        gameModel.startMatch();
-        finalCleaning();
+    public synchronized void startMatch(){
+        if (!gameModel.isMatchInProgress()){
+            gameModel.startMatch();
+            finalCleaning();
+        }
     }
 
     /**
@@ -576,6 +580,7 @@ public class Controller {
             for (ServerView serverView : new ArrayList<>(serverViews)){
                 disconnectPlayer(serverView);
             }
+            ServerMain.restart();
         }
         logger.info(FINAL_CLEANING_DONE);
     }

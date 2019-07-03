@@ -63,7 +63,7 @@ public class Client implements MessageVisitor {
      * Create the connectoin for this client
      * @param connection type of connection: socket or rmi
      */
-    public void createConnection(String connection){    //todo: synchronized?
+    public synchronized void createConnection(String connection){    //todo: synchronized?
         try {
             switch (connection.toLowerCase()) {
 
@@ -94,19 +94,10 @@ public class Client implements MessageVisitor {
      * Log in with a name
      * @param name name chosen
      */
-    public void chooseName(String name){    //todo: synchronized?
-        this.name = name;
-        try{
-            EventVisitable loginEvent = new LoginEvent(name);
-            network.forward(loginEvent);
-        } catch(ForwardingException e){
-            userInterface.printError(e.getMessage());
-            restart();
-        }
-        catch (NullPointerException e){
-            userInterface.printError("Connection lost");
-            restart();
-        }
+    public synchronized void chooseName(String name){    //todo: synchronized?
+        //this.name = name;
+        EventVisitable loginEvent = new LoginEvent(name);
+        sendEvent(loginEvent);
     }
 
     /**
@@ -115,6 +106,9 @@ public class Client implements MessageVisitor {
      */
     @Override
     public synchronized void visit(LoginMessage message){
+        if (message.getLoginSuccessful()){
+            this.name = message.getName();
+        }
         userInterface.printLoginMessage(message.getResponse(), message.getLoginSuccessful());
     }
 
@@ -426,11 +420,15 @@ public class Client implements MessageVisitor {
      * send an event through the network
      * @param event Event to send
      */
-    private void sendEvent(EventVisitable event){   //todo: synchronized?
-        try {
-            network.forward(event);
-        } catch (ForwardingException e){
-            userInterface.printError(e.getMessage());
+    private synchronized void sendEvent(EventVisitable event){   //todo: synchronized?
+        if (network != null) {
+            try {
+                network.forward(event);
+            } catch (ForwardingException e) {
+                userInterface.printError(e.getMessage());
+                restart();
+            }
+        } else {
             restart();
         }
     }
@@ -578,7 +576,7 @@ public class Client implements MessageVisitor {
     /**
      * restart the client (from connection selection)
      */
-    public void restart(){  //todo: synchronized?
+    public synchronized void restart(){  //todo: synchronized?
         shutDown();
         userInterface.showConnectionSelection();
     }
@@ -586,9 +584,10 @@ public class Client implements MessageVisitor {
     /**
      * close every active thread
      */
-    public void shutDown(){
+    public synchronized void shutDown(){
         System.out.println("I'm in Client.shutDown()");
         match = null;
+        connected = false;
         if(network != null) {
             network.closeConnection();
             network= null;
