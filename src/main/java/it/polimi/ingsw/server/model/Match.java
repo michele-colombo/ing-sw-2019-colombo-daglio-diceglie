@@ -284,7 +284,7 @@ public class Match {
             }
         }
 
-        if(deadPlayers.size() > 2){
+        if(deadPlayers.size() >= 2){
             currentPlayer.addPoints(1);
         }
         if(!frenzyOn && killShotTrack.getSkulls() <= 0){
