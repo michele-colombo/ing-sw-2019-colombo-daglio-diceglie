@@ -206,8 +206,7 @@ public class Gui extends Application implements UserInterface {
         stage = primaryStage;
         stage.setTitle(TITLE);
         stage.setFullScreen(true);
-        stage.setMinWidth(screenBounds.getWidth());
-        stage.setMinHeight(screenBounds.getHeight());
+        stage.setResizable(false);
 
         GridPane selectionDialog;
 
@@ -495,11 +494,19 @@ public class Gui extends Application implements UserInterface {
     public static void shutDown(){
         try {
             client.shutDown();
+            Platform.runLater( () ->
+                {
+                    try {
+                        stage.close();
+                    } catch (NullPointerException e){
+                        LOGGER.info(WINDOW_EVENT);
+                    }
+                });
         }
         catch (NullPointerException e){
             //nothing to do id client is null
+            LOGGER.info(WINDOW_EVENT);
         }
-        Platform.runLater( () -> stage.close());
     }
 
     public static void restart() {
