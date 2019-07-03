@@ -25,11 +25,10 @@ import javafx.scene.shape.StrokeType;
 import java.io.InputStream;
 import java.util.*;
 
+/**
+ * It's the board of the game, the player can effectively play the game with
+ */
 public class BoardGui {
-    /**
-     * The path of layout PNG
-     */
-    private static final String LAYOUT_PNG_FOLDER = "resources/layoutPNG/layout";
     /**
      * String used when showing pending cash
      */
@@ -42,10 +41,6 @@ public class BoardGui {
      * String showed when a wrong selection is performed
      */
     private static final String WRONG_SELECTION_TEXT = "Wrong selection!";
-    /**
-     * File extension of the images
-     */
-    private static final String LAYOUT_PNG_EXTENSION = ".png";
     /**
      * String to properly load PixelWeapon from file
      */
@@ -334,9 +329,7 @@ public class BoardGui {
         board = new AnchorPane();
         board.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
 
-        InputStream boardUrl = getClass().getClassLoader().getResourceAsStream(LAYOUT_PNG_FOLDER + match.getLayout().getLayoutConfiguration() + LAYOUT_PNG_EXTENSION);
-        Image image = new Image(boardUrl);
-        ImageView imageView = new ImageView(image);
+        ImageView imageView = new ImageView(parser.getLayoutImage(match.getLayout().getLayoutConfiguration()));
         imageView.setFitHeight(Gui.getScreenBounds().getHeight() / SCALE_RATIO_LAYOUT_IMAGE);
         imageView.setFitWidth(Gui.getScreenBounds().getWidth() / SCALE_RATIO_LAYOUT_IMAGE);
         imageView.setPreserveRatio(true);

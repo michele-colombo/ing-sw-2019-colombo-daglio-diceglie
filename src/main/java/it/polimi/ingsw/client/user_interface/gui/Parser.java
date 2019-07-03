@@ -10,7 +10,14 @@ import java.util.*;
  * It's represent the parser who loads graphics resources
  */
 public class Parser {
-
+    /**
+     * The path of the DamageTrack PNG
+     */
+    private static final String DAMAGE_TRACK_IMAGE_FOLDER= "resources/damageTracks/";
+    /**
+     * The path of layout PNG
+     */
+    private static final String LAYOUT_PNG_FOLDER = "resources/layoutPNG/layout";
     /**
      * The path of the AmmoButton PNG
      */
@@ -136,6 +143,23 @@ public class Parser {
         return powerUpButtonImages.get(name);
     }
 
+    /**
+     * Load chosen layout image for BoardGui
+     * @param configuration chosen layout configuration
+     * @return layout image
+     */
+    public Image getLayoutImage(int configuration){
+        return loadImage(LAYOUT_PNG_FOLDER + configuration);
+    }
+
+    /**
+     * Load chosen damage track image for BoardGui
+     * @param name damage track name
+     * @return damage track image
+     */
+    public Image getDamageTrackImage(String name){
+        return loadImage(DAMAGE_TRACK_IMAGE_FOLDER + name);
+    }
 
     /**
      * Load image from path
