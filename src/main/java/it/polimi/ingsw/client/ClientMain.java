@@ -10,6 +10,7 @@ import it.polimi.ingsw.client.network.NetworkInterfaceClient;
 import it.polimi.ingsw.client.user_interface.cli.Cli;
 import it.polimi.ingsw.client.user_interface.gui.Gui;
 import it.polimi.ingsw.communication.CommonProperties;
+import it.polimi.ingsw.server.ArgumentNavigator;
 import javafx.application.Application;
 
 import java.io.*;
@@ -21,6 +22,14 @@ import java.util.Scanner;
 
 public class ClientMain{
     private static final String CLIENTCONFIG_PATH= "resources/clientConfig.json";
+    public static final String HELP_MESSAGE_CLIENT = "-ui [gui|cli]\n" +
+            "-ip [x.x.x.x]\n" +
+            "-port [int from 1024 to 65534";
+    public static final String GUI = "gui";
+    public static final String CLI = "cli";
+    public static final String ASK_IP = "Please insert ip (X.X.X.X): ";
+    public static final String ASK_PORT = "Please insert port (from 1024 to 65535): ";
+    public static final String ASK_UI = "Please insert user interface (cli or gui): ";
 
     /**
      * the configuration for the client
@@ -83,15 +92,15 @@ public class ClientMain{
      */
     private static void askUserInput(){
         while(! isValidIp(config.getIp())){
-            System.out.println("Please insert ip (X.X.X.X): ");
+            System.out.println(ASK_IP);
             config.setIp(new Scanner(System.in).nextLine());
         }
         while(! isValidPort( config.getPort())){
-            System.out.println("Please insert port (from 1024 to 65535): ");
+            System.out.println(ASK_PORT);
             config.setPort(new Scanner(System.in).nextInt());
         }
         while(! isValidInterface(config.getUserInterface() )){
-            System.out.println("Please insert user interface (cli or gui): ");
+            System.out.println(ASK_UI);
             config.setUserInterface(new Scanner(System.in).nextLine());
         }
     }
@@ -125,40 +134,15 @@ public class ClientMain{
      * @param args command line arguments
      */
     private static void getFromCmdArguments(String[] args){
-        for(int i=0; i<args.length; i++){
-            String argument= args[i];
-            String nextArgument;
-            if(i< args.length - 1){
-                nextArgument= args[i+1];
-                i++;
-            }
-            else{
-                nextArgument= "";
-            }
-
-            switch(argument){
-                case "-ip":
-
-                    config.setIp(nextArgument);
-
-                    break;
-                case "-port":
-
-                    config.setPort(Integer.parseInt(nextArgument));
-
-                    break;
-
-                case "-ui":
-
-                    config.setUserInterface(nextArgument);
-
-                    break;
-                default:
-                    printHelpScreen();
-                    break;
-
-            }
+        ArgumentNavigator argNav= new ArgumentNavigator(args, "-");
+        config.setIp(argNav.getFieldAsStringorDefault("ip", config.getIp()));
+        try {
+            config.setPort(argNav.getFieldAsIntOrDefault("port", config.port));
         }
+        catch (NumberFormatException e){
+            printHelpScreen();
+        }
+        config.setUserInterface(argNav.getFieldAsStringorDefault("ui", config.userInterface));
     }
 
 
@@ -168,7 +152,7 @@ public class ClientMain{
      * @return true if it's valid
      */
     private static boolean isValidInterface(String userInterface) {
-        if(userInterface.equals( "gui" ) || userInterface.equals("cli") ){
+        if(userInterface.equals(GUI) || userInterface.equals(CLI) ){
             return true;
         }
         return false;
@@ -181,7 +165,7 @@ public class ClientMain{
      * @return true if it's valid
      */
     private static boolean isValidPort(int port) {
-        if(port>1023 && port<65536) {
+        if(port>1023 && port<65535) {
             return true;
         }
         return false;
@@ -191,10 +175,8 @@ public class ClientMain{
      * print the help dialog in the command line
      */
     public static void printHelpScreen(){
-        System.out.println("-ui [gui|cli]\n" +
-                           "-ip [x.x.x.x]\n" +
-                           "-port [int from 1024 to 65536");
-        return;
+        System.out.println(HELP_MESSAGE_CLIENT);
+        System.exit(0);
     }
 
     /**

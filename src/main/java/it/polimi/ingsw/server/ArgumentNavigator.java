@@ -28,7 +28,7 @@ public class ArgumentNavigator {
             String field= null;
             String value= null;
 
-            if(s.indexOf(fieldPrefix) == 0 && !s.equals(fieldPrefix)){
+            if(s.indexOf(fieldPrefix) == 0 && !s.equals(fieldPrefix) && i<args.length -1){
                 field= s.substring(s.lastIndexOf(fieldPrefix) + 1);
                 s= args[i+1];
                 value= s;

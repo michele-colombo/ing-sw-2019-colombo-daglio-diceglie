@@ -39,7 +39,7 @@ public class ServerMain {
     public static final String IP = "ip";
     public static final String HELPMESSAGE = "usage:\n" +
             "-" + IP + " XXX.XXX.XXX.XXX \n" +
-            "-" + PORT + " from 1024 to 65535 \n" +
+            "-" + PORT + " from 1024 to 65534 \n" +
             "-" + SKULLS + " from 5 to 8 \n" +
             "-" + LAYOUT + " from -1 to 3\n" +
             "-" + INPUT + " input timer duration in milliseconds\n" +
@@ -160,7 +160,7 @@ public class ServerMain {
 
         try {
             int temp = argNavigator.getFieldAsIntOrDefault(PORT, -1);
-            if (temp >= 1024 && temp <= 65535) {
+            if (temp >= 1024 && temp <= 65534) {
                 port = temp;
             } else if (temp != -1) {
                 printHelp(0);
