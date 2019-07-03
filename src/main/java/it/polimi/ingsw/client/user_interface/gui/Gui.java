@@ -165,7 +165,9 @@ public class Gui extends Application implements UserInterface {
      */
     @Override
     public void showConnectionSelection() {
-        Platform.runLater(() -> view.getChildren().add(exitButton));
+        if(!view.getChildren().contains(exitButton)) {
+            Platform.runLater(() -> view.getChildren().add(exitButton));
+        }
         boardGui = null;
         changeScene(view);
     }
