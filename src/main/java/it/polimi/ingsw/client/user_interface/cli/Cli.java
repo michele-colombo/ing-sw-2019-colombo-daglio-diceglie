@@ -362,7 +362,8 @@ public class Cli implements UserInterface {
                 "GAME OVER", RED,
                 rankEntries);
         window.show();
-        //todo: change state
+        state = CliState.IDLE;
+        System.out.println("Type quit to close");
     }
 
     /**
