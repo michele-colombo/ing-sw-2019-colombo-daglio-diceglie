@@ -359,7 +359,9 @@ public class BoardGui {
         HBox buttons= new HBox();
 
 
-        buttons.getChildren().addAll(Gui.getExitButton(), Gui.getDisconnectButton());
+        Platform.runLater(() -> {
+                buttons.getChildren().addAll(Gui.getExitButton(), Gui.getDisconnectButton());
+        });
         buttons.setAlignment(Pos.TOP_RIGHT);
 
 

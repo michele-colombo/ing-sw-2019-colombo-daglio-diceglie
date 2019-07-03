@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.user_interface.gui;
 
 import it.polimi.ingsw.server.model.GameModel;
+import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -76,7 +77,9 @@ public class GameOverGui {
 
         HBox buttonBox= new HBox();
 
-        buttonBox.getChildren().add(Gui.getExitButton());
+        Platform.runLater(() -> {
+            buttonBox.getChildren().add(Gui.getExitButton());
+        });
         buttonBox.setAlignment(Pos.TOP_RIGHT);
 
 
