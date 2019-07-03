@@ -634,7 +634,6 @@ public class BoardGui {
                 skull.setTranslateY(boardHeight * BoardGui.Y_KILLSHOT_TRACK);
                 board.getChildren().add(skull);
                 skulls.add(skull);
-                i++;
                 j++;
             }
             updatePayment();
