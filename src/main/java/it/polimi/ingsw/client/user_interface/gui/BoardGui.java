@@ -353,8 +353,6 @@ public class BoardGui {
 
         view.add(controls, GRID_FOURTH_ROW, GRID_FIRST_ROW);
 
-        updateConnection(match.readConnections());
-
 
         HBox buttons= new HBox();
 
@@ -628,7 +626,7 @@ public class BoardGui {
 
             board.getChildren().removeAll(skulls);
             skulls.clear();
-            while(i < matchView.getSkulls()){
+            while(i < (MAX_KILLS - matchView.getSkulls())){
                 Circle skull = new Circle(boardWidth / SKULL_CIRCLE);
                 skull.setFill(Color.RED);
                 skull.setTranslateX(boardWidth * (BoardGui.X_KILLSHOT_TRACK + i * BoardGui.GAP_KILLSHOT_TRACK));

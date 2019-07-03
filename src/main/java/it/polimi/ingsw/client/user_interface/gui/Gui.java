@@ -526,6 +526,7 @@ public class Gui extends Application implements UserInterface {
         if(client!=null){
             client.shutDown();
         }
+        boardGui = null;
         stop();
     }
 
