@@ -58,6 +58,8 @@ public class ServerMain {
     private static int skullsNumber;
     private static int layoutConfig;
 
+    private static RmiServerAcceptor rmiServerAcceptor;
+
     /**
      * build the serverMain class with its parameter
      * @param acceptedIp  the ip tha RMIServer can show outside
@@ -111,9 +113,9 @@ public class ServerMain {
         try {
             int rmiPort= port + 1;
             System.setProperty("java.rmi.server.hostname", acceptedIp);
-            RmiServerAcceptor acceptor = new RmiServerAcceptor(controller);
+            rmiServerAcceptor = new RmiServerAcceptor(controller);
             Registry registry = LocateRegistry.createRegistry(rmiPort);
-            registry.bind("Acceptor", acceptor);
+            registry.bind("Acceptor", rmiServerAcceptor);
         }
         catch (RemoteException re){
             //impossible to create RmiServerAcceptor
@@ -132,6 +134,7 @@ public class ServerMain {
         controller = new Controller(gameModel);
         controller.setLoginTimerDuration(loginTimerDuration);
         controller.setInputTimerDuration(inputTimerDuration);
+        rmiServerAcceptor.setController(controller);
     }
 
     public static void main(String[] args){

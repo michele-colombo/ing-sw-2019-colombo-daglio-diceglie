@@ -25,6 +25,10 @@ public class RmiServerAcceptor extends UnicastRemoteObject implements RmiServerA
         this.controller= controller;
     }
 
+    public void setController(Controller controller) {
+        this.controller = controller;
+    }
+
     /**
      * add a new player connection
      * @return the player's serverView remote object

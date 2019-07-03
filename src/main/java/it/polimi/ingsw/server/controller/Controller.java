@@ -2,6 +2,7 @@ package it.polimi.ingsw.server.controller;
 
 import it.polimi.ingsw.communication.message.GenericMessage;
 import it.polimi.ingsw.communication.message.MessageVisitable;
+import it.polimi.ingsw.server.ServerMain;
 import it.polimi.ingsw.server.ServerView;
 import it.polimi.ingsw.server.exceptions.*;
 import it.polimi.ingsw.communication.message.LoginMessage;
@@ -96,7 +97,7 @@ public class Controller {
      * Adds a server view, checking that it is not already present
      * @param serverView the server view to add
      */
-    public void addServerView(ServerView serverView){
+    public synchronized void addServerView(ServerView serverView){
         if (!serverViews.contains(serverView)){
             serverViews.add(serverView);
         }
@@ -495,9 +496,11 @@ public class Controller {
     /**
      * Starts the match
      */
-    public void startMatch(){
-        gameModel.startMatch();
-        finalCleaning();
+    public synchronized void startMatch(){
+        if (!gameModel.isMatchInProgress()){
+            gameModel.startMatch();
+            finalCleaning();
+        }
     }
 
     /**
@@ -577,6 +580,7 @@ public class Controller {
             for (ServerView serverView : new ArrayList<>(serverViews)){
                 disconnectPlayer(serverView);
             }
+            ServerMain.restart();
         }
         logger.info(FINAL_CLEANING_DONE);
     }
