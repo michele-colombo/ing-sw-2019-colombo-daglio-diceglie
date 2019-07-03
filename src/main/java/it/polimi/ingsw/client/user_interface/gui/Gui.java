@@ -165,6 +165,7 @@ public class Gui extends Application implements UserInterface {
      */
     @Override
     public void showConnectionSelection() {
+        view.getChildren().add(exitButton);
         changeScene(view);
     }
 
