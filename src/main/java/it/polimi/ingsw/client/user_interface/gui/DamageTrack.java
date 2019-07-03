@@ -13,8 +13,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
-
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,10 +22,6 @@ import java.util.Map;
  * It represents a player's damageTrack
  */
 public class DamageTrack extends Parent {
-    /**
-     * The path of the DamageTrack PNG
-     */
-    private static final String DAMAGE_TRACK_IMAGE_FOLDER= "resources/damageTracks/";
 
     /**
      * It's the ratio of translation on x axe of the ammoBox
@@ -132,6 +126,14 @@ public class DamageTrack extends Parent {
      * String of marks label
      */
     private static final String MARKS_LABEL = "MARKS ";
+    /**
+     * Name of the image for damage track full frenzy
+     */
+    private static final String DAMAGE_TRACK_FULL_FRENZY = "dmgfullf";
+    /**
+     * Name of the image for damage track half frenzy
+     */
+    private static final String DAMAGE_TRACK_HALF_FRENZY = "dmgf";
 
     /**
      * It's the playerView associated to this DamageTrack
@@ -202,9 +204,7 @@ public class DamageTrack extends Parent {
      *
      */
     public DamageTrack(List<Color> markColors, PlayerView playerView){
-        InputStream myDmgUrl = getClass().getClassLoader().getResourceAsStream(DAMAGE_TRACK_IMAGE_FOLDER + "dmg" + playerView.getColor().toString().toLowerCase() + ".png");
-        Image image = new Image(myDmgUrl);
-        this.damageTrackImageView = new ImageView(image);
+        this.damageTrackImageView = new ImageView(BoardGui.getParser().getDamageTrackImage("dmg" + playerView.getColor().toString().toLowerCase()));
         this.playerView = playerView;
         this.damageTrackImageView.setFitWidth(Gui.getScreenBounds().getWidth()/4);
         this.damageTrackImageView.setPreserveRatio(true);
@@ -352,16 +352,14 @@ public class DamageTrack extends Parent {
      * full frenzy DamageTrack, else to frenzy DamageTrack
      */
     public void checkSwitchToFrenzy(){
-        InputStream frenzyDmgUrl;
         Image image;
         if(Gui.getClient().getMatch().isFrenzyOn()){
             if(playerView.isFrenzy()){
-                frenzyDmgUrl = getClass().getClassLoader().getResourceAsStream(DAMAGE_TRACK_IMAGE_FOLDER + "dmgfullf" + playerView.getColor().toString().toLowerCase() + ".png");
-                //this.getChildren().removeAll(skulls);
+                image = BoardGui.getParser().getDamageTrackImage(DAMAGE_TRACK_FULL_FRENZY + playerView.getColor().toString().toLowerCase());
+
             } else {
-                frenzyDmgUrl = getClass().getClassLoader().getResourceAsStream(DAMAGE_TRACK_IMAGE_FOLDER + "dmgf" + playerView.getColor().toString().toLowerCase() + ".png");
+                image = BoardGui.getParser().getDamageTrackImage(DAMAGE_TRACK_HALF_FRENZY + playerView.getColor().toString().toLowerCase());
             }
-            image = new Image(frenzyDmgUrl);
             damageTrackImageView.setImage(image);
         }
         //this.getChildren().remove(damage);
