@@ -150,7 +150,20 @@ public class Gui extends Application implements UserInterface {
      */
     private ModeChoiceScreen modeChoiceScreen;
 
+    /**
+     * only stage of the Gui
+     */
     private static Stage stage;
+
+
+    /**
+     * button that close everything
+     */
+    private static ImageView exitButton;
+    /**
+     * button to disconnect from the network
+     */
+    private static ImageView disconnectButton;
 
     /**
      * main of GUI
@@ -201,10 +214,6 @@ public class Gui extends Application implements UserInterface {
         initialize(primaryStage);
     }
 
-
-    //temporaneo
-    private static ImageView exitButton;
-    private static ImageView disconnectButton;
 
     public static ImageView getExitButton() {
         return exitButton;

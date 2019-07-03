@@ -16,13 +16,38 @@ import javafx.scene.text.Text;
 import java.util.Map;
 
 public class GameOverGui {
+    /**
+     * font for the text
+     */
     public static final Font FONT= new Font(Gui.getScreenBounds().getWidth() / 76.8);
+    /**
+     * gap between cells
+     */
     public static final double GAP_SIZE = Gui.getScreenBounds().getWidth() / 153.6;
+    /**
+     * index of position column
+     */
     public static final int POS_COL_INDEX = 0;
+    /**
+     * index of player column
+     */
     public static final int PLAYER_COL_INDEX = 1;
+    /**
+     * index of points column
+     */
     public static final int POINTS_COL_INDEX = 2;
+
+    /**
+     * title of position field
+     */
     public static final String POSITION_TEXT = "Position";
+    /**
+     * title of player field
+     */
     public static final String PLAYER_TEXT = "Player";
+    /**
+     * title of points field
+     */
     public static final String POINTS_TEXT = "Points";
 
     /**
