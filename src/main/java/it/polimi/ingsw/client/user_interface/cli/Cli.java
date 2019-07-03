@@ -164,6 +164,9 @@ public class Cli implements UserInterface {
         reader.run();
     }
 
+    /**
+     * Let the user choose between the types of connections available (socket and rmi)
+     */
     @Override
     public void showConnectionSelection() {
         Window window = new TitleAndTextWindow(30, 10,
@@ -173,6 +176,9 @@ public class Cli implements UserInterface {
         state = CliState.ASK_CONNECTION;
     }
 
+    /**
+     * Let the user choose his nickname
+     */
     @Override
     public void showLogin() {
         Window window = new TitleAndTextWindow(30, 10,
@@ -182,6 +188,9 @@ public class Cli implements UserInterface {
         state = CliState.ASK_LOGIN;
     }
 
+    /**
+     * Shows the connected players while the match has not already started
+     */
     public void printConnectedPlayers(){
         String connectedPlayers = "These are the players currently online:";
         for (Map.Entry<String, Boolean> entry : client.getConnections().entrySet()){
@@ -194,6 +203,11 @@ public class Cli implements UserInterface {
         window.show();
     }
 
+    /**
+     * Show the server response to login
+     * @param text message sent by the server
+     * @param loginSuccessful boolean: true if login was successful
+     */
     @Override
     public void printLoginMessage(String text, boolean loginSuccessful){
         if (loginSuccessful){
@@ -212,6 +226,9 @@ public class Cli implements UserInterface {
         }
     }
 
+    /**
+     * Prints the playing 'window' and ask for user selection (if any is available)
+     */
     @Override
     public void showAndAskSelection(){
         selectableIds.clear();
@@ -220,6 +237,9 @@ public class Cli implements UserInterface {
         state = CliState.PLAY;
     }
 
+    /**
+     * Updates the connection state of each player
+     */
     @Override
     public void updateConnection() {
         if (client.getMatch() != null){
@@ -229,16 +249,25 @@ public class Cli implements UserInterface {
         }
     }
 
+    /**
+     * Updates the map of the game
+     */
     @Override
     public void updateLayout() {
         playingWindow.getLayoutBox().update(client.getMatch());
     }
 
+    /**
+     * Updates the killshot track (kills and skulls)
+     */
     @Override
     public void updateKillshotTrack() {
         playingWindow.getKillShotTrackBox().update(client.getMatch());
     }
 
+    /**
+     * Updates the current player
+     */
     @Override
     public void updateCurrentPlayer() {
         for (MiniBox playerBox : playingWindow.getAllPlayers()){
@@ -246,6 +275,10 @@ public class Cli implements UserInterface {
         }
     }
 
+    /**
+     * Updates ammos and position of a player
+     * @param updated the involved player
+     */
     @Override
     public void updatePlayer(PlayerView updated) {
         for (MiniBox playerBox : playingWindow.getAllPlayers()){
@@ -253,11 +286,18 @@ public class Cli implements UserInterface {
         }
     }
 
+    /**
+     * Updates the pending and credit ammos of my player
+     */
     @Override
     public void updatePayment() {
         playingWindow.getMyInfoBox().update(client.getMatch());
     }
 
+    /**
+     * Updates the weapons of a player
+     * @param player the involved player
+     */
     @Override
     public void updateWeapons(PlayerView player) {
         playingWindow.getMyWeaponBox().update(client.getMatch());
@@ -266,6 +306,10 @@ public class Cli implements UserInterface {
         }
     }
 
+    /**
+     * Updates the powerups of a player
+     * @param player the involved player
+     */
     @Override
     public void updatePowerUp(PlayerView player) {
         playingWindow.getMyPowerUpBox().update(client.getMatch());
@@ -274,6 +318,10 @@ public class Cli implements UserInterface {
         }
     }
 
+    /**
+     * Updates the damages and marks of a player
+     * @param player the involved player
+     */
     @Override
     public void updateDamage(PlayerView player) {
         for (MiniBox playerBox : playingWindow.getAllPlayers()){
@@ -281,17 +329,29 @@ public class Cli implements UserInterface {
         }
     }
 
+    /**
+     * This method is empty in cli since selectables are updated while showing.
+     */
     @Override
     public void updateSelectables() {
 
     }
 
+    /**
+     * Shows an error message
+     * @param message the text of the message to show
+     */
     @Override
     public void printError(String message) {
         System.out.println(RED + message + DEFAULT_COLOR);
 
     }
 
+    /**
+     * Shows the game over 'window', with rank and points
+     * @param rank the map with each player and its position
+     * @param points the map with each player and its points
+     */
     @Override
     public void showGameOver(Map<PlayerView, Integer> rank, Map<PlayerView, Integer> points) {
         List<String> rankEntries = new ArrayList<>();
@@ -307,18 +367,32 @@ public class Cli implements UserInterface {
                 "GAME OVER", RED,
                 rankEntries);
         window.show();
+        //todo: change state
     }
 
+    /**
+     * Adds teh unique string ID of a selectable to the list of selectables
+     * @param id
+     */
     public void addSelectableId(String id){
         if (id != null){
             selectableIds.add(id);
         }
     }
 
+    /**
+     * Gets the index of a selectable unique ID among the list of selectables
+     * @param id
+     * @return
+     */
     public int indexOf(String id){
         return selectableIds.indexOf(id);
     }
 
+    /**
+     * Shows the playing 'window' of a new match
+     * @param matchView
+     */
     @Override
     public void updateStartMatch(MatchView matchView) {
         playingWindow = new PlayingWindow(PLAYING_WINDOW_WIDTH, PLAYING_WINDOW_HEIGHT, matchView, this);

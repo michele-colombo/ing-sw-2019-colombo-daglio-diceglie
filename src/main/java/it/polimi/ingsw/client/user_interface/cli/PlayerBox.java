@@ -9,14 +9,32 @@ import java.util.Map;
 import static it.polimi.ingsw.client.user_interface.cli.CliUtils.*;
 import static it.polimi.ingsw.server.model.enums.PlayerState.IDLE;
 
+/**
+ * Contains information, damages and marks of a player
+ */
 public class PlayerBox extends MiniBox {
+    /**
+     * the corresponding player
+     */
     private PlayerView player;
 
+    /**
+     * Builds the box specifying all its parameters (except its content)
+     * @param x the x position int the window (from the left side)
+     * @param y the y position in the window (from the top)
+     * @param height the height of this box
+     * @param width the width of this box
+     * @param player the involved player
+     */
     public PlayerBox(int x, int y, int height, int width, PlayerView player) {
         super(x, y, height, width);
         this.player = player;
     }
 
+    /**
+     * Updates info, damages and marks of the player
+     * @param match the match from which retrieve information
+     */
     @Override
     public void update(MatchView match) {
         insertSubBox(prepareBorder(height, width-1, printColorOf(player.getColor())), 1, 0 );
@@ -44,6 +62,10 @@ public class PlayerBox extends MiniBox {
         insertSubBox(createDamageTrack(), 2, 3);
     }
 
+    /**
+     * Builds the representation of the damage track of the player
+     * @return
+     */
     private String[][] createDamageTrack(){
         int myWidth = 54;
         String[][] result = new String[2][myWidth];

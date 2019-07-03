@@ -7,16 +7,37 @@ import it.polimi.ingsw.client.SquareView;
 import static it.polimi.ingsw.client.user_interface.cli.CliUtils.*;
 import static it.polimi.ingsw.server.model.enums.Border.*;
 
+/**
+ * Contains the map of the match (with ammoTiles in squares)
+ */
 public class LayoutBox extends MiniBox {
+    /**
+     * the height of a single square
+     */
     private int squareHeight;
+
+    /**
+     * the width of a single square
+     */
     private int squareWidth;
 
+    /**
+     * Builds the box specifying all its parameters (except its content)
+     * @param x the x position int the window (from the left side)
+     * @param y the y position in the window (from the top)
+     * @param height the height of this box
+     * @param width the width of this box
+     */
     public LayoutBox(int x, int y, int height, int width, int squareHeight, int squareWidth) {
         super(x, y, height, width);
         this.squareHeight = squareHeight;
         this.squareWidth = squareWidth;
     }
 
+    /**
+     * Updates the map with the ammoTiles and the players in the different squares
+     * @param match the match from which retrieve information
+     */
     @Override
     public void update(MatchView match) {
         for (int i=0; i<3; i++){
@@ -32,6 +53,12 @@ public class LayoutBox extends MiniBox {
         }
     }
 
+    /**
+     * Creates the graphic representation of a square
+     * @param square the square to represent
+     * @param match the current match
+     * @return the sub-box containing the representation
+     */
     private String[][] createSquare(SquareView square, MatchView match){
         String[][] result = new String[squareHeight][squareWidth];
         String strColor = printColorOf(square.getColor());

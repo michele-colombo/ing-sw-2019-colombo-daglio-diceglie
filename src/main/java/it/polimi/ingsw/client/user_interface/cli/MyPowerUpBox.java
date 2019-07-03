@@ -9,11 +9,24 @@ import java.util.List;
 
 import static it.polimi.ingsw.client.user_interface.cli.CliUtils.*;
 
+/**
+ * Contains the powerUps of my player
+ */
 public class MyPowerUpBox extends MiniBox {
+    /**
+     * Builds the box specifying all its parameters (except its content)
+     * @param x the x position int the window (from the left side)
+     * @param y the y position in the window (from the top)
+     * @param height the height of this box
+     * @param width the width of this box
+     */
     public MyPowerUpBox(int x, int y, int height, int width) {
         super(x, y, height, width);
     }
 
+    /**
+     * Updates the powerups of my player
+     */
     @Override
     public void update(MatchView match) {
         insertSubBox(prepareBorder(height, width), 0, 0);
