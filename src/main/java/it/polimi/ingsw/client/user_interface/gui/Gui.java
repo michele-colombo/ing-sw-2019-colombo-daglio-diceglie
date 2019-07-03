@@ -187,7 +187,7 @@ public class Gui extends Application implements UserInterface {
      * @param primaryStage the first and only the of the GUI
      */
     @Override
-    public synchronized void start(Stage primaryStage) {
+    public void start(Stage primaryStage) {
         initialize(primaryStage);
     }
 
@@ -494,14 +494,11 @@ public class Gui extends Application implements UserInterface {
     public static void shutDown(){
         try {
             client.shutDown();
-            Platform.runLater( () ->
-                {
-                    try {
-                        stage.close();
-                    } catch (NullPointerException e){
-                        LOGGER.info(WINDOW_EVENT);
-                    }
-                });
+            try {
+                stage.close();
+            } catch (NullPointerException e){
+                LOGGER.info(WINDOW_EVENT);
+            }
         }
         catch (NullPointerException e){
             //nothing to do id client is null

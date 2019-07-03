@@ -831,7 +831,7 @@ public class BoardGui {
     /**
      * Sets to invisible all squareRectangles
      */
-    public static synchronized void setUnvisibleSquareRectangle(){
+    public static void setUnvisibleSquareRectangle(){
         for(SquareRectangle sr : squareRectangles){
             sr.setVisible(false);
         }

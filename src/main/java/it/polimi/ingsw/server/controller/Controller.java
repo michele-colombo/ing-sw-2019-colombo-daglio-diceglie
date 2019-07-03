@@ -129,7 +129,7 @@ public class Controller {
      * @param serverView the corresponding server view (observer of the model)
      */
     public synchronized void login(String name, ServerView serverView){
-        LoginMessage message = new LoginMessage("Login successful!", true);
+        LoginMessage message = new LoginMessage("Login failed", false, "");
         try{
             String newName = name.trim();
             Player newPlayer = gameModel.addPlayer(newName);
@@ -138,16 +138,17 @@ public class Controller {
                 checkStart();
             }
             logger.info(newName+ CORRECTLY_LOGGED_IN);
+            message = new LoginMessage("Login successful!", true, newName);
         } catch(NameAlreadyTakenException e){
-            message = new LoginMessage("Name already taken!", false);
+            message = new LoginMessage("Name already taken!", false, "");
         } catch(GameFullException e){
-            message = new LoginMessage("Game full!", false);
+            message = new LoginMessage("Game full!", false, "");
         } catch(NameNotFoundException e){
-            message = new LoginMessage("Name not found!", false);
+            message = new LoginMessage("Name not found!", false, "");
         } catch(AlreadyLoggedException e){
-            message = new LoginMessage("Player already logged", false);
+            message = new LoginMessage("Player already logged", false, "");
         } catch(NameEmptyException e){
-            message = new LoginMessage("Empty name not allowed!", false);
+            message = new LoginMessage("Empty name not allowed!", false, "");
         }
         finally {
             serverView.update(message);
