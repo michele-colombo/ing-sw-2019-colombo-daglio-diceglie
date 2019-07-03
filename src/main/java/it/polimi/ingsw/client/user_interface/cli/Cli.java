@@ -124,12 +124,7 @@ public class Cli implements UserInterface {
                                     if (w != null){
                                         System.out.println(getPrettyManWeapon(w));
                                     } else {
-                                        PowerUpView po = client.getMatch().getDecks().getPowerUpFromString(input.substring(4).trim());
-                                        if (po != null){
-                                            System.out.println(po.getDescription());
-                                        } else {
-                                            System.out.println(MANUAL_NOT_AVAILABLE);
-                                        }
+                                        System.out.println(MANUAL_NOT_AVAILABLE);
                                     }
                                 } else {
                                     try {

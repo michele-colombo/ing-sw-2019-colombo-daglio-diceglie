@@ -23,6 +23,7 @@ public class Controller {
     public static final String FINAL_CLEANING_DONE = "final cleaning done";
     public static final String WRONG_SELECTION_FROM_PLAYER = "wrong selection from player ";
     public static final String WRONG_SELECTION_PLAYER_NOT_EXIST = "wrong selection, player does not exist";
+    public static final String PLAYER_SELECTION_OFFLINE = "the player which made a selection is not online anymore";
     /**
      * The reference to he game model (central unit which contains rules of the game)
      */
@@ -197,7 +198,7 @@ public class Controller {
             }
 
         } catch (NoSuchObserverException e) {
-            //todo: what if there is no such serverView?
+            logger.warning(PLAYER_SELECTION_OFFLINE);
         }
         finalCleaning();
     }
@@ -228,7 +229,7 @@ public class Controller {
                     return;
             }
         } catch (NoSuchObserverException e){
-            //todo (should not occur)
+            logger.warning(PLAYER_SELECTION_OFFLINE);
         }
         finalCleaning();
     }
@@ -262,7 +263,7 @@ public class Controller {
                     return;
             }
         } catch (NoSuchObserverException e){
-            //todo
+            logger.warning(PLAYER_SELECTION_OFFLINE);
         }
         finalCleaning();
     }
@@ -302,7 +303,7 @@ public class Controller {
                     return;
             }
         } catch (NoSuchObserverException e){
-            //todo
+            logger.warning(PLAYER_SELECTION_OFFLINE);
         }
         finalCleaning();
     }
@@ -333,7 +334,7 @@ public class Controller {
                     return;
             }
         } catch (NoSuchObserverException e){
-            //todo
+            logger.warning(PLAYER_SELECTION_OFFLINE);
         }
         finalCleaning();
     }
@@ -383,7 +384,7 @@ public class Controller {
                 gameModel.restore();
             }
         } catch (NoSuchObserverException e){
-            //todo
+            logger.warning(PLAYER_SELECTION_OFFLINE);
         }
         finalCleaning();
     }
@@ -414,7 +415,7 @@ public class Controller {
                     return;
             }
         } catch (NoSuchObserverException e){
-            //todo
+            logger.warning(PLAYER_SELECTION_OFFLINE);
         }
         finalCleaning();
     }
@@ -454,7 +455,7 @@ public class Controller {
                     return;
             }
         } catch (NoSuchObserverException e){
-            //todo (should not occur)
+            logger.warning(PLAYER_SELECTION_OFFLINE);
         }
         finalCleaning();
     }
@@ -516,7 +517,6 @@ public class Controller {
             loginTimer.cancel();
             loginTimerStarted = false;
         }
-        //todo notificare del conto alla rovescia?
     }
 
     /**
@@ -530,7 +530,7 @@ public class Controller {
     /**
      * Sets the flag of the login timer to false
      */
-    public void setLoginTimerStarted(){
+    public synchronized void setLoginTimerStarted(){
         loginTimerStarted = false;
     }
 
