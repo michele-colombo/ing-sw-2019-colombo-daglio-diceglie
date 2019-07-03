@@ -626,14 +626,16 @@ public class BoardGui {
 
             board.getChildren().removeAll(skulls);
             skulls.clear();
-            while(i < (MAX_KILLS - matchView.getSkulls())){
+            int j = 0;
+            while(j < matchView.getSkulls()){
                 Circle skull = new Circle(boardWidth / SKULL_CIRCLE);
                 skull.setFill(Color.RED);
-                skull.setTranslateX(boardWidth * (BoardGui.X_KILLSHOT_TRACK + i * BoardGui.GAP_KILLSHOT_TRACK));
+                skull.setTranslateX(boardWidth * (BoardGui.X_KILLSHOT_TRACK + (i + j) * BoardGui.GAP_KILLSHOT_TRACK));
                 skull.setTranslateY(boardHeight * BoardGui.Y_KILLSHOT_TRACK);
                 board.getChildren().add(skull);
                 skulls.add(skull);
                 i++;
+                j++;
             }
             updatePayment();
         });
