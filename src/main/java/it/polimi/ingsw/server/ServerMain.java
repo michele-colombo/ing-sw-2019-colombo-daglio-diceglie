@@ -20,32 +20,32 @@ import java.util.logging.Logger;
 
 public class ServerMain {
 
-    public static final String SERVER_READY = "Server ready";
-    public static final String ERROR_INIT_SERVER_SOCKET = "Error while initializing the server";
-    public static final String ERROR_INIT_SERVER_RMI = "impossible to create RmiServerAcceptor";
-    public static final String ALREADY_BOUND_ITEM = "Already Bound item!";
-    public static final String SOCKET_CLIENT_HAS_CONNECTED = "A new socket client has connected";
-    public static final String SERVER_CONFIG_NOT_FOUND = "Configuration file not found";
+    private static final String SERVER_READY = "Server ready";
+    private static final String ERROR_INIT_SERVER_SOCKET = "Error while initializing the server";
+    private static final String ERROR_INIT_SERVER_RMI = "impossible to create RmiServerAcceptor";
+    private static final String ALREADY_BOUND_ITEM = "Already Bound item!";
+    private static final String SOCKET_CLIENT_HAS_CONNECTED = "A new socket client has connected";
+    private static final String SERVER_CONFIG_NOT_FOUND = "Configuration file not found";
 
-    public static final String ACCEPTED_IP = "127.0.0.1";
-    public static final String FILE_NOT_FOUND = "default configuration file not found";
-    public static final String PORT = "port";
-    public static final String LAYOUT = "layout";
-    public static final String SKULLS = "skulls";
-    public static final String LOGIN = "login";
-    public static final String INPUT = "input";
-    public static final String IP = "ip";
-    public static final String HELPMESSAGE = "usage:\n" +
+    private static final String ACCEPTED_IP = "127.0.0.1";
+    private static final String FILE_NOT_FOUND = "default configuration file not found";
+    private static final String PORT = "port";
+    private static final String LAYOUT = "layout";
+    private static final String SKULLS = "skulls";
+    private static final String LOGIN = "login";
+    private static final String INPUT = "input";
+    private static final String IP = "ip";
+    private static final String HELPMESSAGE = "usage:\n" +
             "-" + IP + " XXX.XXX.XXX.XXX \n" +
             "-" + PORT + " from 1024 to 65534 \n" +
             "-" + SKULLS + " from 5 to 8 \n" +
             "-" + LAYOUT + " from -1 to 3\n" +
             "-" + INPUT + " input timer duration in milliseconds\n" +
             "-" + LOGIN + " login timer duaration in milliseconds\n";
-    public static final String CONFIG_LOCATION = "resources/serverConfig.json";
-    public static final String NOT_FOUND_STRING = "notFound";
-    public static final String ACCEPTOR = "Acceptor";
-    public static final String JAVA_RMI_SERVER_HOSTNAME = "java.rmi.server.hostname";
+    private static final String CONFIG_LOCATION = "resources/serverConfig.json";
+    private static final String NOT_FOUND_STRING = "notFound";
+    private static final String ACCEPTOR = "Acceptor";
+    private static final String JAVA_RMI_SERVER_HOSTNAME = "java.rmi.server.hostname";
     //SERVE PER FAR PARTIRE IL SERVER
 
     private static Controller controller;

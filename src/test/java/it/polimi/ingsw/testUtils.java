@@ -1,9 +1,5 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.server.exceptions.AlreadyLoggedException;
-import it.polimi.ingsw.server.exceptions.GameFullException;
-import it.polimi.ingsw.server.exceptions.NameAlreadyTakenException;
-import it.polimi.ingsw.server.exceptions.NameNotFoundException;
 import it.polimi.ingsw.server.model.GameModel;
 import it.polimi.ingsw.server.model.Match;
 import it.polimi.ingsw.server.model.Player;

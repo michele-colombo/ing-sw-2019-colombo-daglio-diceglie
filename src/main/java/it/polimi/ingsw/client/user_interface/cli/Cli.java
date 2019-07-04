@@ -22,27 +22,27 @@ public class Cli implements UserInterface {
     /**
      * width of the 'window' where the game is displayed
      */
-    public static final int PLAYING_WINDOW_WIDTH = 150;
+    private static final int PLAYING_WINDOW_WIDTH = 150;
 
     /**
      * height of the 'window' where the game is displayed
      */
-    public static final int PLAYING_WINDOW_HEIGHT = 39;
-    public static final String QUIT = "quit";
-    public static final String DISCONNECT = "disconnect";
-    public static final String SOCKET = "socket";
-    public static final String RMI = "rmi";
-    public static final String CHOOSE_CONNECTION_ERROR_MESSAGE = "Please insert either 'socket' or 'rmi'";
-    public static final String WAIT_MESSAGE = "Wait for other players to join";
-    public static final String MANUAL_NOT_AVAILABLE = "manual not available for the inserted item";
-    public static final String INVALID_SELECTION = "invalid selection, retry!";
-    public static final String YOU_CAN_SELECT_A_SQUARE = "You can select a square specifying coordinates to separate integers or";
-    public static final String INSERT_SELECTION_NUMBER = "insert the selection number";
-    public static final String WELCOME_TO_ADRENALINE = "welcome to Adrenaline";
-    public static final String INSERT_CONNECTION_TYPE = "please insert the type of connection: socket or rmi";
-    public static final String LOGIN = "login";
-    public static final String INSERT_NICKNAME = "Please insert your nickname. If you want to reconnect, make sure you insert the previous nickname.";
-    public static final String TYPE_QUIT_TO_CLOSE = "Type quit to close";
+    private static final int PLAYING_WINDOW_HEIGHT = 39;
+    private static final String QUIT = "quit";
+    private static final String DISCONNECT = "disconnect";
+    private static final String SOCKET = "socket";
+    private static final String RMI = "rmi";
+    private static final String CHOOSE_CONNECTION_ERROR_MESSAGE = "Please insert either 'socket' or 'rmi'";
+    private static final String WAIT_MESSAGE = "Wait for other players to join";
+    private static final String MANUAL_NOT_AVAILABLE = "manual not available for the inserted item";
+    private static final String INVALID_SELECTION = "invalid selection, retry!";
+    private static final String YOU_CAN_SELECT_A_SQUARE = "You can select a square specifying coordinates to separate integers or";
+    private static final String INSERT_SELECTION_NUMBER = "insert the selection number";
+    private static final String WELCOME_TO_ADRENALINE = "welcome to Adrenaline";
+    private static final String INSERT_CONNECTION_TYPE = "please insert the type of connection: socket or rmi";
+    private static final String LOGIN = "login";
+    private static final String INSERT_NICKNAME = "Please insert your nickname. If you want to reconnect, make sure you insert the previous nickname.";
+    private static final String TYPE_QUIT_TO_CLOSE = "Type quit to close";
 
     /**
      * the possible states in which the cli can be

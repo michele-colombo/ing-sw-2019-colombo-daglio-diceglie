@@ -22,14 +22,14 @@ import java.util.Scanner;
 
 public class ClientMain{
     private static final String CLIENTCONFIG_PATH= "resources/clientConfig.json";
-    public static final String HELP_MESSAGE_CLIENT = "-ui [gui|cli]\n" +
+    private static final String HELP_MESSAGE_CLIENT = "-ui [gui|cli]\n" +
             "-ip [x.x.x.x]\n" +
             "-port [int from 1024 to 65534";
-    public static final String GUI = "gui";
-    public static final String CLI = "cli";
-    public static final String ASK_IP = "Please insert ip (X.X.X.X): ";
-    public static final String ASK_PORT = "Please insert port (from 1024 to 65535): ";
-    public static final String ASK_UI = "Please insert user interface (cli or gui): ";
+    private static final String GUI = "gui";
+    private static final String CLI = "cli";
+    private static final String ASK_IP = "Please insert ip (X.X.X.X): ";
+    private static final String ASK_PORT = "Please insert port (from 1024 to 65535): ";
+    private static final String ASK_UI = "Please insert user interface (cli or gui): ";
 
     /**
      * the configuration for the client

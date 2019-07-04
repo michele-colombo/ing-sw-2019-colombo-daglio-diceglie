@@ -25,13 +25,13 @@ import static it.polimi.ingsw.server.model.enums.PlayerState.*;
  * It is not aware of concepts like network and timers, but it does make distinction between two possible players' states: active and inactive.
  */
 public class GameModel implements Observable {
-    public static final String PREVIOUS_MATCH_STARTED = "match from a previous backup started";
-    public static final String CANNOT_OPEN_SAVED_BACKUP = "cannot open saved backup";
-    public static final String NEW_MATCH_STARTED = "new match started";
-    public static final String BACKUP_CANNOT_ADD_PLAYER = "error in loading backup: can't add a player";
-    public static final String REMOVING_ABSENT_OBSERVER = "trying to remove an absent observer";
-    public static final String BACKUP_DELETED_SUCCESSFULLY = "backup deleted successfully";
-    public static final String COULD_NOT_DELETE_BACKUP_FILE = "could not delete backup file";
+    private static final String PREVIOUS_MATCH_STARTED = "match from a previous backup started";
+    private static final String CANNOT_OPEN_SAVED_BACKUP = "cannot open saved backup";
+    private static final String NEW_MATCH_STARTED = "new match started";
+    private static final String BACKUP_CANNOT_ADD_PLAYER = "error in loading backup: can't add a player";
+    private static final String REMOVING_ABSENT_OBSERVER = "trying to remove an absent observer";
+    private static final String BACKUP_DELETED_SUCCESSFULLY = "backup deleted successfully";
+    private static final String COULD_NOT_DELETE_BACKUP_FILE = "could not delete backup file";
     /**
      * List containing the active players (not disconnected) of the match
      */

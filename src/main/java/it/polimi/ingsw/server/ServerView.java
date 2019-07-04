@@ -12,9 +12,9 @@ import java.util.logging.Logger;
 
 public class ServerView implements Observer, EventVisitor {
 
-    public static final String ERROR_UPDATING_VIEW = "error while updating view!";
-    public static final String SERVER_VIEW_SET_TO_DISCONNECT = "server view set to disconnect:";
-    public static final String PLAYER_COMPLETELY_DISCONNECTED = "player completely disconnected";
+    private static final String ERROR_UPDATING_VIEW = "error while updating view!";
+    private static final String SERVER_VIEW_SET_TO_DISCONNECT = "server view set to disconnect:";
+    private static final String PLAYER_COMPLETELY_DISCONNECTED = "player completely disconnected";
     /**
      * the network class that send/receive messages and events
      */

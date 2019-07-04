@@ -19,13 +19,13 @@ import static java.lang.Thread.sleep;
 
 
 public class Controller {
-    public static final String CORRECTLY_LOGGED_IN = " has correctly logged in";
-    public static final String PLAYER_ALREADY_DISCONNECTED = "Player already disconnected!";
-    public static final String PLAYER_DISCONNECTED_OK = "a player has been disconnected";
-    public static final String FINAL_CLEANING_DONE = "final cleaning done";
-    public static final String WRONG_SELECTION_FROM_PLAYER = "wrong selection from player ";
-    public static final String WRONG_SELECTION_PLAYER_NOT_EXIST = "wrong selection, player does not exist";
-    public static final String PLAYER_SELECTION_OFFLINE = "the player which made a selection is not online anymore";
+    private static final String CORRECTLY_LOGGED_IN = " has correctly logged in";
+    private static final String PLAYER_ALREADY_DISCONNECTED = "Player already disconnected!";
+    private static final String PLAYER_DISCONNECTED_OK = "a player has been disconnected";
+    private static final String FINAL_CLEANING_DONE = "final cleaning done";
+    private static final String WRONG_SELECTION_FROM_PLAYER = "wrong selection from player ";
+    private static final String WRONG_SELECTION_PLAYER_NOT_EXIST = "wrong selection, player does not exist";
+    private static final String PLAYER_SELECTION_OFFLINE = "the player which made a selection is not online anymore";
     /**
      * The reference to he game model (central unit which contains rules of the game)
      */

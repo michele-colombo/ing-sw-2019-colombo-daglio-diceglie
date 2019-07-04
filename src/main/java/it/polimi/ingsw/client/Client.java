@@ -92,9 +92,9 @@ public class Client implements MessageVisitor {
      * String representation of default state
      */
     private static final String DEFAULT = "";
-    public static final String SOCKET_CONNECTION_CREATED = "Socket connection created";
-    public static final String RMI_CONNECTION_CREATED = "RMI connection created";
-    public static final String IMPOSSIBLE_TO_INITIATE_CONNECTION = "Impossible to initiate connection";
+    private static final String SOCKET_CONNECTION_CREATED = "Socket connection created";
+    private static final String RMI_CONNECTION_CREATED = "RMI connection created";
+    private static final String IMPOSSIBLE_TO_INITIATE_CONNECTION = "Impossible to initiate connection";
     /**
      * the client's network
      */

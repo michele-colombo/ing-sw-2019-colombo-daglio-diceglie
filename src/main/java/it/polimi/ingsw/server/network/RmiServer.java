@@ -19,8 +19,8 @@ public class RmiServer extends UnicastRemoteObject implements NetworkInterfaceSe
     private final static Logger logger = Logger.getLogger(RmiServer.class.getName());
 
     private static final String OBJECT_UNEXPORTED = "object unexported";
-    public static final String OBJECT_UNEXPORT_ERROR = "Unable to unexport object. NoSuchObjectException";
-    public static final String PONG_NOT_ARRIVED = "pong not arrived";
+    private static final String OBJECT_UNEXPORT_ERROR = "Unable to unexport object. NoSuchObjectException";
+    private static final String PONG_NOT_ARRIVED = "pong not arrived";
     /**
      * the owner of this connection
      */

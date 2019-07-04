@@ -28,7 +28,7 @@ public class ClientParser {
     private static final String AMMOTILES_PATH = "resources/ammoTiles.json";
 
     private static final Logger logger = Logger.getLogger(ClientParser.class.getName());
-    public static final String ERROR_PARSING_CLIENT = "Error while parsing client resources";
+    private static final String ERROR_PARSING_CLIENT = "Error while parsing client resources";
 
     private List<WeaponView> weapons;
     private List<PowerUpView> powerUps;

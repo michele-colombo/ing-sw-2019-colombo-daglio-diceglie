@@ -20,9 +20,9 @@ import static it.polimi.ingsw.communication.events.EventVisitable.*;
 import static it.polimi.ingsw.communication.message.MessageVisitable.*;
 
 public class SocketServer implements NetworkInterfaceServer, MessageVisitor {
-    private final static Logger logger = Logger.getLogger(SocketServer.class.getName());
-    public static final String CONNECTION_IMPOSSIBLE = "impossible to initiate connection";
-    public static final String SOCKET_ALREADY_CLOSED = "Socket already closed";
+    private static final Logger logger = Logger.getLogger(SocketServer.class.getName());
+    private static final String CONNECTION_IMPOSSIBLE = "impossible to initiate connection";
+    private static final String SOCKET_ALREADY_CLOSED = "Socket already closed";
 
     /**
      * socket to send and receive through tcp

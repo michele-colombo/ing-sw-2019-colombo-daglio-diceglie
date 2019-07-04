@@ -201,7 +201,7 @@ public class BoardGui {
      * Ratio used to properly create color button on board
      */
     private static final double COLOR_BUTTON_SIZE = Gui.getScreenBounds().getWidth() / 68;
-    public static final int ROW_2_INDEX = 2;
+    private static final int ROW_2_INDEX = 2;
     /**
      * The main part of the stage
      */

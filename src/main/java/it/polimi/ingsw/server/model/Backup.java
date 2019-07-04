@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 public class Backup {
 
     private static final Logger logger = Logger.getLogger(Backup.class.getName());
-    public static final String ERROR_BACKUP_FROM_FILE = "could not create the backup from file";
+    private static final String ERROR_BACKUP_FROM_FILE = "could not create the backup from file";
 
     /**
      * Contains the backup of a player

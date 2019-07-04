@@ -31,7 +31,7 @@ public class ParserManager {
     private static final String BACKUP_EXTENSION = ".json";
 
     private static final Logger logger = Logger.getLogger(ParserManager.class.getName());
-    public static final String BACKUPS_FOLDER = "backups";
+    private static final String BACKUPS_FOLDER = "backups";
 
     private Layout[] layouts;
     private StackManager stackManager;
