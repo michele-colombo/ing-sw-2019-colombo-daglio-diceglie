@@ -101,8 +101,6 @@ public class SocketClient extends NetworkInterfaceClient implements EventVisitor
      * @return the messages that the text contains
      */
     private MessageVisitable unwrap(String messageText){
-        //todo: remove line below
-        System.out.println(messageText);
         Gson gson= new Gson();
 
         String prefix= messageText.substring(messageText.indexOf('#'), messageText.lastIndexOf('#') + 1);
@@ -271,26 +269,16 @@ public class SocketClient extends NetworkInterfaceClient implements EventVisitor
                         MessageVisitable received = unwrap(strcv);
                         if (received != null){
                             received.accept(client);
-                        } else {
-                            System.out.println("NULL MESSAGE RECEIVED");
                         }
                     }
                 }
             }
             catch (NoSuchElementException nsee){
-                System.out.println("Server has stopped. Relogin");
                 if(client.isConnected()) {
                     client.restart();
                 }
-
             }
-            catch (IOException e) {
-                System.out.println("Error while receiving messages!");
-            }
-            catch (Exception e){
-                System.out.println("eccezione sconosciuta");
-                e.printStackTrace();
-            }
+            catch (IOException e) {}
         }
 
         public void close(){

@@ -64,9 +64,8 @@ public class ClientMain{
                     return new ServerSocket( port );
                 }
             } );
-        }
-        catch (IOException e){
-            System.out.println("parte che catcha");
+        } catch (IOException e){
+            //Nothing to do
         }
 
         if(args.length > 0) {
@@ -116,7 +115,6 @@ public class ClientMain{
         InputStream url= new ClientMain().getClass().getClassLoader().getResourceAsStream(CLIENTCONFIG_PATH);
 
         if(url==null){
-            System.out.println("No configuration file!");
             return;
         }
         String json;

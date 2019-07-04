@@ -44,6 +44,8 @@ public class ServerMain {
             "-" + LOGIN + " login timer duaration in milliseconds\n";
     public static final String CONFIG_LOCATION = "resources/serverConfig.json";
     public static final String NOT_FOUND_STRING = "notFound";
+    public static final String ACCEPTOR = "Acceptor";
+    public static final String JAVA_RMI_SERVER_HOSTNAME = "java.rmi.server.hostname";
     //SERVE PER FAR PARTIRE IL SERVER
 
     private static Controller controller;
@@ -110,15 +112,14 @@ public class ServerMain {
 
         try {
             int rmiPort= port + 1;
-            System.setProperty("java.rmi.server.hostname", acceptedIp);
+            System.setProperty(JAVA_RMI_SERVER_HOSTNAME, acceptedIp);
             rmiServerAcceptor = new RmiServerAcceptor(controller);
             Registry registry = LocateRegistry.createRegistry(rmiPort);
-            registry.bind("Acceptor", rmiServerAcceptor);
+            registry.bind(ACCEPTOR, rmiServerAcceptor);
         }
         catch (RemoteException re){
             //impossible to create RmiServerAcceptor
             logger.severe(ERROR_INIT_SERVER_RMI);
-            re.printStackTrace();
         }
         catch (AlreadyBoundException E){
             logger.warning(ALREADY_BOUND_ITEM);

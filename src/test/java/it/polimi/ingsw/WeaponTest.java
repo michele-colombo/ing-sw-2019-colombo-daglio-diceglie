@@ -239,9 +239,6 @@ public class WeaponTest {
         printSel(gianni);
         gm.addMode(gianni, gianni.getSelectableModes().get(0));  //adding with focus shot
 
-        System.out.println("COSA STA SUCCEDENDO");
-
-        System.out.println(gianni.getWallet());
         assertTrue(gianni.getWallet().isEqual(new Cash(3, 3, 3)));
         assertEquals(gianni.getState(), PlayerState.PAYING);
 
@@ -282,8 +279,6 @@ public class WeaponTest {
 
         assertEquals(gm.getMatch().getCurrentAction().getCurrEffects().size(), 0);
 
-
-        System.out.println(gianni.getWallet().toString());
 
         //questo e' il controllo che ho fatto per capire che il wallet non era ripristinato
         //il portafoglio dovrebbe essere (3, 3, 3) come all'izizio, ma questa assert passa

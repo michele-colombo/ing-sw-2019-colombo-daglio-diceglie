@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 public class ClientParser {
     private static final String LAYOUT_FOLDER= "resources/layoutConfig/";
@@ -26,6 +27,8 @@ public class ClientParser {
     private static final String POWERUPS_DESCRIPTION_PATH = "resources/powerUpsDescription.json";
     private static final String AMMOTILES_PATH = "resources/ammoTiles.json";
 
+    private static final Logger logger = Logger.getLogger(ClientParser.class.getName());
+    public static final String ERROR_PARSING_CLIENT = "Error while parsing client resources";
 
     private List<WeaponView> weapons;
     private List<PowerUpView> powerUps;
@@ -119,7 +122,7 @@ public class ClientParser {
 
 
     private void printError() {
-        System.out.println("ERROR WHILE PARSING CLIENT");
+        logger.warning(ERROR_PARSING_CLIENT);
     }
 
     public List<WeaponView> getWeapons() {

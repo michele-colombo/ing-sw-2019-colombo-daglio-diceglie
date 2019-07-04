@@ -190,133 +190,6 @@ public class Effect {
     }
 
     /**
-     * generate a string humanly readable
-     * @return the string tat describes thee effect
-     */
-    public String humanString(){
-        StringBuilder sb= new StringBuilder();
-
-        sb.append("startingPoint: ");
-        switch(startingPoint){
-            case 0: sb.append("me"); break;
-            case 1: sb.append("last damaged"); break;
-            case 2: sb.append("temp sqare"); break;
-            case 3: sb.append(("temp player")); break;
-            default: sb.append("ERROR"); break;
-        }
-
-        sb.append("\nreciprocalPosition: ");
-        switch(reciprocalPosition){
-            case -1: sb.append("Don't care"); break;
-            case 0: sb.append("not visible"); break;
-            case 1: sb.append("visible"); break;
-            case 2: sb.append("cardinal direction"); break;
-            case 3: sb.append("in line with last damaged"); break;
-            default: sb.append("ERROR"); break;
-        }
-
-        sb.append("\ndistMin: ");
-        switch(distMin){
-            case -1: sb.append("Don't care"); break;
-            default: sb.append(distMin); break;
-        }
-
-        sb.append("\ndistMax: ");
-        switch(distMax){
-            case -1: sb.append("Don't care"); break;
-            default: sb.append(distMax); break;
-        }
-
-        sb.append("\ndiversity: ");
-        switch(diversity){
-            case -1: sb.append("Don't care"); break;
-            case 0: sb.append("already damaged player"); break;
-            case 1: sb.append("not damaged yet player"); break;
-            case 2: sb.append("not damaged yet square"); break;
-            case 3: sb.append("not my room"); break;
-            default: sb.append("ERROR"); break;
-        }
-
-        sb.append("\nwhat: ");
-        switch(what){
-            case -1: sb.append("Nothing to select"); break;
-            case 0: sb.append("square"); break;
-            case 1: sb.append("player"); break;
-
-            default: sb.append("ERROR"); break;
-        }
-
-        sb.append("\noptionality: ");
-        switch(optionality){
-            case 0: sb.append("optional"); break;
-            case 1: sb.append("mandatory"); break;
-            default: sb.append("ERROR"); break;
-        }
-
-        sb.append("\nwhoToMove: ");
-        switch(whoToMove){
-            case -1: sb.append("nobody"); break;
-            case 0: sb.append("me"); break;
-            case 1: sb.append("selected player"); break;
-            case 2: sb.append("last damaged"); break;
-            case 3: sb.append("temp player"); break;
-            default: sb.append("ERROR"); break;
-        }
-
-        sb.append("\nwhereToMove: ");
-        switch(whereToMove){
-            case -1: sb.append("nowhere"); break;
-            case 0: sb.append("selected square"); break;
-            case 1: sb.append("selected player's square"); break;
-            case 2: sb.append("temp square"); break;
-            case 3: sb.append("my square"); break;
-            default: sb.append("ERROR"); break;
-        }
-
-        sb.append("\nwhoToDamage: ");
-        switch(whoToDamage){
-            case -1: sb.append("nobody"); break;
-            case 0: sb.append("selected player"); break;
-            case 1: sb.append("all in selected square"); break;
-            case 2: sb.append("all in selected room (selected square's room)"); break;
-            case 3: sb.append("last damaged"); break;
-            case 4: sb.append("all in my square"); break;
-            case 5: sb.append("all in temp square"); break;
-            case 6: sb.append("all near me"); break;
-            case 7: sb.append("all in temp square except last damaged"); break;
-            case 8: sb.append("shooter"); break;
-            default: sb.append("ERROR"); break;
-        }
-
-        sb.append("\ndamageNumber: ");
-        switch(damageNumber){
-            case -1: sb.append("Cambiami, mettimi a zero"); break;
-            case 0: sb.append("no damages (0)"); break;
-            default: sb.append(damageNumber); break;
-        }
-
-        sb.append("\nmarkNumber: ");
-        switch(markNumber){
-            case -1: sb.append("Cambiami, mettimi a zero"); break;
-            case 0: sb.append("no marks (0)"); break;
-            default: sb.append(markNumber); break;
-        }
-
-        sb.append("\nsetTempSquare: ");
-        switch(setTempSquare){
-            case -1: sb.append("don't set"); break;
-            case 0: sb.append("selected square"); break;
-            case 1: sb.append("selected player's square"); break;
-            case 2: sb.append("my square"); break;
-            default: sb.append("ERROR"); break;
-        }
-
-        return sb.toString();
-
-
-    }
-
-    /**
      * starts the effect and sets selectable lists from effect's criteria
      * @param p player "source" of the effect
      * @param m match of the game
@@ -340,17 +213,11 @@ public class Effect {
                 if(m.getCurrentAction().getLastDamaged() != null){
                     startingSquare= m.getCurrentAction().getLastDamaged().getSquarePosition();
                 }
-                else{
-                    System.out.println("NON C'E' UN DANNEGGIATO");
-                }
                 break;
             //TEMP SQUARE
             case STARTING_POINT_TEMP_SQUARE:
                 if(m.getCurrentAction().getChosenSquare() != null){
                     startingSquare= m.getCurrentAction().getChosenSquare();
-                }
-                else{
-                    System.out.println("MANCA IL TEMP SQUARE");
                 }
                 break;
             //TEMP PLAYER
@@ -358,14 +225,11 @@ public class Effect {
                 if(m.getCurrentAction().getChosenPlayer() != null){
                     startingSquare= m.getCurrentAction().getChosenPlayer().getSquarePosition();
                 }
-                else{
-                    System.out.println("MANCA IL TEMP PLAYER");
-                }
                 break;
 
 
 
-            default: System.out.println("NUMERO SBAGLIATO STARTINGPOINT"); break;
+            default: break;
 
 
         }
@@ -393,11 +257,8 @@ public class Effect {
                 if(m.getCurrentAction().getLastDamaged() != null){
                     selectableSquares.addAll(m.getLayout().getSquaresInDirection(startingSquare, m.getCurrentAction().getLastDamaged().getSquarePosition()));
                 }
-                else{
-                    System.out.println("MANCA L'ULTIMO DANNEGGIATO PER TROVARE IN LINEA");
-                }
                 break;
-            default: System.out.println("NUMERO SBAGLIATO RECIPROCAL POSITION"); break;
+            default: break;
 
         }
 
@@ -441,7 +302,6 @@ public class Effect {
                 selectablePlayers.remove(p);
                 break;
             default:
-                System.out.println("NUMERO SBAGLIATO DIVERSITY");
                 break;
         }
 
@@ -521,7 +381,6 @@ public class Effect {
                 break;
 
             default:
-                System.out.println("NUMERO SBAGLIATO WHAT");
                 break;
         }
 
@@ -562,7 +421,7 @@ public class Effect {
             //MY SQUARE
             case SEL_TEMP_SQUARE_MY_SQ: m.getCurrentAction().setChosenSquare(source.getSquarePosition()); break;
 
-            default: System.out.println("NUMERO SBAGLIATO SETTEMPSQUARE");
+            default: break;
         }
 
         switch (whoToMove){
@@ -577,7 +436,7 @@ public class Effect {
             //chosen player
             case WHO_TO_MOVE_CHOSEN_PLAYER: movingPlayer= m.getCurrentAction().getChosenPlayer(); break;
 
-            default: System.out.println("NUMERO SBAGLIATO WHOTOMOVE"); break;
+            default: break;
         }
 
         switch (whereToMove){
@@ -602,9 +461,7 @@ public class Effect {
             case WHERE_TO_MOVE_MY_SQUARE:
                 destination= source.getSquarePosition();
                 break;
-            default:
-                System.out.println("NUMERO SBAGLIATO WHERETOMOVE");
-                break;
+            default: break;
 
         }
 
@@ -670,7 +527,7 @@ public class Effect {
                 playersToShoot.add(m.getCurrentPlayer());
                 break;
 
-            default: System.out.println("NUMERO SBAGLIATO WHOTODAMAGE");
+            default: break;
 
         }
 
@@ -699,7 +556,7 @@ public class Effect {
             case SET_TEMP_PLAYER_DONT: break; //don't set
             case SET_TEMP_PLAYER_SEL_PLAYER: m.getCurrentAction().setChosenPlayer(targetP); break; //selected player
             case SET_TEMP_PLAYER_ME: m.getCurrentAction().setChosenPlayer(source); break; //me
-            default: System.out.println("NUMERO SBAGLIATO SETTEMPPLAYER"); break;
+            default: break;
         }
 
         return effectToAdd;

@@ -85,7 +85,7 @@ public class ParserManager {
             jarPath = URLDecoder.decode(getClass().getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
             logger.info("backup path:" + jarPath);
         } catch (UnsupportedEncodingException e1) {
-            e1.printStackTrace();
+            logger.warning(UNSUPPORTED_ENCODING_PARSING_BACKUP);
         }
         // construct a File within the same folder of this jar, or of this class.
         String dirPath = jarPath.substring(0, jarPath.lastIndexOf("/")) + File.separator + BACKUPS_FOLDER;

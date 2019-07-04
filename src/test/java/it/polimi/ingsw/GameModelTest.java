@@ -305,7 +305,6 @@ public class GameModelTest {
             Player tempPlayer = match.getPlayers().get(0);
             assertEquals(PlayerState.SPAWN, tempPlayer.getState());
             assertEquals(null, match.getCurrentPlayer());
-            System.out.println(tempPlayer.selectablesToString());
             assertEquals(2, tempPlayer.getSelectablePowerUps().size());    //can select two powerups
             PowerUp selectedPowerUp = tempPlayer.getSelectablePowerUps().get(0);
             PowerUp notSelectedPowerUp = tempPlayer.getSelectablePowerUps().get(1);
@@ -317,14 +316,11 @@ public class GameModelTest {
             assertFalse(match.getCurrentPlayer().getPowerUps().contains(selectedPowerUp));  //the selected powerUp is discarded
             assertTrue(match.getCurrentPlayer().getPowerUps().contains(notSelectedPowerUp));    //the notSelected powerUp belongs to the player now
             assertEquals(PlayerState.CHOOSE_ACTION, match.getCurrentPlayer().getState());       //he can now choose the action to take
-            System.out.println(match.getCurrentPlayer().getSquarePosition().getFullDescription());
-            System.out.println(match.getCurrentPlayer().getPowerUps());
             printSel(tempPlayer);
 
             gm.performAction(tempPlayer, tempPlayer.getSelectableActions().get(1));     //he wants to grab
 
             assertEquals(GRAB_THERE, match.getCurrentPlayer().getState());  //he is in GRAB_THERE state
-            System.out.println(match.getCurrentPlayer().selectablesToString());
             Square firstSquareSelected = tempPlayer.getSelectableSquares().get(0);  //he wants to grab in the first square (ammoSquare)
             Cash tempCash = new Cash(((AmmoSquare) firstSquareSelected).getAmmo().getAmmos());
             assertTrue(new Cash(0, 0, 0).isEqual(tempPlayer.getWallet()));
@@ -334,8 +330,6 @@ public class GameModelTest {
             assertEquals(PlayerState.CHOOSE_ACTION, tempPlayer.getState());
             assertTrue(tempCash.isEqual(tempPlayer.getWallet()));
             assertEquals(firstSquareSelected, tempPlayer.getSquarePosition());
-            System.out.println(tempPlayer.getPowerUps());
-            System.out.println(tempPlayer.getWallet());
             Cash previousCash = new Cash(tempPlayer.getWallet());
             printSel(tempPlayer);
 
@@ -348,8 +342,6 @@ public class GameModelTest {
 
             gm.grabThere(tempPlayer, tempPlayer.getSelectableSquares().get(0));
 
-            System.out.println(tempPlayer.getPowerUps());
-            System.out.println(tempPlayer.getWallet());
             printSel(tempPlayer);
         } catch (Exception e){
             assertTrue(false);
@@ -457,15 +449,11 @@ public class GameModelTest {
             assertTrue(cash1.isEqual(p1.getWallet()));
             assertEquals(s1, p1.getSquarePosition());
 
-            for (Player p : gm.getSpawningPlayers()) {
-                System.out.println(p + " " + p.getName());
-            }
             assertEquals(1, gm.getSpawningPlayers().size());
             gm.spawn(p2, p2.getSelectablePowerUps().get(0));
 
             assertEquals(0, gm.getSpawningPlayers().size());
             assertTrue(p2.isBorn());
-            System.out.println(p2.getState());
             printSel(p2);
             assertEquals(PlayerState.CHOOSE_ACTION, p2.getState());
 
@@ -490,7 +478,6 @@ public class GameModelTest {
             gm.spawn(p3, p3.getSelectablePowerUps().get(1));
             //Backup snapshot = new Backup(gm.getMatch());
             //snapshot.saveOnFile("snapshot1");
-            System.out.println(p3.getState());
             printSel(p3);
             assertEquals(PlayerState.CHOOSE_ACTION, p3.getState());
             gm.performAction(p3, p3.getSelectableActions().get(0));   //move

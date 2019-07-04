@@ -480,9 +480,6 @@ public class LayoutTest {
         assertTrue(l.getVisibleSquares(l.getSquare(0, 1)).containsAll(trovatiAMano));
 
 
-        for(Square s : l.getVisibleSquares(l.getSquare(0, 1))){
-            System.out.println(s.getX() + " " + s.getY());
-        }
     }
 
     /**

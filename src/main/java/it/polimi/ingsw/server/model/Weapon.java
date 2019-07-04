@@ -88,30 +88,6 @@ public class Weapon{
     }
 
     /**
-     * build a deep description for developers to check
-     * @return the deep description
-     */
-    public String getDeepDescription(){
-        StringBuilder result= new StringBuilder();
-
-        result.append(name.toUpperCase()).append("---").append(getCost().toString()).append("\n");
-        for(Mode m : myModes){
-            result.append(m.getTitle()).append(": ").append(m.getDescription()).append("-------").append(m.getCost().toString()).append("\n");
-            int i=1;
-            for(Effect e: m.getEffects()){
-                result.append("EFF" + i + ":\n");
-                result.append(e.humanString() + "\n");
-                i++;
-            }
-            result.append("\n");
-        }
-
-        return result.toString();
-
-    }
-
-
-    /**
      * add a mode in myModes list. For ancient tests
      * @param modeToAdd
      */

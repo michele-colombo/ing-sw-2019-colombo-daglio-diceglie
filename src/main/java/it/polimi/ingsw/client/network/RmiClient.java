@@ -52,38 +52,21 @@ public class RmiClient extends NetworkInterfaceClient{
         int rmiPort= port + 1;
 
         try {
-
-
-            //System.out.println("Getting registry");
             Registry registry = LocateRegistry.getRegistry(ip, rmiPort);
 
-
-            System.out.println("Connecting to server");
             RmiServerAcceptorInterface acceptor = (RmiServerAcceptorInterface) registry.lookup("Acceptor");
 
-
-            System.out.println("Attaching server");
             RmiServerRemoteInterface server = acceptor.addMe();
             this.server = server;
-
             ponging.start();
-
             asker = new Asker();
             asker.start();
-
-/*
-            messageEater= new MessageTrafficManager();
-            messageEater.start();
-            */
 
         }
         catch (RemoteException e){
             throw new ConnectionInitializationException();
         }
-        catch (NotBoundException nbe){
-            //it cannot happen
-            nbe.printStackTrace();
-        }
+        catch (NotBoundException nbe){}
 
 
     }
@@ -152,14 +135,11 @@ public class RmiClient extends NetworkInterfaceClient{
                 while(active.get()){
                     MessageVisitable message= server.ask();
                     if(message!= null) {
-                        //Thread resend = new Thread(() -> message.accept(client));
-                        //resend.start();
                         message.accept(client);
                     }
                 }
             }
             catch (RemoteException e){
-                System.out.println("Connection down");
                 if( client.isConnected()) {
                     client.restart();
                 }
