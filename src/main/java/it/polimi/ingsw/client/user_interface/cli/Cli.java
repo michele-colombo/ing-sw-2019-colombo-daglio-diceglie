@@ -38,6 +38,7 @@ public class Cli implements UserInterface {
     public static final String INSERT_CONNECTION_TYPE = "please insert the type of connection: socket or rmi";
     public static final String LOGIN = "login";
     public static final String INSERT_NICKNAME = "Please insert your nickname. If you want to reconnect, make sure you insert the previous nickname.";
+    public static final String TYPE_QUIT_TO_CLOSE = "Type quit to close";
 
     /**
      * the possible states in which the cli can be
@@ -238,7 +239,8 @@ public class Cli implements UserInterface {
     @Override
     public void updateConnection() {
         if (client.getMatch() != null){
-            System.out.println("Il match è diverso da null!");
+            //System.out.println("Il match è diverso da null!");
+            //connections are automatically updated in this state
         } else {
             printConnectedPlayers();
         }
@@ -363,7 +365,7 @@ public class Cli implements UserInterface {
                 rankEntries);
         window.show();
         state = CliState.IDLE;
-        System.out.println("Type quit to close");
+        System.out.println(TYPE_QUIT_TO_CLOSE);
     }
 
     /**

@@ -100,7 +100,6 @@ public class RmiClient extends NetworkInterfaceClient{
             server.receive(eventVisitable);
         }
         catch (RemoteException e){
-            System.out.println("Merdoccia");
             throw new ForwardingException();
         }
     }
