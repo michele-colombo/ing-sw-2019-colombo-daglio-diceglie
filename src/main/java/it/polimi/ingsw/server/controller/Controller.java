@@ -15,6 +15,8 @@ import it.polimi.ingsw.server.controller.timer.LoginTimer;
 import java.util.*;
 import java.util.logging.Logger;
 
+import static java.lang.Thread.sleep;
+
 
 public class Controller {
     public static final String CORRECTLY_LOGGED_IN = " has correctly logged in";
@@ -577,6 +579,9 @@ public class Controller {
                 gameModel.getMatch().notifySelectablesUpdateAllPlayers();
             }
         } else {
+            try {
+                sleep(500);
+            } catch (InterruptedException e){}
             for (ServerView serverView : new ArrayList<>(serverViews)){
                 disconnectPlayer(serverView);
             }
