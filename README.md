@@ -24,8 +24,14 @@
 [![GREEN](https://placehold.it/15/44bb44/44bb44)](#)
 -->
 
-##Server configuration
-###Default
+
+
+##Server
+To run server, in terminal type: 
+java -jar server.jar
+
+###Server configuration
+####Default
 If server is runned without arguments, it will run using:
 IP address open: 127.0.0.1
 Port: 12345
@@ -33,7 +39,7 @@ Layout configuration for new games: casual
 Number of skulls for new games: 8
 Time to wait before starting the game with less than 5 players: 10 seconds
 Time to wait before disconnecting a player who is taking to long to decide his move: 90 seconds
-###Passing arguments
+####Passing arguments
 To change configuration to desired value, user must type:   -field argument
 IP address open: -ip ip_address (x.y.z.w)
 Port: -port port_number (from 1024 to 65534)
@@ -45,17 +51,19 @@ Time to wait before disconnecting a player who is taking to long to decide his m
 If user don't set configuration, deefault is loaded. If he sets invalid configuration a help message id printed.
 To print help type -h
 
-###Example
-server -ip 10.0.0.1 -login 30000 -skulls 5 -layout 0 -port 1025 -input 50000
+####Example
+java -jar server -ip 10.0.0.1 -login 30000 -skulls 5 -layout 0 -port 1025 -input 50000
 
-
-##Client configuration
-###Default
+##Client
+To run client, in terminal type: 
+java -jar --module-path [javafx lib folder path] --add-modules javafx.controls client.jar
+###Client configuration
+####Default
 If client is runned without arguments, it will run using:
 IP address of server: 127.0.0.1
 Port of the server: 12345
 User Interface: gui
-###Passing arguments
+####Passing arguments
 To change configuration to desired value, user must type:   -field argument
 IP address of server: -ip ip_address (x.y.z.w)
 Port of the server: -port port_number (from 1024 to 65534)
@@ -65,7 +73,7 @@ If user don't set configuration, deefault is loaded. If he sets invalid configur
 To print help type -h
 
 ###Example
-client -ui cli -ip 14.0.2.3 -port 65533
+java -jar --module-path ./javafx-sdk-11.0.2/lib --add-modules javafx.controls client.jar -ui cli -ip 14.0.2.3 -port 65533
 
 
 ##Layout guide
