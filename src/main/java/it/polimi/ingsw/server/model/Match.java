@@ -292,6 +292,8 @@ public class Match {
             for(Player p : players){
                 if(players.indexOf(p) > players.indexOf(currentPlayer)){
                     p.setBeforeFirst(true);
+                } else {
+                    p.setBeforeFirst(false);
                 }
             }
         }
