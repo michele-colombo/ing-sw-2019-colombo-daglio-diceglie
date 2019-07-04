@@ -869,7 +869,13 @@ public class BoardGui {
             MyPlayer me = Gui.getClient().getMatch().getMyPlayer();
 
             stateText.setTextFill(Color.WHITE);
-            stateText.setText(Client.getStateDescription(Gui.getClient().getMatch().getMyPlayer().getState()) + System.lineSeparator() + PENDING + me.getPending().toString() + System.lineSeparator() + CREDIT + me.getCredit().toString());
+            stateText.setText(Client.getStateDescription(Gui.getClient().getMatch().getMyPlayer().getState())
+                    + me.getSelectableDescription()
+                    + System.lineSeparator()
+                    + PENDING + me.getPending().toString()
+                    + System.lineSeparator()
+                    + CREDIT
+                    + me.getCredit().toString());
         });
     }
 
@@ -878,7 +884,16 @@ public class BoardGui {
      */
     public static void showWrongSelection(){
         MyPlayer me = Gui.getClient().getMatch().getMyPlayer();
-        stateText.setText(WRONG_SELECTION_TEXT + System.lineSeparator() + Client.getStateDescription(Gui.getClient().getMatch().getMyPlayer().getState()) + System.lineSeparator() +  me.getPending().toString() + System.lineSeparator() + me.getCredit().toString());
+        stateText.setText(WRONG_SELECTION_TEXT
+                        + System.lineSeparator()
+                        + Client.getStateDescription(Gui.getClient().getMatch().getMyPlayer().getState())
+                        + me.getSelectableDescription()
+                        + System.lineSeparator()
+                        + PENDING + me.getPending().toString()
+                        + System.lineSeparator()
+                        + CREDIT
+                        + me.getCredit().toString()
+                );
     }
 
     /**

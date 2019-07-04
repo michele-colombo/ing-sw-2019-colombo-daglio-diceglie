@@ -34,59 +34,59 @@ public class Client implements MessageVisitor {
     /**
      * String representation of idle state
      */
-    private static final String IDLE_STATE = "You can't do anything at the moment.";
+    private static final String IDLE_STATE = "You can't do anything at the moment. ";
     /**
      * String representation of choose action state
      */
-    private static final String CHOOSE_ACTION_STATE = "Choose an action to do.";
+    private static final String CHOOSE_ACTION_STATE = "You are doing an action. ";
     /**
      * String representation of move there state
      */
-    private static final String MOVE_THERE_STATE = "Choose a square to move into.";
+    private static final String MOVE_THERE_STATE = "You are moving somewhere. ";
     /**
      * String representation of discard weapon state
      */
-    private static final String DISCARD_WEAPON_STATE = "You must discard one of your weapon: choose one.";
+    private static final String DISCARD_WEAPON_STATE = "You are discarding a weapon. ";
     /**
      * String representation of reload state
      */
-    private static final String RELOAD_STATE = "Choose a weapon to reload, or select OK to skip.";
+    private static final String RELOAD_STATE = "You are reloading. ";
     /**
      * String representation of paying state
      */
-    private static final String PAYING_STATE = "You have to pay for something. Select a powerUp(s) or press OK to pay with ammos.";
+    private static final String PAYING_STATE = "You are paying. ";
     /**
      * String representation of paying any state state
      */
-    private static final String PAYING_ANY_STATE = "Choose an ammo (or powerup) to pay";
+    private static final String PAYING_ANY_STATE = "You are paying. ";
     /**
      * String representation of shoot weapon state
      */
-    private static final String SHOOT_WEAPON_STATE = "Choose a weapon to shoot with";
+    private static final String SHOOT_WEAPON_STATE = "You are shooting. ";
     /**
      * String representation of choose mode state
      */
-    private static final String CHOOSE_MODE_STATE = "Select a mode to build the shoot. When you have done, select OK.";
+    private static final String CHOOSE_MODE_STATE = "You are choosing a mode. ";
     /**
      * String representation of shoot target state state
      */
-    private static final String SHOOT_TARGET_STATE = "Choose a target (either a player or a square) to shoot";
+    private static final String SHOOT_TARGET_STATE = "You are shooting. ";
     /**
      * String representation of spawn state state state
      */
-    private static final String SPAWN_STATE = "Choose a powerup to discard (and spawn on the corresponding spawn point)";
+    private static final String SPAWN_STATE = "You are spawning. ";
     /**
      * String representation of use power up state state
      */
-    private static final String USE_POWERUP_STATE = "Choose a powerup to use or select OK to skip";
+    private static final String USE_POWERUP_STATE = "You are using a power up. ";
     /**
      * String representation of grab there state
      */
-    private static final String GRAB_THERE_STATE = "Choose a square to grab from.";
+    private static final String GRAB_THERE_STATE = "You are grabbing. ";
     /**
      * String representation of grab weapon state
      */
-    private static final String GRAB_WEAPON_STATE = "Choose a weapon to grab.";
+    private static final String GRAB_WEAPON_STATE = "You are grabbing.";
     /**
      * String representation of default state
      */

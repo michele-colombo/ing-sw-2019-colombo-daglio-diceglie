@@ -317,4 +317,50 @@ public class MyPlayer extends PlayerView {
     public void setCurrWeapon(WeaponView currWeapon) {
         this.currWeapon = currWeapon;
     }
+
+
+    public String getSelectableDescription(){
+        StringBuilder builder= new StringBuilder();
+        builder.append("");
+
+        if(!selectableActions.isEmpty()){
+            builder.append("action  ");
+        }
+
+        if (!selectableColors.isEmpty()){
+            builder.append("color  ");
+        }
+
+        if(!selectableCommands.isEmpty()){
+            builder.append("command  ");
+        }
+
+        if(!selectableModes.isEmpty()){
+            builder.append("mode ");
+        }
+
+        if(!selectablePlayers.isEmpty()){
+            builder.append("player  ");
+        }
+
+        if(!selectablePowerUps.isEmpty()){
+            builder.append("powerup ");
+        }
+
+        if(!selectableSquares.isEmpty()){
+            builder.append("square ");
+        }
+
+        if(!selectableWeapons.isEmpty()){
+            builder.append("weapon ");
+        }
+
+        if(builder.toString().equals("")){
+            return "";
+        }
+        else {
+            return "Select one of the following:  " + builder.toString();
+        }
+
+    }
 }
