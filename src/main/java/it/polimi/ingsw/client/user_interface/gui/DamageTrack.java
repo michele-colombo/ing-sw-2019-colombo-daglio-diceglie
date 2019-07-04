@@ -427,9 +427,9 @@ public class DamageTrack extends Parent {
      * Update the skulls shown on this DamageTrack
      */
     public void updateSkulls(){
-        this.getChildren().removeAll(skulls); //todo controllare meglio
+        this.getChildren().removeAll(skulls);
         skulls.clear();
-        if(!Gui.getClient().getMatch().isFrenzyOn()){
+        if(!playerView.isFrenzy()){
             for(int i = 0; i < playerView.getSkulls(); i++){
                 addSkull(i);
             }
