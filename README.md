@@ -8,7 +8,7 @@
 | Functionality | State |
 |:-----------------------|:------------------------------------:|
 | Basic rules | [![RED](https://placehold.it/15/f03c15/f03c15)](#) |
-| Complete rules | [![GREEN](https://placehold.it/15/44bb44/44bb44))](#) |
+| Complete rules | [![GREEN](https://placehold.it/15/44bb44/44bb44)](#) |
 | Socket | [![GREEN](https://placehold.it/15/44bb44/44bb44)](#) |
 | RMI | [![GREEN](https://placehold.it/15/44bb44/44bb44)](#) |
 | GUI | [![GREEN](https://placehold.it/15/44bb44/44bb44)](#) |
@@ -28,49 +28,49 @@
 
 ## Server
 To run server, in terminal type: 
-java -jar server.jar
+<br>java -jar server.jar
 
 ### Server configuration
 #### Default
 If server is runned without arguments, it will run using:
-IP address open: 127.0.0.1
-Port: 12345
-Layout configuration for new games: casual
-Number of skulls for new games: 8
-Time to wait before starting the game with less than 5 players: 10 seconds
-Time to wait before disconnecting a player who is taking to long to decide his move: 90 seconds
+<br>IP address open: 127.0.0.1
+<br>Port: 12345
+<br>Layout configuration for new games: casual
+<br>Number of skulls for new games: 8
+<br>Time to wait before starting the game with less than 5 players: 10 seconds
+<br>Time to wait before disconnecting a player who is taking to long to decide his move: 90 seconds
 #### Passing arguments
 To change configuration to desired value, user must type:   -field argument
-IP address open: -ip ip_address (x.y.z.w)
-Port: -port port_number (from 1024 to 65534)
-Layout configuration for new games: -layout layout_config (from 0 to 3, -1 for casual)
-Number of skulls for new games: -skulls skulls_number (from 5 to 8)
-Time to wait before starting the game with less than 5 players: -login login_time (in milliseconds)
-Time to wait before disconnecting a player who is taking to long to decide his move: -input input_time (in milliseconds)
+<br>IP address open: -ip ip_address (x.y.z.w)
+<br>Port: -port port_number (from 1024 to 65534)
+<br>Layout configuration for new games: -layout layout_config (from 0 to 3, -1 for casual)
+<br>Number of skulls for new games: -skulls skulls_number (from 5 to 8)
+<br>Time to wait before starting the game with less than 5 players: -login login_time (in milliseconds)
+<br>Time to wait before disconnecting a player who is taking to long to decide his move: -input input_time (in milliseconds)
 
-If user don't set configuration, deefault is loaded. If he sets invalid configuration a help message id printed.
-To print help type -h
+<br>If user don't set configuration, deefault is loaded. If he sets invalid configuration a help message id printed.
+<br>To print help type -h
 
 #### Example
 java -jar server -ip 10.0.0.1 -login 30000 -skulls 5 -layout 0 -port 1025 -input 50000
 
 ## Client
 To run client, in terminal type: 
-java -jar --module-path [javafx lib folder path] --add-modules javafx.controls client.jar
+<br>java -jar --module-path [javafx lib folder path] --add-modules javafx.controls client.jar
 ### Client configuration
 #### Default
 If client is runned without arguments, it will run using:
-IP address of server: 127.0.0.1
-Port of the server: 12345
-User Interface: gui
+<br>IP address of server: 127.0.0.1
+<br>Port of the server: 12345
+<br>User Interface: gui
 #### Passing arguments
 To change configuration to desired value, user must type:   -field argument
-IP address of server: -ip ip_address (x.y.z.w)
-Port of the server: -port port_number (from 1024 to 65534)
-User Interface: -ui user_interface_type (gui or cli)
+<br>IP address of server: -ip ip_address (x.y.z.w)
+<br>Port of the server: -port port_number (from 1024 to 65534)
+<br>User Interface: -ui user_interface_type (gui or cli)
 
-If user don't set configuration, deefault is loaded. If he sets invalid configuration it's re-asked in a command line dialog.
-To print help type -h
+<br><br>If user don't set configuration, deefault is loaded. If he sets invalid configuration it's re-asked in a command line dialog.
+<br>To print help type -h
 
 ### Example
 java -jar --module-path ./javafx-sdk-11.0.2/lib --add-modules javafx.controls client.jar -ui cli -ip 14.0.2.3 -port 65533
@@ -78,6 +78,6 @@ java -jar --module-path ./javafx-sdk-11.0.2/lib --add-modules javafx.controls cl
 
 ## Layout guide
 0: good for 4 or 5 players  (12 squares)
-1: big one in pages 2 and 3 of manual (11 squares, no top-right corner)
-2: good for every players number (11 squares, no bottom-left corner)
-3: good for 3 or 4 players (10 squares) 
+<br>1: big one in pages 2 and 3 of manual (11 squares, no top-right corner)
+<br>2: good for every players number (11 squares, no bottom-left corner)
+<br>3: good for 3 or 4 players (10 squares) 
