@@ -16,6 +16,11 @@ import it.polimi.ingsw.server.model.enums.PlayerState;
 
 import java.util.*;
 
+/**
+ * The central node of the client, connects the user interface, the network interface and the small match representation
+ * It is responsible of taking updates from the server, updating the small match, presenting to the user the match status
+ * taking user's choices and sending them to the server
+ */
 public class Client implements MessageVisitor {
     /**
      * Used to create a socket connection

@@ -9,13 +9,32 @@ import java.util.List;
 
 import static it.polimi.ingsw.client.user_interface.cli.CliUtils.*;
 
+/**
+ * the MiniBox containing the weapons in a spawn point
+ */
 public class WeaponsInLayoutBox extends MiniBox {
+    /**
+     * the AmmoColor of the corresponding spawnPoint
+     */
     AmmoColor color;
+
+    /**
+     * Builds the box specifying all its parameters (except its content)
+     * @param x the x position int the window (from the left side)
+     * @param y the y position in the window (from the top)
+     * @param height the height of this box
+     * @param width the width of this box
+     * @param color the AmmoColor of the corresponding spawnPoint
+     */
     public WeaponsInLayoutBox(int x, int y, int height, int width, AmmoColor color) {
         super(x, y, height, width);
         this.color = color;
     }
 
+    /**
+     * Adds all the weapons currently present in the spawn point
+     * @param match the match from which retrieve information
+     */
     @Override
     public void update(MatchView match) {
         clear();

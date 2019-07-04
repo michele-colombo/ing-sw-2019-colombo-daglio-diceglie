@@ -6,7 +6,7 @@ import it.polimi.ingsw.client.PlayerView;
 import java.util.Map;
 
 /**
- * Implemented by Cli and Gui, make them updates
+ * Implemented by Cli and Gui, makes them update
  */
 public interface UserInterface {
 

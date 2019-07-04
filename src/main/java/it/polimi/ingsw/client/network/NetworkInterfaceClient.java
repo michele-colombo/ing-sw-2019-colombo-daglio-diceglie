@@ -7,6 +7,9 @@ import it.polimi.ingsw.communication.events.EventVisitable;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * It is the interface of network from client's point of view, permits to send events to server.
+ */
 public abstract class NetworkInterfaceClient{
 
     /**
@@ -33,6 +36,7 @@ public abstract class NetworkInterfaceClient{
         this.client= client;
         ponging= new PongSource();
     }
+
 
 
 
