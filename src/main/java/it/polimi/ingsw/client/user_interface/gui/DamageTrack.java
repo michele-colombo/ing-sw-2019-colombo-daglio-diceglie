@@ -195,6 +195,8 @@ public class DamageTrack extends Parent {
      */
     private HBox playerInfo;
 
+    private List<Color> colors;
+
 
     /**
      * Creates a DamageTrack. Entering on it, it will shows the number of power up, weapons and images of unloaded weapons
@@ -218,6 +220,7 @@ public class DamageTrack extends Parent {
         this.skulls = new LinkedList<>();
         this.playerInfo = new HBox();
         this.playerInfo.setVisible(false);
+        colors = markColors;
         ammoBox.setTranslateX(width * TRANSLATE_AMMO_BOX_X);
         ammoBox.setTranslateY(height * TRANSLATE_AMMO_BOX_Y);
         Label ammoLabel = new Label(AMMO_LABEL);
@@ -336,6 +339,10 @@ public class DamageTrack extends Parent {
      * @param markMap A map containing other PlayerView and each own number of marks on this DamageTrack
      */
     public void addMark(Map<PlayerView, Integer> markMap){
+        for(Color color : colors){
+            Label mark = marks.get(color);
+            mark.setText("0");
+        }
         for(PlayerView pv : markMap.keySet()){
             Label markLabel = marks.get(Color.valueOf(pv.getColor().toString().toLowerCase()));
             markLabel.setText(markMap.get(pv).toString());

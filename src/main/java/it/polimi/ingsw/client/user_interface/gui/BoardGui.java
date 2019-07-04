@@ -641,6 +641,8 @@ public class BoardGui {
             updatePayment();
             for(Map.Entry<PlayerView, DamageTrack> entry : playerDamageTracks.entrySet()){ //todo spero funzioni il fix
                 entry.getValue().checkSwitchToFrenzy();
+                entry.getValue().updateInfo();
+                entry.getValue().updateMarks();
             }
         });
     }
@@ -654,7 +656,7 @@ public class BoardGui {
             updatePosition(player);
             updateWallet(player);
             updatePayment();
-            //updateDamageTrack(player);
+            updateDamageTrack(player);
         });
     }
 
@@ -695,7 +697,7 @@ public class BoardGui {
             toUpdate.updateSkulls();
             toUpdate.checkSwitchToFrenzy();
             updatePayment();
-            //toUpdate.updateInfo();
+            toUpdate.updateInfo();
         });
 
     }
