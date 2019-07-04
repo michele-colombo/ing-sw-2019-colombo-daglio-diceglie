@@ -226,7 +226,7 @@ public abstract class DamageTrack {
 
     /**
      *
-     * @return a map <Damager, score> that describes how many points to give for each player
+     * @return a map that describes how many points to give for each player
      */
     public Map<Player, Integer> score(){
         if(getDamageList().isEmpty()){
@@ -261,7 +261,7 @@ public abstract class DamageTrack {
 
     /**
      *
-     * @return 0-> no adrenaline; 1-> low adrenaline; 2->high adrenaline
+     * @return 0 = no adrenaline; 1 = low adrenaline; 2 = high adrenaline
      */
     public abstract int getAdrenaline();
 

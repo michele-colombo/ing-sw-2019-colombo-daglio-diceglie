@@ -225,7 +225,7 @@ public class Match {
      * Compare the number of killings between two players
      * @param p1 a player
      * @param p2 the player to compare
-     * @return an integer < 0 if p2 has killed more than p1
+     * @return an integer less than 0 if p2 has killed more than p1
      */
     private int compare(Player p1, Player p2){
         int p1Points;
