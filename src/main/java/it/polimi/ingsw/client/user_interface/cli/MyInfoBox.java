@@ -1,8 +1,8 @@
 package it.polimi.ingsw.client.user_interface.cli;
 
 import it.polimi.ingsw.client.Client;
-import it.polimi.ingsw.client.MatchView;
-import it.polimi.ingsw.client.MyPlayer;
+import it.polimi.ingsw.client.model_view.MatchView;
+import it.polimi.ingsw.client.model_view.MyPlayer;
 import it.polimi.ingsw.server.model.Cash;
 
 import static it.polimi.ingsw.client.user_interface.cli.CliUtils.*;

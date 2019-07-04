@@ -1,6 +1,5 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.server.ArgumentNavigator;
 import org.junit.jupiter.api.Test;
 
 public class ArgumentTest {

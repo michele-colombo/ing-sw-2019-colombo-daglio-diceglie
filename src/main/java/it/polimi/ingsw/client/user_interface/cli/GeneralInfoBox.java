@@ -1,6 +1,6 @@
 package it.polimi.ingsw.client.user_interface.cli;
 
-import it.polimi.ingsw.client.MatchView;
+import it.polimi.ingsw.client.model_view.MatchView;
 
 /**
  * Contains the title of the playing window

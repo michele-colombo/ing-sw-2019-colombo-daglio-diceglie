@@ -1,5 +1,6 @@
-package it.polimi.ingsw.client;
+package it.polimi.ingsw.client.model_view;
 
+import it.polimi.ingsw.client.ClientParser;
 import it.polimi.ingsw.server.model.enums.PlayerColor;
 
 import java.util.ArrayList;

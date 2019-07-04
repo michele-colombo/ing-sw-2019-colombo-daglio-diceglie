@@ -1,7 +1,7 @@
 package it.polimi.ingsw.client.user_interface.cli;
 
-import it.polimi.ingsw.client.ModeView;
-import it.polimi.ingsw.client.WeaponView;
+import it.polimi.ingsw.client.model_view.ModeView;
+import it.polimi.ingsw.client.model_view.WeaponView;
 import it.polimi.ingsw.server.model.AmmoTile;
 import it.polimi.ingsw.server.model.Cash;
 import it.polimi.ingsw.server.model.enums.AmmoColor;

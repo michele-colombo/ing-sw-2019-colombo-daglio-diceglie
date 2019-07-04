@@ -1,7 +1,7 @@
 package it.polimi.ingsw.client.user_interface.cli;
 
-import it.polimi.ingsw.client.MatchView;
-import it.polimi.ingsw.client.WeaponView;
+import it.polimi.ingsw.client.model_view.MatchView;
+import it.polimi.ingsw.client.model_view.WeaponView;
 import it.polimi.ingsw.server.model.enums.AmmoColor;
 
 import java.util.ArrayList;

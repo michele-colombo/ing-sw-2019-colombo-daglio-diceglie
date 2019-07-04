@@ -2,9 +2,9 @@ package it.polimi.ingsw.client.user_interface.gui;
 
 import it.polimi.ingsw.client.*;
 import it.polimi.ingsw.client.ClientExceptions.WrongSelectionException;
+import it.polimi.ingsw.client.model_view.*;
 import it.polimi.ingsw.server.model.enums.AmmoColor;
 import it.polimi.ingsw.server.model.enums.Command;
-import it.polimi.ingsw.server.model.enums.PlayerColor;
 import it.polimi.ingsw.server.model.enums.PlayerState;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;

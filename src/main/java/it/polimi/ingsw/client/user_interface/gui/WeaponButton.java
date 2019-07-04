@@ -1,6 +1,6 @@
 package it.polimi.ingsw.client.user_interface.gui;
 
-import it.polimi.ingsw.client.WeaponView;
+import it.polimi.ingsw.client.model_view.WeaponView;
 import it.polimi.ingsw.client.ClientExceptions.WrongSelectionException;
 import javafx.scene.Parent;
 import javafx.scene.effect.DropShadow;

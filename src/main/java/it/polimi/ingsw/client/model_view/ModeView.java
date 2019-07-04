@@ -1,4 +1,4 @@
-package it.polimi.ingsw.client;
+package it.polimi.ingsw.client.model_view;
 
 import it.polimi.ingsw.server.model.Cash;
 

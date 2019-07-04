@@ -1,7 +1,7 @@
 package it.polimi.ingsw.client.user_interface.cli;
 
-import it.polimi.ingsw.client.MatchView;
-import it.polimi.ingsw.client.PowerUpView;
+import it.polimi.ingsw.client.model_view.MatchView;
+import it.polimi.ingsw.client.model_view.PowerUpView;
 import it.polimi.ingsw.server.model.Cash;
 
 import java.util.ArrayList;

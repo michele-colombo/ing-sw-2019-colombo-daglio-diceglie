@@ -1,9 +1,9 @@
 package it.polimi.ingsw.client.user_interface.gui;
 
 import it.polimi.ingsw.client.Client;
-import it.polimi.ingsw.client.MatchView;
+import it.polimi.ingsw.client.model_view.MatchView;
 import it.polimi.ingsw.client.user_interface.UserInterface;
-import it.polimi.ingsw.client.PlayerView;
+import it.polimi.ingsw.client.model_view.PlayerView;
 import it.polimi.ingsw.server.model.enums.PlayerState;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -28,8 +28,6 @@ import javafx.stage.WindowEvent;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
-
-import static java.awt.image.ImageObserver.WIDTH;
 
 /**
  * This Class starts GUI main, creating a window in which to choose network technology

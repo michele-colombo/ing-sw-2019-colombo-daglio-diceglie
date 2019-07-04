@@ -10,7 +10,7 @@ import it.polimi.ingsw.client.network.NetworkInterfaceClient;
 import it.polimi.ingsw.client.user_interface.cli.Cli;
 import it.polimi.ingsw.client.user_interface.gui.Gui;
 import it.polimi.ingsw.communication.CommonProperties;
-import it.polimi.ingsw.server.ArgumentNavigator;
+import it.polimi.ingsw.ArgumentNavigator;
 import javafx.application.Application;
 
 import java.io.*;

@@ -1,9 +1,8 @@
 package it.polimi.ingsw;
 
 
-import it.polimi.ingsw.server.controller.ParserManager;
+import it.polimi.ingsw.server.ParserManager;
 import it.polimi.ingsw.server.model.*;
-import it.polimi.ingsw.server.model.enums.AmmoColor;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

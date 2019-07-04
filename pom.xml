@@ -92,6 +92,7 @@
                               <include>it/polimi/ingsw/server/model/Cash*</include>
                               <include>it/polimi/ingsw/server/model/AmmoTile*</include>
                               <include>it/polimi/ingsw/server/network/**</include>
+                              <include>it/polimi/ingsw/ArgumentNavigator*</include>
                               <include>com/**</include>
                           </includes>
                           <excludes>
@@ -129,7 +130,11 @@
                                   <exclude>resources/redWeapons.json</exclude>
                                   <exclude>resources/yellowWeapons.json</exclude>
                                   <exclude>resources/coord0.json</exclude>
+                                  <exclude>resources/coord1.json</exclude>
                                   <exclude>resources/coord2.json</exclude>
+                                  <exclude>resources/coord3.json</exclude>
+                                  <exclude>resources/disconnect_icon.png</exclude>
+                                  <exclude>resources/exit_icon.png</exclude>
                                   <exclude>resources/powerUpsDescription.json</exclude>
                               </excludes>
                           </filter>

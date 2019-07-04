@@ -1,6 +1,6 @@
 package it.polimi.ingsw.client.user_interface.gui;
 
-import it.polimi.ingsw.client.SquareView;
+import it.polimi.ingsw.client.model_view.SquareView;
 import it.polimi.ingsw.client.ClientExceptions.WrongSelectionException;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;

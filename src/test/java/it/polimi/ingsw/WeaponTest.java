@@ -1,17 +1,15 @@
 package it.polimi.ingsw;
 
 import com.google.gson.Gson;
-import it.polimi.ingsw.server.controller.ParserManager;
+import it.polimi.ingsw.server.ParserManager;
 import it.polimi.ingsw.server.model.*;
 import it.polimi.ingsw.server.model.enums.Command;
 import it.polimi.ingsw.server.model.enums.PlayerState;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static it.polimi.ingsw.testUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.io.InputStream;
 import java.util.*;
 
 import static it.polimi.ingsw.server.model.enums.AmmoColor.*;

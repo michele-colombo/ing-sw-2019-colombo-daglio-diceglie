@@ -2,6 +2,10 @@ package it.polimi.ingsw.client.user_interface.cli;
 
 import it.polimi.ingsw.client.*;
 import it.polimi.ingsw.client.ClientExceptions.WrongSelectionException;
+import it.polimi.ingsw.client.model_view.MatchView;
+import it.polimi.ingsw.client.model_view.PlayerView;
+import it.polimi.ingsw.client.model_view.SquareView;
+import it.polimi.ingsw.client.model_view.WeaponView;
 import it.polimi.ingsw.client.user_interface.UserInterface;
 import static it.polimi.ingsw.client.user_interface.cli.CliUtils.*;
 

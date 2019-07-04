@@ -1,9 +1,8 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.server.controller.ParserManager;
+import it.polimi.ingsw.server.ParserManager;
 import it.polimi.ingsw.server.exceptions.ApplyEffectImmediatelyException;
 import it.polimi.ingsw.server.model.*;
-import it.polimi.ingsw.server.model.enums.Command;
 import it.polimi.ingsw.server.model.enums.PlayerColor;
 import org.junit.jupiter.api.Test;
 

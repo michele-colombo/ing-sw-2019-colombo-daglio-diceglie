@@ -1,6 +1,6 @@
 package it.polimi.ingsw.client.user_interface.cli;
 
-import it.polimi.ingsw.client.*;
+import it.polimi.ingsw.client.model_view.*;
 import it.polimi.ingsw.server.model.Cash;
 import it.polimi.ingsw.server.model.enums.AmmoColor;
 import it.polimi.ingsw.server.model.enums.Command;

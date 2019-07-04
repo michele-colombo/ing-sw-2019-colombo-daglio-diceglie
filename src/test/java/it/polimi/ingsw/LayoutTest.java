@@ -1,6 +1,6 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.server.controller.ParserManager;
+import it.polimi.ingsw.server.ParserManager;
 import it.polimi.ingsw.server.model.*;
 import it.polimi.ingsw.server.model.enums.AmmoColor;
 import it.polimi.ingsw.server.model.enums.Direction;
@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
-import static it.polimi.ingsw.server.model.enums.Border.*;
 import static it.polimi.ingsw.server.model.enums.AmmoColor.*;
 import static org.junit.jupiter.api.Assertions.*;
 

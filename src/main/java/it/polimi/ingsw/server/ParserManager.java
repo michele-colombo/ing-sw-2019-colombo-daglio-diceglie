@@ -1,8 +1,7 @@
-package it.polimi.ingsw.server.controller;
+package it.polimi.ingsw.server;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import it.polimi.ingsw.server.ServerMain;
 import it.polimi.ingsw.server.model.*;
 
 import java.io.*;
@@ -12,8 +11,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Logger;
-
-import static it.polimi.ingsw.server.ServerMain.*;
 
 public class ParserManager {
     private static final String SAVING_BACKUP = "Saving backup to file";

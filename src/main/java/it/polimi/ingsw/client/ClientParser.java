@@ -3,6 +3,10 @@ package it.polimi.ingsw.client;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import it.polimi.ingsw.client.model_view.LayoutView;
+import it.polimi.ingsw.client.model_view.PowerUpView;
+import it.polimi.ingsw.client.model_view.SquareView;
+import it.polimi.ingsw.client.model_view.WeaponView;
 import it.polimi.ingsw.server.model.AmmoTile;
 
 import java.io.IOException;

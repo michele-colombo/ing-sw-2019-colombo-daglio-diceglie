@@ -1,7 +1,7 @@
 package it.polimi.ingsw.client.user_interface.gui;
 
-import it.polimi.ingsw.client.PlayerView;
-import it.polimi.ingsw.client.WeaponView;
+import it.polimi.ingsw.client.model_view.PlayerView;
+import it.polimi.ingsw.client.model_view.WeaponView;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;

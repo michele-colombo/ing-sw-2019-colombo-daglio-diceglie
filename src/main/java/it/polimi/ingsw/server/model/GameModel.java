@@ -1,8 +1,7 @@
 package it.polimi.ingsw.server.model;
 
 import it.polimi.ingsw.communication.message.ConnectionUpdateMessage;
-import it.polimi.ingsw.server.ServerMain;
-import it.polimi.ingsw.server.controller.ParserManager;
+import it.polimi.ingsw.server.ParserManager;
 import it.polimi.ingsw.server.exceptions.*;
 import it.polimi.ingsw.communication.message.MessageVisitable;
 import it.polimi.ingsw.server.model.enums.AmmoColor;

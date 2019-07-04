@@ -2,7 +2,7 @@ package it.polimi.ingsw;
 
 
 
-import it.polimi.ingsw.server.controller.ParserManager;
+import it.polimi.ingsw.server.ParserManager;
 import it.polimi.ingsw.server.model.Match;
 import it.polimi.ingsw.server.model.Player;
 import it.polimi.ingsw.server.model.Square;

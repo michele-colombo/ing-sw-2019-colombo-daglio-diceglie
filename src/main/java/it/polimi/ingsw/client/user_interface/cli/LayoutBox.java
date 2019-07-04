@@ -1,8 +1,8 @@
 package it.polimi.ingsw.client.user_interface.cli;
 
-import it.polimi.ingsw.client.MatchView;
-import it.polimi.ingsw.client.PlayerView;
-import it.polimi.ingsw.client.SquareView;
+import it.polimi.ingsw.client.model_view.MatchView;
+import it.polimi.ingsw.client.model_view.PlayerView;
+import it.polimi.ingsw.client.model_view.SquareView;
 
 import static it.polimi.ingsw.client.user_interface.cli.CliUtils.*;
 import static it.polimi.ingsw.server.model.enums.Border.*;

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.client.user_interface.gui;
 
-import it.polimi.ingsw.client.SquareView;
+import it.polimi.ingsw.client.model_view.SquareView;
 
 /**
  * It represent the translation for: AmmoButton, PlayerRectangle, SquareRectangle, associated to a square, on the board
