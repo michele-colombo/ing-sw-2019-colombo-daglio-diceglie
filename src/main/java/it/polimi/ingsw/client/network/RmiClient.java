@@ -4,25 +4,15 @@ import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.client.ClientExceptions.ConnectionInitializationException;
 import it.polimi.ingsw.client.ClientExceptions.ForwardingException;
 import it.polimi.ingsw.client.ClientMain;
-import it.polimi.ingsw.communication.CommonProperties;
 import it.polimi.ingsw.communication.events.EventVisitable;
 import it.polimi.ingsw.communication.message.MessageVisitable;
 import it.polimi.ingsw.server.network.RmiServerAcceptorInterface;
 import it.polimi.ingsw.server.network.RmiServerRemoteInterface;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketAddress;
-import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.rmi.server.RMIClientSocketFactory;
-import java.rmi.server.RMISocketFactory;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 

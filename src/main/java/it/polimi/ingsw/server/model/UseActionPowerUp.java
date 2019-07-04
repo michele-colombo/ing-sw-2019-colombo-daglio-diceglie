@@ -1,6 +1,5 @@
 package it.polimi.ingsw.server.model;
 
-import it.polimi.ingsw.server.exceptions.NextMicroActionException;
 import it.polimi.ingsw.server.model.enums.PlayerState;
 import it.polimi.ingsw.server.model.enums.PowerUpType;
 

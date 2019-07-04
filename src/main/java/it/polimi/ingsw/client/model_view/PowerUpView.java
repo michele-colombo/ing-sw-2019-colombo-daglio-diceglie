@@ -1,7 +1,6 @@
 package it.polimi.ingsw.client.model_view;
 
 import it.polimi.ingsw.server.model.enums.AmmoColor;
-import it.polimi.ingsw.server.model.enums.PowerUpType;
 
 /**
  * Represents PowerUp on client

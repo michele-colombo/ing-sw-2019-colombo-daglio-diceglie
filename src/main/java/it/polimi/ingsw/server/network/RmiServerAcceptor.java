@@ -1,13 +1,10 @@
 package it.polimi.ingsw.server.network;
 
-import it.polimi.ingsw.server.ServerView;
 import it.polimi.ingsw.server.controller.Controller;
 
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.List;
 
 public class RmiServerAcceptor extends UnicastRemoteObject implements RmiServerAcceptorInterface {
     /**

@@ -8,9 +8,6 @@ import it.polimi.ingsw.server.network.NetworkInterfaceServer;
 import it.polimi.ingsw.server.observer.Observer;
 
 import java.io.IOException;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
 public class ServerView implements Observer, EventVisitor {

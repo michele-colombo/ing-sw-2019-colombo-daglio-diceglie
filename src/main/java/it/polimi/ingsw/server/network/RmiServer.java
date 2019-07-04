@@ -6,7 +6,6 @@ import it.polimi.ingsw.communication.message.GenericMessage;
 import it.polimi.ingsw.communication.message.MessageVisitable;
 import it.polimi.ingsw.server.ServerView;
 import it.polimi.ingsw.server.controller.Controller;
-import it.polimi.ingsw.server.model.GameModel;
 
 import java.io.IOException;
 import java.rmi.NoSuchObjectException;
