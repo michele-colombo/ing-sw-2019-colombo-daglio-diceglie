@@ -782,6 +782,7 @@ public class GameModel implements Observable {
                 nextMicroAction();
             }
         }
+        match.notifyPlayerUpdate(match.getCurrentPlayer());
     }
 
     /**
