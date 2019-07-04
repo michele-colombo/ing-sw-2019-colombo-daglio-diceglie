@@ -51,7 +51,7 @@ To change configuration to desired value, user must type:   -field argument
 <br>If user don't set configuration, deefault is loaded. If he sets invalid configuration a help message id printed.
 <br>To print help type -h
 
-#### Example
+### Example
 java -jar server -ip 10.0.0.1 -login 30000 -skulls 5 -layout 0 -port 1025 -input 50000
 
 ## Client
