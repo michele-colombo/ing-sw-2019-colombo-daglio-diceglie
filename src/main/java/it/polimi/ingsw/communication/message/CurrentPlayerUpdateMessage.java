@@ -22,7 +22,7 @@ public class CurrentPlayerUpdateMessage implements MessageVisitable, Serializabl
     }
 
     /**
-     *
+     * Gest currentPlayer
      * @return currentPlayer
      */
     public String getCurrentPlayer() {

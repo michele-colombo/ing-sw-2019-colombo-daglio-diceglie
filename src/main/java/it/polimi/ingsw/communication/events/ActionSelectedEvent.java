@@ -22,7 +22,7 @@ public class ActionSelectedEvent implements EventVisitable, Serializable {
     }
 
     /**
-     *
+     * Gets selection
      * @return selection
      */
     public int getSelection() {

@@ -36,7 +36,7 @@ public class StartMatchUpdateMessage implements MessageVisitable, Serializable {
     }
 
     /**
-     *
+     * Gets layoutConfiguration
      * @return layoutConfiguration
      */
     public int getLayoutConfiguration() {
@@ -44,7 +44,7 @@ public class StartMatchUpdateMessage implements MessageVisitable, Serializable {
     }
 
     /**
-     *
+     * Gets names
      * @return names
      */
     public List<String> getNames() {
@@ -52,7 +52,7 @@ public class StartMatchUpdateMessage implements MessageVisitable, Serializable {
     }
 
     /**
-     *
+     * Gets colors
      * @return colors
      */
     public List<PlayerColor> getColors() {

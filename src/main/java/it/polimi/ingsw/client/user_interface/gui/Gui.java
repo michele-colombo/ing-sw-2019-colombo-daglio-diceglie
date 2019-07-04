@@ -67,10 +67,6 @@ public class Gui extends Application implements UserInterface {
      */
     private static final String CONNECT_BUTTON = "Connect";
     /**
-     * String used when closing window
-     */
-    private static final String WINDOW_EVENT = "Closing";
-    /**
      * Ratio to properly rescale font
      */
     private static final double RATIO_FONT_SIZE = 76.8;
@@ -86,10 +82,6 @@ public class Gui extends Application implements UserInterface {
      * Ratio to properly rescale gap view
      */
     private static final double SCALE_RATIO_GAP_GRID = 153.6;
-    /**
-     * Ratio to properly rescale the stage
-     */
-    private static final double SCALE_RATIO_STAGE = 2;
     /**
      * Row of view in which put elements
      */
@@ -114,6 +106,14 @@ public class Gui extends Application implements UserInterface {
      * Column of view in which put elements
      */
     private static final int GRID_ZERO_COLUMN = 0;
+    /**
+     * Scale ration of exitButton
+     */
+    private static final int SCALE_RATIO_EXIT_BUTTON = 32;
+    /**
+     * Scale ration of disconnectButton
+     */
+    public static final int SCALE_RATIO_DISCONNECT_BUTTON = 32;
 
     /**
      * Reference to the object who receives messages from server
@@ -155,11 +155,11 @@ public class Gui extends Application implements UserInterface {
 
 
     /**
-     * button that close everything
+     * button that closes everything
      */
     private static ImageView exitButton;
     /**
-     * button to disconnect from the network
+     * button used to disconnect from the network
      */
     private static ImageView disconnectButton;
 
@@ -212,15 +212,25 @@ public class Gui extends Application implements UserInterface {
         initialize(primaryStage);
     }
 
-
+    /**
+     * Gets exitButton
+     * @return exitButton
+     */
     public static ImageView getExitButton() {
         return exitButton;
     }
 
+    /**
+     * Gets disconnectButton
+     * @return disconnectButton
+     */
     public static ImageView getDisconnectButton() {
         return disconnectButton;
     }
 
+    /**
+     * Closes Gui
+     */
     @Override
     public void stop(){
         LOGGER.info("closing Application");
@@ -301,11 +311,11 @@ public class Gui extends Application implements UserInterface {
 
         exitButton= new ImageView(new Image(getClass().getClassLoader().getResourceAsStream("resources/exit_icon.png")));
         exitButton.setPreserveRatio(true);
-        exitButton.setFitWidth(screenBounds.getWidth() / 32);
+        exitButton.setFitWidth(screenBounds.getWidth() / SCALE_RATIO_EXIT_BUTTON);
         exitButton.setOnMouseClicked(mouseEvent -> shutDown() );
         disconnectButton= new ImageView(new Image(getClass().getClassLoader().getResourceAsStream("resources/disconnect_icon.png")));
         disconnectButton.setPreserveRatio(true);
-        disconnectButton.setFitWidth(screenBounds.getWidth() / 32);
+        disconnectButton.setFitWidth(screenBounds.getWidth() / SCALE_RATIO_DISCONNECT_BUTTON);
         disconnectButton.setOnMouseClicked(mouseEvent -> restart() );
 
 
@@ -341,7 +351,7 @@ public class Gui extends Application implements UserInterface {
 
 
     /**
-     *
+     * Gets client
      * @return client reference
      */
     public static Client getClient(){
@@ -349,7 +359,7 @@ public class Gui extends Application implements UserInterface {
     }
 
     /**
-     *
+     * Gets screenBounds
      * @return screenBounds reference
      */
     public static Rectangle2D getScreenBounds(){
@@ -481,6 +491,11 @@ public class Gui extends Application implements UserInterface {
         alert.setOnCloseRequest( we -> alert.close() );
     }
 
+    /**
+     * Shows game over screen
+     * @param rank maps each playerView her final rank
+     * @param points maps each playerView with her points
+     */
     @Override
     public void showGameOver(Map<PlayerView, Integer> rank, Map<PlayerView, Integer> points) {
 
@@ -540,6 +555,9 @@ public class Gui extends Application implements UserInterface {
         stop();
     }
 
+    /**
+     * Restarts client
+     */
     public static void restart() {
         client.restart();
     }

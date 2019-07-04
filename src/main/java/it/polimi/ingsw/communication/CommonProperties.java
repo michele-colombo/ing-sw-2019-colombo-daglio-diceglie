@@ -1,5 +1,8 @@
 package it.polimi.ingsw.communication;
 
+/**
+ * Contains values for ping pong between client and server
+ */
 public class CommonProperties {
     /**
      * delay between a pong and the other and a ping and the other

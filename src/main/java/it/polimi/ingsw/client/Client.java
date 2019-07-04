@@ -92,8 +92,17 @@ public class Client implements MessageVisitor {
      * String representation of default state
      */
     private static final String DEFAULT = "";
+    /**
+     * Used when socket connection is established properly
+     */
     private static final String SOCKET_CONNECTION_CREATED = "Socket connection created";
+    /**
+     * Used when rmi connection is established properly
+     */
     private static final String RMI_CONNECTION_CREATED = "RMI connection created";
+    /**
+     * Used when ConnectionInitializationException is caught
+     */
     private static final String IMPOSSIBLE_TO_INITIATE_CONNECTION = "Impossible to initiate connection";
     /**
      * the client's network
@@ -182,7 +191,7 @@ public class Client implements MessageVisitor {
 
     /**
      * display LoginMessage when arrives
-     * @param message
+     * @param message message received
      */
     @Override
     public synchronized void visit(LoginMessage message){
@@ -194,7 +203,7 @@ public class Client implements MessageVisitor {
 
     /**
      * display the GenericMessage when arrives
-     * @param message
+     * @param message message received
      */
     @Override
     public synchronized void visit(GenericMessage message){
@@ -203,7 +212,7 @@ public class Client implements MessageVisitor {
 
     /**
      * update the connections status
-     * @param connectionUpdateMessage
+     * @param connectionUpdateMessage message received
      */
     @Override
     public synchronized void visit(ConnectionUpdateMessage connectionUpdateMessage) {
@@ -216,7 +225,7 @@ public class Client implements MessageVisitor {
 
     /**
      * display the gameboard at the beginning of a match
-     * @param startMatchUpdateMessage
+     * @param startMatchUpdateMessage message received
      */
     public synchronized void visit(StartMatchUpdateMessage startMatchUpdateMessage) {
         if (match == null){
@@ -227,7 +236,7 @@ public class Client implements MessageVisitor {
 
     /**
      * update the layout with new ammos and weapons
-     * @param layoutUpdateMessage
+     * @param layoutUpdateMessage message received
      */
     public synchronized void visit(LayoutUpdateMessage layoutUpdateMessage) {
         LayoutView layout = match.getLayout();
@@ -262,7 +271,7 @@ public class Client implements MessageVisitor {
 
     /**
      * update the killshot track
-     * @param killshotTrackUpdate
+     * @param killshotTrackUpdate message received
      */
     public synchronized void visit(KillshotTrackUpdateMessage killshotTrackUpdate) {
         match.setSkulls(killshotTrackUpdate.getSkulls());
@@ -283,7 +292,7 @@ public class Client implements MessageVisitor {
 
     /**
      * change the current player
-     * @param currentPlayerUpdate
+     * @param currentPlayerUpdate message received
      */
     public synchronized void visit(CurrentPlayerUpdateMessage currentPlayerUpdate) {
         match.setCurrentPlayer(match.getPlayerFromName(currentPlayerUpdate.getCurrentPlayer()));
@@ -292,7 +301,7 @@ public class Client implements MessageVisitor {
 
     /**
      * Change the status of a player (position, state, wallet)
-     * @param playerUpdateMessage
+     * @param playerUpdateMessage message received
      */
     public synchronized void visit(PlayerUpdateMessage playerUpdateMessage) {
         PlayerView playerToUpdate = match.getPlayerFromName(playerUpdateMessage.getName());
@@ -304,7 +313,7 @@ public class Client implements MessageVisitor {
 
     /**
      * displays a payment request
-     * @param paymentUpdateMessage
+     * @param paymentUpdateMessage message received
      */
     public synchronized void visit(PaymentUpdateMessage paymentUpdateMessage) {
         match.getMyPlayer().setPending(paymentUpdateMessage.getPending());
@@ -314,7 +323,7 @@ public class Client implements MessageVisitor {
 
     /**
      * update weapons of a player
-     * @param weaponsUpdateMessage
+     * @param weaponsUpdateMessage message received
      */
     public synchronized void visit(WeaponsUpdateMessage weaponsUpdateMessage) {
         if (weaponsUpdateMessage.getName().equals(name)){
@@ -340,7 +349,7 @@ public class Client implements MessageVisitor {
 
     /**
      * update powerups of a player
-     * @param powerUpUpdateMessage
+     * @param powerUpUpdateMessage message received
      */
     public synchronized void visit(PowerUpUpdateMessage powerUpUpdateMessage) {
         if (powerUpUpdateMessage.getName().equals(name)){
@@ -358,7 +367,7 @@ public class Client implements MessageVisitor {
 
     /**
      * update damage tracks (damages and marks)
-     * @param damageUpdateMessage
+     * @param damageUpdateMessage message received
      */
     public synchronized void visit(DamageUpdateMessage damageUpdateMessage) {
         PlayerView playerToUpdate = match.getPlayerFromName(damageUpdateMessage.getName());
@@ -381,7 +390,7 @@ public class Client implements MessageVisitor {
 
     /**
      * update selectable items
-     * @param selectablesUpdateMessage
+     * @param selectablesUpdateMessage message received
      */
     public synchronized void visit(SelectablesUpdateMessage selectablesUpdateMessage) {
         MyPlayer me = match.getMyPlayer();
@@ -462,7 +471,7 @@ public class Client implements MessageVisitor {
 
     /**
      * give points to players and displays game over message
-     * @param gameOverMessage
+     * @param gameOverMessage message received
      */
     @Override
     public synchronized void visit(GameOverMessage gameOverMessage) {
@@ -615,15 +624,15 @@ public class Client implements MessageVisitor {
     }
 
     /**
-     *
-     * @return the current matchview
+     * Gets matchView
+     * @return the current matchView
      */
     public MatchView getMatch() {
         return match;
     }
 
     /**
-     *
+     * Returns isConnected
      * @return if client is connected
      */
     public boolean isConnected(){
@@ -631,7 +640,7 @@ public class Client implements MessageVisitor {
     }
 
     /**
-     *
+     * Gets connections
      * @return the connection status of all players
      */
     public Map<String, Boolean> getConnections(){
@@ -657,6 +666,11 @@ public class Client implements MessageVisitor {
         }
     }
 
+    /**
+     * Gets state description a state
+     * @param state state to be returned as a String
+     * @return String description of state
+     */
     public static String getStateDescription(PlayerState state){
         String result;
         switch (state){

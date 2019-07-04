@@ -48,7 +48,7 @@ public class DamageUpdateMessage implements MessageVisitable, Serializable {
     }
 
     /**
-     *
+     * Gets name
      * @return name
      */
     public String getName() {
@@ -56,7 +56,7 @@ public class DamageUpdateMessage implements MessageVisitable, Serializable {
     }
 
     /**
-     *
+     * Gets damageList
      * @return damageList
      */
     public List<String> getDamageList() {
@@ -64,7 +64,7 @@ public class DamageUpdateMessage implements MessageVisitable, Serializable {
     }
 
     /**
-     *
+     * Gets markMap
      * @return markMap
      */
     public Map<String, Integer> getMarkMap() {
@@ -80,7 +80,7 @@ public class DamageUpdateMessage implements MessageVisitable, Serializable {
     }
 
     /**
-     *
+     * Retunrs isFrenzy
      * @return isFrenzy
      */
     public boolean isFrenzy() {

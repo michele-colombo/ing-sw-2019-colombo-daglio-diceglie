@@ -29,7 +29,7 @@ public class PaymentUpdateMessage implements MessageVisitable, Serializable {
     }
 
     /**
-     *
+     * Gets pending
      * @return pending
      */
     public Cash getPending() {
@@ -37,7 +37,7 @@ public class PaymentUpdateMessage implements MessageVisitable, Serializable {
     }
 
     /**
-     *
+     * Gets credit
      * @return credit
      */
     public Cash getCredit() {

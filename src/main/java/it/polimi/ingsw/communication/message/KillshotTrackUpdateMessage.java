@@ -43,7 +43,7 @@ public class KillshotTrackUpdateMessage implements MessageVisitable, Serializabl
     }
 
     /**
-     *
+     * Gets skulls
      * @return skulls
      */
     public int getSkulls() {
@@ -51,7 +51,7 @@ public class KillshotTrackUpdateMessage implements MessageVisitable, Serializabl
     }
 
     /**
-     *
+     * Gets track
      * @return track
      */
     public List<Map<String, Integer>> getTrack() {
@@ -59,7 +59,7 @@ public class KillshotTrackUpdateMessage implements MessageVisitable, Serializabl
     }
 
     /**
-     *
+     * Gets frenzyOn
      * @return frenzyOn
      */
     public boolean isFrenzyOn() {
@@ -67,7 +67,7 @@ public class KillshotTrackUpdateMessage implements MessageVisitable, Serializabl
     }
 
     /**
-     *
+     * Gets yourPoints
      * @return yourPoints
      */
     public int getYourPoints() {

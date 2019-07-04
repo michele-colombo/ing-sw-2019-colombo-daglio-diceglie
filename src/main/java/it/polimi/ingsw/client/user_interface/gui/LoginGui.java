@@ -215,7 +215,7 @@ public class LoginGui {
     }
 
     /**
-     *
+     * Gets view
      * @return return view
      */
     public Parent getView(){

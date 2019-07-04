@@ -201,7 +201,6 @@ public class BoardGui {
      * Ratio used to properly create color button on board
      */
     private static final double COLOR_BUTTON_SIZE = Gui.getScreenBounds().getWidth() / 68;
-    private static final int ROW_2_INDEX = 2;
     /**
      * The main part of the stage
      */
@@ -338,14 +337,11 @@ public class BoardGui {
         GridPane.setHalignment(imageView, HPos.LEFT);
 
         BoardGui.createStateText();
-        //view.add(stateText, GRID_FOURTH_ROW, ROW_2_INDEX);
         view.add(board, GRID_ZERO_ROW,GRID_ZERO_COLUMN);
         view.add(weaponBox, GRID_ZERO_ROW,GRID_FIRST_COLUMN);
         view.add(powerUpBox, GRID_FIRST_ROW, GRID_FIRST_COLUMN);
         addDamageTrack(match);
         addConnectionState(match.getAllPlayers());
-
-        //view.add(selectables,GRID_FOURTH_ROW,GRID_FIRST_COLUMN);
 
         VBox controls= new VBox();
         controls.getChildren().addAll(selectables, stateText);
@@ -367,7 +363,7 @@ public class BoardGui {
     }
 
     /**
-     *
+     * Gets view
      * @return view
      */
     public Parent getView(){
@@ -375,7 +371,7 @@ public class BoardGui {
     }
 
     /**
-     * Creat DamageTrack and add them view; the higher is the one referred to this client; the color is based on player's color
+     * Creates DamageTracks and add them to view; the higher is the one referred to this client; the color is based on player's color
      * @param match MatchView from which get all players' color
      */
     private void addDamageTrack(MatchView match){
@@ -834,14 +830,14 @@ public class BoardGui {
     }
 
     /**
-     *
+     * Gets boardWidth
      * @return boardWidth
      */
     public static double getWidth(){
         return boardWidth;
     }
     /**
-     *
+     * Gets boardHeight
      * @return boardHeight
      */
     public static double getHeight(){
@@ -939,7 +935,7 @@ public class BoardGui {
     }
 
     /**
-     *
+     * Gets parser
      * @return parser
      */
     public static Parser getParser(){

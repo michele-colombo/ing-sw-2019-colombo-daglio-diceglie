@@ -42,7 +42,7 @@ public class PlayerUpdateMessage implements MessageVisitable, Serializable {
     }
 
     /**
-     *
+     * Gets name
      * @return name
      */
     public String getName() {
@@ -50,7 +50,7 @@ public class PlayerUpdateMessage implements MessageVisitable, Serializable {
     }
 
     /**
-     *
+     * Gets state
      * @return state
      */
     public PlayerState getState() {
@@ -58,7 +58,7 @@ public class PlayerUpdateMessage implements MessageVisitable, Serializable {
     }
 
     /**
-     *
+     * Gets position
      * @return position
      */
     public String getPosition() {
@@ -66,7 +66,7 @@ public class PlayerUpdateMessage implements MessageVisitable, Serializable {
     }
 
     /**
-     *
+     * Gets wallet
      * @return wallet
      */
     public Cash getWallet() {

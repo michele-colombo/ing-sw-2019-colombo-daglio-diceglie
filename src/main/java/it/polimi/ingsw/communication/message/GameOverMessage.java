@@ -29,7 +29,7 @@ public class GameOverMessage implements MessageVisitable, Serializable {
     }
 
     /**
-     *
+     * Gets rank
      * @return rank
      */
     public Map<String, Integer> getRank() {
@@ -37,7 +37,7 @@ public class GameOverMessage implements MessageVisitable, Serializable {
     }
 
     /**
-     *
+     * Gets points
      * @return points
      */
     public Map<String, Integer> getPoints() {

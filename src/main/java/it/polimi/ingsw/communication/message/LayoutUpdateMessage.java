@@ -42,7 +42,7 @@ public class LayoutUpdateMessage implements MessageVisitable, Serializable {
     }
 
     /**
-     *
+     * Gets blueWeapons
      * @return blueWeapons
      */
     public List<String> getBlueWeapons() {
@@ -50,7 +50,7 @@ public class LayoutUpdateMessage implements MessageVisitable, Serializable {
     }
 
     /**
-     *
+     * Gets redWeapons
      * @return redWeapons
      */
     public List<String> getRedWeapons() {
@@ -58,7 +58,7 @@ public class LayoutUpdateMessage implements MessageVisitable, Serializable {
     }
 
     /**
-     *
+     * Gets yellowWeapons
      * @return yellowWeapons
      */
     public List<String> getYellowWeapons() {
@@ -66,7 +66,7 @@ public class LayoutUpdateMessage implements MessageVisitable, Serializable {
     }
 
     /**
-     *
+     * Gets ammoTilesInSquares
      * @return ammoTilesInSquares
      */
     public Map<String, String> getAmmoTilesInSquares() {

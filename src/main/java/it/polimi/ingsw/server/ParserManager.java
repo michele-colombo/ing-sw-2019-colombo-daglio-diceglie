@@ -12,32 +12,103 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
+/**
+ * Parser to load server configuration
+ */
 public class ParserManager {
+    /**
+     * Used to see what parser is doing
+     */
     private static final String SAVING_BACKUP = "Saving backup to file";
+    /**
+     * Used when IOException is caught
+     */
     private static final String CANNOT_WRITE_BACKUP_FILE = "Cannot write backup file";
+    /**
+     * Used to see what parser is doing
+     */
     private static final String BACKUP_FILE_WRITTEN = "backup file written";
+    /**
+     * Used when UnsupportedEncodingException is caught
+     */
     private static final String UNSUPPORTED_ENCODING_PARSING_BACKUP = "Unsupported encoding exception while parsing currBackup";
+    /**
+     * Used when IOException is caught
+     */
     private static final String IO_EXCEPTION_FILE = "File not found or error while closing stream";
+    /**
+     * Used when errors occured
+     */
     private static final String BACKUP_SYNTAX_ERROR = "Backup file is not correctly written";
+    /**
+     * Used when error while closing inputStream occures
+     */
     private static final String PROBLEM_CLOSING_INPUT_STREAM = "problem while closing inputStream";
+    /**
+     * Used when no file for stacks exists
+     */
     private static final String NO_FILE_DETECTED_FOR_STACKS = "no file detected for stacks";
+    /**
+     * Used to read server confg
+     */
     private static final String SERVER_CONFIG_FILE= "resources/serverConfig.json";
+    /**
+     * Path for layout configuration
+     */
     private static final String LAYOUT_CONFIG_FOLDER= "resources/layoutConfig/";
+    /**
+     * Path for weapons
+     */
     private static final String WEAPONS_FILE= "resources/weapons.json";
+    /**
+     * Path for power ups
+     */
     private static final String POWERUPS_FILE= "resources/powerUps.json";
+    /**
+     * Path for ammoTiles
+     */
     private static final String AMMOTILES_FILE= "resources/ammoTiles.json";
-
+    /**
+     * Name for backup
+     */
     private static final String BACKUP_NAME = "currentBackup";
+    /**
+     * File extension
+     */
     private static final String BACKUP_EXTENSION = ".json";
-
-    private static final Logger logger = Logger.getLogger(ParserManager.class.getName());
+    /**
+     * Path for backups created
+     */
     private static final String BACKUPS_FOLDER = "backups";
+    /**
+     * Used to see what parser is doing
+     */
+    private static final String BACKUP_PATH = "backup path:";
+    /**
+     * Used to properly read layout config
+     */
+    private static final String LAYOUT_CONFIG = "layoutConfig";
+    /**
+     * Logger used when exceptions are caught
+     */
+    private static final Logger logger = Logger.getLogger(ParserManager.class.getName());
 
+    /**
+     * Contains game layouts
+     */
     private Layout[] layouts;
+    /**
+     * Reference to stackManager, used to load decks
+     */
     private StackManager stackManager;
+    /**
+     * Backup that can be loaded
+     */
     private Backup backup;
 
-
+    /**
+     * Gson parser
+     */
     private Gson gson;
 
 
@@ -83,7 +154,7 @@ public class ParserManager {
         logger.info(SAVING_BACKUP);
         try {
             jarPath = URLDecoder.decode(getClass().getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
-            logger.info("backup path:" + jarPath);
+            logger.info(BACKUP_PATH + jarPath);
         } catch (UnsupportedEncodingException e1) {
             logger.warning(UNSUPPORTED_ENCODING_PARSING_BACKUP);
         }
@@ -124,8 +195,8 @@ public class ParserManager {
         return null;
     }
 
-    /*
-    generate a backup fron the json
+    /**
+     * Creates backup from json
      */
     private void parseBackup(){
         try{
@@ -165,7 +236,7 @@ public class ParserManager {
         List<AmmoSquare> ammoSquares= new ArrayList<>();
         List<SpawnSquare> spawnSquares= new ArrayList<>();
 
-        InputStream url = getClass().getClassLoader().getResourceAsStream(LAYOUT_CONFIG_FOLDER + "layoutConfig"+num+".json");
+        InputStream url = getClass().getClassLoader().getResourceAsStream(LAYOUT_CONFIG_FOLDER + LAYOUT_CONFIG +num+BACKUP_EXTENSION);
         Scanner sc = new Scanner(url);
 
         AmmoSquare[] tempAmmo;

@@ -22,7 +22,7 @@ public class LoginEvent implements EventVisitable, Serializable {
     }
 
     /**
-     *
+     * Gets name
      * @return name
      */
     public String getName() {

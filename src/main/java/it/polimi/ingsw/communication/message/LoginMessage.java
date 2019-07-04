@@ -34,7 +34,7 @@ public class LoginMessage implements MessageVisitable, Serializable {
     }
 
     /**
-     *
+     * Gets loginSuccessful
      * @return loginSuccessful
      */
     public boolean getLoginSuccessful(){
@@ -42,7 +42,7 @@ public class LoginMessage implements MessageVisitable, Serializable {
     }
 
     /**
-     *
+     * Gets response
      * @return response
      */
     public String getResponse(){

@@ -56,7 +56,7 @@ public class WeaponsUpdateMessage implements MessageVisitable, Serializable {
     }
 
     /**
-     *
+     * Gets name
      * @return name
      */
     public String getName() {
@@ -64,7 +64,7 @@ public class WeaponsUpdateMessage implements MessageVisitable, Serializable {
     }
 
     /**
-     *
+     * Gets loadedWeapons
      * @return loadedWeapons
      */
     public List<String> getLoadedWeapons() {
@@ -72,7 +72,7 @@ public class WeaponsUpdateMessage implements MessageVisitable, Serializable {
     }
 
     /**
-     *
+     * Gets unloadedWeapons
      * @return unloadedWeapons
      */
     public List<String> getUnloadedWeapons() {
@@ -80,7 +80,7 @@ public class WeaponsUpdateMessage implements MessageVisitable, Serializable {
     }
 
     /**
-     *
+     * Gets numeWeapons
      * @return numeWeapons
      */
     public int getNumeWeapons() {

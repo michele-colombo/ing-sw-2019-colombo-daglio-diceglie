@@ -50,7 +50,7 @@ public class PowerUpUpdateMessage implements MessageVisitable, Serializable {
     }
 
     /**
-     *
+     * Gets name
      * @return name
      */
     public String getName() {
@@ -58,7 +58,7 @@ public class PowerUpUpdateMessage implements MessageVisitable, Serializable {
     }
 
     /**
-     *
+     * Gets powerUps
      * @return powerUps
      */
     public List<String> getPowerUps() {
@@ -66,7 +66,7 @@ public class PowerUpUpdateMessage implements MessageVisitable, Serializable {
     }
 
     /**
-     *
+     * Gets numPowerUps
      * @return numPowerUps
      */
     public int getNumPowerUps() {

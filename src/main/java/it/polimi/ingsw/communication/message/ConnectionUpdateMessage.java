@@ -23,7 +23,7 @@ public class ConnectionUpdateMessage implements MessageVisitable, Serializable {
     }
 
     /**
-     *
+     * Gets connectionStates
      * @return connectionStates
      */
     public Map<String, Boolean> getConnectionStates() {

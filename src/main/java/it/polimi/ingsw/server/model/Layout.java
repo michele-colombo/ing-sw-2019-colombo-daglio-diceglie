@@ -16,6 +16,14 @@ import static it.polimi.ingsw.server.model.enums.Direction.*;
  */
 public class Layout {
     /**
+     * Width of layout
+     */
+    private static final int LAYOUT_WIDTH = 4;
+    /**
+     * Height of layout
+     */
+    private static final int LAYOUT_HEIGHT = 3;
+    /**
      * Contains all squares of the selected layout; max size is 12
      */
     //private List<Square> squares;
@@ -397,7 +405,7 @@ public class Layout {
         this.ammoSquares = ammoSquares;
         this.layoutConfiguration= layoutConfiguration;
 
-        existingSquare = new int[4][3];
+        existingSquare = new int[LAYOUT_WIDTH][LAYOUT_HEIGHT];
 
         for(int i=0; i< this.existingSquare.length; i++){
             for(int j=0; j< this.existingSquare[0].length; j++){

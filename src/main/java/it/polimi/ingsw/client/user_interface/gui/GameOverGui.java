@@ -12,6 +12,9 @@ import javafx.scene.text.Text;
 
 import java.util.Map;
 
+/**
+ * Window showed when a GameOverMessage is received, showing each player whit his final position and points
+ */
 public class GameOverGui {
     /**
      * font for the text
@@ -54,8 +57,8 @@ public class GameOverGui {
 
     /**
      * builds a game over screen
-     * @param rank
-     * @param points
+     * @param rank final rank of the game
+     * @param points final point for each player
      */
     public GameOverGui(Map<String, Integer> rank, Map<String, Integer> points){
         view = new StackPane();
@@ -115,7 +118,7 @@ public class GameOverGui {
     }
 
     /**
-     *
+     * Gets view
      * @return the main pane of the screen
      */
     public Parent getParent(){

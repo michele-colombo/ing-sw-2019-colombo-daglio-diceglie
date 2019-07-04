@@ -10,10 +10,21 @@ import it.polimi.ingsw.server.observer.Observer;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+/**
+ * VirtualView, observer of model, used to send updates to client
+ */
 public class ServerView implements Observer, EventVisitor {
-
+    /**
+     * Used when IOException is caught
+     */
     private static final String ERROR_UPDATING_VIEW = "error while updating view!";
+    /**
+     * Used when a ServerView is going to be disconnected
+     */
     private static final String SERVER_VIEW_SET_TO_DISCONNECT = "server view set to disconnect:";
+    /**
+     * Used when a ServerView (hence a player) is completely disconnected from server
+     */
     private static final String PLAYER_COMPLETELY_DISCONNECTED = "player completely disconnected";
     /**
      * the network class that send/receive messages and events
@@ -76,7 +87,7 @@ public class ServerView implements Observer, EventVisitor {
 
     /**
      * select the square chosen by client
-     * @param squareSelectedEvent
+     * @param squareSelectedEvent event to be sent
      */
     @Override
     public void visit(SquareSelectedEvent squareSelectedEvent) {
@@ -86,7 +97,7 @@ public class ServerView implements Observer, EventVisitor {
 
     /**
      * select the action chosen by client
-     * @param actionSelectedEvent
+     * @param actionSelectedEvent event to be sent
      */
     @Override
     public void visit(ActionSelectedEvent actionSelectedEvent) {
@@ -96,7 +107,7 @@ public class ServerView implements Observer, EventVisitor {
 
     /**
      * select the player chosen by client
-     * @param playerSelectedEvent
+     * @param playerSelectedEvent event to be sent
      */
     @Override
     public void visit(PlayerSelectedEvent playerSelectedEvent) {
@@ -106,7 +117,7 @@ public class ServerView implements Observer, EventVisitor {
 
     /**
      * select the weapon chosen by client
-     * @param weaponSelectedEvent
+     * @param weaponSelectedEvent event to be sent
      */
     @Override
     public void visit(WeaponSelectedEvent weaponSelectedEvent) {
@@ -116,7 +127,7 @@ public class ServerView implements Observer, EventVisitor {
 
     /**
      * select the mode chosen by client
-     * @param modeSelectedEvent
+     * @param modeSelectedEvent event to be sent
      */
     @Override
     public void visit(ModeSelectedEvent modeSelectedEvent) {
@@ -126,7 +137,7 @@ public class ServerView implements Observer, EventVisitor {
 
     /**
      * select the command chosen by client
-     * @param commandSelectedEvent
+     * @param commandSelectedEvent event to be sent
      */
     @Override
     public void visit(CommandSelectedEvent commandSelectedEvent) {
@@ -136,7 +147,7 @@ public class ServerView implements Observer, EventVisitor {
 
     /**
      * select the color chosen by client
-     * @param colorSelectedEvent
+     * @param colorSelectedEvent event to be sent
      */
     @Override
     public void visit(ColorSelectedEvent colorSelectedEvent) {
@@ -146,7 +157,7 @@ public class ServerView implements Observer, EventVisitor {
 
     /**
      * select the powerUp chosen by client
-     * @param powerUpSelectedEvent
+     * @param powerUpSelectedEvent event to be sent
      */
     @Override
     public void visit(PowerUpSelectedEvent powerUpSelectedEvent) {

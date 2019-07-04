@@ -20,6 +20,9 @@ import java.net.Socket;
 import java.rmi.server.RMISocketFactory;
 import java.util.Scanner;
 
+/**
+ * Start client, reading arguments from command line or using default
+ */
 public class ClientMain{
     private static final String CLIENTCONFIG_PATH= "resources/clientConfig.json";
     private static final String HELP_MESSAGE_CLIENT = "-ui [gui|cli]\n" +
@@ -36,10 +39,19 @@ public class ClientMain{
      */
     private static ClientConfig config;
 
+    /**
+     * Gets config
+     * @return config
+     */
     public static ClientConfig getConfig(){
         return config;
     }
 
+    /**
+     * Client main
+     * @param args args
+     * @throws IOException if reading goes wrong
+     */
     public static void main(String[] args) throws IOException {
         config = new ClientConfig();
 
@@ -196,40 +208,78 @@ public class ClientMain{
     }
 
 
-
+    /**
+     * Represents client configuration
+     */
     public static class ClientConfig{
+        /**
+         * Ip to connect to
+         */
         private String ip;
+        /**
+         * port to connect to
+         */
         private int port;
+        /**
+         * Chosen interface; cli or gui
+         */
         private String userInterface;
 
+        /**
+         * Creates ClientConfig with useless value
+         */
         public ClientConfig() {
             ip= "non-initialized";
             port= -1;
             userInterface= "non-initialized";
         }
 
+        /**
+         * Sets ip
+         * @param ip chosen ip
+         */
         public void setIp(String ip) {
             this.ip = ip;
         }
 
+        /**
+         * Sets port
+         * @param port chosen port
+         */
         public void setPort(int port) {
             this.port = port;
         }
 
 
+        /**
+         * Sets userInterface
+         * @param userInterface chosen user interface
+         */
         public void setUserInterface(String userInterface) {
             this.userInterface = userInterface;
         }
 
+        /**
+         * Gets ip
+         * @return ip
+         */
         public String getIp() {
             return ip;
         }
 
+        /**
+         * Gets port
+         * @return port
+         */
         public int getPort() {
             return port;
         }
 
 
+        /**
+         * Gets userInterface
+         * @return userInterface
+         */
         public String getUserInterface() {
             return userInterface;
         }

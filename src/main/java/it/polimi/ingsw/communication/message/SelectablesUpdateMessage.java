@@ -71,7 +71,7 @@ public class SelectablesUpdateMessage implements MessageVisitable, Serializable 
     }
 
     /**
-     *
+     * Gets selectableWeapons
      * @return selectableWeapons
      */
     public List<String> getSelectableWeapons() {
@@ -79,7 +79,7 @@ public class SelectablesUpdateMessage implements MessageVisitable, Serializable 
     }
 
     /**
-     *
+     * Gets selectableSquares
      * @return selectableSquares
      */
     public List<String> getSelectableSquares() {
@@ -87,7 +87,7 @@ public class SelectablesUpdateMessage implements MessageVisitable, Serializable 
     }
 
     /**
-     *
+     * Gets selectableModes
      * @return selectableModes
      */
     public List<String> getSelectableModes() {
@@ -95,7 +95,7 @@ public class SelectablesUpdateMessage implements MessageVisitable, Serializable 
     }
 
     /**
-     *
+     * Gets selectableCommands
      * @return selectableCommands
      */
     public List<String> getSelectableCommands() {
@@ -103,7 +103,7 @@ public class SelectablesUpdateMessage implements MessageVisitable, Serializable 
     }
 
     /**
-     *
+     * Gets selectableActions
      * @return selectableActions
      */
     public List<String> getSelectableActions() {
@@ -111,7 +111,7 @@ public class SelectablesUpdateMessage implements MessageVisitable, Serializable 
     }
 
     /**
-     *
+     * Gets selectableColors
      * @return selectableColors
      */
     public List<String> getSelectableColors() {
@@ -119,7 +119,7 @@ public class SelectablesUpdateMessage implements MessageVisitable, Serializable 
     }
 
     /**
-     *
+     * Gets selectablePLayers
      * @return selectablePlayers
      */
     public List<String> getSelectablePlayers() {
@@ -127,7 +127,7 @@ public class SelectablesUpdateMessage implements MessageVisitable, Serializable 
     }
 
     /**
-     *
+     * Gets selectablePowerUps
      * @return selectablePowerUps
      */
     public List<String> getSelectablePowerUps() {
@@ -135,7 +135,7 @@ public class SelectablesUpdateMessage implements MessageVisitable, Serializable 
     }
 
     /**
-     *
+     * Gets currWeapon
      * @return currWeapon
      */
     public String getCurrWeapon() {
