@@ -24,7 +24,9 @@
 [![GREEN](https://placehold.it/15/44bb44/44bb44)](#)
 -->
 
-
+## How to build the jars
+In order to build the jars just run the Maven command: mvn package. 
+You will find the two jars (client.jar and server.jar) in the folder target/shadeJars.
 
 ## Server
 To run server, in terminal type: 
@@ -48,11 +50,11 @@ To change configuration to desired value, user must type:   -field argument
 <br>Time to wait before starting the game with less than 5 players: -login login_time (in milliseconds)
 <br>Time to wait before disconnecting a player who is taking to long to decide his move: -input input_time (in milliseconds)
 
-<br>If user don't set configuration, deefault is loaded. If he sets invalid configuration a help message id printed.
+<br>If user don't set configuration, deefault is loaded. If he sets invalid configuration a help message is printed.
 <br>To print help type -h
 
 ### Example
-java -jar server -ip 10.0.0.1 -login 30000 -skulls 5 -layout 0 -port 1025 -input 50000
+java -jar server.jar -ip 10.0.0.1 -login 30000 -skulls 5 -layout 0 -port 1025 -input 50000
 
 ## Client
 To run client, in terminal type: 
