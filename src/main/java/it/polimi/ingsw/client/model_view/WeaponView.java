@@ -10,6 +10,22 @@ import java.util.List;
  */
 public class WeaponView {
     /**
+     * String used when showing buying cost
+     */
+    private static final String BUYING_COST = " (buying cost: ";
+    /**
+     * String used when showing cost
+     */
+    private static final String COST = " (cost: ";
+    /**
+     * String used when showing end of cost
+     */
+    private static final String END_BUYING_COST = ")";
+    /**
+     * Used to get discounted price
+     */
+    private static final int DISCOUNTED_PRICE = 1;
+    /**
      * Name of the WeaponView
      */
     private String name;
@@ -25,6 +41,9 @@ public class WeaponView {
      * ModeViews of the WeaponViews
      */
     private List<ModeView> myModes;
+    /**
+     * Image name
+     */
     private String imageName;
 
     /**
@@ -64,14 +83,16 @@ public class WeaponView {
      * @return discounted cost (i.e. cost less first ammos of color of WeaponView)
      */
     public Cash getDiscountedCost() {
-        return cost.subtract(new Cash(color, 1));
+        return cost.subtract(new Cash(color, DISCOUNTED_PRICE));
     }
 
+    /**
+     * Gets image name
+     * @return image name
+     */
     public String getImageName() {
         return imageName;
     }
-
-    //TEST
 
     /**
      *
@@ -81,8 +102,8 @@ public class WeaponView {
     public String getDescription(){
         StringBuilder result= new StringBuilder();
         result.append(name.toUpperCase());
-        result.append(" (buying cost: " + getDiscountedCost()+")");
-        result.append(" (cost: "+getCost()+")\n");
+        result.append(BUYING_COST + getDiscountedCost()+ END_BUYING_COST);
+        result.append(COST+getCost()+")\n");
         for(ModeView m : myModes){
             result.append(m.getTitle() + ": " + m.getDescription() + "\n");
         }

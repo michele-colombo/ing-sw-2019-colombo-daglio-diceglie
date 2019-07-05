@@ -20,7 +20,7 @@ public class ModeView {
     private Cash cost;
 
     /**
-     *
+     * Gets title
      * @return title
      */
     public String getTitle() {
@@ -28,7 +28,7 @@ public class ModeView {
     }
 
     /**
-     *
+     * Gets description
      * @return description
      */
     public String getDescription() {
@@ -36,7 +36,7 @@ public class ModeView {
     }
 
     /**
-     *
+     * Gets cost
      * @return cost
      */
     public Cash getCost() {

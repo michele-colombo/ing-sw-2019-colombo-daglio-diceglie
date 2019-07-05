@@ -148,7 +148,7 @@ public class Client implements MessageVisitor {
     }
 
     /**
-     * Create the connectoin for this client
+     * Create the connection for this client
      * @param connection type of connection: socket or rmi
      */
     public synchronized void createConnection(String connection){

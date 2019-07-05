@@ -80,7 +80,7 @@ public class MatchView {
     }
 
     /**
-     *
+     * Gets playerViews whose name if different from myPlayer's one
      * @return All PlayerViews whose name is different from myPlayer's one
      */
     public List<PlayerView> getOtherPlayers(){
@@ -102,7 +102,7 @@ public class MatchView {
     }
 
     /**
-     *
+     * Gets layout
      * @return layout
      */
     public LayoutView getLayout() {
@@ -110,7 +110,7 @@ public class MatchView {
     }
 
     /**
-     *
+     * Gets decks
      * @return decks
      */
     public DecksView getDecks() {
@@ -118,7 +118,7 @@ public class MatchView {
     }
 
     /**
-     *
+     * Gets myPlayer
      * @return myPlayer
      */
     public MyPlayer getMyPlayer() {
@@ -126,7 +126,7 @@ public class MatchView {
     }
 
     /**
-     *
+     * Gets allPlayers
      * @return allPlayers
      */
     public List<PlayerView> getAllPlayers() {
@@ -134,7 +134,7 @@ public class MatchView {
     }
 
     /**
-     *
+     * Gets currentPlayer
      * @return currentPlayer
      */
     public PlayerView getCurrentPlayer() {
@@ -142,7 +142,7 @@ public class MatchView {
     }
 
     /**
-     *
+     * Gets skulls
      * @return skulls
      */
     public int getSkulls() {
@@ -150,7 +150,7 @@ public class MatchView {
     }
 
     /**
-     *
+     * Gets track
      * @return track
      */
     public List<Map<PlayerView, Integer>> getTrack() {
@@ -158,7 +158,7 @@ public class MatchView {
     }
 
     /**
-     *
+     * Returns frenzyOn
      * @return frenzyOn
      */
     public boolean isFrenzyOn() {
@@ -213,7 +213,7 @@ public class MatchView {
     }
 
     /**
-     *
+     * Gets a new Map, containing all elements of connections
      * @return A new Map, containing all elements of connections
      */
     public Map<String, Boolean> readConnections() {

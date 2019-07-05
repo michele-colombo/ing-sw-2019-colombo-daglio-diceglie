@@ -95,7 +95,7 @@ public class MyPlayer extends PlayerView {
     }
 
     /**
-     *
+     * Gets points
      * @return points
      */
     public int getPoints() {
@@ -103,7 +103,7 @@ public class MyPlayer extends PlayerView {
     }
 
     /**
-     *
+     * Gets weapons
      * @return weapons
      */
     public Map<WeaponView, Boolean> getWeapons() {
@@ -111,7 +111,7 @@ public class MyPlayer extends PlayerView {
     }
 
     /**
-     *
+     * Gets powerUps
      * @return powerUps
      */
     public List<PowerUpView> getPowerUps() {
@@ -119,7 +119,7 @@ public class MyPlayer extends PlayerView {
     }
 
     /**
-     *
+     * Gets pending
      * @return pending
      */
     public Cash getPending() {
@@ -127,7 +127,7 @@ public class MyPlayer extends PlayerView {
     }
 
     /**
-     *
+     * Gets credit
      * @return credit
      */
     public Cash getCredit() {
@@ -135,7 +135,7 @@ public class MyPlayer extends PlayerView {
     }
 
     /**
-     *
+     * Gets selectableWeapons
      * @return selectableWeapons
      */
     public List<WeaponView> getSelectableWeapons() {
@@ -143,7 +143,7 @@ public class MyPlayer extends PlayerView {
     }
 
     /**
-     *
+     * Gets selectableSquares
      * @return selectableSquares
      */
     public List<SquareView> getSelectableSquares() {
@@ -151,7 +151,7 @@ public class MyPlayer extends PlayerView {
     }
 
     /**
-     *
+     * Gets selectablePlayers
      * @return selectablePlayers
      */
     public List<PlayerView> getSelectablePlayers() {
@@ -159,7 +159,7 @@ public class MyPlayer extends PlayerView {
     }
 
     /**
-     *
+     * Gets selectableModes
      * @return selectableModes
      */
     public List<ModeView> getSelectableModes() {
@@ -167,7 +167,7 @@ public class MyPlayer extends PlayerView {
     }
 
     /**
-     *
+     * Gets selectableActions
      * @return selectableActions
      */
     public List<String> getSelectableActions() {
@@ -175,7 +175,7 @@ public class MyPlayer extends PlayerView {
     }
 
     /**
-     *
+     * Gets selectableColors
      * @return selectableColors
      */
     public List<AmmoColor> getSelectableColors() {
@@ -183,7 +183,7 @@ public class MyPlayer extends PlayerView {
     }
 
     /**
-     *
+     * Gets selectablePowerUps
      * @return selectablePowerUps
      */
     public List<PowerUpView> getSelectablePowerUps() {
@@ -191,7 +191,7 @@ public class MyPlayer extends PlayerView {
     }
 
     /**
-     *
+     * Gets selectableCommands
      * @return selectableCommands
      */
     public List<Command> getSelectableCommands() {
@@ -199,7 +199,7 @@ public class MyPlayer extends PlayerView {
     }
 
     /**
-     *
+     * Gets currWeapons
      * @return currWeapons
      */
     public WeaponView getCurrWeapon() {
@@ -318,7 +318,10 @@ public class MyPlayer extends PlayerView {
         this.currWeapon = currWeapon;
     }
 
-
+    /**
+     * Gets String description of selectables
+     * @return A String
+     */
     public String getSelectableDescription(){
         StringBuilder builder= new StringBuilder();
         builder.append("");

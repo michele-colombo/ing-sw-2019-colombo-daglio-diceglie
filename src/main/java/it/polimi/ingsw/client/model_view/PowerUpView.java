@@ -24,7 +24,7 @@ public class PowerUpView {
     private int powerUpID;
 
     /**
-     *
+     * Gets color
      * @return color
      */
     public AmmoColor getColor() {
@@ -32,7 +32,7 @@ public class PowerUpView {
     }
 
     /**
-     *
+     * Gets String representation of PowerUpView
      * @return String representation of this PowerUpView
      */
     @Override
@@ -41,7 +41,7 @@ public class PowerUpView {
     }
 
     /**
-     *
+     * Gets name
      * @return name
      */
     public String getName() {
@@ -49,7 +49,7 @@ public class PowerUpView {
     }
 
     /**
-     *
+     * Gets description
      * @return description
      */
     public String getDescription() {
@@ -57,7 +57,7 @@ public class PowerUpView {
     }
 
     /**
-     * Set description
+     * Sets description
      * @param description description to be set
      */
     public void setDescription(String description) {

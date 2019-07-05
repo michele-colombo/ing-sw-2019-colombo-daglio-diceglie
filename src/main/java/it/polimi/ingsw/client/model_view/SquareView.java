@@ -46,7 +46,7 @@ public class SquareView {
     private AmmoTile ammo;
 
     /**
-     *
+     * Gets x
      * @return x
      */
     public int getX() {
@@ -54,7 +54,7 @@ public class SquareView {
     }
 
     /**
-     *
+     * Gets y
      * @return y
      */
     public int getY() {
@@ -62,7 +62,7 @@ public class SquareView {
     }
 
     /**
-     *
+     * Gets north
      * @return north
      */
     public Border getNorth() {
@@ -70,7 +70,7 @@ public class SquareView {
     }
 
     /**
-     *
+     * Gets east
      * @return east
      */
     public Border getEast() {
@@ -78,7 +78,7 @@ public class SquareView {
     }
 
     /**
-     *
+     * Gets south
      * @return south
      */
     public Border getSouth() {
@@ -86,7 +86,7 @@ public class SquareView {
     }
 
     /**
-     *
+     * Gets west
      * @return west
      */
     public Border getWest() {
@@ -94,7 +94,7 @@ public class SquareView {
     }
 
     /**
-     *
+     * Gets color
      * @return color
      */
     public AmmoColor getColor() {
@@ -102,7 +102,7 @@ public class SquareView {
     }
 
     /**
-     *
+     * Retunr isAmmo
      * @return isAmmo
      */
     public boolean isAmmo() {
@@ -110,7 +110,7 @@ public class SquareView {
     }
 
     /**
-     *
+     * Gets ammo
      * @return ammo
      */
     public AmmoTile getAmmo() {
@@ -118,7 +118,7 @@ public class SquareView {
     }
 
     /**
-     * Set Ammo
+     * Sets Ammo
      * @param ammo ammo to be set
      */
     public void setAmmo(AmmoTile ammo) {
@@ -126,7 +126,7 @@ public class SquareView {
     }
 
     /**
-     *
+     * Gets String representation of SquareView
      * @return String representation of SquareView
      */
     @Override

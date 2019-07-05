@@ -83,7 +83,7 @@ public class PlayerView {
     }
 
     /**
-     *
+     * Gets name
      * @return name
      */
     public String getName() {
@@ -91,7 +91,7 @@ public class PlayerView {
     }
 
     /**
-     *
+     * Gets color
      * @return color
      */
     public PlayerColor getColor() {
@@ -99,7 +99,7 @@ public class PlayerView {
     }
 
     /**
-     *
+     * Gets state
      * @return state
      */
     public PlayerState getState() {
@@ -107,7 +107,7 @@ public class PlayerView {
     }
 
     /**
-     *
+     * Gets numLoadedWeapons
      * @return numLoadedWeapons
      */
     public int getNumLoadedWeapons() {
@@ -115,7 +115,7 @@ public class PlayerView {
     }
 
     /**
-     *
+     * Gets unloadedWeapons
      * @return unloadedWeapons
      */
     public List<WeaponView> getUnloadedWeapons() {
@@ -123,7 +123,7 @@ public class PlayerView {
     }
 
     /**
-     *
+     * Gets numPowerUps
      * @return numPowerUps
      */
     public int getNumPowerUps() {
@@ -131,7 +131,7 @@ public class PlayerView {
     }
 
     /**
-     *
+     * Gets squarePosition
      * @return squarePosition
      */
     public SquareView getSquarePosition() {
@@ -139,7 +139,7 @@ public class PlayerView {
     }
 
     /**
-     *
+     * Gets wallet
      * @return wallet
      */
     public Cash getWallet() {
@@ -147,7 +147,7 @@ public class PlayerView {
     }
 
     /**
-     *
+     * Gets skulls
      * @return skulls
      */
     public int getSkulls() {
@@ -155,7 +155,7 @@ public class PlayerView {
     }
 
     /**
-     *
+     * Gets damageList
      * @return damageList
      */
     public List<PlayerView> getDamageList() {
@@ -163,7 +163,7 @@ public class PlayerView {
     }
 
     /**
-     *
+     * Gets markMap
      * @return markMap
      */
     public Map<PlayerView, Integer> getMarkMap() {
@@ -171,7 +171,7 @@ public class PlayerView {
     }
 
     /**
-     *
+     * Return isFrenzy
      * @return isFrenzy
      */
     public boolean isFrenzy() {
@@ -259,7 +259,7 @@ public class PlayerView {
     }
 
     /**
-     *
+     * Gets String representation of this PlayerView
      * @return String representation of this PlayerView
      */
     @Override

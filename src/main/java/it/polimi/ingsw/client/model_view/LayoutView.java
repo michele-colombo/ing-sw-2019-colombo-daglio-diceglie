@@ -112,7 +112,7 @@ public class LayoutView {
     }
 
     /**
-     *
+     * Gets layoutConfiguration
      * @return layoutConfiguration
      */
     public int getLayoutConfiguration() {
@@ -120,7 +120,7 @@ public class LayoutView {
     }
 
     /**
-     *
+     * Gets blueWeapons
      * @return blueWeapons
      */
     public List<WeaponView> getBlueWeapons() {
@@ -128,7 +128,7 @@ public class LayoutView {
     }
 
     /**
-     *
+     * Gets redWeapons
      * @return redWeapons
      */
     public List<WeaponView> getRedWeapons() {
@@ -136,7 +136,7 @@ public class LayoutView {
     }
 
     /**
-     *
+     * Gets yellowWeapons
      * @return yellowWeapons
      */
     public List<WeaponView> getYellowWeapons() {
@@ -144,7 +144,7 @@ public class LayoutView {
     }
 
     /**
-     *
+     * Sets blueWeapons
      * @param blueWeapons Sets blueWeapons
      */
     public void setBlueWeapons(List<WeaponView> blueWeapons) {
@@ -152,7 +152,7 @@ public class LayoutView {
     }
 
     /**
-     *
+     * Sets redWeapons
      * @param redWeapons Sets redWeapons
      */
     public void setRedWeapons(List<WeaponView> redWeapons) {
@@ -160,7 +160,7 @@ public class LayoutView {
     }
 
     /**
-     *
+     * Sets yellowWeapons
      * @param yellowWeapons set yellowWeapons
      */
     public void setYellowWeapons(List<WeaponView> yellowWeapons) {
@@ -168,7 +168,7 @@ public class LayoutView {
     }
 
     /**
-     *
+     * Gets a new List, containing all elements of squares
      * @return A new List, containing all elements of squares
      */
     public List<SquareView> getSquares() {
