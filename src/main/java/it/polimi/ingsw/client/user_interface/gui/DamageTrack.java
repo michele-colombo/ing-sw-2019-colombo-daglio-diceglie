@@ -314,6 +314,7 @@ public class DamageTrack extends Parent {
 
     /**
      * Create and add the labels associated to player's marks to this DamageTrack
+     * @param colors color of the mark label
      */
     private void addMarkLabels(List<Color> colors){
         for(Color color : colors){

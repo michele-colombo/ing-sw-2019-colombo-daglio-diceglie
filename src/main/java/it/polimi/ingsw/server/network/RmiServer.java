@@ -230,7 +230,7 @@ public class RmiServer extends UnicastRemoteObject implements NetworkInterfaceSe
 
         /**
          * put a message in the responseQueue
-         * @param toPut
+         * @param toPut message to putn in te queue
          */
         public synchronized void put(MessageVisitable toPut){
             coda.add(toPut);

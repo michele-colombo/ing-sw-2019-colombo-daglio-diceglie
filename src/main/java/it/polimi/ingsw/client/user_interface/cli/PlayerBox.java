@@ -64,7 +64,7 @@ public class PlayerBox extends MiniBox {
 
     /**
      * Builds the representation of the damage track of the player
-     * @return
+     * @return representation of the damage track in a String matrix
      */
     private String[][] createDamageTrack(){
         int myWidth = 54;
