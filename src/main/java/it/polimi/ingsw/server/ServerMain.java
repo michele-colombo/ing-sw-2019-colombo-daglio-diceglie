@@ -27,7 +27,6 @@ public class ServerMain {
     private static final String SOCKET_CLIENT_HAS_CONNECTED = "A new socket client has connected";
     private static final String SERVER_CONFIG_NOT_FOUND = "Configuration file not found";
 
-    private static final String ACCEPTED_IP = "127.0.0.1";
     private static final String FILE_NOT_FOUND = "default configuration file not found";
     private static final String PORT = "port";
     private static final String LAYOUT = "layout";
@@ -152,7 +151,7 @@ public class ServerMain {
             inputTimerDuration= config.inputTimer;
             loginTimerDuration= config.loginTimer;
             layoutConfig= config.layoutConfig;
-            acceptedIp= ACCEPTED_IP;
+            acceptedIp= config.ip;
         }
 
         ArgumentNavigator argNavigator= new ArgumentNavigator(args, "-");
@@ -236,6 +235,7 @@ public class ServerMain {
 
 
     private static class ServerConfig{
+        private String ip;
         private int port;
         private int loginTimer;
         private int inputTimer;
