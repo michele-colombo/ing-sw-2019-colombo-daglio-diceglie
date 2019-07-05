@@ -13,7 +13,7 @@ public class Move implements MicroAction {
 
     /**
      * Builds the micro action with the correct number of movements
-     * @param movements
+     * @param movements number of movements
      */
     public Move(int movements) {
         this.movements = movements;

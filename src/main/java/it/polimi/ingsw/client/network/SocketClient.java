@@ -154,7 +154,7 @@ public class SocketClient extends NetworkInterfaceClient implements EventVisitor
 
     /**
      * setting eventPrefix characterize the outcomoing loginEvent
-     * @param loginEvent
+     * @param loginEvent login event to send
      */
     @Override
     public void visit(LoginEvent loginEvent) {
@@ -164,7 +164,7 @@ public class SocketClient extends NetworkInterfaceClient implements EventVisitor
 
     /**
      * setting eventPrefix characterize the outcoming squareSelectedEvent
-     * @param squareSelectedEvent
+     * @param squareSelectedEvent event to send
      */
     @Override
     public void visit(SquareSelectedEvent squareSelectedEvent) {
@@ -174,7 +174,7 @@ public class SocketClient extends NetworkInterfaceClient implements EventVisitor
 
     /**
      * setting eventPrefix characterize the outcoming actionSelectedEvent
-     * @param actionSelectedEvent
+     * @param actionSelectedEvent event to send
      */
     @Override
     public void visit(ActionSelectedEvent actionSelectedEvent) {
@@ -184,7 +184,7 @@ public class SocketClient extends NetworkInterfaceClient implements EventVisitor
 
     /**
      * setting eventPrefix characterize the outcoming playerSelectedEvent
-     * @param playerSelectedEvent
+     * @param playerSelectedEvent event to send
      */
 
     @Override
@@ -195,7 +195,7 @@ public class SocketClient extends NetworkInterfaceClient implements EventVisitor
 
     /**
      * setting eventPrefix characterize the outcoming weaponSelectedEvent
-     * @param weaponSelectedEvent
+     * @param weaponSelectedEvent event to send
      */
     @Override
     public void visit(WeaponSelectedEvent weaponSelectedEvent) {
@@ -205,7 +205,7 @@ public class SocketClient extends NetworkInterfaceClient implements EventVisitor
 
     /**
      * setting eventPrefix characterize the outcoming modeSelectedEvent
-     * @param modeSelectedEvent
+     * @param modeSelectedEvent event to send
      */
     @Override
     public void visit(ModeSelectedEvent modeSelectedEvent) {
@@ -215,7 +215,7 @@ public class SocketClient extends NetworkInterfaceClient implements EventVisitor
 
     /**
      * setting eventPrefix characterize the outcoming commendSelectedEvent
-     * @param commandSelectedEvent
+     * @param commandSelectedEvent event to send
      */
     @Override
     public void visit(CommandSelectedEvent commandSelectedEvent) {
@@ -225,7 +225,7 @@ public class SocketClient extends NetworkInterfaceClient implements EventVisitor
 
     /**
      * setting eventPrefix characterize the outcoming colorSelectedEvent
-     * @param colorSelectedEvent
+     * @param colorSelectedEvent event to send
      */
     @Override
     public void visit(ColorSelectedEvent colorSelectedEvent) {
@@ -235,7 +235,7 @@ public class SocketClient extends NetworkInterfaceClient implements EventVisitor
 
     /**
      * setting eventPrefix characterize the outcoming powerUpSelectedEvent
-     * @param powerUpSelectedEvent
+     * @param powerUpSelectedEvent event to send
      */
     @Override
     public void visit(PowerUpSelectedEvent powerUpSelectedEvent) {

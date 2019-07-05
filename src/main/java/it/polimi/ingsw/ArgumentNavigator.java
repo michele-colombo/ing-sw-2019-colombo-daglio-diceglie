@@ -15,8 +15,8 @@ public class ArgumentNavigator {
 
     /**
      * build an argument navigator
-     * @param args
-     * @param fieldPrefix
+     * @param args array of arguments
+     * @param fieldPrefix prefix to state a field
      */
     public ArgumentNavigator(String[] args, String fieldPrefix){
         argumentMap= new HashMap<>();

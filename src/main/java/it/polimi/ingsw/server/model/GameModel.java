@@ -342,7 +342,9 @@ public class GameModel implements Observable {
      * otherwise currP must be contained in activePlayers
      * @param currP If not null, must be contained in activePlayers
      * @return Next active player
+     * @throws GameOverException if game is over
      */
+
     public Player nextActivePlayer(Player currP) throws GameOverException{
         Player nextPlayer;
         nextPlayer = match.getNextPlayer(currP);

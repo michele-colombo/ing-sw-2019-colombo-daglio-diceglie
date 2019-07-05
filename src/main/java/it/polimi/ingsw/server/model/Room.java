@@ -18,7 +18,7 @@ public class Room {
 
     /**
      * add squares to room
-     * @param s
+     * @param s square to add
      */
     public void addSquare(Square s){
         squares.add(s);
@@ -26,7 +26,7 @@ public class Room {
 
     /**
      * get all squares in room
-     * @return
+     * @return list of squares in this room
      */
     public List<Square> getSquaresInRoom(){
         return new ArrayList<>(squares);

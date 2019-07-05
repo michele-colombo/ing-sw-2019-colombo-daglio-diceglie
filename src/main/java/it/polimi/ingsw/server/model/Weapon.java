@@ -37,9 +37,9 @@ public class Weapon{
 
     /**
      * build a weapon with some of its charateristics
-     * @param name
-     * @param cost
-     * @param color
+     * @param name name of the weapon
+     * @param cost cost of the weapon
+     * @param color color of the weapon
      */
     public Weapon(String name, Cash cost, AmmoColor color) {
         this.name = name;
@@ -89,7 +89,7 @@ public class Weapon{
 
     /**
      * add a mode in myModes list. For ancient tests
-     * @param modeToAdd
+     * @param modeToAdd mode to add
      */
     public void addMode(Mode modeToAdd){
         myModes.add(modeToAdd);

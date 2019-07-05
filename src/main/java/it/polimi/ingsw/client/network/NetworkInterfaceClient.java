@@ -30,7 +30,7 @@ public abstract class NetworkInterfaceClient{
 
     /**
      * build the network layer
-     * @param client
+     * @param client client linked to this network
      */
     public NetworkInterfaceClient(Client client){
         this.client= client;

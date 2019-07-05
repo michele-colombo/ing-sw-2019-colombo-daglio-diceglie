@@ -135,19 +135,19 @@ public class Effect {
 
     /**
      * builds an effect from all its attributes
-     * @param startingPoint
-     * @param reciprocalPosition
-     * @param distMin
-     * @param distMax
-     * @param diversity
-     * @param what
-     * @param optionality
-     * @param whoToMove
-     * @param whereToMove
-     * @param whoToDamage
-     * @param damageNumber
-     * @param markNumber
-     * @param setTempSquare
+     * @param startingPoint starting point code
+     * @param reciprocalPosition reciprocal position code
+     * @param distMin minimum distance
+     * @param distMax maximum distance
+     * @param diversity diversity code
+     * @param what nature of target code
+     * @param optionality optionality code
+     * @param whoToMove who to move code
+     * @param whereToMove where to move code
+     * @param whoToDamage who to damage code
+     * @param damageNumber number of damages to inflict
+     * @param markNumber number of marks to give
+     * @param setTempSquare square to save in temp - code
      */
     public Effect(int startingPoint, int reciprocalPosition, int distMin, int distMax, int diversity, int what, int optionality, int whoToMove, int whereToMove, int whoToDamage, int damageNumber, int markNumber, int setTempSquare) {
         this.startingPoint = startingPoint;

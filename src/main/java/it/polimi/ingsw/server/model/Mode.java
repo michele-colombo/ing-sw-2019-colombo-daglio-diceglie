@@ -39,7 +39,7 @@ public class Mode {
 
     /**
      * get a clone of the effect list
-     * @return
+     * @return list of effects
      */
     public List<Effect> getEffects() {
         return new ArrayList<>(effects);
@@ -47,11 +47,11 @@ public class Mode {
 
     /**
      * build a mode without its effects
-     * @param isMandatory
-     * @param mustComeBefore
-     * @param title
-     * @param description
-     * @param cost
+     * @param isMandatory mandatory field
+     * @param mustComeBefore index of mode that has to be selected before this
+     * @param title title of the mode
+     * @param description description of the mode
+     * @param cost cost of the mode
      */
     public Mode(boolean isMandatory, int mustComeBefore, String title, String description, Cash cost){
         this.isMandatory= isMandatory;
@@ -66,7 +66,7 @@ public class Mode {
 
     /**
      * set a mode that must come before it
-     * @param mustComeBefore
+     * @param mustComeBefore index of mode that must come before this to be selectable
      */
     public void setPrecedent(int mustComeBefore){
         this.mustComeBefore= mustComeBefore;
@@ -74,7 +74,7 @@ public class Mode {
 
     /**
      * title setter
-     * @param title
+     * @param title title of the mode
      */
     public void setTitle(String title) {
         this.title = title;
@@ -82,7 +82,7 @@ public class Mode {
 
     /**
      * description setter
-     * @param description
+     * @param description description of the mode
      */
     public void setDescription(String description) {
         this.description = description;
@@ -90,7 +90,7 @@ public class Mode {
 
     /**
      * cost setter
-     * @param cost
+     * @param cost cost of the mode
      */
     public void setCost(Cash cost) {
         this.cost = cost;
@@ -98,7 +98,7 @@ public class Mode {
 
     /**
      * add an effect in the list
-     * @param effect
+     * @param effect effect to add
      */
     public void addEffect(Effect effect){
         this.effects.add(effect);

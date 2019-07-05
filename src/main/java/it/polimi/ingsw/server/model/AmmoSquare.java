@@ -100,7 +100,7 @@ public class AmmoSquare extends Square{
 
     /**
      * Setter for the ammoTile
-     * @param ammo
+     * @param ammo ammo to set
      */
     public void setAmmo(AmmoTile ammo){
         this.ammo = ammo;

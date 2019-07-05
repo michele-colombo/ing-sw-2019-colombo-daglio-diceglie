@@ -592,7 +592,7 @@ public class Player {
 
     /**
      * Sets the credit ammos of the player (ammos he has already paid in powerups)
-     * @param credit
+     * @param credit credit to set
      */
     public void setCredit(Cash credit) {
         this.credit = new Cash(credit);

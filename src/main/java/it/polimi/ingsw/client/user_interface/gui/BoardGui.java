@@ -569,7 +569,7 @@ public class BoardGui {
     /**
      * player's damageTrack info and creates and add WeaponButtons of your weapon (clearing old ones).
      * If they're unloaded, they have low opacity.
-     * @param player
+     * @param player player who own updating weapons
      */
     public void updateWeapons(PlayerView player){
         Platform.runLater(() -> {

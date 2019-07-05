@@ -67,7 +67,7 @@ public class testUtils {
      * @param map the map to stringify
      * @param <K> parametric type of the key objects
      * @param <V> parametric type of the value objects
-     * @return
+     * @return human readable string of the map
      */
     public static <K, V> String mapToString(Map<K, V> map){
         StringBuilder result = new StringBuilder();
@@ -111,7 +111,7 @@ public class testUtils {
      * Checks that all player from which an interaction is required are actually active.
      * If this is not the case it simulates their action.
      * this is a fake method to emulate what the real controller does
-     * @param gameModel
+     * @param gameModel game Model on wich do the final cleaning
      */
     public static void finalCleaning(GameModel gameModel){
         while (!gameModel.getActivePlayers().containsAll(gameModel.getWaitingFor())){

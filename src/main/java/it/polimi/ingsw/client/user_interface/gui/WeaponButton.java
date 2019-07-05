@@ -90,6 +90,7 @@ public class WeaponButton extends Parent {
 
     /**
      * Rescale this WeaponButton with SCALE_RATION_UNLOADED and the chosen width
+     * @param width original width to rescale
      */
     public void rescaleUnloaded(double width){
         weaponImageView.setFitWidth(width / SCALE_RATIO_UNLOADED);

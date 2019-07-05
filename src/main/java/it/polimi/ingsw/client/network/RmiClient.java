@@ -63,8 +63,8 @@ public class RmiClient extends NetworkInterfaceClient{
 
     /**
      * forward an event to the server
-     * @param eventVisitable
-     * @throws ForwardingException
+     * @param eventVisitable event to forward
+     * @throws ForwardingException if something goes wrong forwarding
      */
     @Override
     public void forward(EventVisitable eventVisitable) throws ForwardingException {

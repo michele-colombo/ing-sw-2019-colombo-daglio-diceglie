@@ -111,7 +111,7 @@ public class SocketServer implements NetworkInterfaceServer, MessageVisitor {
 
     /**
      * set the prefix for login messages
-     * @param loginMessage
+     * @param loginMessage message to send
      */
     @Override
     public void visit(LoginMessage loginMessage) {
@@ -120,7 +120,7 @@ public class SocketServer implements NetworkInterfaceServer, MessageVisitor {
 
     /**
      * set the prefix for generic messages
-     * @param genericMessage
+     * @param genericMessage message to send
      */
     @Override
     public void visit(GenericMessage genericMessage) {
@@ -130,7 +130,7 @@ public class SocketServer implements NetworkInterfaceServer, MessageVisitor {
 
     /**
      * set the prefix for  layout update messages
-     * @param layoutUpdateMessage
+     * @param layoutUpdateMessage message to send
      */
     @Override
     public void visit(LayoutUpdateMessage layoutUpdateMessage) {
@@ -140,7 +140,7 @@ public class SocketServer implements NetworkInterfaceServer, MessageVisitor {
 
     /**
      * set the prefix for  killshot track update messages
-     * @param killshotTrackUpdate
+     * @param killshotTrackUpdate message to send
      */
     @Override
     public void visit(KillshotTrackUpdateMessage killshotTrackUpdate) {
@@ -150,7 +150,7 @@ public class SocketServer implements NetworkInterfaceServer, MessageVisitor {
 
     /**
      * set the prefix for current player update messages
-     * @param currentPlayerUpdate
+     * @param currentPlayerUpdate message to send
      */
     @Override
     public void visit(CurrentPlayerUpdateMessage currentPlayerUpdate) {
@@ -160,7 +160,7 @@ public class SocketServer implements NetworkInterfaceServer, MessageVisitor {
 
     /**
      * set the prefix for start match update messages
-     * @param startMatchUpdateMessage
+     * @param startMatchUpdateMessage message to send
      */
     @Override
     public void visit(StartMatchUpdateMessage startMatchUpdateMessage) {
@@ -170,7 +170,7 @@ public class SocketServer implements NetworkInterfaceServer, MessageVisitor {
 
     /**
      * set the prefix for player update messages
-     * @param playerUpdateMessage
+     * @param playerUpdateMessage message to send
      */
     @Override
     public void visit(PlayerUpdateMessage playerUpdateMessage) {
@@ -180,7 +180,7 @@ public class SocketServer implements NetworkInterfaceServer, MessageVisitor {
 
     /**
      * set the prefix for  payment update messages
-     * @param paymentUpdateMessage
+     * @param paymentUpdateMessage message to send
      */
     @Override
     public void visit(PaymentUpdateMessage paymentUpdateMessage) {
@@ -190,7 +190,7 @@ public class SocketServer implements NetworkInterfaceServer, MessageVisitor {
 
     /**
      * set the prefix for  weapons update message
-     * @param weaponsUpdateMessage
+     * @param weaponsUpdateMessage message to send
      */
     @Override
     public void visit(WeaponsUpdateMessage weaponsUpdateMessage) {
@@ -200,7 +200,7 @@ public class SocketServer implements NetworkInterfaceServer, MessageVisitor {
 
     /**
      * set the prefix for powerup update messages
-     * @param powerUpUpdateMessage
+     * @param powerUpUpdateMessage message to send
      */
     @Override
     public void visit(PowerUpUpdateMessage powerUpUpdateMessage) {
@@ -210,7 +210,7 @@ public class SocketServer implements NetworkInterfaceServer, MessageVisitor {
 
     /**
      * set the prefix for selectables update messages
-     * @param selectablesUpdateMessage
+     * @param selectablesUpdateMessage message to send
      */
     @Override
     public void visit(SelectablesUpdateMessage selectablesUpdateMessage) {
@@ -220,7 +220,7 @@ public class SocketServer implements NetworkInterfaceServer, MessageVisitor {
 
     /**
      * set the prefix for damage update messages
-     * @param damageUpdateMessage
+     * @param damageUpdateMessage message to send
      */
     @Override
     public void visit(DamageUpdateMessage damageUpdateMessage) {
@@ -230,7 +230,7 @@ public class SocketServer implements NetworkInterfaceServer, MessageVisitor {
 
     /**
      * set the prefix for  connection update messages
-     * @param connectionUpdateMessage
+     * @param connectionUpdateMessage message to send
      */
     @Override
     public void visit(ConnectionUpdateMessage connectionUpdateMessage) {
@@ -240,7 +240,7 @@ public class SocketServer implements NetworkInterfaceServer, MessageVisitor {
 
     /**
      * set the prefix for game over message
-     * @param gameOverMessage
+     * @param gameOverMessage message to send
      */
     @Override
     public void visit(GameOverMessage gameOverMessage) {

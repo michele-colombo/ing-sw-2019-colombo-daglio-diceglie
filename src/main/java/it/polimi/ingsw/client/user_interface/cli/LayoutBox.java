@@ -27,7 +27,10 @@ public class LayoutBox extends MiniBox {
      * @param y the y position in the window (from the top)
      * @param height the height of this box
      * @param width the width of this box
+     * @param squareHeight height of the square
+     * @param squareWidth  width of the square
      */
+
     public LayoutBox(int x, int y, int height, int width, int squareHeight, int squareWidth) {
         super(x, y, height, width);
         this.squareHeight = squareHeight;

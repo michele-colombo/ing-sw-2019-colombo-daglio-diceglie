@@ -26,7 +26,9 @@ public class LoginMessage implements MessageVisitable, Serializable {
      * Creates LoginMessage with given parameters
      * @param response response of LoginEvent
      * @param loginSuccessful true if player logged properly, else false
+     * @param name name of player
      */
+
     public LoginMessage(String response, boolean loginSuccessful, String name){
         this.response = response;
         this.loginSuccessful = loginSuccessful;

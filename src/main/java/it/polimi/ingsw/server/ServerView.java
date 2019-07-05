@@ -78,7 +78,7 @@ public class ServerView implements Observer, EventVisitor {
 
     /**
      * login with parameters contained in the loginEvent
-     * @param loginEvent
+     * @param loginEvent event to visit
      */
     @Override
     public void visit(LoginEvent loginEvent){

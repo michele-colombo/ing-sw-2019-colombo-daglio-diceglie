@@ -187,7 +187,10 @@ public class ParserManager {
      * -3 == small "good for 3 or 4 players
      *
      * @param configNumber configuration code
+     * @return layout with given config number
      */
+
+
     public Layout getLayout(int configNumber){
         if(configNumber>=0 && configNumber<=3) {
             return layouts[configNumber];

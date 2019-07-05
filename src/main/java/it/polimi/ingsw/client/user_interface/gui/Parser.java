@@ -95,6 +95,7 @@ public class Parser {
 
     /**
      * Load PixelWeapon from file
+     * @param color weapon's color
      * @return The List of PixelWeapon loaded from file
      */
     public List<PixelWeapon> loadWeaponResource(String color){

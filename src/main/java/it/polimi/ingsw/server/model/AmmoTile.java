@@ -59,7 +59,8 @@ public class AmmoTile{
     }
 
     /**
-     * Gets the integer ID o fthe ammoTile
+     * Gets the integer ID of the ammoTile
+     * @return id of the ammo tile
      */
     public int getAmmoTileID(){
         return ammoTileID;

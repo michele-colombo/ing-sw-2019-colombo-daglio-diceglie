@@ -82,8 +82,8 @@ public class RmiServer extends UnicastRemoteObject implements NetworkInterfaceSe
 
     /**
      * forward a message to the client
-     * @param messaggio
-     * @throws IOException
+     * @param messaggio message to forward
+     * @throws IOException if an error occurs while forwarding
      */
     @Override
     public void forwardMessage(MessageVisitable messaggio) throws IOException{

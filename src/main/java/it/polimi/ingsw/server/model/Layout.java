@@ -399,7 +399,11 @@ public class Layout {
 
     /**
      * Build layout with passed ammoSquare and spawnSquares. Keep track of layoutConfiguration
+     * @param spawnSquares list of spawn squares
+     * @param ammoSquares list of ammo tile squares
+     * @param layoutConfiguration configuration code
      */
+
     public Layout(List<SpawnSquare> spawnSquares, List<AmmoSquare> ammoSquares, int layoutConfiguration) {
         this.spawnSquares = spawnSquares;
         this.ammoSquares = ammoSquares;

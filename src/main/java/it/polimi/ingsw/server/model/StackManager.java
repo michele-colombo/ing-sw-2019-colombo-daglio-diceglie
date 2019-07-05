@@ -123,9 +123,9 @@ public class StackManager {
 
     /**
      * build the stack manager with the three original stacks. It creates the active stacks cloning the originals and shuffling them
-     * @param originalWeaponArsenal
-     * @param originalPowerUps
-     * @param originalAmmoTiles
+     * @param originalWeaponArsenal original list of weapons
+     * @param originalPowerUps original list of powerups
+     * @param originalAmmoTiles original list of ammo tiles
      */
     public StackManager(List<Weapon> originalWeaponArsenal, List<PowerUp> originalPowerUps, List<AmmoTile> originalAmmoTiles) {
         this.originalWeaponArsenal = originalWeaponArsenal;
@@ -150,7 +150,7 @@ public class StackManager {
 
     /**
      * pick a weapon card
-     * @return
+     * @return weapon drawn
      */
     public Weapon drawWeapon(){
         if(! weaponActiveStack.isEmpty()){
@@ -164,7 +164,7 @@ public class StackManager {
 
     /**
      * pick a ammo tile
-     * @return
+     * @return ammo tile drawn
      */
     public AmmoTile drawAmmoTile(){
         if(ammoTilesActiveStack.isEmpty()){
@@ -181,7 +181,7 @@ public class StackManager {
 
     /**
      * pick a power up card
-     * @return
+     * @return power up drawn
      */
     public PowerUp drawPowerUp(){
         if(powerUpActiveStack.isEmpty()){
@@ -197,7 +197,7 @@ public class StackManager {
 
     /**
      * throw power up in the waste stack
-     * @param pu
+     * @param pu power up to discard
      */
     public void discardPowerUp(PowerUp pu){
         powerUpWasteStack.add(pu);
@@ -205,7 +205,7 @@ public class StackManager {
 
     /**
      * throw ammo tile in the waste stack
-     * @param ammo
+     * @param ammo ammo tile to discard
      */
     public void trashAmmoTile(AmmoTile ammo){
         ammoTilesWasteStack.add(ammo);
@@ -213,7 +213,7 @@ public class StackManager {
 
     /**
      * init the weapon active stack with a particular order
-     * @param list
+     * @param list ordered list of weapons
      */
     public void initWeaponStack(List<Weapon> list){
 
@@ -223,7 +223,7 @@ public class StackManager {
 
     /**
      * init the ammo tiles active stack with a particular order
-     * @param list
+     * @param list ordered list of ammo tiles in active stack
      */
     public void initAmmoTilesStack(List<AmmoTile> list){
 
@@ -233,7 +233,7 @@ public class StackManager {
 
     /**
      * init init the ammo tiles waste stack with a particular order
-     * @param list
+     * @param list ordered list of ammotiles in waste stack
      */
     public void initAmmoTilesWasteStack(List<AmmoTile> list){
 
@@ -243,7 +243,7 @@ public class StackManager {
 
     /**
      * init the power up active stack with a particular order
-     * @param list
+     * @param list ordered liist of powerups in active stack
      */
     public void initPowerUpStack(List<PowerUp> list){
 
@@ -253,7 +253,7 @@ public class StackManager {
 
     /**
      * init the power up waste stack with a particular order
-     * @param list
+     * @param list ordered list of powerups in waste stack
      */
     public void initPowerUpWasteStack(List<PowerUp> list){
 

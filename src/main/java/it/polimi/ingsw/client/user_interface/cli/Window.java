@@ -78,7 +78,7 @@ public class Window {
 
     /**
      * Adds a MiniBox to the list of MiniBoxes
-     * @param mb
+     * @param mb minibox to add
      */
     public void addMiniBox(MiniBox mb){
         miniBoxes.add(mb);

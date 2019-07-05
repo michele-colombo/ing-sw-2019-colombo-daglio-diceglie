@@ -374,7 +374,7 @@ public class Cli implements UserInterface {
 
     /**
      * Adds teh unique string ID of a selectable to the list of selectables
-     * @param id
+     * @param id unique id of selectable
      */
     public void addSelectableId(String id){
         if (id != null){
@@ -384,8 +384,8 @@ public class Cli implements UserInterface {
 
     /**
      * Gets the index of a selectable unique ID among the list of selectables
-     * @param id
-     * @return
+     * @param id unique id of selectable
+     * @return index of the selectable
      */
     public int indexOf(String id){
         return selectableIds.indexOf(id);
@@ -393,7 +393,7 @@ public class Cli implements UserInterface {
 
     /**
      * Shows the playing 'window' of a new match
-     * @param matchView
+     * @param matchView matchView of the starting match
      */
     @Override
     public void updateStartMatch(MatchView matchView) {
