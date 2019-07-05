@@ -37,20 +37,20 @@ To run server, in terminal type:
 If server is runned without arguments, it will run using:
 <br>IP address open: 127.0.0.1
 <br>Port: 12345
-<br>Layout configuration for new games: casual
+<br>Layout configuration for new games: random
 <br>Number of skulls for new games: 8
 <br>Time to wait before starting the game with less than 5 players: 10 seconds
 <br>Time to wait before disconnecting a player who is taking to long to decide his move: 90 seconds
 #### Passing arguments
 To change configuration to desired value, user must type:   -field argument
-<br>IP address open: -ip ip_address (x.y.z.w)
-<br>Port: -port port_number (from 1024 to 65534)
-<br>Layout configuration for new games: -layout layout_config (from 0 to 3, -1 for casual)
-<br>Number of skulls for new games: -skulls skulls_number (from 5 to 8)
-<br>Time to wait before starting the game with less than 5 players: -login login_time (in milliseconds)
-<br>Time to wait before disconnecting a player who is taking to long to decide his move: -input input_time (in milliseconds)
+<br>IP address open: -ip [ip_address] (x.y.z.w)
+<br>Port: -port [port_number] (from 1024 to 65534)
+<br>Layout configuration for new games: -layout [layout_config] (from 0 to 3, -1 for random)
+<br>Number of skulls for new games: -skulls [skulls_number] (from 5 to 8)
+<br>Time to wait before starting the game with less than 5 players: -login [login_time] (in milliseconds)
+<br>Time to wait before disconnecting a player who is taking to long to decide his move: -input [input_time] (in milliseconds)
 
-<br>If user don't set configuration, deefault is loaded. If he sets invalid configuration a help message is printed.
+<br>If user don't set configuration, default is loaded. He can set also only one configuration. If he tries sets invalid configuration a help message is printed.
 <br>To print help type -h
 
 ### Example
@@ -67,11 +67,11 @@ If client is runned without arguments, it will run using:
 <br>User Interface: gui
 #### Passing arguments
 To change configuration to desired value, user must type:   -field argument
-<br>IP address of server: -ip ip_address (x.y.z.w)
-<br>Port of the server: -port port_number (from 1024 to 65534)
-<br>User Interface: -ui user_interface_type (gui or cli)
+<br>IP address of server: -ip [ip_address] (x.y.z.w)
+<br>Port of the server: -port [port_number] (from 1024 to 65534)
+<br>User Interface: -ui [user_interface_type] (gui or cli)
 
-<br><br>If user don't set configuration, deefault is loaded. If he sets invalid configuration it's re-asked in a command line dialog.
+<br><br>If user don't set configuration, default is loaded. He can set also only one configuration. If he sets invalid configuration it's re-asked in a command line dialog.
 <br>To print help type -h
 
 ### Example
@@ -81,5 +81,5 @@ java -jar --module-path ./javafx-sdk-11.0.2/lib --add-modules javafx.controls cl
 ## Layout guide
 0: good for 4 or 5 players  (12 squares)
 <br>1: big one in pages 2 and 3 of manual (11 squares, no top-right corner)
-<br>2: good for every players number (11 squares, no bottom-left corner)
+<br>2: good for every number of players (11 squares, no bottom-left corner)
 <br>3: good for 3 or 4 players (10 squares) 
