@@ -23,7 +23,7 @@ public class UseTargeting implements MicroAction {
      */
     @Override
     public void act(Match match, Player p) throws NextMicroActionException {
-        if (p.howManyPowerUps(PowerUpType.TARGETING_SCOPE)>0 && !match.getCurrentAction().getDamaged().isEmpty()) {
+        if (p.howManyPowerUps(PowerUpType.TARGETING_SCOPE)>0 && !match.getCurrentAction().getDamaged().isEmpty() && (p.getPowerUps().size()>1 || p.getWallet().getTotal()>0)) {
             p.setState(PlayerState.USE_POWERUP);
             p.resetSelectables();
             p.setSelectablePowerUps(p.getPowerUpsOfType(PowerUpType.TARGETING_SCOPE));
