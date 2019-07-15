@@ -1,9 +1,9 @@
 # Prova Finale Ingegneria del Software 2019
 ## Gruppo AM35
 
-- ###   10521451    Colombo Michele ([@michele-colombo](https://github.com/michele-colombo))<br>michele11.colombo@mail.polimi.it
-- ###   10537168    Daglio Gabriele ([@GDaglio](https://github.com/GDaglio))<br>gabriele.daglio@mail.polimi.it
-- ###   10538525    Diceglie Giuseppe ([@DiceglieGiuseppe](https://github.com/DiceglieGiuseppe))<br>giuseppe.diceglie@mail.polimi.it
+- ###   Colombo Michele ([@michele-colombo](https://github.com/michele-colombo))<br>michele11.colombo@mail.polimi.it
+- ###   Daglio Gabriele ([@GDaglio](https://github.com/GDaglio))<br>gabriele.daglio@mail.polimi.it
+- ###   Diceglie Giuseppe ([@DiceglieGiuseppe](https://github.com/DiceglieGiuseppe))<br>giuseppe.diceglie@mail.polimi.it
 
 | Functionality | State |
 |:-----------------------|:------------------------------------:|
@@ -59,7 +59,7 @@ To change configuration to desired value, user must type:   `-field [argument]`
 ## Client
 To run client, type in the terminal: 
 <br>`java -jar --module-path [javafx lib folder path] --add-modules javafx.controls client.jar`
-<br>Please not that javafx is not provided along with the executable. First download it from here: https://gluonhq.com/products/javafx/
+<br>Please note that javafx is not provided along with the executable. First download it from here: https://gluonhq.com/products/javafx/
 ### Client configuration
 #### Default
 If client is runned without arguments, it will run using:
